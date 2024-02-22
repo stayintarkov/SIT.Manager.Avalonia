@@ -1,0 +1,107 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
+			 xmlns:vm="clr-namespace:SIT.Manager.Avalonia.ViewModels"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SIT.Manager.Avalonia.Views.ToolsPage"
+			 x:DataType="vm:ToolsPageViewModel">
+	<UserControl.Styles>
+		<Style Selector="Button.toolsButton">
+			<Setter Property="Height" Value="50"/>
+			<Setter Property="HorizontalAlignment" Value="Center"/>
+			<Setter Property="Margin" Value="7"/>
+			<Setter Property="Width" Value="200"/>
+		</Style>
+	</UserControl.Styles>
+	
+	<Grid HorizontalAlignment="Center" VerticalAlignment="Center" Background="Transparent">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto"/>
+			<ColumnDefinition Width="15"/>
+			<ColumnDefinition Width="Auto"/>
+		</Grid.ColumnDefinitions>
+		<Border Padding="5" CornerRadius="8"  BorderBrush="Gray" BorderThickness="2" Background="Black" Grid.Column="0"/>
+		<Border Padding="5" CornerRadius="8"  BorderBrush="Gray" BorderThickness="2" Background="Black" Grid.Column="2"/>
+		<StackPanel VerticalAlignment="Top" Width="215">
+			<Button Name="InstallSITButton" 
+					Classes="toolsButton"
+					ToolTip.Tip="Downgrade EFT if needed, install SIT and mod support."
+					Command="{Binding InstallSITCommand}">
+				<StackPanel Orientation="Horizontal">
+					<ui:SymbolIcon Symbol="Add" Margin="0,0,10,0"/>
+					<TextBlock Text="Install SIT"/>
+				</StackPanel>
+			</Button>
+			<Button Name="OpenEFTFolderButton" 
+					Classes="toolsButton"
+					ToolTip.Tip="Open the EFT installation folder."
+					Command="{Binding OpenEFTFolderCommand}">
+				<StackPanel Orientation="Horizontal">
+					<ui:SymbolIcon Symbol="Folder" Margin="0,0,10,0"/>
+					<TextBlock Text="Open EFT Folder"/>
+				</StackPanel>
+			</Button>
+			<Button Name="OpenBepInExFolderButton" 
+					Classes="toolsButton"
+					ToolTip.Tip="Open the BepInEx Plugins folder."
+					Command="{Binding OpenBepInExFolderCommand}">
+				<StackPanel Orientation="Horizontal">
+					<ui:SymbolIcon Symbol="Folder" Margin="0,0,10,0"/>
+					<TextBlock Text="Open Plugins Folder"/>
+				</StackPanel>
+			</Button>
+			<Button Name="OpenSITConfigButton" 
+					Classes="toolsButton"
+					ToolTip.Tip="Open the SIT Config with the default text editor."
+					Command="{Binding OpenSITConfigCommand}">
+				<StackPanel Orientation="Horizontal">
+					<ui:SymbolIcon Symbol="Setting" Margin="0,0,10,0"/>
+					<TextBlock Text="Open SIT Config"/>
+				</StackPanel>
+			</Button>
+		</StackPanel>
+		
+		<StackPanel Grid.Column="2" VerticalAlignment="Top" Width="215">
+			<Button Name="InstallServerButton"
+					Classes="toolsButton"
+					ToolTip.Tip="Download SPT Server + SIT Server Mod."
+					Command="{Binding InstallServerCommand}">
+				<StackPanel Orientation="Horizontal">
+					<ui:SymbolIcon Symbol="Download" Margin="0,0,10,0"/>
+					<TextBlock Text="Install Server + SIT Mod"/>
+				</StackPanel>
+			</Button>
+			
+			<Button Name="OpenEFTLogButton" 
+					Classes="toolsButton"
+					ToolTip.Tip="Open the EFT 'Player.log' with the default text editor."
+					Command="{Binding OpenEFTLogCommand}">
+				<StackPanel Orientation="Horizontal">
+					<ui:SymbolIcon Symbol="OpenFile" Margin="0,0,10,0"/>
+					<TextBlock Text="Open EFT Log"/>
+				</StackPanel>
+			</Button>
+			<Button Name="OpenLocationEditorButton"
+					Classes="toolsButton"
+					ToolTip.Tip="Opens the Location Editor GUI."
+					Command="{Binding OpenLocationEditorCommand}">
+				<StackPanel Orientation="Horizontal">
+					<ui:SymbolIcon Symbol="Edit" Margin="0,0,10,0"/>
+					<TextBlock Text="Location Editor"/>
+				</StackPanel>
+			</Button>
+			<Button Name="ClearCacheButton"
+					Classes="toolsButton"
+					ToolTip.Tip="Clears the local users EFT Cache."
+					Command="{Binding ClearCacheCommand}">
+				<StackPanel Orientation="Horizontal">
+					<ui:SymbolIcon Symbol="Delete" Margin="0,0,10,0"/>
+					<TextBlock Text="Clear Cache"/>
+				</StackPanel>
+			</Button>
+		</StackPanel>
+	</Grid>
+</UserControl>

@@ -1,0 +1,79 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
+			 xmlns:vm="clr-namespace:SIT.Manager.Avalonia.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SIT.Manager.Avalonia.Views.ServerPage"
+			 x:DataType="vm:ServerPageViewModel">	
+	<Border CornerRadius="8" BorderBrush="Gray" BorderThickness="2">
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="4*"/>
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
+
+			<Grid Grid.Row="0">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="*"/>
+				</Grid.RowDefinitions>
+				<TextBlock Margin="10 5 0 0" Grid.Row="0" Name="ConsoleOutput" Text="Console Output" FontSize="16" FontFamily="{StaticResource BenderFont}" FontWeight="Bold"/>
+				
+				<ScrollViewer Name="ConsoleLogScroller" 
+							  Grid.Row="1"
+							  CornerRadius="8" 
+							  BorderBrush="Gray"
+							  BorderThickness="1"
+							  Margin="10" 
+							  HorizontalScrollBarVisibility="Disabled"
+							  Padding="6 0" 
+							  Background="#222"
+							  ScrollChanged="ConsoleLogScroller_ScrollChanged">
+					<ItemsControl Name="ConsoleLogItemsControl"
+								  ItemsSource="{Binding ConsoleOutput, Mode=OneWay}">
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<VirtualizingStackPanel Orientation="Vertical"/>
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<TextBlock Text="{Binding Message}"
+										   Foreground="{Binding TextColor}"
+										   FontFamily="{Binding TextFont}"
+										   TextWrapping="WrapWithOverflow"/>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</ScrollViewer>
+			</Grid>
+
+			<StackPanel Grid.Row="1" Margin="10 0 10 10" Orientation="Horizontal">
+				<Button Name="StartServerButton" 
+						HorizontalAlignment="Left" 
+						Margin="0 0 10 0" 
+						ToolTip.Tip="Start server."
+						Command="{Binding StartServerCommand}">
+					<StackPanel Orientation="Horizontal">
+						<ui:SymbolIcon Name="StartServerButtonSymbolIcon" Symbol="{Binding StartServerButtonSymbolIcon}" Margin="0 0 10 0"/>
+						<TextBlock Name="StartServerButtonTextBlock" Text="{Binding StartServerButtonTextBlock}"/>
+					</StackPanel>
+				</Button>			
+				<Button Name="EditServerConfigButton" 
+						HorizontalAlignment="Left" 
+						Margin="0 0 5 0" 
+						ToolTip.Tip="Edit Server"
+						Command="{Binding EditServerConfigCommand}">
+					<StackPanel Orientation="Horizontal">
+						<ui:SymbolIcon Symbol="Edit" Margin="0 0 10 0"/>
+						<TextBlock Text="Edit Server Config"/>
+					</StackPanel>
+				</Button>
+			</StackPanel>
+		</Grid>
+	</Border>
+</UserControl>

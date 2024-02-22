@@ -1,0 +1,25 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:sty="using:FluentAvalonia.Styling"
+             x:Class="SIT.Manager.Avalonia.App"
+             RequestedThemeVariant="Dark">
+             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+	<Application.Resources>
+		<FontFamily x:Key="BenderFont">/Assets/Fonts/Bender.otf#Bender</FontFamily>
+
+		<Color x:Key="AppWhiteColor">#FFFFFFFF</Color>
+		<Color x:Key="AppBlueColor">#3399FFFF</Color>
+
+		<StaticResource x:Key="TextControlForeground" ResourceKey="AppWhiteColor"/>
+		<StaticResource x:Key="TextControlSelection" ResourceKey="AppBlueColor"/>
+	</Application.Resources>
+	
+    <Application.Styles>
+		<sty:FluentAvaloniaTheme />
+		<StyleInclude Source="avares://ThemeEditor.Controls.ColorPicker/ColorPicker.axaml" />
+
+		<Style Selector="SelectableTextBlock">
+			<Setter Property="SelectionBrush" Value="{StaticResource TextControlSelection}"/>
+		</Style>	
+    </Application.Styles>
+</Application>

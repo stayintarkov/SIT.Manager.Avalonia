@@ -1,0 +1,36 @@
+<ui:ContentDialog xmlns="https://github.com/avaloniaui"
+				  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+				  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+				  xmlns:sty="using:FluentAvalonia.Styling"
+				  xmlns:ui="using:FluentAvalonia.UI.Controls"
+				  xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
+				  xmlns:vm="clr-namespace:SIT.Manager.Avalonia.ViewModels.Dialogs"
+				  mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+				  Title="Select Version"
+				  FullSizeDesired="False"
+				  IsPrimaryButtonEnabled="True"
+				  PrimaryButtonText="Install"
+				  CloseButtonText="Cancel"
+				  x:Class="SIT.Manager.Avalonia.Views.Dialogs.SelectSitVersionDialog"
+				  x:DataType="vm:SelectSitVersionDialogViewModel">
+	<StackPanel>
+		<TextBlock Text="Select the version to install:" Margin="5"/>
+
+		<TextBlock IsVisible="{Binding !FetchedReleases}"
+				   Text="Loading data..."/>
+		<ComboBox Width="500"
+				  Name="VersionBox"
+				  VerticalAlignment="Center"
+				  HorizontalAlignment="Center"
+				  IsVisible="{Binding FetchedReleases}"
+				  SelectedItem="{Binding SelectedRelease}"
+				  ItemsSource="{Binding GithubReleases}">
+			<ComboBox.ItemTemplate>
+				<DataTemplate>
+					<TextBlock Text="{Binding tag_name}"/>
+				</DataTemplate>
+			</ComboBox.ItemTemplate>
+		</ComboBox>
+	</StackPanel>
+</ui:ContentDialog>

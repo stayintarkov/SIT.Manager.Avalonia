@@ -1,0 +1,25 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="clr-namespace:SIT.Manager.Avalonia.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:DataType="vm:PlayPageViewModel"
+             x:Class="SIT.Manager.Avalonia.Views.PlayPage">
+	<Grid Margin="10" >
+		<StackPanel>
+			<!--Address box-->
+			<Label Content="Address" Margin="10 10 10 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
+			<TextBox Name="AddressBox" Text="{Binding LastServer, Mode=TwoWay}" Margin="10 5 10 10" Width="300" HorizontalAlignment="Left" Watermark="Enter Server Address..." PasswordChar="*" RevealPassword="{Binding $self.IsFocused}"/>
+			<!--Username box-->
+			<Label Content="Username" Margin="10 10 10 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
+			<TextBox Name="UsernameBox" Text="{Binding Username, Mode=TwoWay}" Margin="10 5 10 10" Width="150" HorizontalAlignment="Left" Watermark="Enter Username..."/>
+			<!--Password box-->
+			<Label Content="Password" Margin="10 10 10 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
+			<TextBox Name="PasswordBox" Text="{Binding Password, Mode=TwoWay}" Margin="10 5 10 10" Width="150" HorizontalAlignment="Left" PasswordChar="●" Watermark="Enter Password..."/>
+			<CheckBox Name="RememberMeCheck" Content="Remember Me" Margin="10" IsChecked="{Binding RememberMe}"/>
+			<Button Name="ConnectButton" Command="{Binding ConnectToServerCommand}" Content="Connect" ToolTip.Tip="Connect to the server" Margin="10"/>
+			<Button Name="QuickPlayButton" Command="{Binding QuickPlayCommand}" Content="Start Server and Connect" ToolTip.Tip="Start the Aki server and connect to the server" Margin="10"/>
+		</StackPanel>
+	</Grid>
+</UserControl>

@@ -1,0 +1,38 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:SIT.Manager.Avalonia.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:SIT.Manager.Avalonia.Views"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="SIT.Manager.Avalonia.Views.MainWindow"
+        Icon="/Assets/Stay-In-Tarkov-512.png"
+        Title="SIT Manager"
+		MinWidth="770"
+		MinHeight="404"
+		MaxWidth="1500"
+		MaxHeight="800"
+		Width="800"
+		Height="475"
+		WindowStartupLocation="CenterScreen"
+		TransparencyLevelHint="AcrylicBlur"
+		Background="Transparent"
+		ExtendClientAreaToDecorationsHint="True"
+		Closed="Window_Closed">
+	
+	<!--Create a row for the title bar and reserve the rest for the content-->
+	<Grid RowDefinitions="Auto,*">
+		<!--Title bar elements-->
+		<Grid Name="CustomTitleBarGrid" 
+			  Height="30"
+			  ColumnDefinitions="Auto,*" 
+			  IsHitTestVisible="False" 
+			  Background="Black">
+			<Image Grid.Column="0" VerticalAlignment="Center" Source="/Assets/Stay-In-Tarkov-512.ico" Width="18" Margin="5,0,10,0"/>
+			<TextBlock Grid.Column="1" VerticalAlignment="Center" FontFamily="{StaticResource BenderFont}">SIT Manager</TextBlock>
+		</Grid>
+
+		<!--Main content view-->
+		<views:MainView Grid.Row="1"/>
+	</Grid>
+</Window>
