@@ -14,10 +14,14 @@ using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.Services
 {
-    public class FileService(IActionNotificationService actionNotificationService, IManagerConfigService configService, ILogger<FileService> logger) : IFileService
+    public class FileService(IActionNotificationService actionNotificationService, 
+                             IManagerConfigService configService,
+                             HttpClient httpClient,
+                             ILogger<FileService> logger) : IFileService
     {
         private readonly IActionNotificationService _actionNotificationService = actionNotificationService;
         private readonly IManagerConfigService _configService = configService;
+        private readonly HttpClient _httpClient = httpClient;
         private readonly ILogger<FileService> _logger = logger;
 
         private static async Task OpenAtLocation(string path) {
@@ -97,15 +101,7 @@ namespace SIT.Manager.Avalonia.Services
 
                 try {
                     using (var file = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None)) {
-                        using (HttpClient httpClient = new() {
-                            Timeout = TimeSpan.FromSeconds(15),
-                            DefaultRequestHeaders = {
-                            { "X-GitHub-Api-Version", "2022-11-28" },
-                            { "User-Agent", "request" }
-                        }
-                        }) {
-                            await httpClient.DownloadDataAsync(fileUrl, file, progress);
-                        }
+                        await _httpClient.DownloadDataAsync(fileUrl, file, progress);
                     }
                     result = true;
                 }

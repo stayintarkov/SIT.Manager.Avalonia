@@ -67,7 +67,12 @@ public sealed partial class App : Application
             SslProtocols = System.Security.Authentication.SslProtocols.Tls12,
             ServerCertificateCustomValidationCallback = delegate { return true; }
         });
-        services.AddSingleton(provider => new HttpClient(provider.GetService<HttpClientHandler>() ?? throw new ArgumentNullException()));
+        services.AddSingleton(provider => new HttpClient(provider.GetService<HttpClientHandler>() ?? throw new ArgumentNullException()) {
+            DefaultRequestHeaders = {
+                { "X-GitHub-Api-Version", "2022-11-28" },
+                { "User-Agent", "request" }
+            }
+        }); 
         services.AddSingleton<IZlibService, ZlibService>();
 
         // Viewmodels
