@@ -15,7 +15,6 @@ namespace SIT.Manager.Avalonia.Views.Dialogs
             dc = new SelectEditionDialogViewModel(editions);
             this.DataContext = dc;
             InitializeComponent();
-            this.ApplyTemplate();
         }
 
         public new Task<TarkovEdition> ShowAsync() {

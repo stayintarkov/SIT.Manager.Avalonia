@@ -9,7 +9,9 @@ using SIT.Manager.Avalonia.Services;
 using SIT.Manager.Avalonia.Views;
 using SIT.Manager.Avalonia.Views.Dialogs;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.ViewModels
@@ -60,13 +62,16 @@ namespace SIT.Manager.Avalonia.ViewModels
         }
 
         private async Task InstallSIT() {
-            SelectSitVersionDialog selectWindow = new();
-            ContentDialogResult result = await selectWindow.ShowAsync();
-            if (result == ContentDialogResult.Primary) {
-                GithubRelease? selectedVersion = selectWindow.GetSelectedGithubRelease();
-                if (selectedVersion != null) {
-                    await _installerService.InstallSIT(selectedVersion);
-                }
+            List<GithubRelease> sitReleases = await _installerService.GetSITReleases();
+            if (!sitReleases.Any()) {
+                _barNotificationService.ShowWarning("Error", "Unable to fetch SIT releases");
+                return;
+            }
+
+            SelectVersionDialog selectWindow = new(sitReleases);
+            GithubRelease? result = await selectWindow.ShowAsync();
+            if (result != null) {
+                await _installerService.InstallSIT(result);
             }
         }
 
@@ -132,13 +137,16 @@ namespace SIT.Manager.Avalonia.ViewModels
         }
 
         private async Task InstallServer() {
-            SelectServerVersionDialog selectWindow = new();
-            ContentDialogResult result = await selectWindow.ShowAsync();
-            if (result == ContentDialogResult.Primary) {
-                GithubRelease? selectedVersion = selectWindow.GetSelectedGithubRelease();
-                if (selectedVersion != null) {
-                    await _installerService.InstallServer(selectedVersion);
-                }
+            List<GithubRelease> sitReleases = await _installerService.GetServerReleases();
+            if (!sitReleases.Any()) {
+                _barNotificationService.ShowWarning("Error", "Unable to fetch Server releases");
+                return;
+            }
+
+            SelectVersionDialog selectWindow = new(sitReleases);
+            GithubRelease? result = await selectWindow.ShowAsync();
+            if (result != null) {
+                await _installerService.InstallServer(result);
             }
         }
 

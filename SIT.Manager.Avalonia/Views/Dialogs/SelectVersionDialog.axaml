@@ -12,19 +12,15 @@
 				  IsPrimaryButtonEnabled="True"
 				  PrimaryButtonText="Install"
 				  CloseButtonText="Cancel"
-				  x:Class="SIT.Manager.Avalonia.Views.Dialogs.SelectServerVersionDialog"
-				  x:DataType="vm:SelectServerVersionDialogViewModel">
+				  x:Class="SIT.Manager.Avalonia.Views.Dialogs.SelectVersionDialog"				  
+				  x:DataType="vm:SelectVersionDialogViewModel">
 	<StackPanel>
-		<TextBlock Text="Select the Server version to install:" Margin="5"/>
-		
-		<TextBlock IsVisible="{Binding !FetchedReleases}"
-				   Text="Loading data..."/>
-		<ComboBox Width="500" 
-				  Name="VersionBox" 
-				  VerticalAlignment="Center" 
-				  HorizontalAlignment="Center" 
-				  IsVisible="{Binding FetchedReleases}"
-				  SelectedItem="{Binding SelectedRelease}"
+		<TextBlock Text="Select the version to install:" Margin="5"/>
+		<ComboBox Width="500"
+				  Name="VersionBox"
+				  VerticalAlignment="Center"
+				  HorizontalAlignment="Center"
+				  SelectedItem="{Binding SelectedVersion}"
 				  ItemsSource="{Binding GithubReleases}">
 			<ComboBox.ItemTemplate>
 				<DataTemplate>
