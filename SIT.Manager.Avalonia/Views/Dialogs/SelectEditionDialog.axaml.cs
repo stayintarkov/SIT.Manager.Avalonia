@@ -1,4 +1,3 @@
-using Avalonia.Styling;
 using FluentAvalonia.UI.Controls;
 using SIT.Manager.Avalonia.Models;
 using SIT.Manager.Avalonia.ViewModels.Dialogs;
@@ -7,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.Views.Dialogs
 {
-    public partial class SelectEditionDialog : ContentDialog, IStyleable
+    public partial class SelectEditionDialog : ContentDialog
     {
-        Type IStyleable.StyleKey => typeof(ContentDialog);
         private readonly SelectEditionDialogViewModel dc;
+
+        protected override Type StyleKeyOverride => typeof(ContentDialog);
+
         public SelectEditionDialog(TarkovEdition[] editions) {
             dc = new SelectEditionDialogViewModel(editions);
             this.DataContext = dc;
