@@ -12,7 +12,7 @@
 				  IsPrimaryButtonEnabled="True"
 				  PrimaryButtonText="Install"
 				  CloseButtonText="Cancel"
-				  x:Class="SIT.Manager.Avalonia.Controls.SelectServerVersionDialog"
+				  x:Class="SIT.Manager.Avalonia.Views.Dialogs.SelectServerVersionDialog"
 				  x:DataType="vm:SelectServerVersionDialogViewModel">
 	<StackPanel>
 		<TextBlock Text="Select the Server version to install:" Margin="5"/>

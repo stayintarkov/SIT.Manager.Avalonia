@@ -6,7 +6,7 @@ using SIT.Manager.Avalonia.ViewModels.Dialogs;
 using System;
 using System.Net.Http;
 
-namespace SIT.Manager.Avalonia.Controls
+namespace SIT.Manager.Avalonia.Views.Dialogs
 {
     public partial class SelectServerVersionDialog : ContentDialog, IStyleable
     {
