@@ -21,27 +21,6 @@ namespace SIT.Manager.Avalonia.Services
         private readonly ILogger<FileService> _logger = logger;
 
         private static async Task OpenAtLocation(string path) {
-            // On Linux try using dbus first, if that fails then we use the default fallback method
-            if (OperatingSystem.IsLinux()) {
-                using Process dbusShowItemsProcess = new() {
-                    StartInfo = new ProcessStartInfo {
-                        FileName = "dbus-send",
-                        Arguments = $"--print-reply --dest=org.freedesktop.FileManager1 /org/freedesktop/FileManager1 org.freedesktop.FileManager1.ShowItems array:string:\"file://{path}\" string:\"\"",
-                        UseShellExecute = true
-                    }
-                };
-                dbusShowItemsProcess.Start();
-                await dbusShowItemsProcess.WaitForExitAsync();
-
-                if (dbusShowItemsProcess.ExitCode == 0) {
-                    // The dbus invocation can fail for a variety of reasons:
-                    // - dbus is not available
-                    // - no programs implement the service,
-                    // - ...
-                    return;
-                }
-            }
-
             using (Process opener = new()) {
                 if (OperatingSystem.IsWindows()) {
                     opener.StartInfo.FileName = "explorer.exe";
