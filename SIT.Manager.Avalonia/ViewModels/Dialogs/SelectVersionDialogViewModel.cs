@@ -2,6 +2,7 @@
 using SIT.Manager.Avalonia.Models;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace SIT.Manager.Avalonia.ViewModels.Dialogs
 {
@@ -15,6 +16,9 @@ namespace SIT.Manager.Avalonia.ViewModels.Dialogs
 
         public SelectVersionDialogViewModel(List<GithubRelease> releases) {
             GithubReleases = new ObservableCollection<GithubRelease>(releases);
+            if (GithubReleases.Any()) {
+                SelectedVersion = GithubReleases[0];
+            }
         }
     }
 }
