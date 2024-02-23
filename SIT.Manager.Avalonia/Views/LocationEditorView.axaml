@@ -1,0 +1,296 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
+             xmlns:vm="clr-namespace:SIT.Manager.Avalonia.ViewModels"
+             xmlns:models="clr-namespace:SIT.Manager.Avalonia.Models"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 Background="{DynamicResource ApplicationPageBackgroundThemeBrush}"
+             x:Class="SIT.Manager.Avalonia.Views.LocationEditorView"
+			 x:DataType="vm:LocationEditorViewModel">
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="3*"/>
+		</Grid.RowDefinitions>
+
+		<ui:CommandBar DefaultLabelPosition="Right" 
+					   Grid.Row="0" 
+					   Grid.ColumnSpan="3" 
+					   HorizontalAlignment="Stretch" 
+					   IsSticky="True"
+					   IsDynamicOverflowEnabled="False">
+			<StackPanel Orientation="Horizontal">
+				<ui:CommandBarButton Name="LoadButton"
+									 IconSource="Upload"
+									 Label="Load"
+									 Command="{Binding LoadCommand}"/>
+				<ui:CommandBarButton Name="SaveButton"
+									 IconSource="Download"
+									 Label="Save"
+									 Command="{Binding SaveCommand}"/>
+			</StackPanel>
+		</ui:CommandBar>
+
+		<StackPanel Grid.Row="1"
+					Margin="5">
+			<TextBlock Text="Location"
+					   FontFamily="{StaticResource BenderFont}"
+					   Margin="0,5"/>
+			<TextBox Name="LocationTextBox"
+					 Watermark="Click 'Load'"
+					 UseFloatingWatermark="False"
+					 Width="200"
+					 Text="{Binding LoadedLocation}"
+					 HorizontalAlignment="Left"/>
+		</StackPanel>
+
+		<ScrollViewer Grid.Row="2">
+			<StackPanel Orientation="Horizontal">
+				<Expander Header="General Settings"
+						  VerticalAlignment="Top">
+					<StackPanel Margin="5"
+								HorizontalAlignment="Left"
+								DataContext="{Binding Location}">
+						<StackPanel.Styles>
+							<Style Selector="ui|NumberBox">
+								<Setter Property="Margin" Value="0,5"/>
+								<Setter Property="Width" Value="160"/>
+								<Setter Property="Maximum" Value="100"/>
+								<Setter Property="Minimum" Value="0"/>
+								<Setter Property="SpinButtonPlacementMode" Value="Compact"/>
+								<Setter Property="ValidationMode" Value="InvalidInputOverwritten"/>
+							</Style>
+						</StackPanel.Styles>
+
+						<ui:NumberBox Header="BotMax"
+									  HeaderTemplate="{StaticResource BoxHeaderTemplate}"
+									  Value="{Binding BotMax, Mode=TwoWay}"
+									  ToolTip.Tip="Total max bots on the map allowed"/>
+						<ui:NumberBox Header="BotMaxPlayer"
+									  Value="{Binding BotMaxPlayer, Mode=TwoWay}"
+									  HeaderTemplate="{StaticResource BoxHeaderTemplate}"
+									  ToolTip.Tip="Total max bots that is PMC"/>
+						<ui:NumberBox Header="BotNormal"
+									  HeaderTemplate="{StaticResource BoxHeaderTemplate}"
+									  Value="{Binding BotNormal, Mode=TwoWay}"/>
+						<ui:NumberBox Header="BotSpawnTimeOffMax"
+									  HeaderTemplate="{StaticResource BoxHeaderTemplate}"
+									  Value="{Binding BotSpawnTimeOffMax, Mode=TwoWay}"
+									  ToolTip.Tip="Maximum spawn time in seconds when running offline"/>
+						<ui:NumberBox Header="BotSpawnTimeOffMin"
+									  HeaderTemplate="{StaticResource BoxHeaderTemplate}"
+									  Value="{Binding BotSpawnTimeOffMin, Mode=TwoWay}"
+									  ToolTip.Tip="Minimum spawntime in seconds when running offline"/>
+						<ui:NumberBox Header="BotSpawnTimeOnMax"
+									  HeaderTemplate="{StaticResource BoxHeaderTemplate}"
+									  Value="{Binding BotSpawnTimeOnMax, Mode=TwoWay}"
+									  ToolTip.Tip="Maximum spawn time in seconds when running online"/>
+						<ui:NumberBox Header="BotSpawnTimeOnMin"
+									  HeaderTemplate="{StaticResource BoxHeaderTemplate}"
+									  Value="{Binding BotSpawnTimeOnMin, Mode=TwoWay}"
+									  ToolTip.Tip="Minimum spawntime in seconds when running online"/>
+						<ui:NumberBox Header="BotStart"
+									  HeaderTemplate="{StaticResource BoxHeaderTemplate}"
+									  Value="{Binding BotStart, Mode=TwoWay}"/>
+						<ui:NumberBox Header="BotStop"
+									  HeaderTemplate="{StaticResource BoxHeaderTemplate}"
+									  Value="{Binding BotStop, Mode=TwoWay}"/>
+						<ui:NumberBox Header="BotSpawnCountStep"
+									  HeaderTemplate="{StaticResource BoxHeaderTemplate}"
+									  Value="{Binding BotSpawnCountStep, Mode=TwoWay}"/>
+						<ui:NumberBox Header="BotSpawnPeriodCheck"
+									  HeaderTemplate="{StaticResource BoxHeaderTemplate}"
+									  Value="{Binding BotSpawnPeriodCheck, Mode=TwoWay}"/>
+					</StackPanel>
+				</Expander>
+
+				<Expander Header="Waves Settings"
+						  VerticalAlignment="Top">
+					<StackPanel>
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+							<Button Name="AddWaveButton" Margin="10,0,10,5" Content="Add Wave" VerticalAlignment="Bottom" Command="{Binding AddWaveCommand}" IsEnabled="False"/>
+							<Button Name="RemoveWaveButton" Margin="10,0,10,5" Content="Remove Wave" VerticalAlignment="Bottom" Command="{Binding RemoveWaveCommand}" IsEnabled="False"/>
+						</StackPanel>
+
+						<StackPanel Orientation="Horizontal">
+							<StackPanel>
+								<TextBlock Text="Spawn Waves"
+										   FontFamily="{StaticResource BenderFont}"
+										   Margin="5"/>
+								<ListBox Name="WaveList"
+										 Margin="5,0,5,5"
+										 Width="150"
+										 ItemsSource="{Binding Location.waves, Mode=TwoWay}"
+										 SelectedItem="{Binding SelectedWave}"
+										 VerticalAlignment="Top">
+									<ListBox.ItemTemplate>
+										<DataTemplate>
+											<TextBlock Text="{Binding Name}"/>
+										</DataTemplate>
+									</ListBox.ItemTemplate>
+								</ListBox>
+							</StackPanel>
+
+							<StackPanel>
+								<StackPanel.Styles>
+									<Style Selector="ui|NumberBox">
+										<Setter Property="Margin" Value="0,5"/>
+										<Setter Property="Width" Value="160"/>
+										<Setter Property="Maximum" Value="100"/>
+										<Setter Property="Minimum" Value="0"/>
+										<Setter Property="HorizontalAlignment" Value="Left"/>
+										<Setter Property="SpinButtonPlacementMode" Value="Compact"/>
+										<Setter Property="ValidationMode" Value="InvalidInputOverwritten"/>
+									</Style>
+								</StackPanel.Styles>
+
+								<TextBlock Text="BotPreset"
+										   FontFamily="{StaticResource BenderFont}"
+										   Margin="5"/>
+								<ComboBox Margin="0,0,0,5"
+										  Name="BotPresetCombo"
+										  Width="160"
+										  SelectedItem="{Binding SelectedWave.BotPreset}"
+										  ItemsSource="{Binding BotDifficulty}"
+										  ToolTip.Tip="Bot Difficulty"/>
+
+								<TextBlock Text="BotSide"
+										   FontFamily="{StaticResource BenderFont}"
+										   Margin="5"/>
+								<ComboBox Margin="0,0,0,5"
+										  Width="160"
+										  SelectedItem="{Binding SelectedWave.BotSide}"
+										  ItemsSource="{Binding BotSide}"
+										  ToolTip.Tip="The side of the Bot"/>
+
+								<TextBlock Text="SpawnPoints"
+										   FontFamily="{StaticResource BenderFont}"
+										   Margin="5"/>
+								<ComboBox Margin="0,0,0,5"
+										  Width="160"
+										  SelectedItem="{Binding SelectedWave.SpawnPoints}"
+										  IsEnabled="False">
+									<ComboBoxItem Content="BotZone"/>
+								</ComboBox>
+
+								<TextBlock Text="WildSpawnType"
+										   FontFamily="{StaticResource BenderFont}"
+										   Margin="5"/>
+								<ComboBox Margin="0,0,0,5"
+										  Width="160"
+										  SelectedValue="{Binding SelectedWave.WildSpawnType}"
+										  ItemsSource="{Binding WildSpawnType}"/>
+
+								<CheckBox Margin="0,5"
+										  Content="isPlayers"
+										  IsChecked="{Binding SelectedWave.isPlayers}"
+										  ToolTip.Tip="Needs to be checked for waves to work on >3.8"/>
+
+								<ui:NumberBox Header="number"
+											  HeaderTemplate="{StaticResource BoxHeaderTemplate}"
+											  Value="{Binding SelectedWave.number, Mode=TwoWay}"
+											  ToolTip.Tip="The number of the wave (needs to be >0)"/>
+								<ui:NumberBox Header="slots_max"
+											  HeaderTemplate="{StaticResource BoxHeaderTemplate}"
+											  Value="{Binding SelectedWave.slots_max, Mode=TwoWay}"
+											  ToolTip.Tip="Max slots to spawn"/>
+								<ui:NumberBox Header="slots_min"
+											  HeaderTemplate="{StaticResource BoxHeaderTemplate}"
+											  Value="{Binding SelectedWave.slots_min, Mode=TwoWay}"
+											  ToolTip.Tip="Min slots to spawn"/>
+								<ui:NumberBox Header="time_max"
+											  HeaderTemplate="{StaticResource BoxHeaderTemplate}"
+											  Value="{Binding SelectedWave.time_max, Mode=TwoWay}"
+											  ToolTip.Tip="Max time to spawn bot wave"/>
+								<ui:NumberBox Header="time_min"
+											  HeaderTemplate="{StaticResource BoxHeaderTemplate}"
+											  Value="{Binding SelectedWave.time_min, Mode=TwoWay}"
+											  ToolTip.Tip="Min time to spawn bot wave"/>
+							</StackPanel>
+						</StackPanel>
+					</StackPanel>
+				</Expander>
+
+				<Expander Header="Boss Settings" VerticalAlignment="Top">
+					<StackPanel>
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+							<Button Name="AddBossButton" Margin="10,0,10,5" Content="Add Boss" VerticalAlignment="Bottom" Command="{Binding AddBossCommand}" IsEnabled="False"/>
+							<Button Name="RemoveBossButton" Margin="10,0,10,5" Content="Remove Boss" VerticalAlignment="Bottom" Command="{Binding AddBossCommand}" IsEnabled="False"/>
+						</StackPanel>
+
+						<StackPanel Orientation="Horizontal">
+							<StackPanel>
+								<TextBlock Text="Boss List"
+										   FontFamily="{StaticResource BenderFont}"
+										   Margin="5"/>
+								<ListBox Name="BossList"
+										 Margin="5,0,5,5"
+										 Width="150"
+										 ItemsSource="{Binding Location.BossLocationSpawn, Mode=TwoWay}"
+										 VerticalAlignment="Top">
+									<ListBox.ItemTemplate>
+										<DataTemplate>
+											<TextBlock Text="{Binding Name}"/>
+										</DataTemplate>
+									</ListBox.ItemTemplate>
+								</ListBox>
+							</StackPanel>
+
+							<StackPanel>
+								<ui:NumberBox Margin="0,5"
+											  HorizontalAlignment="Left" 
+											  Header="BossChance" 
+											  Width="160" 
+											  Maximum="100" 
+											  Minimum="0" 
+											  ValidationMode="InvalidInputOverwritten" 
+											  SpinButtonPlacementMode="Compact" 
+											  HeaderTemplate="{StaticResource BoxHeaderTemplate}"
+											  Value="{Binding SelectedBossLocationSpawn.BossChance, Mode=TwoWay}"/>
+
+								<TextBlock Text="BossEscortAmount"
+										   FontFamily="{StaticResource BenderFont}"
+										   Margin="5"/>
+								<TextBox Margin="0,0,0,5" 
+										 Width="160"
+										 Text="{Binding SelectedBossLocationSpawn.BossEscortAmount, Mode=TwoWay}"/>
+
+								<TextBlock Text="BossEscortType"
+										   FontFamily="{StaticResource BenderFont}"
+										   Margin="5"/>
+								<ComboBox Margin="0,0,0,5"
+										  Width="160" 
+										  ItemsSource="{Binding BossEscortType}"
+										  SelectedValue="{Binding SelectedBossLocationSpawn.BossEscortType, Mode=TwoWay}"/>
+
+								<TextBlock Text="BossName"
+										   FontFamily="{StaticResource BenderFont}"
+										   Margin="5"/>
+								<ComboBox Margin="0,0,0,5"
+										  Width="160"
+										  ItemsSource="{Binding BossName}"
+										  SelectedValue="{Binding SelectedBossLocationSpawn.BossName, Mode=TwoWay}"/>
+
+								<CheckBox Margin="0,5" 
+										  Content="ForceSpawn"
+										  IsChecked="{Binding SelectedBossLocationSpawn.ForceSpawn, Mode=TwoWay}"/>
+
+								<CheckBox Margin="0,5" 
+										  Content="IgnoreMaxBots" 
+										  IsChecked="{Binding SelectedBossLocationSpawn.IgnoreMaxBots, Mode=TwoWay}"/>
+								
+								<CheckBox Margin="0,5" 
+										  Content="RandomTimeSpawn"
+										  IsChecked="{Binding SelectedBossLocationSpawn.RandomTimeSpawn, Mode=TwoWay}"/>
+							</StackPanel>
+						</StackPanel>
+					</StackPanel>
+				</Expander>
+			</StackPanel>
+		</ScrollViewer>
+	</Grid>
+</UserControl>

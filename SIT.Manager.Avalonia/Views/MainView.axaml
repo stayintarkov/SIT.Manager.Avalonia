@@ -1,0 +1,100 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:SIT.Manager.Avalonia.ViewModels"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SIT.Manager.Avalonia.Views.MainView"
+             x:DataType="vm:MainViewModel"
+			 Background="Black">	
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+
+		<ui:TeachingTip Name="InstallPathTip"
+						Title="Setup"
+						Subtitle="Client install path isn't configured yet. Go to settings to configure the launcher."
+						PreferredPlacement="Bottom"
+						IsVisible="False">
+			<ui:TeachingTip.IconSource>
+				<ui:SymbolIconSource Symbol="Setting"/>
+			</ui:TeachingTip.IconSource>
+		</ui:TeachingTip>
+
+		<StackPanel Name="InfoBarStackPanel" Grid.Row="0" x:FieldModifier="Public" IsVisible="True">
+			<ui:InfoBar Name="UpdateInfoBar" IsOpen="False">
+				<ui:InfoBar.ActionButton>
+					<Button Name="UpdateButton" Content="Update" Command="{Binding UpdateButtonCommand}" HorizontalAlignment="Right"/>
+				</ui:InfoBar.ActionButton>
+			</ui:InfoBar>
+
+			<ItemsControl ItemsSource="{Binding BarNotifications, Mode=OneWay}">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<ui:InfoBar HorizontalAlignment="Stretch"
+									Title="{Binding Title}"
+									Message="{Binding Message}"
+									Severity="{Binding Severity}"
+									IsOpen="True"/>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</StackPanel>
+
+		<ui:NavigationView PaneDisplayMode="Left"
+						   IsBackButtonVisible="False"
+						   IsPaneToggleButtonVisible="False"
+						   OpenPaneLength="150"
+						   Grid.Row="1"
+						   Name="NavView"
+						   ItemInvoked="NavView_ItemInvoked">
+			<ui:NavigationView.Styles>
+				<Style Selector="ui|NavigationViewItem">
+					<Setter Property="FontFamily" Value="{StaticResource BenderFont}"/>
+				</Style>
+			</ui:NavigationView.Styles>
+			
+			<!--TODO: Possibly change these to viewmodel bindings-->
+			<ui:NavigationView.MenuItems>
+				<ui:NavigationViewItem IconSource="Play" Content="Play" Tag="Play" ToolTip.Tip="Connect and play."/>
+				<ui:NavigationViewItem IconSource="AllApps" Content="Tools" Tag="Tools" ToolTip.Tip="Tools to manage SIT and Tarkov."/>
+				<ui:NavigationViewItem IconSource="MapDrive" Content="Server" Tag="Server" ToolTip.Tip="Server management."/>
+				<ui:NavigationViewItem IconSource="Library" Content="Mods" Tag="Mods" ToolTip.Tip="Mod management."/>
+			</ui:NavigationView.MenuItems>
+
+			<Grid RowDefinitions="*,Auto">
+				<ui:Frame Name="ContentFrame" Margin="2" CornerRadius="8">
+					<ui:Frame.Background>
+						<ImageBrush Source="/Assets/bg3.png" Stretch="Fill"/>
+					</ui:Frame.Background>
+				</ui:Frame>
+				<StackPanel Name="ActionPanel" 
+							Orientation="Horizontal" 
+							HorizontalAlignment="Center" 
+							DataContext="{Binding ActionPanelNotification}"
+							IsVisible="{Binding ShowActionPanel}"
+							Grid.Row="1" 
+							MinHeight="24">
+					<TextBlock Name="ActionPanelText" 
+							   Text="{Binding ActionText}" 
+							   Foreground="White" 
+							   VerticalAlignment="Center" 
+							   FontSize="12"/>
+					<ProgressBar Name="ActionPanelBar" 
+								 Margin="15 0 0 0" 
+								 VerticalAlignment="Center"
+								 Width="150"
+								 MinWidth="100" 
+								 MaxWidth="150" 
+								 Minimum="0" 
+								 Maximum="100" 
+								 Value="{Binding ProgressPercentage}"/>
+				</StackPanel>
+			</Grid>
+		</ui:NavigationView> 
+	</Grid>
+</UserControl>
