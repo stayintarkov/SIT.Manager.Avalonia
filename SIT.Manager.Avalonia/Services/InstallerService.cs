@@ -267,6 +267,7 @@ namespace SIT.Manager.Avalonia.Services
             foreach (var provider in providerLinks.Keys) {
                 mirrorComboBox.Items.Add(new ComboBoxItem { Content = provider });
             }
+            mirrorComboBox.SelectedIndex = 0;
             contentPanel.Children.Add(mirrorComboBox);
 
             ContentDialog selectionDialog = new() {
