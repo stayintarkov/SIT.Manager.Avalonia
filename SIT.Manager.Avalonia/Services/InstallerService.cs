@@ -150,7 +150,7 @@ namespace SIT.Manager.Avalonia.Services
                 string patcherFrom = splitRelease[0].Trim();
                 string patcherTo = splitRelease[1].Trim();
 
-                if (patcherFrom == tarkovVersionToDowngrade) {
+                if (patcherFrom == tarkovVersionToDowngrade && patcherTo == sitBuild) {
                     patcherList.Add(release);
                     tarkovVersionToDowngrade = patcherTo;
                 }
