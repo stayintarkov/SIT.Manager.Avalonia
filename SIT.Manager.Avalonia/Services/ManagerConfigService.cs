@@ -1,8 +1,8 @@
-﻿using SIT.Manager.Avalonia.Converters;
+﻿using Microsoft.Extensions.Logging;
+using SIT.Manager.Avalonia.Converters;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 
@@ -10,6 +10,8 @@ namespace SIT.Manager.Avalonia.Services
 {
     internal sealed class ManagerConfigService : IManagerConfigService
     {
+        private readonly ILogger<ManagerConfigService> _logger;
+
         private ManagerConfig _config = new();
         public ManagerConfig Config {
             get => _config;
@@ -18,7 +20,9 @@ namespace SIT.Manager.Avalonia.Services
 
         public event EventHandler<ManagerConfig>? ConfigChanged;
 
-        public ManagerConfigService() {
+        public ManagerConfigService(ILogger<ManagerConfigService> logger) {
+            _logger = logger;
+
             Load();
         }
 
@@ -37,7 +41,7 @@ namespace SIT.Manager.Avalonia.Services
                 }
             }
             catch (Exception ex) {
-                // TODO Loggy.LogToFile("ManagerConfig.Load: " + ex.Message);
+                _logger.LogError(ex, "Failed to load ManagerConfig");
             }
         }
 
@@ -45,19 +49,16 @@ namespace SIT.Manager.Avalonia.Services
         public void UpdateConfig(ManagerConfig config, bool ShouldSave = true, bool SaveAccount = false) {
             _config = config;
 
-            var options = new JsonSerializerOptions()
-            {
+            var options = new JsonSerializerOptions() {
                 Converters = {
                     new ColorJsonConverter()
                 },
                 WriteIndented = true
             };
 
-            if (ShouldSave)
-            {
+            if (ShouldSave) {
                 ManagerConfig newLauncherConfig = _config;
-                if (!SaveAccount)
-                {
+                if (!SaveAccount) {
                     newLauncherConfig.Username = string.Empty;
                     newLauncherConfig.Password = string.Empty;
                 }
