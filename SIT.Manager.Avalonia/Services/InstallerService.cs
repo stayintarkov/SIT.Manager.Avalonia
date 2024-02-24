@@ -306,7 +306,7 @@ namespace SIT.Manager.Avalonia.Services
                         Match match = ServerReleaseVersionRegex().Match(release.body);
                         if (match.Success) {
                             string releasePatch = match.Groups[1].Value;
-                            release.tag_name = release.name + " - Tarkov Version: " + releasePatch;
+                            release.tag_name = $"{release.name} - Tarkov Version: {releasePatch}";
                             release.body = releasePatch;
                             result.Add(release);
                         }
