@@ -13,16 +13,17 @@ using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.Services
 {
-    public class InstallerService(IBarNotificationService barNotificationService,
-                                  IManagerConfigService configService,
-                                  IFileService fileService,
-                                  HttpClient httpClient,
-                                  ILogger<InstallerService> logger,
-                                  IVersionService versionService) : IInstallerService
+    public partial class InstallerService(IBarNotificationService barNotificationService,
+                                          IManagerConfigService configService,
+                                          IFileService fileService,
+                                          HttpClient httpClient,
+                                          ILogger<InstallerService> logger,
+                                          IVersionService versionService) : IInstallerService
     {
         private readonly IBarNotificationService _barNotificationService = barNotificationService;
         private readonly IManagerConfigService _configService = configService;
@@ -30,6 +31,13 @@ namespace SIT.Manager.Avalonia.Services
         private readonly HttpClient _httpClient = httpClient;
         private readonly ILogger<InstallerService> _logger = logger;
         private readonly IVersionService _versionService = versionService;
+
+        [GeneratedRegex("This server version works with EFT version ([0]{1,}\\.[0-9]{1,2}\\.[0-9]{1,2})\\.[0-9]{1,2}\\.[0-9]{1,5}")]
+        private static partial Regex ServerReleaseVersionRegex();
+
+
+        [GeneratedRegex("This version works with version [0]{1,}\\.[0-9]{1,2}\\.[0-9]{1,2}\\.[0-9]{1,2}\\.[0-9]{1,5}")]
+        private static partial Regex SITReleaseVersionRegex();
 
         private static readonly Dictionary<int, string> _patcherResultMessages = new() {
             { 0, "Patcher was closed." },
@@ -259,6 +267,7 @@ namespace SIT.Manager.Avalonia.Services
             foreach (var provider in providerLinks.Keys) {
                 mirrorComboBox.Items.Add(new ComboBoxItem { Content = provider });
             }
+            mirrorComboBox.SelectedIndex = 0;
             contentPanel.Children.Add(mirrorComboBox);
 
             ContentDialog selectionDialog = new() {
@@ -276,6 +285,76 @@ namespace SIT.Manager.Avalonia.Services
                 }
             }
             return string.Empty;
+        }
+
+        public async Task<List<GithubRelease>> GetServerReleases() {
+            List<GithubRelease> githubReleases = [];
+            try {
+                string releasesJsonString = await _httpClient.GetStringAsync(@"https://api.github.com/repos/stayintarkov/SIT.Aki-Server-Mod/releases");
+                githubReleases = JsonSerializer.Deserialize<List<GithubRelease>>(releasesJsonString) ?? [];
+            }
+            catch (Exception ex) {
+                githubReleases = [];
+                _logger.LogError(ex, "Failed to get server releases");
+            }
+
+            List<GithubRelease> result = [];
+            if (githubReleases.Any()) {
+                foreach (GithubRelease release in githubReleases) {
+                    var zipAsset = release.assets.Find(asset => asset.name.EndsWith(".zip"));
+                    if (zipAsset != null) {
+                        Match match = ServerReleaseVersionRegex().Match(release.body);
+                        if (match.Success) {
+                            string releasePatch = match.Groups[1].Value;
+                            release.tag_name = $"{release.name} - Tarkov Version: {releasePatch}";
+                            release.body = releasePatch;
+                            result.Add(release);
+                        }
+                        else {
+                            _logger.LogWarning($"FetchReleases: There was a server release without a version defined: {release.html_url}");
+                        }
+                    }
+                }
+            }
+            else {
+                _logger.LogWarning("Getting Server Releases: githubReleases was 0 for official branch");
+            }
+            return result;
+
+        }
+
+        public async Task<List<GithubRelease>> GetSITReleases() {
+            List<GithubRelease> githubReleases = [];
+            try {
+                string releasesJsonString = await _httpClient.GetStringAsync(@"https://api.github.com/repos/stayintarkov/StayInTarkov.Client/releases");
+                githubReleases = JsonSerializer.Deserialize<List<GithubRelease>>(releasesJsonString) ?? [];
+
+            }
+            catch (Exception ex) {
+                githubReleases = [];
+                _logger.LogError(ex, "Failed to get SIT releases");
+            }
+
+            List<GithubRelease> result = [];
+            if (githubReleases.Any()) {
+                foreach (GithubRelease release in githubReleases) {
+                    Match match = SITReleaseVersionRegex().Match(release.body);
+                    if (match.Success) {
+                        string releasePatch = match.Value.Replace("This version works with version ", "");
+                        release.tag_name = $"{release.name} - Tarkov Version: {releasePatch}";
+                        release.body = releasePatch;
+                        result.Add(release);
+                    }
+                    else {
+                        _logger.LogWarning($"FetchReleases: There was a SIT release without a version defined: {release.html_url}");
+                    }
+                }
+            }
+            else {
+                _logger.LogWarning("Getting SIT releases: githubReleases was 0 for official branch");
+            }
+
+            return result;
         }
 
         public async Task InstallServer(GithubRelease selectedVersion) {
