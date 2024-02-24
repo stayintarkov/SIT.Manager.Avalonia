@@ -112,7 +112,7 @@ namespace SIT.Manager.Avalonia.Services
                     File.Delete(filePath);
                 }
 
-                var progress = new Progress<float>((prog) => {
+                var progress = new Progress<double>((prog) => {
                     _actionNotificationService.UpdateActionNotification(new ActionNotification($"Downloading '{fileName}'", Math.Floor(prog), showProgress));
                 });
 
@@ -125,7 +125,7 @@ namespace SIT.Manager.Avalonia.Services
                             { "User-Agent", "request" }
                         }
                         }) {
-                            await httpClient.DownloadDataAsync(fileUrl, file, progress);
+                            await httpClient.DownloadAsync(file, fileUrl, progress);
                         }
                     }
                     result = true;

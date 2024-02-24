@@ -11,43 +11,40 @@ namespace SIT.Manager.Avalonia.Extentions
     /// </summary>
     internal static class HttpClientExtentions
     {
-        public static async Task DownloadDataAsync(this HttpClient client, string requestUrl, Stream destination, IProgress<float> progress = null, CancellationToken cancellationToken = default(CancellationToken)) {
-            using (var response = await client.GetAsync(requestUrl, HttpCompletionOption.ResponseHeadersRead)) {
-                var contentLength = response.Content.Headers.ContentLength;
-                using (var download = await response.Content.ReadAsStreamAsync()) {
-                    // no progress... no contentLength... very sad
-                    if (progress is null || !contentLength.HasValue) {
-                        await download.CopyToAsync(destination);
-                        return;
-                    }
-                    // Such progress and contentLength much reporting Wow!
-                    var progressWrapper = new Progress<long>(totalBytes => progress.Report(GetProgressPercentage(totalBytes, contentLength.Value)));
-                    await download.CopyToAsync(destination, 81920, progressWrapper, cancellationToken);
-                }
+        public static async Task DownloadAsync(this HttpClient client, Stream destination, string url, IProgress<double> progressReporter, CancellationToken cancellationToken = default)
+        {
+            using HttpResponseMessage response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            response.EnsureSuccessStatusCode();
+            using Stream contentStream = await response.Content.ReadAsStreamAsync(cancellationToken);
+            long? contentLength = response.Content.Headers.ContentLength;
+            if (!contentLength.HasValue)
+            {
+                await contentStream.CopyToAsync(destination, cancellationToken);
             }
-
-            float GetProgressPercentage(float totalBytes, float currentBytes) => (totalBytes / currentBytes) * 100f;
+            else
+            {
+                Progress<long> reportWrapper = new(br => progressReporter.Report((double)br / contentLength.Value));
+                await contentStream.CopyToAsync(destination, 65535, reportWrapper, cancellationToken);
+            }
         }
 
-        static async Task CopyToAsync(this Stream source, Stream destination, int bufferSize, IProgress<long> progress = null, CancellationToken cancellationToken = default(CancellationToken)) {
-            if (bufferSize < 0)
-                throw new ArgumentOutOfRangeException(nameof(bufferSize));
-            if (source is null)
-                throw new ArgumentNullException(nameof(source));
+        public static async Task CopyToAsync(this Stream source, Stream destination, ushort bufferSize, IProgress<long> progressReporter, CancellationToken cancellationToken = default)
+        {
+            ArgumentNullException.ThrowIfNull(source, nameof(source));
+            ArgumentNullException.ThrowIfNull(destination, nameof(destination));
             if (!source.CanRead)
                 throw new InvalidOperationException($"'{nameof(source)}' is not readable.");
-            if (destination == null)
-                throw new ArgumentNullException(nameof(destination));
             if (!destination.CanWrite)
                 throw new InvalidOperationException($"'{nameof(destination)}' is not writable.");
 
-            var buffer = new byte[bufferSize];
-            long totalBytesRead = 0;
+            byte[] dataBuffer = new byte[bufferSize];
+            long totalReadBytes = 0;
             int bytesRead;
-            while ((bytesRead = await source.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false)) != 0) {
-                await destination.WriteAsync(buffer, 0, bytesRead, cancellationToken).ConfigureAwait(false);
-                totalBytesRead += bytesRead;
-                progress?.Report(totalBytesRead);
+            while ((bytesRead = await source.ReadAsync(dataBuffer, cancellationToken).ConfigureAwait(false)) > 0)
+            {
+                await destination.WriteAsync(dataBuffer.AsMemory(0, bytesRead), cancellationToken).ConfigureAwait(false);
+                totalReadBytes += bytesRead;
+                progressReporter.Report(totalReadBytes);
             }
         }
     }
