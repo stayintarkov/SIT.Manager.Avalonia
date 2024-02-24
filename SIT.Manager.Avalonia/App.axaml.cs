@@ -72,7 +72,7 @@ public sealed partial class App : Application
                 { "X-GitHub-Api-Version", "2022-11-28" },
                 { "User-Agent", "request" }
             }
-        });
+        }); 
         services.AddSingleton<IZlibService, ZlibService>();
 
         // Viewmodels

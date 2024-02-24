@@ -8,40 +8,24 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.Services
 {
-    public class FileService(IActionNotificationService actionNotificationService, IManagerConfigService configService, ILogger<FileService> logger) : IFileService
+    public class FileService(IActionNotificationService actionNotificationService,
+                             IManagerConfigService configService,
+                             HttpClient httpClient,
+                             ILogger<FileService> logger) : IFileService
     {
         private readonly IActionNotificationService _actionNotificationService = actionNotificationService;
         private readonly IManagerConfigService _configService = configService;
+        private readonly HttpClient _httpClient = httpClient;
         private readonly ILogger<FileService> _logger = logger;
 
         private static async Task OpenAtLocation(string path) {
-            // On Linux try using dbus first, if that fails then we use the default fallback method
-            if (OperatingSystem.IsLinux()) {
-                using Process dbusShowItemsProcess = new() {
-                    StartInfo = new ProcessStartInfo {
-                        FileName = "dbus-send",
-                        Arguments = $"--print-reply --dest=org.freedesktop.FileManager1 /org/freedesktop/FileManager1 org.freedesktop.FileManager1.ShowItems array:string:\"file://{path}\" string:\"\"",
-                        UseShellExecute = true
-                    }
-                };
-                dbusShowItemsProcess.Start();
-                await dbusShowItemsProcess.WaitForExitAsync();
-
-                if (dbusShowItemsProcess.ExitCode == 0) {
-                    // The dbus invocation can fail for a variety of reasons:
-                    // - dbus is not available
-                    // - no programs implement the service,
-                    // - ...
-                    return;
-                }
-            }
-
             using (Process opener = new()) {
                 if (OperatingSystem.IsWindows()) {
                     opener.StartInfo.FileName = "explorer.exe";
@@ -118,15 +102,7 @@ namespace SIT.Manager.Avalonia.Services
 
                 try {
                     using (var file = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None)) {
-                        using (HttpClient httpClient = new() {
-                            Timeout = TimeSpan.FromSeconds(15),
-                            DefaultRequestHeaders = {
-                            { "X-GitHub-Api-Version", "2022-11-28" },
-                            { "User-Agent", "request" }
-                        }
-                        }) {
-                            await httpClient.DownloadDataAsync(fileUrl, file, progress);
-                        }
+                        await _httpClient.DownloadDataAsync(fileUrl, file, progress);
                     }
                     result = true;
                 }
@@ -147,39 +123,35 @@ namespace SIT.Manager.Avalonia.Services
             if (!destination.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal)) {
                 destination += Path.DirectorySeparatorChar;
             }
-            destination = Path.GetFullPath(destination);
+
+            DirectoryInfo destinationInfo = new DirectoryInfo(destination);
+            destinationInfo.Create();
 
             ActionNotification actionNotification = new(string.Empty, 0, true);
             try {
-                using (ZipArchive archive = await Task.Run(() => ZipFile.OpenRead(filePath))) {
-                    int totalFiles = archive.Entries.Count;
-                    int completed = 0;
+                using ZipArchive archive = await Task.Run(() => ZipFile.OpenRead(filePath));
+                int totalFiles = archive.Entries.Count;
+                int completed = 0;
 
-                    Progress<float> progress = new((prog) => {
-                        actionNotification.ProgressPercentage = Math.Floor(prog);
-                        _actionNotificationService.UpdateActionNotification(actionNotification);
-                    });
+                Progress<float> progress = new((prog) => {
+                    actionNotification.ProgressPercentage = Math.Floor(prog);
+                    _actionNotificationService.UpdateActionNotification(actionNotification);
+                });
 
-                    foreach (ZipArchiveEntry entry in archive.Entries) {
-                        // Gets the full path to ensure that relative segments are removed.
-                        string destinationPath = Path.GetFullPath(Path.Combine(destination, entry.FullName));
+                foreach (ZipArchiveEntry entry in archive.Entries) {
+                    bool isDirectory = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }.Any(x => entry.FullName.EndsWith(x));
 
-                        // Ordinal match is safest, case-sensitive volumes can be mounted within volumes that
-                        // are case-insensitive.
-                        if (destinationPath.StartsWith(destination, StringComparison.Ordinal)) {
-                            if (Path.EndsInDirectorySeparator(destinationPath)) {
-                                Directory.CreateDirectory(destinationPath);
-                            }
-                            else {
-                                // Extract it to the file
-                                await Task.Run(() => entry.ExtractToFile(destinationPath));
-                            }
-                        }
-                        completed++;
-
-                        actionNotification.ActionText = $"Extracting file {Path.GetFileName(destinationPath)} ({completed}/{totalFiles})";
-                        ((IProgress<float>) progress).Report((float) completed / totalFiles * 100);
+                    if (isDirectory) {
+                        DirectoryInfo entryDestination = destinationInfo.CreateSubdirectory(entry.FullName);
                     }
+                    else {
+                        DirectoryInfo? entryParentInfo = Directory.GetParent(Path.Combine(destinationInfo.FullName, entry.FullName));
+                        entryParentInfo?.Create();
+                        entry.ExtractToFile(Path.Combine(entryParentInfo?.FullName ?? destinationInfo.FullName, entry.Name));
+                    }
+
+                    actionNotification.ActionText = $"Extracting file {Path.GetFileName(entry.FullName)} ({++completed}/{totalFiles})";
+                    ((IProgress<float>) progress).Report((float) completed / totalFiles * 100);
                 }
             }
             catch (Exception ex) {
