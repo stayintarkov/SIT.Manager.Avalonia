@@ -8,13 +8,14 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.Services
 {
-    public class FileService(IActionNotificationService actionNotificationService, 
+    public class FileService(IActionNotificationService actionNotificationService,
                              IManagerConfigService configService,
                              HttpClient httpClient,
                              ILogger<FileService> logger) : IFileService
@@ -122,39 +123,35 @@ namespace SIT.Manager.Avalonia.Services
             if (!destination.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal)) {
                 destination += Path.DirectorySeparatorChar;
             }
-            destination = Path.GetFullPath(destination);
+
+            DirectoryInfo destinationInfo = new DirectoryInfo(destination);
+            destinationInfo.Create();
 
             ActionNotification actionNotification = new(string.Empty, 0, true);
             try {
-                using (ZipArchive archive = await Task.Run(() => ZipFile.OpenRead(filePath))) {
-                    int totalFiles = archive.Entries.Count;
-                    int completed = 0;
+                using ZipArchive archive = await Task.Run(() => ZipFile.OpenRead(filePath));
+                int totalFiles = archive.Entries.Count;
+                int completed = 0;
 
-                    Progress<float> progress = new((prog) => {
-                        actionNotification.ProgressPercentage = Math.Floor(prog);
-                        _actionNotificationService.UpdateActionNotification(actionNotification);
-                    });
+                Progress<float> progress = new((prog) => {
+                    actionNotification.ProgressPercentage = Math.Floor(prog);
+                    _actionNotificationService.UpdateActionNotification(actionNotification);
+                });
 
-                    foreach (ZipArchiveEntry entry in archive.Entries) {
-                        // Gets the full path to ensure that relative segments are removed.
-                        string destinationPath = Path.GetFullPath(Path.Combine(destination, entry.FullName));
+                foreach (ZipArchiveEntry entry in archive.Entries) {
+                    bool isDirectory = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }.Any(x => entry.FullName.EndsWith(x));
 
-                        // Ordinal match is safest, case-sensitive volumes can be mounted within volumes that
-                        // are case-insensitive.
-                        if (destinationPath.StartsWith(destination, StringComparison.Ordinal)) {
-                            if (Path.EndsInDirectorySeparator(destinationPath)) {
-                                Directory.CreateDirectory(destinationPath);
-                            }
-                            else {
-                                // Extract it to the file
-                                await Task.Run(() => entry.ExtractToFile(destinationPath));
-                            }
-                        }
-                        completed++;
-
-                        actionNotification.ActionText = $"Extracting file {Path.GetFileName(destinationPath)} ({completed}/{totalFiles})";
-                        ((IProgress<float>) progress).Report((float) completed / totalFiles * 100);
+                    if (isDirectory) {
+                        DirectoryInfo entryDestination = destinationInfo.CreateSubdirectory(entry.FullName);
                     }
+                    else {
+                        DirectoryInfo? entryParentInfo = Directory.GetParent(Path.Combine(destinationInfo.FullName, entry.FullName));
+                        entryParentInfo?.Create();
+                        entry.ExtractToFile(Path.Combine(entryParentInfo?.FullName ?? destinationInfo.FullName, entry.Name));
+                    }
+
+                    actionNotification.ActionText = $"Extracting file {Path.GetFileName(entry.FullName)} ({++completed}/{totalFiles})";
+                    ((IProgress<float>) progress).Report((float) completed / totalFiles * 100);
                 }
             }
             catch (Exception ex) {
