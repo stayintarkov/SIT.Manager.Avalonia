@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO.Compression;
 
 const string SITMANAGER_PROC_NAME = "SIT.Manager.exe";
-const string SITMANAGER_RELEASE_URL = @"https://github.com/stayintarkov/SIT.Manager/releases/latest/download/SIT.Manager.zip";
+const string SITMANAGER_RELEASE_URL = @"https://github.com/stayintarkov/SIT.Manager.Avalonia/releases/latest/download/SIT.Manager.Avalonia.zip";
 
 bool skipInteractivity = false;
 bool killProcNoPrompt = false;
