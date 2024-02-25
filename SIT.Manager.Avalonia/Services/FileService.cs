@@ -58,7 +58,7 @@ namespace SIT.Manager.Avalonia.Services
                 _logger.LogInformation($"Starting download of '{fileName}' from '{fileUrl}'");
 
                 Progress<double> progress = new((prog) => {
-                    _actionNotificationService.UpdateActionNotification(new ActionNotification($"Downloading '{fileName}'", Math.Floor(prog), showProgress));
+                    _actionNotificationService.UpdateActionNotification(new ActionNotification($"Downloading '{fileName}'", prog, showProgress));
                 });
 
                 Uri fileLink = new(fileUrl);
@@ -134,7 +134,7 @@ namespace SIT.Manager.Avalonia.Services
                 int completed = 0;
 
                 Progress<float> progress = new((prog) => {
-                    actionNotification.ProgressPercentage = Math.Floor(prog);
+                    actionNotification.ProgressPercentage = prog;
                     _actionNotificationService.UpdateActionNotification(actionNotification);
                 });
 
