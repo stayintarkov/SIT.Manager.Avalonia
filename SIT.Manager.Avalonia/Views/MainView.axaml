@@ -8,7 +8,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SIT.Manager.Avalonia.Views.MainView"
              x:DataType="vm:MainViewModel"
-			 Background="Black">	
+			 Background="Black">
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
@@ -25,12 +25,18 @@
 			</ui:TeachingTip.IconSource>
 		</ui:TeachingTip>
 
-		<StackPanel Name="InfoBarStackPanel" Grid.Row="0" x:FieldModifier="Public" IsVisible="True">
-			<ui:InfoBar Name="UpdateInfoBar" IsOpen="False">
-				<ui:InfoBar.ActionButton>
-					<Button Name="UpdateButton" Content="Update" Command="{Binding UpdateButtonCommand}" HorizontalAlignment="Right"/>
-				</ui:InfoBar.ActionButton>
-			</ui:InfoBar>
+		<StackPanel Name="InfoBarStackPanel" Grid.Row="0" x:FieldModifier="Public">
+			<Grid ColumnDefinitions="auto, auto, auto, *, auto" IsVisible="{Binding UpdateAvailable}">
+				<Panel Margin="14 0" VerticalAlignment="Center" Grid.Column="0">
+					<Ellipse Fill="#1e4f8a" Width="18" Height="18"/>
+					<ui:SymbolIcon Symbol="Important" VerticalAlignment="Center" Margin="0 1 0 0"/>
+				</Panel>
+				<TextBlock Text="An update to the SIT Manager is available click here to update:" Grid.Column="1" VerticalAlignment="Center" FontFamily="Default"/>
+				<Button Content="Update" Command="{Binding UpdateButtonCommand}" VerticalAlignment="Center" FontSize="14" Margin="8 5 0 5" Grid.Column="2"/>
+				<Button Command="{Binding CloseButtonCommand}" HorizontalAlignment="Right" Margin="0 0 4 0" MaxWidth="35" MaxHeight="35" Background="Transparent" Grid.Column="4" BorderBrush="Transparent">
+					<ui:SymbolIcon Symbol="Cancel"/>
+				</Button>
+			</Grid>
 
 			<ItemsControl ItemsSource="{Binding BarNotifications, Mode=OneWay}">
 				<ItemsControl.ItemTemplate>

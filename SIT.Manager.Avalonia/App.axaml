@@ -20,6 +20,6 @@
 
 		<Style Selector="SelectableTextBlock">
 			<Setter Property="SelectionBrush" Value="{StaticResource TextControlSelection}"/>
-		</Style>	
+		</Style>
     </Application.Styles>
 </Application>
