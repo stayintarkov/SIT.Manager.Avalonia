@@ -42,7 +42,7 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
     public ObservableCollection<BarNotification> BarNotifications { get; } = [];
 
     public IAsyncRelayCommand UpdateButtonCommand { get; }
-    public IAsyncRelayCommand CloseButtonCommand { get; }
+    public IRelayCommand CloseButtonCommand { get; }
 
     public MainViewModel(IActionNotificationService actionNotificationService,
         IBarNotificationService barNotificationService,
@@ -62,7 +62,7 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
         WeakReferenceMessenger.Default.Register(this);
 
         UpdateButtonCommand = new AsyncRelayCommand(UpdateButton);
-        CloseButtonCommand = new AsyncRelayCommand(() => { UpdateAvailable = false; return Task.CompletedTask; });
+        CloseButtonCommand = new RelayCommand(() => { UpdateAvailable = false; });
 
         this.WhenActivated(async (CompositeDisposable disposables) =>
         {
