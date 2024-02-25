@@ -21,9 +21,5 @@
 		<Style Selector="SelectableTextBlock">
 			<Setter Property="SelectionBrush" Value="{StaticResource TextControlSelection}"/>
 		</Style>
-
-		<Style Selector="TextBlock">
-			<Setter Property="FontFamily" Value="{StaticResource BenderFont}"/>
-		</Style>
     </Application.Styles>
 </Application>
