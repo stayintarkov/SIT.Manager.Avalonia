@@ -16,6 +16,9 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
+using ReactiveUI;
+using System.Reactive.Disposables;
+using SIT.Manager.Avalonia.ManagedProcess;
 
 namespace SIT.Manager.Avalonia.ViewModels;
 
@@ -24,6 +27,7 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
     private const string MANAGER_VERSION_URL = @"https://raw.githubusercontent.com/stayintarkov/SIT.Manager.Avalonia/master/VERSION";
     private readonly IActionNotificationService _actionNotificationService;
     private readonly IBarNotificationService _barNotificationService;
+    private readonly IManagerConfigService _managerConfigService;
     private readonly ILogger<MainViewModel> _logger;
     private readonly HttpClient _httpClient;
 
@@ -38,10 +42,17 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
     public ObservableCollection<BarNotification> BarNotifications { get; } = [];
 
     public IAsyncRelayCommand UpdateButtonCommand { get; }
+    public IAsyncRelayCommand CloseButtonCommand { get; }
 
-    public MainViewModel(IActionNotificationService actionNotificationService, IBarNotificationService barNotificationService, ILogger<MainViewModel> logger, HttpClient httpClient) {
+    public MainViewModel(IActionNotificationService actionNotificationService,
+        IBarNotificationService barNotificationService,
+        IManagerConfigService managerConfigService,
+        ILogger<MainViewModel> logger,
+        HttpClient httpClient)
+    {
         _actionNotificationService = actionNotificationService;
         _barNotificationService = barNotificationService;
+        _managerConfigService = managerConfigService;
         _logger = logger;
         _httpClient = httpClient;
 
@@ -51,11 +62,19 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
         WeakReferenceMessenger.Default.Register(this);
 
         UpdateButtonCommand = new AsyncRelayCommand(UpdateButton);
-        _ = CheckForUpdate();
+        CloseButtonCommand = new AsyncRelayCommand(() => { UpdateAvailable = false; return Task.CompletedTask; });
+
+        this.WhenActivated(async (CompositeDisposable disposables) =>
+        {
+            await CheckForUpdate();
+        });
+        _managerConfigService.ConfigChanged += async (o, c) => await CheckForUpdate();
     }
 
     private async Task CheckForUpdate()
     {
+        if (!_managerConfigService.Config.LookForUpdates)
+            return;
         try
         {
             Version currentVersion = Assembly.GetExecutingAssembly().GetName().Version ?? new Version("0");
