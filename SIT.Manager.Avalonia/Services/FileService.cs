@@ -96,13 +96,13 @@ namespace SIT.Manager.Avalonia.Services
                     File.Delete(filePath);
                 }
 
-                var progress = new Progress<double>((prog) => {
+                Progress<double> progress = new((prog) => {
                     _actionNotificationService.UpdateActionNotification(new ActionNotification($"Downloading '{fileName}'", Math.Floor(prog), showProgress));
                 });
 
                 try {
-                    using (var file = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None)) {
-                        await _httpClient.DownloadDataAsync(fileUrl, file, progress);
+                    using (FileStream file = new(filePath, FileMode.Create, FileAccess.Write, FileShare.None)) {
+                        await _httpClient.DownloadAsync(file, fileUrl, progress);
                     }
                     result = true;
                 }
