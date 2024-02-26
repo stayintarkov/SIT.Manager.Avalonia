@@ -79,7 +79,11 @@ namespace SIT.Manager.Avalonia.Services
                 }
             });
             _process.OutputDataReceived += startedEventHandler;
-            _process.Exited += new EventHandler((sender, e) => ExitedEvent(sender, e));
+            _process.Exited += new EventHandler((sender, e) =>
+            {
+                ExitedEvent(sender, e);
+                IsStarted = false;
+            });
 
             _process.Start();
             if(cal)
@@ -87,7 +91,8 @@ namespace SIT.Manager.Avalonia.Services
                 _ = Task.Run(() =>
                 {
                     System.Threading.Thread.Sleep(10 * 1000);
-                    ServerStarted?.Invoke(this, new EventArgs());
+                    if(!_process?.HasExited ?? true)
+                        ServerStarted?.Invoke(this, new EventArgs());
                 });
             }
             else

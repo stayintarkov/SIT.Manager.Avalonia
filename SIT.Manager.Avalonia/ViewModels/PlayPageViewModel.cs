@@ -41,6 +41,9 @@ namespace SIT.Manager.Avalonia.ViewModels
         [ObservableProperty]
         private bool _rememberMe;
 
+        [ObservableProperty]
+        private string _quickPlayText = "Start Server and Connect";
+
         private readonly HttpClient _httpClient;
         private readonly HttpClientHandler _httpClientHandler;
         private readonly ITarkovClientService _tarkovClientService;
@@ -55,7 +58,8 @@ namespace SIT.Manager.Avalonia.ViewModels
             HttpClientHandler httpClientHandler,
             ITarkovClientService tarkovClientService,
             IAkiServerService akiServerService,
-            IServiceProvider serviceProvider) {
+            IServiceProvider serviceProvider)
+        {
             _configService = configService;
             //TODO: Check that this is the best way to implement DI for the TarkovRequesting. Prettysure service provider would be better
             _httpClient = httpClient;
@@ -75,29 +79,35 @@ namespace SIT.Manager.Avalonia.ViewModels
 
 
         //TODO: Refactor this so avoid the repeat after registering. This also violates the one purpose rule anyway
-        private async Task<string> LoginToServerAsync(Uri address) {
+        private async Task<string> LoginToServerAsync(Uri address)
+        {
             TarkovRequesting requesting = ActivatorUtilities.CreateInstance<TarkovRequesting>(_serviceProvider, address);
-            TarkovLoginInfo loginInfo = new() {
+            TarkovLoginInfo loginInfo = new()
+            {
                 Username = Username,
                 Password = Password,
                 BackendUrl = address.AbsoluteUri.Trim(['/', '\\'])
             };
 
-            try {
+            try
+            {
                 string SessionID = await requesting.LoginAsync(loginInfo);
                 return SessionID;
             }
-            catch (AccountNotFoundException) {
+            catch (AccountNotFoundException)
+            {
                 AkiServerConnectionResponse serverResponse = await requesting.QueryServer();
 
                 TarkovEdition[] editions = new TarkovEdition[serverResponse.Editions.Length];
-                for (int i = 0; i < editions.Length; i++) {
+                for (int i = 0; i < editions.Length; i++)
+                {
                     string editionStr = serverResponse.Editions[i];
                     string descriptionStr = serverResponse.Descriptions[editionStr];
                     editions[i] = new TarkovEdition(editionStr, descriptionStr);
                 }
 
-                ContentDialogResult createAccountResponse = await new ContentDialog() {
+                ContentDialogResult createAccountResponse = await new ContentDialog()
+                {
                     Title = "Account Not Found",
                     Content = "Your account has not been found, would you like to register a new account with these credentials?",
                     IsPrimaryButtonEnabled = true,
@@ -105,7 +115,8 @@ namespace SIT.Manager.Avalonia.ViewModels
                     CloseButtonText = "No"
                 }.ShowAsync();
 
-                if (createAccountResponse == ContentDialogResult.Primary) {
+                if (createAccountResponse == ContentDialogResult.Primary)
+                {
                     SelectEditionDialog selectEditionDialog = new SelectEditionDialog(editions);
                     loginInfo.Edition = (await selectEditionDialog.ShowAsync()).Edition;
 
@@ -118,12 +129,15 @@ namespace SIT.Manager.Avalonia.ViewModels
                 else
                     return string.Empty;
             }
-            catch (IncorrectServerPasswordException) {
+            catch (IncorrectServerPasswordException)
+            {
                 Debug.WriteLine("DEBUG: Incorrect password");
                 //TODO: Utils.ShowInfoBar("Connect", $"Invalid password!", InfoBarSeverity.Error);
             }
-            catch (Exception ex) {
-                await new ContentDialog() {
+            catch (Exception ex)
+            {
+                await new ContentDialog()
+                {
                     Title = "Login Error",
                     Content = $"Unable to communicate with the server\n{ex.Message}",
                     CloseButtonText = "Ok"
@@ -132,23 +146,28 @@ namespace SIT.Manager.Avalonia.ViewModels
             return string.Empty;
         }
 
-        private static Uri? GetUriFromAddress(string addressString) {
-            try {
+        private static Uri? GetUriFromAddress(string addressString)
+        {
+            try
+            {
                 UriBuilder addressBuilder = new(addressString);
                 addressBuilder.Port = addressBuilder.Port == 80 ? 6969 : addressBuilder.Port;
                 return addressBuilder.Uri;
             }
-            catch (UriFormatException) {
+            catch (UriFormatException)
+            {
                 return null;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 //Something BAAAAD has happened here
                 //TODO: Loggy & content dialog
                 return null;
             }
         }
 
-        private async Task ConnectToServer() {
+        private async Task ConnectToServer()
+        {
             ManagerConfig config = _configService.Config;
             config.Username = Username;
             config.Password = Password;
@@ -198,9 +217,12 @@ namespace SIT.Manager.Avalonia.ViewModels
                 }
             ];
 
-            foreach (ValidationRule rule in validationRules) {
-                if (rule?.Check != null && !rule.Check()) {
-                    await new ContentDialog() {
+            foreach (ValidationRule rule in validationRules)
+            {
+                if (rule?.Check != null && !rule.Check())
+                {
+                    await new ContentDialog()
+                    {
                         Title = rule.Name,
                         Content = rule.ErrorMessage,
                         CloseButtonText = "Ok"
@@ -223,52 +245,85 @@ namespace SIT.Manager.Avalonia.ViewModels
             string launchArguments = string.Join(' ', argumentList.Select(argument => $"{argument.Key}={argument.Value}"));
             _tarkovClientService.Start(launchArguments);
 
-            if (_configService.Config.CloseAfterLaunch) {
+            if (_configService.Config.CloseAfterLaunch)
+            {
                 IApplicationLifetime? lifetime = App.Current.ApplicationLifetime;
-                if (lifetime != null && lifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime) {
+                if (lifetime != null && lifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
+                {
                     desktopLifetime.Shutdown();
                 }
-                else {
+                else
+                {
                     Environment.Exit(0);
                 }
             }
         }
 
-        private async Task QuickPlay() {
+        private async Task QuickPlay()
+        {
             //TODO: Find a way to meld this with the server page better, theres a lot of overlap happening here
-            if (_akiServerService.IsUnhandledInstanceRunning()) {
-                await new ContentDialog() {
+            if (_akiServerService.IsUnhandledInstanceRunning())
+            {
+                await new ContentDialog()
+                {
                     Title = "Unhandled Server Instance",
                     Content = "SPT-AKI is currently running. Please close any running instance of SPT-AKI.",
                     CloseButtonText = "Ok",
                 }.ShowAsync();
             }
-            else if (!File.Exists(_akiServerService.ExecutableFilePath)) {
-                await new ContentDialog() {
-                    Title = "Unhandled Server Instance",
-                    Content = "SPT-AKI is currently running. Please close any running instance of SPT-AKI.",
+            else if (!File.Exists(_akiServerService.ExecutableFilePath))
+            {
+                await new ContentDialog()
+                {
+                    Title = "AKI Missing",
+                    Content = "SPT-AKI server executable is missing.",
                     CloseButtonText = "Ok",
                 }.ShowAsync();
             }
-            else {
+            else
+            {
                 using CancellationTokenSource cts = new();
-                async void serverStartEventHandler(object? sender, EventArgs e) {
+                async void serverStartEventHandler(object? sender, EventArgs e)
+                {
                     cts.Dispose();
                     await Dispatcher.UIThread.InvokeAsync(ConnectToServer);
                     _akiServerService.ServerStarted -= serverStartEventHandler;
                 }
 
-                _akiServerService.ServerStarted += serverStartEventHandler;
-                _akiServerService.Start();
+                if(_akiServerService.State == RunningState.Running)
+                {
+                    serverStartEventHandler(null, new EventArgs());
+                    return;
+                }
+                else
+                {
+                    _akiServerService.ServerStarted += serverStartEventHandler;
+                    _akiServerService.Start();
+                }
 
-                cts.CancelAfter(TimeSpan.FromSeconds(30));
-                cts.Token.Register(() => {
-                    new ContentDialog() {
-                        Title = "Server Error",
-                        Content = "The server never started. Please check the logs for more information.",
-                        CloseButtonText = "Ok"
-                    }.ShowAsync();
+                DateTime abortTime = DateTime.Now + TimeSpan.FromSeconds(30);
+
+                cts.CancelAfter(abortTime - DateTime.Now);
+                cts.Token.Register(() =>
+                {
+                    Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        new ContentDialog()
+                        {
+                            Title = "Server Error",
+                            Content = "The server never started. Please check the logs for more information.",
+                            CloseButtonText = "Ok"
+                        }.ShowAsync();
+                    });
                 });
+
+                TimeSpan timeToAbort = default;
+                while ((timeToAbort = abortTime - DateTime.Now).TotalSeconds > 0 && !cts.IsCancellationRequested && !_akiServerService.IsStarted)
+                {
+                    QuickPlayText = $"Waiting for server ({timeToAbort.TotalSeconds:N0}s)";
+                    await Task.Delay(500);
+                }
+                QuickPlayText = "Start Server and Connect";
             }
         }
     }
