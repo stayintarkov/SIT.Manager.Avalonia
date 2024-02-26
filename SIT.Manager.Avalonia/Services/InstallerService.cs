@@ -370,7 +370,7 @@ namespace SIT.Manager.Avalonia.Services
 
         public async Task InstallServer(GithubRelease selectedVersion) {
             if (string.IsNullOrEmpty(_configService.Config.InstallPath)) {
-                _barNotificationService.ShowError("Error", "Install Path is not set. Configure it in Settings.");
+                _barNotificationService.ShowError("Error", "Please configure EFT Path in Settings.");
                 return;
             }
 
@@ -386,46 +386,50 @@ namespace SIT.Manager.Avalonia.Services
                     CheckTarkovVersion();
                 }
 
-                string targetFileName = "Aki-Server-win-with-SITCoop.zip";
+                // Dynamically find the asset that starts with "SITCoop" and ends with ".zip"
+                var releaseAsset = selectedVersion.assets.FirstOrDefault(a => a.name.StartsWith("SITCoop") && a.name.EndsWith(".zip"));
+                if (releaseAsset == null) {
+                    _logger.LogError("No matching release asset found.");
+                    return;
+                }
+                string releaseZipUrl = releaseAsset.browser_download_url;
 
-                // We don't use index as they might be different from version to version
-                string? releaseZipUrl = selectedVersion.assets.Find(q => q.name == targetFileName)?.browser_download_url;
+                // Create the "Server" folder if SPT-Path is not configured.
+                string sitServerDirectory = _configService.Config.AkiServerPath;
+                if (string.IsNullOrEmpty(sitServerDirectory)) {
+                    // Navigate one level up from InstallPath
+                    string baseDirectory = Directory.GetParent(_configService.Config.InstallPath)?.FullName ?? string.Empty;
 
-                // Navigate one level up from InstallPath
-                string baseDirectory = Directory.GetParent(_configService.Config.InstallPath)?.FullName ?? string.Empty;
+                    // Define the target directory for Server within the parent directory
+                    sitServerDirectory = Path.Combine(baseDirectory, "Server");
+                }
 
-                // Define the target directory for SIT-Server within the parent directory
-                string sitServerDirectory = Path.Combine(baseDirectory, "SIT-Server");
-
-                Directory.CreateDirectory(sitServerDirectory);
+                if (!Directory.Exists(sitServerDirectory)) {
+                    Directory.CreateDirectory(sitServerDirectory);
+                }
 
                 // Define the paths for download and extraction based on the SIT-Server directory
-                string downloadLocation = Path.Combine(sitServerDirectory, targetFileName);
+                string downloadLocation = Path.Combine(sitServerDirectory, releaseAsset.name);
                 string extractionPath = sitServerDirectory;
 
-                // Download and extract the file in SIT-Server directory
-                await _fileService.DownloadFile(targetFileName, sitServerDirectory, releaseZipUrl, true);
+                // Download and extract the file in Server directory
+                await _fileService.DownloadFile(releaseAsset.name, sitServerDirectory, releaseZipUrl, true);
                 await _fileService.ExtractArchive(downloadLocation, extractionPath);
 
-                // Remove the downloaded SIT-Server after extraction
+                // Remove the downloaded Server after extraction
                 File.Delete(downloadLocation);
 
                 ManagerConfig config = _configService.Config;
                 config.SitVersion = _versionService.GetSITVersion(config.InstallPath);
 
-                // Attempt to automatically set the AKI Server Path after successful installation
-                if (!string.IsNullOrEmpty(sitServerDirectory)) {
+                // Attempt to automatically set the AKI Server Path after successful installation and save it to config
+                if (!string.IsNullOrEmpty(sitServerDirectory) && string.IsNullOrEmpty(_configService.Config.AkiServerPath)) {
                     config.AkiServerPath = sitServerDirectory;
-                    _barNotificationService.ShowSuccess("Config", $"Server installation path automatically set to '{sitServerDirectory}'");
+                    _barNotificationService.ShowSuccess("Config", $"Server installation path set to '{sitServerDirectory}'");
                 }
-                else {
-                    // Optional: Notify user that automatic path detection failed and manual setting is needed
-                    _barNotificationService.ShowWarning("Notice", "Automatic Server path detection failed. Please set it manually.");
-                }
-
                 _configService.UpdateConfig(config);
 
-                _barNotificationService.ShowSuccess("Install", "Installation of Server was succesful.");
+                _barNotificationService.ShowSuccess("Install", "Installation of Server was successful.");
             }
             catch (Exception ex) {
                 // TODO ShowInfoBarWithLogButton("Install Error", "Encountered an error during installation.", InfoBarSeverity.Error, 10);
