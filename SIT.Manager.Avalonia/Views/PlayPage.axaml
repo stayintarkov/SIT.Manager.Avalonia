@@ -19,7 +19,7 @@
 			<TextBox Name="PasswordBox" Text="{Binding Password, Mode=TwoWay}" Margin="10 5 10 10" Width="150" HorizontalAlignment="Left" PasswordChar="●" Watermark="Enter Password..."/>
 			<CheckBox Name="RememberMeCheck" Content="Remember Me" Margin="10" IsChecked="{Binding RememberMe}"/>
 			<Button Name="ConnectButton" Command="{Binding ConnectToServerCommand}" Content="Connect" ToolTip.Tip="Connect to the server" Margin="10"/>
-			<Button Name="QuickPlayButton" Command="{Binding QuickPlayCommand}" Content="Start Server and Connect" ToolTip.Tip="Start the Aki server and connect to the server" Margin="10"/>
+			<Button Name="QuickPlayButton" Command="{Binding QuickPlayCommand}" Content="{Binding QuickPlayText}" ToolTip.Tip="Start the Aki server and connect to the server" Margin="10"/>
 		</StackPanel>
 	</Grid>
 </UserControl>
