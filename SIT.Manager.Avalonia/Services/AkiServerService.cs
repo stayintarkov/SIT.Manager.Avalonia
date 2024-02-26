@@ -93,6 +93,8 @@ namespace SIT.Manager.Avalonia.Services
             });
 
             _process.Start();
+            UpdateRunningState(RunningState.Starting);
+
             if (cal) {
                 _ = Task.Run(async () => {
                     TarkovRequesting requesting = ActivatorUtilities.CreateInstance<TarkovRequesting>(_serviceProvider, new Uri("http://127.0.0.1:6969/"));
@@ -106,27 +108,30 @@ namespace SIT.Manager.Avalonia.Services
                             try {
                                 pingReponse = await requesting.PingServer(cts.Token);
                             }
-                            catch (HttpRequestException ex) {
+                            catch (HttpRequestException) {
                                 pingReponse = false;
                             }
 
                             if (pingReponse && _process?.HasExited == false) {
                                 IsStarted = true;
                                 ServerStarted?.Invoke(this, new EventArgs());
+                                UpdateRunningState(RunningState.Running);
+                                return;
+                            }
+                            else if (_process?.HasExited == true) {
+                                UpdateRunningState(RunningState.NotRunning);
                                 return;
                             }
                         }
                         await Task.Delay(1000);
                         retryCounter++;
                     }
-
-                    // TODO if we make it here log an error or something and notify user somehow.
                 });
             }
-            else
+            else {
                 _process.BeginOutputReadLine();
-
-            UpdateRunningState(RunningState.Running);
+                UpdateRunningState(RunningState.Running);
+            }
         }
     }
 }
