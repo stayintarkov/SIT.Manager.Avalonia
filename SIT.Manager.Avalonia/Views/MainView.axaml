@@ -99,6 +99,10 @@
 								 Minimum="0" 
 								 Maximum="100" 
 								 Value="{Binding ProgressPercentage}"/>
+					<TextBlock Name="ActionPanelPercentageText"
+							   Margin="15 0 0 0"
+							   VerticalAlignment="Center"
+							   Text="{Binding ProgressPercentage, StringFormat={}{0:N2}%}"/>
 				</StackPanel>
 			</Grid>
 		</ui:NavigationView> 
