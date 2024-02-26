@@ -97,9 +97,9 @@ namespace SIT.Manager.Avalonia.Services
                 _ = Task.Run(async () => {
                     TarkovRequesting requesting = ActivatorUtilities.CreateInstance<TarkovRequesting>(_serviceProvider, new Uri("http://127.0.0.1:6969/"));
                     int retryCounter = 0;
-                    while (retryCounter < 30) {
+                    while (retryCounter < 6) {
                         using (CancellationTokenSource cts = new()) {
-                            DateTime abortTime = DateTime.Now + TimeSpan.FromSeconds(1);
+                            DateTime abortTime = DateTime.Now + TimeSpan.FromSeconds(10);
                             cts.CancelAfter(abortTime - DateTime.Now);
 
                             bool pingReponse;
@@ -113,7 +113,6 @@ namespace SIT.Manager.Avalonia.Services
                             if (pingReponse && _process?.HasExited == false) {
                                 IsStarted = true;
                                 ServerStarted?.Invoke(this, new EventArgs());
-                                var queryResponse = requesting.QueryServer();
                                 return;
                             }
                         }
