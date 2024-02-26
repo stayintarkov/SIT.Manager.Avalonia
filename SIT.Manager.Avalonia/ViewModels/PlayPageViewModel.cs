@@ -73,8 +73,8 @@ namespace SIT.Manager.Avalonia.ViewModels
             _password = _configService.Config.Password;
             _rememberMe = _configService.Config.RememberLogin;
 
-            ConnectToServerCommand = new AsyncRelayCommand(ConnectToServer);
-            QuickPlayCommand = new AsyncRelayCommand(QuickPlay);
+            ConnectToServerCommand = new AsyncRelayCommand(async () => await ConnectToServer());
+            QuickPlayCommand = new AsyncRelayCommand(async () => await ConnectToServer(true));
         }
 
 
@@ -166,7 +166,7 @@ namespace SIT.Manager.Avalonia.ViewModels
             }
         }
 
-        private async Task ConnectToServer()
+        private async Task ConnectToServer(bool launchServer = false)
         {
             ManagerConfig config = _configService.Config;
             config.Username = Username;
@@ -176,7 +176,6 @@ namespace SIT.Manager.Avalonia.ViewModels
             _configService.UpdateConfig(config, true, config.RememberLogin);
 
             Uri? serverAddress = GetUriFromAddress(LastServer);
-
             //TODO: Change this to pass the server address as a param and move this outside the connect method
             List<ValidationRule> validationRules =
             [
@@ -217,18 +216,70 @@ namespace SIT.Manager.Avalonia.ViewModels
                 }
             ];
 
+            if(launchServer)
+            {
+                validationRules.AddRange(
+                    [
+                    //Unhandled Instance
+                    new ValidationRule()
+                    {
+                        Name = "Unhandled Aki Instance",
+                        ErrorMessage = "SPT-AKI is currently running. Please close any running instance of SPT-AKI.",
+                        Check = () => { return !_akiServerService.IsUnhandledInstanceRunning(); }
+                    },
+                    //Missing executable
+                    new ValidationRule()
+                    {
+                        Name = "Missing AKI Installation",
+                        ErrorMessage = "SPT-AKI server executable is missing.",
+                        Check = () => { return File.Exists(_akiServerService.ExecutableFilePath); }
+                    }
+                    ]);
+            }
+
             foreach (ValidationRule rule in validationRules)
             {
                 if (rule?.Check != null && !rule.Check())
                 {
                     await new ContentDialog()
                     {
-                        Title = rule.Name,
-                        Content = rule.ErrorMessage,
+                        Title = rule?.Name,
+                        Content = rule?.ErrorMessage,
                         CloseButtonText = "Ok"
                     }.ShowAsync();
                     return;
                 }
+            }
+
+            if (launchServer)
+            {
+                using CancellationTokenSource cts = new();
+                _akiServerService.Start();
+
+                DateTime abortTime = DateTime.Now + TimeSpan.FromSeconds(30);
+                cts.CancelAfter(abortTime - DateTime.Now);
+                cts.Token.Register(() =>
+                {
+                    Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        new ContentDialog()
+                        {
+                            Title = "Server Error",
+                            Content = "The server never started. Please check the logs for more information.",
+                            CloseButtonText = "Ok"
+                        }.ShowAsync();
+                    });
+                });
+
+                TimeSpan timeToAbort = default;
+                while ((timeToAbort = abortTime - DateTime.Now).TotalSeconds > 0 && !cts.IsCancellationRequested && !_akiServerService.IsStarted)
+                {
+                    QuickPlayText = $"Waiting for server ({timeToAbort.TotalSeconds:N0}s)";
+                    await Task.Delay(500);
+                }
+                QuickPlayText = "Start Server and Connect";
+                if (cts.IsCancellationRequested)
+                    return;
             }
 
             //Connect to server
@@ -256,74 +307,6 @@ namespace SIT.Manager.Avalonia.ViewModels
                 {
                     Environment.Exit(0);
                 }
-            }
-        }
-
-        private async Task QuickPlay()
-        {
-            //TODO: Find a way to meld this with the server page better, theres a lot of overlap happening here
-            if (_akiServerService.IsUnhandledInstanceRunning())
-            {
-                await new ContentDialog()
-                {
-                    Title = "Unhandled Server Instance",
-                    Content = "SPT-AKI is currently running. Please close any running instance of SPT-AKI.",
-                    CloseButtonText = "Ok",
-                }.ShowAsync();
-            }
-            else if (!File.Exists(_akiServerService.ExecutableFilePath))
-            {
-                await new ContentDialog()
-                {
-                    Title = "AKI Missing",
-                    Content = "SPT-AKI server executable is missing.",
-                    CloseButtonText = "Ok",
-                }.ShowAsync();
-            }
-            else
-            {
-                using CancellationTokenSource cts = new();
-                async void serverStartEventHandler(object? sender, EventArgs e)
-                {
-                    cts.Dispose();
-                    await Dispatcher.UIThread.InvokeAsync(ConnectToServer);
-                    _akiServerService.ServerStarted -= serverStartEventHandler;
-                }
-
-                if(_akiServerService.State == RunningState.Running)
-                {
-                    serverStartEventHandler(null, new EventArgs());
-                    return;
-                }
-                else
-                {
-                    _akiServerService.ServerStarted += serverStartEventHandler;
-                    _akiServerService.Start();
-                }
-
-                DateTime abortTime = DateTime.Now + TimeSpan.FromSeconds(30);
-
-                cts.CancelAfter(abortTime - DateTime.Now);
-                cts.Token.Register(() =>
-                {
-                    Dispatcher.UIThread.InvokeAsync(() =>
-                    {
-                        new ContentDialog()
-                        {
-                            Title = "Server Error",
-                            Content = "The server never started. Please check the logs for more information.",
-                            CloseButtonText = "Ok"
-                        }.ShowAsync();
-                    });
-                });
-
-                TimeSpan timeToAbort = default;
-                while ((timeToAbort = abortTime - DateTime.Now).TotalSeconds > 0 && !cts.IsCancellationRequested && !_akiServerService.IsStarted)
-                {
-                    QuickPlayText = $"Waiting for server ({timeToAbort.TotalSeconds:N0}s)";
-                    await Task.Delay(500);
-                }
-                QuickPlayText = "Start Server and Connect";
             }
         }
     }

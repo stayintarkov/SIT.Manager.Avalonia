@@ -90,6 +90,7 @@ namespace SIT.Manager.Avalonia.Services
             {
                 _ = Task.Run(() =>
                 {
+                    //This is gross but i genuinely have no other way to do this besides massively overcomplicated systems
                     System.Threading.Thread.Sleep(10 * 1000);
                     if(!_process?.HasExited ?? true)
                         ServerStarted?.Invoke(this, new EventArgs());
