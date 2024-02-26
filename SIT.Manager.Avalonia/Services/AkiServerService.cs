@@ -79,15 +79,24 @@ namespace SIT.Manager.Avalonia.Services
                 }
             });
             _process.OutputDataReceived += startedEventHandler;
-            _process.Exited += new EventHandler((sender, e) => ExitedEvent(sender, e));
+            _process.Exited += new EventHandler((sender, e) =>
+            {
+                ExitedEvent(sender, e);
+                IsStarted = false;
+            });
 
             _process.Start();
             if(cal)
             {
                 _ = Task.Run(() =>
                 {
+                    //This is gross but i genuinely have no other way to do this besides massively overcomplicated systems
                     System.Threading.Thread.Sleep(10 * 1000);
-                    ServerStarted?.Invoke(this, new EventArgs());
+                    if(!_process?.HasExited ?? true)
+                    {
+                        IsStarted = true;
+                        ServerStarted?.Invoke(this, new EventArgs());
+                    }
                 });
             }
             else
