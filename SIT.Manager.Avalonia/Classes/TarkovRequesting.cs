@@ -1,4 +1,4 @@
-﻿using SIT.Manager.Avalonia.Classes.Exceptions;
+﻿using SIT.Manager.Avalonia.Exceptions;
 using SIT.Manager.Avalonia.Interfaces;
 using System;
 using System.IO;

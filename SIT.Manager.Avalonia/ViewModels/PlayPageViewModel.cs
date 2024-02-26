@@ -5,7 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using SIT.Manager.Avalonia.Classes;
-using SIT.Manager.Avalonia.Classes.Exceptions;
+using SIT.Manager.Avalonia.Exceptions;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
 using SIT.Manager.Avalonia.Views.Dialogs;
