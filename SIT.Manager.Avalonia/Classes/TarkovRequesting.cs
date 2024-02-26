@@ -42,9 +42,9 @@ namespace SIT.Manager.Avalonia.Classes
             }
 
             try {
-                using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+                using CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
                 cts.CancelAfter(requestOptions.Timeout);
-                HttpResponseMessage response = await _httpClient.SendAsync(request, cts.Token);
+                HttpResponseMessage response = await _httpClient.SendAsync(request, cts.Token).ConfigureAwait(false);
                 return await response.Content.ReadAsStreamAsync(cancellationToken);
             }
             catch (HttpRequestException ex) {
@@ -57,7 +57,7 @@ namespace SIT.Manager.Avalonia.Classes
                         AcceptEncoding = ["deflate"],
                         TryAgain = false
                     };
-                    return await Send(url, method, data, options, cancellationToken);
+                    return await Send(url, method, data, options, cancellationToken).ConfigureAwait(false);
                 }
                 else {
                     //TODO: I dislike rethrowing exceptions, the architecture of these net requests are flawed and need redesigned 

@@ -6,6 +6,7 @@ using SIT.Manager.Avalonia.ViewModels;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -96,12 +97,19 @@ namespace SIT.Manager.Avalonia.Services
                 _ = Task.Run(async () => {
                     TarkovRequesting requesting = ActivatorUtilities.CreateInstance<TarkovRequesting>(_serviceProvider, new Uri("http://127.0.0.1:6969/"));
                     int retryCounter = 0;
-                    while (retryCounter < 60) {
+                    while (retryCounter < 30) {
                         using (CancellationTokenSource cts = new()) {
-                            DateTime abortTime = DateTime.Now + TimeSpan.FromSeconds(2);
+                            DateTime abortTime = DateTime.Now + TimeSpan.FromSeconds(1);
                             cts.CancelAfter(abortTime - DateTime.Now);
 
-                            bool pingReponse = await requesting.PingServer(cts.Token);
+                            bool pingReponse;
+                            try {
+                                pingReponse = await requesting.PingServer(cts.Token);
+                            }
+                            catch (HttpRequestException ex) {
+                                pingReponse = false;
+                            }
+
                             if (pingReponse && _process?.HasExited == false) {
                                 IsStarted = true;
                                 ServerStarted?.Invoke(this, new EventArgs());
