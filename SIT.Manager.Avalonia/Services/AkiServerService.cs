@@ -1,18 +1,25 @@
-﻿using SIT.Manager.Avalonia.Interfaces;
+﻿using Microsoft.Extensions.DependencyInjection;
+using SIT.Manager.Avalonia.Classes;
+using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.ViewModels;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.Services
 {
     public class AkiServerService(IBarNotificationService barNotificationService,
-                                  IManagerConfigService configService) : ManagedProcess.ManagedProcess(barNotificationService, configService), IAkiServerService
+                                  IManagerConfigService configService,
+                                  IServiceProvider serviceProvider) : ManagedProcess.ManagedProcess(barNotificationService, configService), IAkiServerService
     {
         private const string SERVER_EXE = "Aki.Server.exe";
+
+        private readonly IServiceProvider _serviceProvider = serviceProvider;
+
         protected override string EXECUTABLE_NAME => SERVER_EXE;
         public override string ExecutableDirectory => !string.IsNullOrEmpty(_configService.Config.AkiServerPath) ? _configService.Config.AkiServerPath : string.Empty;
         public event EventHandler<DataReceivedEventArgs>? OutputDataReceived;
@@ -79,24 +86,34 @@ namespace SIT.Manager.Avalonia.Services
                 }
             });
             _process.OutputDataReceived += startedEventHandler;
-            _process.Exited += new EventHandler((sender, e) =>
-            {
+            _process.Exited += new EventHandler((sender, e) => {
                 ExitedEvent(sender, e);
                 IsStarted = false;
             });
 
             _process.Start();
-            if(cal)
-            {
-                _ = Task.Run(() =>
-                {
-                    //This is gross but i genuinely have no other way to do this besides massively overcomplicated systems
-                    System.Threading.Thread.Sleep(10 * 1000);
-                    if(!_process?.HasExited ?? true)
-                    {
-                        IsStarted = true;
-                        ServerStarted?.Invoke(this, new EventArgs());
+            if (cal) {
+                _ = Task.Run(async () => {
+                    TarkovRequesting requesting = ActivatorUtilities.CreateInstance<TarkovRequesting>(_serviceProvider, new Uri("http://127.0.0.1:6969/"));
+                    int retryCounter = 0;
+                    while (retryCounter < 60) {
+                        using (CancellationTokenSource cts = new()) {
+                            DateTime abortTime = DateTime.Now + TimeSpan.FromSeconds(2);
+                            cts.CancelAfter(abortTime - DateTime.Now);
+
+                            bool pingReponse = await requesting.PingServer(cts.Token);
+                            if (pingReponse && _process?.HasExited == false) {
+                                IsStarted = true;
+                                ServerStarted?.Invoke(this, new EventArgs());
+                                var queryResponse = requesting.QueryServer();
+                                return;
+                            }
+                        }
+                        await Task.Delay(1000);
+                        retryCounter++;
                     }
+
+                    // TODO if we make it here log an error or something and notify user somehow.
                 });
             }
             else
