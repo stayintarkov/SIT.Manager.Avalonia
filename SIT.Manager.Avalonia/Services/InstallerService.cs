@@ -34,7 +34,7 @@ namespace SIT.Manager.Avalonia.Services
         private readonly ILogger<InstallerService> _logger = logger;
         private readonly IVersionService _versionService = versionService;
 
-        [GeneratedRegex("This server version works with EFT version ([0]{1,}\\.[0-9]{1,2}\\.[0-9]{1,2})\\.[0-9]{1,2}\\.[0-9]{1,5}")]
+        [GeneratedRegex("This server version works with version ([0]{1,}\\.[0-9]{1,2}\\.[0-9]{1,2})\\.[0-9]{1,2}\\.[0-9]{1,5}")]
         private static partial Regex ServerReleaseVersionRegex();
 
 
@@ -217,6 +217,9 @@ namespace SIT.Manager.Avalonia.Services
         /// <returns>string with result</returns>
         private async Task<string> RunPatcher() {
             _logger.LogInformation("Starting Patcher");
+            _actionNotificationService.StartActionNotification();
+            _actionNotificationService.UpdateActionNotification(new ActionNotification("Running Patcher...", 100));
+
             string patcherPath = Path.Combine(_configService.Config.InstallPath, "Patcher.exe");
             if (!File.Exists(patcherPath)) {
                 return $"Patcher.exe not found at {patcherPath}";
@@ -247,6 +250,8 @@ namespace SIT.Manager.Avalonia.Services
                     Directory.Delete(Path.Combine(_configService.Config.InstallPath, "Aki_Patches"), true);
                 }
             }
+
+            _actionNotificationService.StopActionNotification();
 
             _patcherResultMessages.TryGetValue(patcherProcess.ExitCode, out string? patcherResult);
             _logger.LogInformation($"RunPatcher: {patcherResult}");
@@ -316,7 +321,7 @@ namespace SIT.Manager.Avalonia.Services
                     if (zipAsset != null) {
                         Match match = ServerReleaseVersionRegex().Match(release.body);
                         if (match.Success) {
-                            string releasePatch = match.Groups[1].Value;
+                            string releasePatch = match.Value.Replace("This server version works with version ", "");
                             release.tag_name = $"{release.name} - Tarkov Version: {releasePatch}";
                             release.body = releasePatch;
                             result.Add(release);
@@ -381,11 +386,6 @@ namespace SIT.Manager.Avalonia.Services
 
             CheckTarkovVersion();
             try {
-                if (_configService.Config.TarkovVersion != selectedVersion.body) {
-                    await DownloadAndRunPatcher(selectedVersion.body);
-                    CheckTarkovVersion();
-                }
-
                 // Dynamically find the asset that starts with "SITCoop" and ends with ".zip"
                 var releaseAsset = selectedVersion.assets.FirstOrDefault(a => a.name.StartsWith("SITCoop") && a.name.EndsWith(".zip"));
                 if (releaseAsset == null) {
@@ -404,6 +404,7 @@ namespace SIT.Manager.Avalonia.Services
                     sitServerDirectory = Path.Combine(baseDirectory, "Server");
                 }
 
+                // Create SPT-AKI directory (default: Server)
                 if (!Directory.Exists(sitServerDirectory)) {
                     Directory.CreateDirectory(sitServerDirectory);
                 }
@@ -439,7 +440,7 @@ namespace SIT.Manager.Avalonia.Services
 
         public async Task InstallSIT(GithubRelease selectedVersion) {
             if (string.IsNullOrEmpty(_configService.Config.InstallPath)) {
-                _barNotificationService.ShowError("Error", "Install Path is not set. Configure it in Settings.");
+                _barNotificationService.ShowError("Error", "EFT Path is not set. Configure it in Settings.");
                 return;
             }
 
@@ -462,13 +463,6 @@ namespace SIT.Manager.Avalonia.Services
 
                 if (File.Exists(sitReleaseZipPath)) {
                     File.Delete(sitReleaseZipPath);
-                }
-
-                // Ensure the tarkov version is up to date before we check it
-                CheckTarkovVersion();
-                if (_configService.Config.TarkovVersion != selectedVersion.body) {
-                    await DownloadAndRunPatcher(selectedVersion.body);
-                    CheckTarkovVersion();
                 }
 
                 if (!Directory.Exists(coreFilesPath))
@@ -515,7 +509,7 @@ namespace SIT.Manager.Avalonia.Services
                 config.SitVersion = _versionService.GetSITVersion(config.InstallPath);
                 _configService.UpdateConfig(config);
 
-                _barNotificationService.ShowSuccess("Install", "Installation of SIT was succesful.");
+                _barNotificationService.ShowSuccess("Install", "Installation of SIT was successful.");
             }
             catch (Exception ex) {
                 // TODO ShowInfoBarWithLogButton("Install Error", "Encountered an error during installation.", InfoBarSeverity.Error, 10);

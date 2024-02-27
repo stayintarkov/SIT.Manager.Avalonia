@@ -61,17 +61,41 @@ namespace SIT.Manager.Avalonia.ViewModels
             ClearCacheCommand = new AsyncRelayCommand(ClearCache);
         }
 
-        private async Task InstallSIT() {
-            List<GithubRelease> sitReleases = await _installerService.GetSITReleases();
-            if (!sitReleases.Any()) {
-                _barNotificationService.ShowWarning("Error", "Unable to fetch SIT releases");
-                return;
+        private async Task<GithubRelease?> EnsureEftVersion(List<GithubRelease> releases) {
+            if (!releases.Any()) {
+                _barNotificationService.ShowWarning("Error", "Unable to fetch releases");
+                return null;
             }
 
-            SelectVersionDialog selectWindow = new(sitReleases);
-            GithubRelease? result = await selectWindow.ShowAsync();
-            if (result != null) {
-                await _installerService.InstallSIT(result);
+            SelectVersionDialog selectWindow = new(releases);
+            GithubRelease? selectedVersion = await selectWindow.ShowAsync();
+            if (selectedVersion == null) {
+                return null;
+            }
+
+            if (_configService.Config.TarkovVersion != selectedVersion.body) {
+                SelectDowngradePatcherMirrorDialog selectDowngradePatcherWindow = new(selectedVersion.body) {
+                    XamlRoot = Content.XamlRoot
+                };
+                ContentDialogResult selectDowngradePatcherWindowResult = await selectDowngradePatcherWindow.ShowAsync();
+
+                string selectedMirrorUrl = await selectDowngradePatcherWindow.ShowAsync();
+                if (string.IsNullOrEmpty(selectedMirrorUrl)) {
+                    return null;
+                }
+
+                await Task.Run(() => Utils.DownloadAndRunPatcher(selectedMirrorUrl));
+                Utils.CheckEFTVersion(App.ManagerConfig.InstallPath);
+            }
+
+            return selectedVersion;
+        }
+
+        private async Task InstallSIT() {
+            List<GithubRelease> sitReleases = await _installerService.GetSITReleases();
+            GithubRelease? versionToInstall = await EnsureEftVersion(sitReleases);
+            if (versionToInstall != null) {
+                await _installerService.InstallSIT(versionToInstall);
             }
         }
 
@@ -137,16 +161,10 @@ namespace SIT.Manager.Avalonia.ViewModels
         }
 
         private async Task InstallServer() {
-            List<GithubRelease> sitReleases = await _installerService.GetServerReleases();
-            if (!sitReleases.Any()) {
-                _barNotificationService.ShowWarning("Error", "Unable to fetch Server releases");
-                return;
-            }
-
-            SelectVersionDialog selectWindow = new(sitReleases);
-            GithubRelease? result = await selectWindow.ShowAsync();
-            if (result != null) {
-                await _installerService.InstallServer(result);
+            List<GithubRelease> serverReleases = await _installerService.GetServerReleases();
+            GithubRelease? versionToInstall = await EnsureEftVersion(serverReleases);
+            if (versionToInstall != null) {
+                await _installerService.InstallServer(versionToInstall);
             }
         }
 
