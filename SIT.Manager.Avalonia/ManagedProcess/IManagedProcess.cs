@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 
 namespace SIT.Manager.Avalonia.ManagedProcess
 {
@@ -20,6 +19,7 @@ namespace SIT.Manager.Avalonia.ManagedProcess
     public enum RunningState
     {
         NotRunning,
+        Starting,
         Running,
         StoppedUnexpectedly
     }
