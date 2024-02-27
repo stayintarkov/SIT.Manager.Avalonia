@@ -24,6 +24,7 @@ namespace SIT.Manager.Avalonia.ViewModels
         private readonly IFileService _fileService;
         private readonly IInstallerService _installerService;
         private readonly ITarkovClientService _tarkovClientService;
+        private readonly IVersionService _versionService;
 
         public IAsyncRelayCommand InstallSITCommand { get; }
 
@@ -44,13 +45,15 @@ namespace SIT.Manager.Avalonia.ViewModels
                                   IManagerConfigService configService,
                                   IFileService fileService,
                                   IInstallerService installerService,
-                                  ITarkovClientService tarkovClientService) {
+                                  ITarkovClientService tarkovClientService,
+                                  IVersionService versionService) {
             _akiServerService = akiServerService;
             _barNotificationService = barNotificationService;
             _configService = configService;
             _fileService = fileService;
             _installerService = installerService;
             _tarkovClientService = tarkovClientService;
+            _versionService = versionService;
 
             InstallSITCommand = new AsyncRelayCommand(InstallSIT);
             OpenEFTFolderCommand = new AsyncRelayCommand(OpenETFFolder);
@@ -59,6 +62,18 @@ namespace SIT.Manager.Avalonia.ViewModels
             InstallServerCommand = new AsyncRelayCommand(InstallServer);
             OpenEFTLogCommand = new AsyncRelayCommand(OpenEFTLog);
             ClearCacheCommand = new AsyncRelayCommand(ClearCache);
+        }
+
+        /// <summary>
+        /// Check the current version of EFT and update the version in the config if it's different
+        /// </summary>
+        private void CheckTarkovVersion() {
+            ManagerConfig config = _configService.Config;
+            string tarkovVersion = _versionService.GetEFTVersion(config.InstallPath);
+            if (tarkovVersion != config.TarkovVersion) {
+                config.TarkovVersion = tarkovVersion;
+                _configService.UpdateConfig(config);
+            }
         }
 
         private async Task<GithubRelease?> EnsureEftVersion(List<GithubRelease> releases) {
@@ -73,19 +88,22 @@ namespace SIT.Manager.Avalonia.ViewModels
                 return null;
             }
 
+            // Ensure the tarkov version is up to date before we check it
+            CheckTarkovVersion();
             if (_configService.Config.TarkovVersion != selectedVersion.body) {
-                SelectDowngradePatcherMirrorDialog selectDowngradePatcherWindow = new(selectedVersion.body) {
-                    XamlRoot = Content.XamlRoot
-                };
-                ContentDialogResult selectDowngradePatcherWindowResult = await selectDowngradePatcherWindow.ShowAsync();
+                Dictionary<string, string>? availableMirrors = await _installerService.GetAvaiableMirrorsForVerison(selectedVersion.body);
+                if (availableMirrors == null) {
+                    return null;
+                }
 
-                string selectedMirrorUrl = await selectDowngradePatcherWindow.ShowAsync();
+                SelectDowngradePatcherMirrorDialog selectDowngradePatcherWindow = new(availableMirrors);
+                string? selectedMirrorUrl = await selectDowngradePatcherWindow.ShowAsync();
                 if (string.IsNullOrEmpty(selectedMirrorUrl)) {
                     return null;
                 }
 
-                await Task.Run(() => Utils.DownloadAndRunPatcher(selectedMirrorUrl));
-                Utils.CheckEFTVersion(App.ManagerConfig.InstallPath);
+                await _installerService.DownloadAndRunPatcher(selectedMirrorUrl);
+                CheckTarkovVersion();
             }
 
             return selectedVersion;

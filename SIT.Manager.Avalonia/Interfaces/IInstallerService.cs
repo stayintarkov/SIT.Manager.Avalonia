@@ -6,6 +6,13 @@ namespace SIT.Manager.Avalonia.Interfaces
 {
     public interface IInstallerService
     {
+        Task<bool> DownloadAndRunPatcher(string url);
+        /// <summary>
+        /// Gets a dictionary of all available download mirrors for a sit version
+        /// </summary>
+        /// <param name="sitVersionTarget">The version to look for mirrors of</param>
+        /// <returns></returns>
+        Task<Dictionary<string, string>?> GetAvaiableMirrorsForVerison(string sitVersionTarget);
         /// <summary>
         /// Fetch all of the currently available Server Releases
         /// </summary>
