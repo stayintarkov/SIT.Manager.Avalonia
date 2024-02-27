@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="clr-namespace:SIT.Manager.Avalonia.Controls"
 			 xmlns:vm="clr-namespace:SIT.Manager.Avalonia.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:DataType="vm:PlayPageViewModel"
@@ -19,7 +20,18 @@
 			<TextBox Name="PasswordBox" Text="{Binding Password, Mode=TwoWay}" Margin="10 5 10 10" Width="150" HorizontalAlignment="Left" PasswordChar="●" Watermark="Enter Password..."/>
 			<CheckBox Name="RememberMeCheck" Content="Remember Me" Margin="10" IsChecked="{Binding RememberMe}"/>
 			<Button Name="ConnectButton" Command="{Binding ConnectToServerCommand}" Content="Connect" ToolTip.Tip="Connect to the server" Margin="10"/>
-			<Button Name="QuickPlayButton" Command="{Binding QuickPlayCommand}" Content="{Binding QuickPlayText}" ToolTip.Tip="Start the Aki server and connect to the server" Margin="10"/>
+			<Button Name="QuickPlayButton" Command="{Binding QuickPlayCommand}" ToolTip.Tip="Start the Aki server and connect to the server" Margin="10">
+				<StackPanel Orientation="Horizontal">
+					<TextBlock Text="{Binding QuickPlayText}"/>
+					<controls:LoadingSpinner Width="12" 
+											 Height="12" 
+											 Margin="4,0,0,0"
+											 VerticalAlignment="Center"
+											 IsVisible="{Binding QuickPlayCommand.IsRunning}"
+											 Foreground="{DynamicResource TextControlForeground}"
+											 StrokeWidth="2"/>
+				</StackPanel>
+			</Button>
 		</StackPanel>
 	</Grid>
 </UserControl>
