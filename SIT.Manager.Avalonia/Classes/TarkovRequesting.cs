@@ -95,6 +95,11 @@ namespace SIT.Manager.Avalonia.Classes
             return JsonSerializer.Deserialize<AkiServerConnectionResponse>(connectionData) ?? throw new JsonException("Server returned invalid json.");
         }
 
+        /// <summary>
+        /// Ping the server and await a resoponse
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns>Return true if the server responded correctly otherwise false</returns>
         public async Task<bool> PingServer(CancellationToken cancellationToken = default) {
             using Stream postStream = await Send("/launcher/ping", cancellationToken: cancellationToken);
             if (postStream == null) {
@@ -105,10 +110,7 @@ namespace SIT.Manager.Avalonia.Classes
             await postStream.CopyToAsync(ms, cancellationToken);
 
             string pingResponse = _compressionService.Decompress(ms.ToArray());
-            if (pingResponse.Equals("\"pong!\"")) {
-                return true;
-            }
-            return false;
+            return pingResponse.Equals("\"pong!\"");
         }
     }
 

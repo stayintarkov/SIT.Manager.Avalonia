@@ -123,7 +123,8 @@ namespace SIT.Manager.Avalonia.Services
                                 return;
                             }
                         }
-                        await Task.Delay(1000);
+
+                        await Task.Delay(5 * 1000);
                         retryCounter++;
                     }
                 });

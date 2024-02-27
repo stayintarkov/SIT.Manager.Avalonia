@@ -234,8 +234,8 @@ namespace SIT.Manager.Avalonia.ViewModels
                 _akiServerService.Start();
 
                 bool aborted = false;
-                RunningState serverState = _akiServerService.State;
-                while (serverState == RunningState.Starting) {
+                RunningState serverState;
+                while ((serverState = _akiServerService.State) == RunningState.Starting) {
                     QuickPlayText = $"Waiting for server";
 
                     if (serverState == RunningState.Running) {
@@ -255,7 +255,6 @@ namespace SIT.Manager.Avalonia.ViewModels
                         break;
                     }
 
-                    serverState = _akiServerService.State;
                     await Task.Delay(1000);
                 }
 
