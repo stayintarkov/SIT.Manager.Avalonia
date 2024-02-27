@@ -24,6 +24,7 @@ namespace SIT.Manager.Avalonia.ViewModels
         private readonly IFileService _fileService;
         private readonly IInstallerService _installerService;
         private readonly ITarkovClientService _tarkovClientService;
+        private readonly IVersionService _versionService;
 
         public IAsyncRelayCommand InstallSITCommand { get; }
 
@@ -44,13 +45,15 @@ namespace SIT.Manager.Avalonia.ViewModels
                                   IManagerConfigService configService,
                                   IFileService fileService,
                                   IInstallerService installerService,
-                                  ITarkovClientService tarkovClientService) {
+                                  ITarkovClientService tarkovClientService,
+                                  IVersionService versionService) {
             _akiServerService = akiServerService;
             _barNotificationService = barNotificationService;
             _configService = configService;
             _fileService = fileService;
             _installerService = installerService;
             _tarkovClientService = tarkovClientService;
+            _versionService = versionService;
 
             InstallSITCommand = new AsyncRelayCommand(InstallSIT);
             OpenEFTFolderCommand = new AsyncRelayCommand(OpenETFFolder);
@@ -61,17 +64,56 @@ namespace SIT.Manager.Avalonia.ViewModels
             ClearCacheCommand = new AsyncRelayCommand(ClearCache);
         }
 
-        private async Task InstallSIT() {
-            List<GithubRelease> sitReleases = await _installerService.GetSITReleases();
-            if (!sitReleases.Any()) {
-                _barNotificationService.ShowWarning("Error", "Unable to fetch SIT releases");
-                return;
+        /// <summary>
+        /// Check the current version of EFT and update the version in the config if it's different
+        /// </summary>
+        private void CheckTarkovVersion() {
+            ManagerConfig config = _configService.Config;
+            string tarkovVersion = _versionService.GetEFTVersion(config.InstallPath);
+            if (tarkovVersion != config.TarkovVersion) {
+                config.TarkovVersion = tarkovVersion;
+                _configService.UpdateConfig(config);
+            }
+        }
+
+        private async Task<GithubRelease?> EnsureEftVersion(List<GithubRelease> releases) {
+            if (!releases.Any()) {
+                _barNotificationService.ShowWarning("Error", "Unable to fetch releases");
+                return null;
             }
 
-            SelectVersionDialog selectWindow = new(sitReleases);
-            GithubRelease? result = await selectWindow.ShowAsync();
-            if (result != null) {
-                await _installerService.InstallSIT(result);
+            SelectVersionDialog selectWindow = new(releases);
+            GithubRelease? selectedVersion = await selectWindow.ShowAsync();
+            if (selectedVersion == null) {
+                return null;
+            }
+
+            // Ensure the tarkov version is up to date before we check it
+            CheckTarkovVersion();
+            if (_configService.Config.TarkovVersion != selectedVersion.body) {
+                Dictionary<string, string>? availableMirrors = await _installerService.GetAvaiableMirrorsForVerison(selectedVersion.body);
+                if (availableMirrors == null) {
+                    return null;
+                }
+
+                SelectDowngradePatcherMirrorDialog selectDowngradePatcherWindow = new(availableMirrors);
+                string? selectedMirrorUrl = await selectDowngradePatcherWindow.ShowAsync();
+                if (string.IsNullOrEmpty(selectedMirrorUrl)) {
+                    return null;
+                }
+
+                await _installerService.DownloadAndRunPatcher(selectedMirrorUrl);
+                CheckTarkovVersion();
+            }
+
+            return selectedVersion;
+        }
+
+        private async Task InstallSIT() {
+            List<GithubRelease> sitReleases = await _installerService.GetSITReleases();
+            GithubRelease? versionToInstall = await EnsureEftVersion(sitReleases);
+            if (versionToInstall != null) {
+                await _installerService.InstallSIT(versionToInstall);
             }
         }
 
@@ -137,16 +179,10 @@ namespace SIT.Manager.Avalonia.ViewModels
         }
 
         private async Task InstallServer() {
-            List<GithubRelease> sitReleases = await _installerService.GetServerReleases();
-            if (!sitReleases.Any()) {
-                _barNotificationService.ShowWarning("Error", "Unable to fetch Server releases");
-                return;
-            }
-
-            SelectVersionDialog selectWindow = new(sitReleases);
-            GithubRelease? result = await selectWindow.ShowAsync();
-            if (result != null) {
-                await _installerService.InstallServer(result);
+            List<GithubRelease> serverReleases = await _installerService.GetServerReleases();
+            GithubRelease? versionToInstall = await EnsureEftVersion(serverReleases);
+            if (versionToInstall != null) {
+                await _installerService.InstallServer(versionToInstall);
             }
         }
 

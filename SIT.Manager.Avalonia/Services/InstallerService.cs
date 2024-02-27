@@ -1,7 +1,4 @@
-﻿using Avalonia.Controls;
-using Avalonia.Layout;
-using FluentAvalonia.UI.Controls;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
@@ -34,7 +31,7 @@ namespace SIT.Manager.Avalonia.Services
         private readonly ILogger<InstallerService> _logger = logger;
         private readonly IVersionService _versionService = versionService;
 
-        [GeneratedRegex("This server version works with EFT version ([0]{1,}\\.[0-9]{1,2}\\.[0-9]{1,2})\\.[0-9]{1,2}\\.[0-9]{1,5}")]
+        [GeneratedRegex("This server version works with version ([0]{1,}\\.[0-9]{1,2}\\.[0-9]{1,2})\\.[0-9]{1,2}\\.[0-9]{1,5}")]
         private static partial Regex ServerReleaseVersionRegex();
 
 
@@ -82,18 +79,6 @@ namespace SIT.Manager.Avalonia.Services
         }
 
         /// <summary>
-        /// Check the current version of EFT and update the version in the config if it's different
-        /// </summary>
-        private void CheckTarkovVersion() {
-            ManagerConfig config = _configService.Config;
-            string tarkovVersion = _versionService.GetEFTVersion(config.InstallPath);
-            if (tarkovVersion != config.TarkovVersion) {
-                config.TarkovVersion = tarkovVersion;
-                _configService.UpdateConfig(config);
-            }
-        }
-
-        /// <summary>
         /// Clones a directory
         /// </summary>
         /// <param name="root">Root path to clone</param>
@@ -112,111 +97,14 @@ namespace SIT.Manager.Avalonia.Services
         }
 
         /// <summary>
-        /// Downloads the patcher
-        /// </summary>
-        /// <param name="sitVersionTarget"></param>
-        /// <returns></returns>
-        private async Task<bool> DownloadAndRunPatcher(string sitVersionTarget = "") {
-            _logger.LogInformation("Downloading Patcher");
-
-            if (string.IsNullOrEmpty(_configService.Config.TarkovVersion)) {
-                _logger.LogError("DownloadPatcher: TarkovVersion is 'null'");
-                return false;
-            }
-
-            string releasesString = await _httpClient.GetStringAsync(@"https://sitcoop.publicvm.com/api/v1/repos/SIT/Downgrade-Patches/releases");
-            List<GiteaRelease>? giteaReleases = JsonSerializer.Deserialize<List<GiteaRelease>>(releasesString);
-            if (giteaReleases == null) {
-                _logger.LogError("DownloadPatcher: giteaReleases is 'null'");
-                return false;
-            }
-
-            List<GiteaRelease> patcherList = [];
-            string tarkovBuild = _configService.Config.TarkovVersion.Split(".").Last();
-            string sitBuild = sitVersionTarget.Split(".").Last();
-            string tarkovVersionToDowngrade = tarkovBuild != sitBuild ? tarkovBuild : "";
-
-            if (string.IsNullOrEmpty(tarkovVersionToDowngrade)) {
-                _logger.LogError("DownloadPatcher: tarkovVersionToDowngrade is 'null'");
-                return false;
-            }
-
-            foreach (GiteaRelease release in giteaReleases) {
-                string[] splitRelease = release.name.Split("to");
-                if (splitRelease.Length != 2) {
-                    return false;
-                }
-
-                string patcherFrom = splitRelease[0].Trim();
-                string patcherTo = splitRelease[1].Trim();
-
-                if (patcherFrom == tarkovVersionToDowngrade && patcherTo == sitBuild) {
-                    patcherList.Add(release);
-                    tarkovVersionToDowngrade = patcherTo;
-                }
-            }
-
-            if (patcherList.Count == 0 && _configService.Config.SitVersion != sitVersionTarget) {
-                _logger.LogError("No applicable patcher found for the specified SIT version.");
-                return false;
-            }
-
-            foreach (var patcher in patcherList) {
-                string mirrorsUrl = patcher.assets.Find(q => q.name == "mirrors.json")?.browser_download_url ?? string.Empty;
-                if (string.IsNullOrEmpty(mirrorsUrl)) {
-                    _logger.LogError("No mirrors url found in mirrors.json.");
-                    return false;
-                }
-
-                string mirrorsString = await _httpClient.GetStringAsync(mirrorsUrl);
-                List<Mirrors>? mirrors = JsonSerializer.Deserialize<List<Mirrors>>(mirrorsString);
-                if (mirrors == null || mirrors.Count == 0) {
-                    _logger.LogError("No download mirrors found for patcher.");
-                    return false;
-                }
-
-                string selectedMirrorUrl = await ShowMirrorSelectionDialog(mirrors);
-                if (string.IsNullOrEmpty(selectedMirrorUrl)) {
-                    _logger.LogWarning("Mirror selection was canceled or no mirror was selected.");
-                    return false;
-                }
-
-                string patcherPath = Path.Combine(_configService.Config.InstallPath, @"Patcher.zip");
-                if (File.Exists(patcherPath)) {
-                    File.Delete(patcherPath);
-                }
-
-                bool downloadSuccess = await _fileService.DownloadFile("Patcher.zip", _configService.Config.InstallPath, selectedMirrorUrl, true);
-                if (!downloadSuccess) {
-                    _logger.LogError("Failed to download the patcher from the selected mirror.");
-                    return false;
-                }
-
-                await _fileService.ExtractArchive(patcherPath, _configService.Config.InstallPath);
-                var patcherDir = Directory.GetDirectories(_configService.Config.InstallPath, "Patcher*").FirstOrDefault();
-                if (!string.IsNullOrEmpty(patcherDir)) {
-                    CloneDirectory(patcherDir, _configService.Config.InstallPath);
-                    Directory.Delete(patcherDir, true);
-                }
-
-                string patcherResult = await RunPatcher();
-                if (patcherResult != "Patcher was successful.") {
-                    _logger.LogError($"Patcher failed: {patcherResult}");
-                    return false;
-                }
-            }
-
-            // If execution reaches this point, it means all necessary patchers succeeded
-            _logger.LogInformation("Patcher completed successfully.");
-            return true;
-        }
-
-        /// <summary>
         /// Runs the downgrade patcher
         /// </summary>
         /// <returns>string with result</returns>
         private async Task<string> RunPatcher() {
             _logger.LogInformation("Starting Patcher");
+            _actionNotificationService.StartActionNotification();
+            _actionNotificationService.UpdateActionNotification(new ActionNotification("Running Patcher...", 100));
+
             string patcherPath = Path.Combine(_configService.Config.InstallPath, "Patcher.exe");
             if (!File.Exists(patcherPath)) {
                 return $"Patcher.exe not found at {patcherPath}";
@@ -248,58 +136,15 @@ namespace SIT.Manager.Avalonia.Services
                 }
             }
 
+            _actionNotificationService.StopActionNotification();
+
             _patcherResultMessages.TryGetValue(patcherProcess.ExitCode, out string? patcherResult);
             _logger.LogInformation($"RunPatcher: {patcherResult}");
             return patcherResult ?? "Unknown error.";
         }
 
-        /// <summary>
-        /// Shows a dialog for the user to select a download mirror.
-        /// </summary>
-        /// <param name="mirrors">List of mirrors to choose from.</param>
-        /// <returns>The URL of the selected mirror or null if canceled.</returns>
-        private async Task<string> ShowMirrorSelectionDialog(List<Mirrors> mirrors) {
-            Dictionary<string, string> providerLinks = [];
-            foreach (var mirror in mirrors) {
-                Uri uri = new(mirror.Link);
-                string host = uri.Host.Replace("www.", "").Split('.')[0];
-                providerLinks.TryAdd(host, mirror.Link);
-            }
-
-            // Wrap the ComboBox in a StackPanel for alignment
-            StackPanel contentPanel = new() {
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center
-            };
-            ComboBox mirrorComboBox = new() {
-                HorizontalAlignment = HorizontalAlignment.Center,
-                Width = 300
-            };
-            foreach (var provider in providerLinks.Keys) {
-                mirrorComboBox.Items.Add(new ComboBoxItem { Content = provider });
-            }
-            mirrorComboBox.SelectedIndex = 0;
-            contentPanel.Children.Add(mirrorComboBox);
-
-            ContentDialog selectionDialog = new() {
-                Title = "Select Download Mirror",
-                PrimaryButtonText = "Download",
-                CloseButtonText = "Cancel",
-                Content = contentPanel
-            };
-
-            var result = await selectionDialog.ShowAsync();
-            if (result == ContentDialogResult.Primary) {
-                string? selectedProvider = (mirrorComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString();
-                if (!string.IsNullOrEmpty(selectedProvider)) {
-                    return providerLinks[selectedProvider];
-                }
-            }
-            return string.Empty;
-        }
-
         public async Task<List<GithubRelease>> GetServerReleases() {
-            List<GithubRelease> githubReleases = [];
+            List<GithubRelease> githubReleases;
             try {
                 string releasesJsonString = await _httpClient.GetStringAsync(@"https://api.github.com/repos/stayintarkov/SIT.Aki-Server-Mod/releases");
                 githubReleases = JsonSerializer.Deserialize<List<GithubRelease>>(releasesJsonString) ?? [];
@@ -316,7 +161,7 @@ namespace SIT.Manager.Avalonia.Services
                     if (zipAsset != null) {
                         Match match = ServerReleaseVersionRegex().Match(release.body);
                         if (match.Success) {
-                            string releasePatch = match.Groups[1].Value;
+                            string releasePatch = match.Value.Replace("This server version works with version ", "");
                             release.tag_name = $"{release.name} - Tarkov Version: {releasePatch}";
                             release.body = releasePatch;
                             result.Add(release);
@@ -334,8 +179,115 @@ namespace SIT.Manager.Avalonia.Services
 
         }
 
+        /// <summary>
+        /// Downloads the patcher
+        /// </summary>
+        /// <param name="sitVersionTarget"></param>
+        /// <returns></returns>
+        public async Task<bool> DownloadAndRunPatcher(string url) {
+            _logger.LogInformation("Downloading Patcher");
+
+            if (string.IsNullOrEmpty(_configService.Config.TarkovVersion)) {
+                _logger.LogError("DownloadPatcher: TarkovVersion is 'null'");
+                return false;
+            }
+
+            string patcherPath = Path.Combine(_configService.Config.InstallPath, @"Patcher.zip");
+            if (File.Exists(patcherPath)) {
+                File.Delete(patcherPath);
+            }
+
+            bool downloadSuccess = await _fileService.DownloadFile("Patcher.zip", _configService.Config.InstallPath, url, true);
+            if (!downloadSuccess) {
+                _logger.LogError("Failed to download the patcher from the selected mirror.");
+                return false;
+            }
+
+
+            if (File.Exists(patcherPath)) {
+                await _fileService.ExtractArchive(patcherPath, _configService.Config.InstallPath);
+                File.Delete(patcherPath);
+            }
+
+            var patcherDir = Directory.GetDirectories(_configService.Config.InstallPath, "Patcher*").FirstOrDefault();
+            if (!string.IsNullOrEmpty(patcherDir)) {
+                CloneDirectory(patcherDir, _configService.Config.InstallPath);
+                Directory.Delete(patcherDir, true);
+            }
+
+            string patcherResult = await RunPatcher();
+            if (patcherResult != "Patcher was successful.") {
+                _logger.LogError($"Patcher failed: {patcherResult}");
+                return false;
+            }
+
+            // If execution reaches this point, it means all necessary patchers succeeded
+            _logger.LogInformation("Patcher completed successfully.");
+            return true;
+        }
+
+
+        public async Task<Dictionary<string, string>?> GetAvaiableMirrorsForVerison(string sitVersionTarget) {
+            Dictionary<string, string> providerLinks = new Dictionary<string, string>();
+            if (_configService.Config.TarkovVersion == null) {
+                _logger.LogError("DownloadPatcher: TarkovVersion is 'null'");
+                return null;
+            }
+
+            string releasesString = await _httpClient.GetStringAsync(@"https://sitcoop.publicvm.com/api/v1/repos/SIT/Downgrade-Patches/releases");
+            List<GiteaRelease> giteaReleases = JsonSerializer.Deserialize<List<GiteaRelease>>(releasesString);
+            if (giteaReleases == null) {
+                _logger.LogError("DownloadPatcher: giteaReleases is 'null'");
+                return null;
+            }
+
+            string tarkovBuild = _configService.Config.TarkovVersion.Split(".").Last();
+            string sitVersionTargetBuild = sitVersionTarget.Split(".").Last();
+
+            GiteaRelease? compatibleDowngradePatcher = null;
+            foreach (var release in giteaReleases) {
+                string[] splitRelease = release.name.Split("to");
+                if (splitRelease.Length != 2) {
+                    continue;
+                }
+
+                string patcherFrom = splitRelease[0].Trim();
+                string patcherTo = splitRelease[1].Trim();
+
+                if (patcherFrom == tarkovBuild && patcherTo == sitVersionTargetBuild) {
+                    compatibleDowngradePatcher = release;
+                    break;
+                }
+            }
+
+            if (compatibleDowngradePatcher == null) {
+                _logger.LogError("No applicable patcher found for the specified SIT version.");
+                return null;
+            }
+
+            string mirrorsUrl = compatibleDowngradePatcher.assets.Find(q => q.name == "mirrors.json")?.browser_download_url ?? string.Empty;
+            string mirrorsString = await _httpClient.GetStringAsync(mirrorsUrl);
+            List<Mirrors> mirrors = JsonSerializer.Deserialize<List<Mirrors>>(mirrorsString) ?? [];
+
+            if (mirrors == null || mirrors.Count == 0) {
+                _logger.LogError("No download mirrors found for patcher.");
+                return null;
+            }
+
+            foreach (var mirror in mirrors) {
+                Uri uri = new(mirror.Link);
+                string host = uri.Host.Replace("www.", "").Split('.')[0];
+                providerLinks.TryAdd(host, mirror.Link);
+            }
+
+            if (providerLinks.Keys.Count > 0) {
+                return providerLinks;
+            }
+            return null;
+        }
+
         public async Task<List<GithubRelease>> GetSITReleases() {
-            List<GithubRelease> githubReleases = [];
+            List<GithubRelease> githubReleases;
             try {
                 string releasesJsonString = await _httpClient.GetStringAsync(@"https://api.github.com/repos/stayintarkov/StayInTarkov.Client/releases");
                 githubReleases = JsonSerializer.Deserialize<List<GithubRelease>>(releasesJsonString) ?? [];
@@ -379,13 +331,7 @@ namespace SIT.Manager.Avalonia.Services
                 return;
             }
 
-            CheckTarkovVersion();
             try {
-                if (_configService.Config.TarkovVersion != selectedVersion.body) {
-                    await DownloadAndRunPatcher(selectedVersion.body);
-                    CheckTarkovVersion();
-                }
-
                 // Dynamically find the asset that starts with "SITCoop" and ends with ".zip"
                 var releaseAsset = selectedVersion.assets.FirstOrDefault(a => a.name.StartsWith("SITCoop") && a.name.EndsWith(".zip"));
                 if (releaseAsset == null) {
@@ -404,6 +350,7 @@ namespace SIT.Manager.Avalonia.Services
                     sitServerDirectory = Path.Combine(baseDirectory, "Server");
                 }
 
+                // Create SPT-AKI directory (default: Server)
                 if (!Directory.Exists(sitServerDirectory)) {
                     Directory.CreateDirectory(sitServerDirectory);
                 }
@@ -439,7 +386,7 @@ namespace SIT.Manager.Avalonia.Services
 
         public async Task InstallSIT(GithubRelease selectedVersion) {
             if (string.IsNullOrEmpty(_configService.Config.InstallPath)) {
-                _barNotificationService.ShowError("Error", "Install Path is not set. Configure it in Settings.");
+                _barNotificationService.ShowError("Error", "EFT Path is not set. Configure it in Settings.");
                 return;
             }
 
@@ -462,13 +409,6 @@ namespace SIT.Manager.Avalonia.Services
 
                 if (File.Exists(sitReleaseZipPath)) {
                     File.Delete(sitReleaseZipPath);
-                }
-
-                // Ensure the tarkov version is up to date before we check it
-                CheckTarkovVersion();
-                if (_configService.Config.TarkovVersion != selectedVersion.body) {
-                    await DownloadAndRunPatcher(selectedVersion.body);
-                    CheckTarkovVersion();
                 }
 
                 if (!Directory.Exists(coreFilesPath))
@@ -515,7 +455,7 @@ namespace SIT.Manager.Avalonia.Services
                 config.SitVersion = _versionService.GetSITVersion(config.InstallPath);
                 _configService.UpdateConfig(config);
 
-                _barNotificationService.ShowSuccess("Install", "Installation of SIT was succesful.");
+                _barNotificationService.ShowSuccess("Install", "Installation of SIT was successful.");
             }
             catch (Exception ex) {
                 // TODO ShowInfoBarWithLogButton("Install Error", "Encountered an error during installation.", InfoBarSeverity.Error, 10);
