@@ -15,23 +15,7 @@
 		WindowStartupLocation="CenterScreen"
 		TransparencyLevelHint="AcrylicBlur"
 		Background="Transparent"
-		ExtendClientAreaToDecorationsHint="True"
 		Closed="Window_Closed">
-	
-	<!--Create a row for the title bar and reserve the rest for the content-->
-	<Grid RowDefinitions="Auto,*"
-		  Name="WindowGrid">
-		<!--Title bar elements-->
-		<Grid Name="CustomTitleBarGrid" 
-			  Height="30"
-			  ColumnDefinitions="Auto,*" 
-			  IsHitTestVisible="False" 
-			  Background="Black">
-			<Image Grid.Column="0" VerticalAlignment="Center" Source="/Assets/Stay-In-Tarkov-512.ico" Width="18" Margin="5,0,10,0"/>
-			<TextBlock Grid.Column="1" VerticalAlignment="Center" FontFamily="{StaticResource BenderFont}">SIT Manager</TextBlock>
-		</Grid>
-
-		<!--Main content view-->
-		<views:MainView Grid.Row="1"/>
-	</Grid>
+	<!--Main content view-->
+	<views:MainView/>
 </Window>
