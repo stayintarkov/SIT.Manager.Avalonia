@@ -65,12 +65,11 @@
 				</Style>
 			</ui:NavigationView.Styles>
 			
-			<!--TODO: Possibly change these to viewmodel bindings-->
 			<ui:NavigationView.MenuItems>
-				<ui:NavigationViewItem IconSource="Play" Content="{DynamicResource PlayTitle}" Tag="Play" ToolTip.Tip="{DynamicResource PlayTitleToolTip}"/>
-				<ui:NavigationViewItem IconSource="AllApps" Content="{DynamicResource ToolsTitle}" Tag="Tools" ToolTip.Tip="{DynamicResource ToolsTitleToolTip}"/>
-				<ui:NavigationViewItem IconSource="MapDrive" Content="{DynamicResource ServerTitle}" Tag="Server" ToolTip.Tip="{DynamicResource ServerTitleToolTip}"/>
-				<ui:NavigationViewItem IconSource="Library" Content="{DynamicResource ModsTitle}" Tag="Mods" ToolTip.Tip="{DynamicResource ModsTitleToolTip}"/>
+				<ui:NavigationViewItem IconSource="Play" Content="{DynamicResource PlayTitle}" Tag="SIT.Manager.Avalonia.Views.PlayPage" ToolTip.Tip="{DynamicResource PlayTitleToolTip}"/>
+				<ui:NavigationViewItem IconSource="AllApps" Content="{DynamicResource ToolsTitle}" Tag="SIT.Manager.Avalonia.Views.ToolsPage" ToolTip.Tip="{DynamicResource ToolsTitleToolTip}"/>
+				<ui:NavigationViewItem IconSource="MapDrive" Content="{DynamicResource ServerTitle}" Tag="SIT.Manager.Avalonia.Views.ServerPage" ToolTip.Tip="{DynamicResource ServerTitleToolTip}"/>
+				<ui:NavigationViewItem IconSource="Library" Content="{DynamicResource ModsTitle}" Tag="SIT.Manager.Avalonia.Views.ModsPage" ToolTip.Tip="{DynamicResource ModsTitleToolTip}"/>
 			</ui:NavigationView.MenuItems>
 
 			<Grid RowDefinitions="*,Auto">

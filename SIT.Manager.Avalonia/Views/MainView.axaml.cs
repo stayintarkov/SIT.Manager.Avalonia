@@ -6,22 +6,12 @@ using SIT.Manager.Avalonia.Models;
 using SIT.Manager.Avalonia.Models.Messages;
 using SIT.Manager.Avalonia.ViewModels;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace SIT.Manager.Avalonia.Views;
 
 public partial class MainView : ReactiveUserControl<MainViewModel>
 {
-    private static readonly Dictionary<string, Type> NavMenuLookup = new()
-    {
-        { "Play", typeof(PlayPage) },
-        { "Tools", typeof(ToolsPage) },
-        { "Server", typeof(ServerPage) },
-        { "Mods", typeof(ModsPage) },
-        { "Settings", typeof(SettingsPage) },
-    };
-
     public MainView() {
         InitializeComponent();
 
@@ -43,9 +33,18 @@ public partial class MainView : ReactiveUserControl<MainViewModel>
 
     // I hate this so much, Please if someone knows of a better way to do this make a pull request. Even microsoft docs recommend this heathenry
     private void NavView_ItemInvoked(object? sender, NavigationViewItemInvokedEventArgs e) {
-        string requestedPage = e.InvokedItemContainer.Tag as string ?? string.Empty;
-        if (NavMenuLookup.TryGetValue(requestedPage, out Type? page)) {
-            PageNavigation pageNavigation = new(page);
+        PageNavigation? pageNavigation = null;
+        if (e.IsSettingsInvoked == true) {
+            pageNavigation = new(typeof(SettingsPage));
+        }
+        else if (e.InvokedItemContainer != null) {
+            Type? navPageType = Type.GetType(e.InvokedItemContainer.Tag?.ToString() ?? string.Empty);
+            if (navPageType != null) {
+                pageNavigation = new(navPageType);
+            }
+        }
+
+        if (pageNavigation != null) {
             WeakReferenceMessenger.Default.Send(new PageNavigationMessage(pageNavigation));
         }
     }
