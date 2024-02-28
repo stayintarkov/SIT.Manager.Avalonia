@@ -34,8 +34,7 @@ namespace SIT.Manager.Avalonia.Services
         public event EventHandler<DataReceivedEventArgs>? OutputDataReceived;
         public event EventHandler? ServerStarted;
 
-        private void AkiServer_OutputDataReceived(object sender, DataReceivedEventArgs e)
-        {
+        private void AkiServer_OutputDataReceived(object sender, DataReceivedEventArgs e) {
             if (OutputDataReceived != null) {
                 if (cachedServerOutput.Any()) {
                     cachedServerOutput.Clear();
@@ -65,8 +64,7 @@ namespace SIT.Manager.Avalonia.Services
             }
         }
 
-        public string[] GetCachedServerOutput()
-        {
+        public string[] GetCachedServerOutput() {
             return [.. cachedServerOutput];
         }
 
@@ -126,44 +124,42 @@ namespace SIT.Manager.Avalonia.Services
             _process.Start();
             UpdateRunningState(RunningState.Starting);
 
-            if (cal) {
-                _ = Task.Run(async () => {
-                    TarkovRequesting requesting = ActivatorUtilities.CreateInstance<TarkovRequesting>(_serviceProvider, new Uri("http://127.0.0.1:6969/"));
-                    int retryCounter = 0;
-                    while (retryCounter < 6) {
-                        using (CancellationTokenSource cts = new()) {
-                            DateTime abortTime = DateTime.Now + TimeSpan.FromSeconds(10);
-                            cts.CancelAfter(abortTime - DateTime.Now);
+            if (!cal) {
+                _process.BeginOutputReadLine();
+            }
 
-                            bool pingReponse;
-                            try {
-                                pingReponse = await requesting.PingServer(cts.Token);
-                            }
-                            catch (HttpRequestException) {
-                                pingReponse = false;
-                            }
+            Task.Run(async () => {
+                TarkovRequesting requesting = ActivatorUtilities.CreateInstance<TarkovRequesting>(_serviceProvider, new Uri("http://127.0.0.1:6969/"));
+                int retryCounter = 0;
+                while (retryCounter < 6) {
+                    using (CancellationTokenSource cts = new()) {
+                        DateTime abortTime = DateTime.Now + TimeSpan.FromSeconds(10);
+                        cts.CancelAfter(abortTime - DateTime.Now);
 
-                            if (pingReponse && _process?.HasExited == false) {
-                                IsStarted = true;
-                                ServerStarted?.Invoke(this, new EventArgs());
-                                UpdateRunningState(RunningState.Running);
-                                return;
-                            }
-                            else if (_process?.HasExited == true) {
-                                UpdateRunningState(RunningState.NotRunning);
-                                return;
-                            }
+                        bool pingReponse;
+                        try {
+                            pingReponse = await requesting.PingServer(cts.Token);
+                        }
+                        catch (HttpRequestException) {
+                            pingReponse = false;
                         }
 
-                        await Task.Delay(5 * 1000);
-                        retryCounter++;
+                        if (pingReponse && _process?.HasExited == false) {
+                            IsStarted = true;
+                            ServerStarted?.Invoke(this, new EventArgs());
+                            UpdateRunningState(RunningState.Running);
+                            return;
+                        }
+                        else if (_process?.HasExited == true) {
+                            UpdateRunningState(RunningState.NotRunning);
+                            return;
+                        }
                     }
-                });
-            }
-            else {
-                _process.BeginOutputReadLine();
-                UpdateRunningState(RunningState.Running);
-            }
+
+                    await Task.Delay(5 * 1000);
+                    retryCounter++;
+                }
+            });
         }
     }
 }

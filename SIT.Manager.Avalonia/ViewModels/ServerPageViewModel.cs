@@ -49,13 +49,13 @@ namespace SIT.Manager.Avalonia.ViewModels
 
             EditServerConfigCommand = new AsyncRelayCommand(EditServerConfig);
 
-            UpdateCachedServerProperties(null, _configService.Config);
-            _configService.ConfigChanged += UpdateCachedServerProperties;
-            if(_akiServerService.State != RunningState.NotRunning)
-                AkiServer_RunningStateChanged(null, _akiServerService.State);
-
             this.WhenActivated((CompositeDisposable disposables) => {
                 /* Handle activation */
+                UpdateCachedServerProperties(null, _configService.Config);
+                _configService.ConfigChanged += UpdateCachedServerProperties;
+                if (_akiServerService.State != RunningState.NotRunning)
+                    AkiServer_RunningStateChanged(null, _akiServerService.State);
+
                 _akiServerService.OutputDataReceived += AkiServer_OutputDataReceived;
                 _akiServerService.RunningStateChanged += AkiServer_RunningStateChanged;
 
@@ -69,14 +69,11 @@ namespace SIT.Manager.Avalonia.ViewModels
             });
         }
 
-        private void UpdateCachedServerProperties(object? sender, ManagerConfig newConfig)
-        {
+        private void UpdateCachedServerProperties(object? sender, ManagerConfig newConfig) {
             FontFamily newFont = FontManager.Current.SystemFonts.FirstOrDefault(x => x.Name == newConfig.ConsoleFontFamily, FontFamily.Parse("Bender"));
-            if(!newFont.Name.Equals(cachedFontFamily.Name))
-            {
+            if (!newFont.Name.Equals(cachedFontFamily.Name)) {
                 cachedFontFamily = newFont;
-                foreach (ConsoleText textEntry in ConsoleOutput)
-                {
+                foreach (ConsoleText textEntry in ConsoleOutput) {
                     textEntry.TextFont = cachedFontFamily;
                 }
             }
@@ -84,15 +81,13 @@ namespace SIT.Manager.Avalonia.ViewModels
             cachedColorBrush.Color = newConfig.ConsoleFontColor;
         }
 
-        private void UpdateConsoleWithCachedEntries()
-        {
+        private void UpdateConsoleWithCachedEntries() {
             foreach (string entry in _akiServerService.GetCachedServerOutput()) {
                 AddConsole(entry);
             }
         }
 
-        private void AddConsole(string text)
-        {
+        private void AddConsole(string text) {
             if (string.IsNullOrEmpty(text)) {
                 return;
             }
@@ -118,8 +113,14 @@ namespace SIT.Manager.Avalonia.ViewModels
         }
 
         private void AkiServer_RunningStateChanged(object? sender, RunningState runningState) {
-            Dispatcher.UIThread.Post(() => {
+            Dispatcher.UIThread.Invoke(() => {
                 switch (runningState) {
+                    case RunningState.Starting: {
+                            AddConsole("Server started!");
+                            StartServerButtonSymbolIcon = Symbol.Stop;
+                            StartServerButtonTextBlock = "Starting Server";
+                            break;
+                        }
                     case RunningState.Running: {
                             AddConsole("Server started!");
                             StartServerButtonSymbolIcon = Symbol.Stop;
