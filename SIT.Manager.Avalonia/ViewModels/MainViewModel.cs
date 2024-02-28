@@ -2,24 +2,24 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using SIT.Manager.Avalonia.Interfaces;
 using CommunityToolkit.Mvvm.Messaging;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Media.Animation;
+using Microsoft.Extensions.Logging;
+using ReactiveUI;
+using SIT.Manager.Avalonia.Interfaces;
+using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
 using SIT.Manager.Avalonia.Models.Messages;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
-using System.Threading.Tasks;
 using System.Net.Http;
-using System.Reflection;
-using Microsoft.Extensions.Logging;
-using ReactiveUI;
 using System.Reactive.Disposables;
-using SIT.Manager.Avalonia.ManagedProcess;
-using static SIT.Manager.Avalonia.Models.LocalizationConfig;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.ViewModels;
 
@@ -29,6 +29,7 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
     private readonly IActionNotificationService _actionNotificationService;
     private readonly IBarNotificationService _barNotificationService;
     private readonly IManagerConfigService _managerConfigService;
+    private readonly ILocalizationService _localizationService;
     private readonly ILogger<MainViewModel> _logger;
     private readonly HttpClient _httpClient;
 
@@ -48,16 +49,18 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
     public MainViewModel(IActionNotificationService actionNotificationService,
         IBarNotificationService barNotificationService,
         IManagerConfigService managerConfigService,
+        ILocalizationService localizationService,
         ILogger<MainViewModel> logger,
         HttpClient httpClient)
     {
-        UpdateTranslationStrings((Languages)managerConfigService.Config.CurrentLanguageSelected);
         _actionNotificationService = actionNotificationService;
         _barNotificationService = barNotificationService;
         _managerConfigService = managerConfigService;
+        _localizationService = localizationService;
         _logger = logger;
         _httpClient = httpClient;
 
+        _localizationService.Translate(_localizationService.Localization, new(_managerConfigService.Config.CurrentLanguageSelected.ShortNameLanguage));
         _actionNotificationService.ActionNotificationReceived += ActionNotificationService_ActionNotificationReceived;
         _barNotificationService.BarNotificationReceived += BarNotificationService_BarNotificationReceived;
 

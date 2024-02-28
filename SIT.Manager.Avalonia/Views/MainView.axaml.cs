@@ -1,6 +1,3 @@
-using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Interactivity;
 using Avalonia.ReactiveUI;
 using CommunityToolkit.Mvvm.Messaging;
 using FluentAvalonia.UI.Controls;
@@ -10,8 +7,6 @@ using SIT.Manager.Avalonia.Models.Messages;
 using SIT.Manager.Avalonia.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 
 namespace SIT.Manager.Avalonia.Views;

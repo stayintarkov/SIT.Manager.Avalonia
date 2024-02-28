@@ -32,4 +32,16 @@
     <PackageReference Include="System.Threading.Channels" Version="8.0.0" />
     <PackageReference Include="ThemeEditor.Controls.ColorPicker" Version="11.0.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaXaml Update="Localization\en-US.axaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </AvaloniaXaml>
+    <AvaloniaXaml Update="Localization\ru-RU.axaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </AvaloniaXaml>
+    <AvaloniaXaml Update="Localization\uk-UA.axaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </AvaloniaXaml>
+  </ItemGroup>
 </Project>

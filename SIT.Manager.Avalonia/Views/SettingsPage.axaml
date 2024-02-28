@@ -7,6 +7,7 @@
 			 xmlns:vm="clr-namespace:SIT.Manager.Avalonia.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="550"
              x:Class="SIT.Manager.Avalonia.Views.SettingsPage"
+			 x:CompileBindings="True"
 			 Background="{DynamicResource ApplicationPageBackgroundThemeBrush}"	 
 			 x:DataType="vm:SettingsPageViewModel">
 	<UserControl.Resources>
@@ -22,79 +23,88 @@
 		<ScrollViewer Grid.Row="0">
 			<StackPanel Margin="10">
 				<!--Launcher settings-->
-				<TextBlock Text="Launcher Settings" Margin="5" VerticalAlignment="Center"/>
+				<TextBlock Text="{DynamicResource SettingsLauncherSettingsTitle}" Margin="5" VerticalAlignment="Center"/>
 				<Border CornerRadius="8" BorderBrush="Gray" BorderThickness="1" Padding="10">
 					<StackPanel>
-						<CheckBox Content="Close Launcher After Game Launch" 
-								  ToolTip.Tip="Closes the launcher automatically after opening the game."
+						<CheckBox Content="{DynamicResource SettingsCloseLauncherAfterGameLaunchTitle}" 
+								  ToolTip.Tip="{DynamicResource SettingsCloseLauncherAfterGameLaunchToolTip}"
 								  IsChecked="{Binding Config.CloseAfterLaunch, Mode=TwoWay}"/>
-						<CheckBox Content="Look For Updates" 
-								  ToolTip.Tip="Automatically look for updates when opening the launcher."
+						<CheckBox Content="{DynamicResource SettingsLookForUpdatesTitle}" 
+								  ToolTip.Tip="{DynamicResource SettingsLookForUpdatesTitleToolTip}"
 								  IsChecked="{Binding Config.LookForUpdates, Mode=TwoWay}"/>
-						<ComboBox Name="languageComboBox" ToolTip.Tip="Translates to your language, select one!" SelectedIndex="{Binding Config.CurrentLanguageSelected, Mode=TwoWay}" SelectionChanged="ComboBox_SelectionChanged">
-							<ComboBoxItem Content="English"/>
-							<ComboBoxItem Content="Ukrainian"/>
-							<ComboBoxItem Content="Russian"/>
-						</ComboBox>
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="auto"/>
+								<ColumnDefinition/>
+							</Grid.ColumnDefinitions>
+							<TextBlock Text="{DynamicResource SettingsLanguageTitle}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+							<ComboBox Margin="5,0,0,0" Grid.Column="1" ToolTip.Tip="{DynamicResource SettingsLanguageTitleToolTip}" ItemsSource="{Binding AvailableLocalization}" SelectedItem="{Binding Localization}">
+								<ComboBox.ItemTemplate>
+									<DataTemplate>
+										<TextBlock Text="{Binding FullNameLanguage}" Tag="{Binding ShortNameLanguage}"/>
+									</DataTemplate>
+								</ComboBox.ItemTemplate>
+							</ComboBox>
+						</Grid>
 					</StackPanel>
 				</Border>
 				
 				<!--EFT Settings-->
-				<TextBlock Text="EFT Settings" Margin="5" VerticalAlignment="Center"/>
+				<TextBlock Text="{DynamicResource SettingsEFTSettingsTitle}" Margin="5" VerticalAlignment="Center"/>
 				<Border CornerRadius="8" BorderBrush="Gray" BorderThickness="1" Padding="10">
 					<StackPanel>
 						<StackPanel Orientation="Horizontal" >
-							<TextBlock Text="EFT Path:" Margin="0,0,10,0" VerticalAlignment="Center"/>
-							<TextBox Watermark="EFT Install Path..." 
+							<TextBlock Text="{DynamicResource SettingsEFTInstallPathTitle}" Margin="0,0,10,0" VerticalAlignment="Center"/>
+							<TextBox Watermark="{DynamicResource SettingsEFTInstallPathPlaceholder}" 
 									 Margin="0,0,10,0" 
 									 MinWidth="425" 
 									 MaxWidth="425" 
 									 IsReadOnly="True"
 									 Text="{Binding Config.InstallPath}"/>
 							<Button Name="ChangeInstallButton" 
-									Content="Change"
+									Content="{DynamicResource SettingsEFTSettingsButtonChangeTitle}"
 									Margin="0,0,10,0" 
-									ToolTip.Tip="Change the EFT Install Path."
+									ToolTip.Tip="{DynamicResource SettingsEFTChangeInstallPathToolTip}"
 									Command="{Binding ChangeInstallLocationCommand}"/>
 						</StackPanel>
 						<StackPanel Orientation="Horizontal">
-							<TextBlock Text="EFT Version:" Margin="0,10,10,0" VerticalAlignment="Center"/>
+							<TextBlock Text="{DynamicResource SettingsEFTVersionTitle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
 							<SelectableTextBlock Text="{Binding Config.TarkovVersion, Mode=TwoWay}" Margin="0,10,10,0" VerticalAlignment="Center"/>
 						</StackPanel>
 						<StackPanel Orientation="Horizontal">
-							<TextBlock Text="SIT Version:" Margin="0,10,10,0" VerticalAlignment="Center"/>
+							<TextBlock Text="{DynamicResource SettingsSITVersionTitle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
 							<SelectableTextBlock Text="{Binding Config.SitVersion, Mode=TwoWay}" Margin="0,10,10,0" VerticalAlignment="Center"/>
 						</StackPanel>
 					</StackPanel>
 				</Border>
 				
 				<!--SPT-AKI Settings-->
-				<TextBlock Text="SPT-AKI Settings" Margin="5" VerticalAlignment="Center"/>
+				<TextBlock Text="{DynamicResource SettingsSPTAKITitle}" Margin="5" VerticalAlignment="Center"/>
 				<Border CornerRadius="8" BorderBrush="Gray" BorderThickness="1" Padding="10">
 					<StackPanel>
 						<StackPanel Orientation="Horizontal">
-							<TextBlock Text="SPT-AKI Path:"  VerticalAlignment="Center"/>
-							<TextBox Watermark="SPT-AKI Install Path..." 
+							<TextBlock Text="{DynamicResource SettingsSPTAKIPathTitle}"  VerticalAlignment="Center"/>
+							<TextBox Watermark="{DynamicResource SettingsSPTAKIInstallPathPlaceholder}" 
 									 Margin="5" 
 									 MinWidth="397" 
 									 MaxWidth="425" 
 									 IsReadOnly="True"
 									 Text="{Binding Config.AkiServerPath}"/>
 							<Button Name="ChangeAkiServerPath" 
-									Content="Change" 
+									Content="{DynamicResource SettingsEFTSettingsButtonChangeTitle}" 
 									Margin="5" 
-									ToolTip.Tip="Change the SPT-AKI Install Path."
+									ToolTip.Tip="{DynamicResource SettingsSPTAKIInstallPathToolTip}"
 									Command="{Binding ChangeAkiServerLocationCommand}"/>
 						</StackPanel>
 					</StackPanel>
 				</Border>
 				
 				<!--Server Console-->
-				<TextBlock Text="Server Console" Margin="5" VerticalAlignment="Center"/>
+				<TextBlock Text="{DynamicResource SettingsServerConsoleTitle}" Margin="5" VerticalAlignment="Center"/>
 				<Border CornerRadius="8" BorderBrush="Gray" BorderThickness="1" Padding="10">
 					<StackPanel>
 						<StackPanel Orientation="Horizontal">
-							<TextBlock Text="Font family:" Margin="0,0,10,0" VerticalAlignment="Center"/>
+							<TextBlock Text="{DynamicResource SettingsServerConsoleFontFamilyTitle}" Margin="0,0,10,0" VerticalAlignment="Center"/>
 							<ComboBox x:Name="fontComboBox" 
 									  Margin="0,0,10,0" 
 									  VerticalAlignment="Center" 
@@ -113,7 +123,7 @@
 							</ComboBox>
 						</StackPanel>
 						<StackPanel Orientation="Horizontal">
-							<TextBlock Text="Font Color:" Margin="0,10,10,0" VerticalAlignment="Center"/>
+							<TextBlock Text="{DynamicResource SettingsServerConsoleFontColorTitle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
 							<ToggleButton Name="ConsoleColorPopupButton"
 										  Width="30"
 										  Height="15" 
@@ -164,7 +174,7 @@
 		</ScrollViewer>
 
 		<StackPanel Margin="0,5" Orientation="Horizontal" Grid.Row="1">
-			<TextBlock Margin="10" Text="Manager Version: "/>
+			<TextBlock Margin="10" Text="{DynamicResource SettingsManagerVersionTitle}"/>
 			<SelectableTextBlock Text="{Binding ManagerVersionString}" VerticalAlignment="Center" Padding="5"/>
 		</StackPanel>
 	</Grid>

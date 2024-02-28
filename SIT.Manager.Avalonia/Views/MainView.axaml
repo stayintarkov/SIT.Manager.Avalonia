@@ -67,10 +67,10 @@
 			
 			<!--TODO: Possibly change these to viewmodel bindings-->
 			<ui:NavigationView.MenuItems>
-				<ui:NavigationViewItem IconSource="Play" Content="{DynamicResource PlayTitle}" Tag="Play" ToolTip.Tip="{DynamicResource PlayTitleToolTip}" Tapped="PlayButton_Clicked"/>
-				<ui:NavigationViewItem IconSource="AllApps" Content="{DynamicResource ToolsTitle}" Tag="Tools" ToolTip.Tip="{DynamicResource ToolsTitleToolTip}" Tapped="ToolsButton_Clicked"/>
-				<ui:NavigationViewItem IconSource="MapDrive" Content="{DynamicResource ServerTitle}" Tag="Server" ToolTip.Tip="{DynamicResource ServerTitleToolTip}" Tapped="ServerButton_Clicked"/>
-				<ui:NavigationViewItem IconSource="Library" Content="{DynamicResource ModsTitle}" Tag="Mods" ToolTip.Tip="{DynamicResource ModsTitleToolTip}" Tapped="ModsButton_Clicked"/>
+				<ui:NavigationViewItem IconSource="Play" Content="{DynamicResource PlayTitle}" Tag="Play" ToolTip.Tip="{DynamicResource PlayTitleToolTip}"/>
+				<ui:NavigationViewItem IconSource="AllApps" Content="{DynamicResource ToolsTitle}" Tag="Tools" ToolTip.Tip="{DynamicResource ToolsTitleToolTip}"/>
+				<ui:NavigationViewItem IconSource="MapDrive" Content="{DynamicResource ServerTitle}" Tag="Server" ToolTip.Tip="{DynamicResource ServerTitleToolTip}"/>
+				<ui:NavigationViewItem IconSource="Library" Content="{DynamicResource ModsTitle}" Tag="Mods" ToolTip.Tip="{DynamicResource ModsTitleToolTip}"/>
 			</ui:NavigationView.MenuItems>
 
 			<Grid RowDefinitions="*,Auto">

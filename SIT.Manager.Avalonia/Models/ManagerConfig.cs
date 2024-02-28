@@ -1,7 +1,7 @@
 ﻿using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.Generic;
-using static SIT.Manager.Avalonia.Models.LocalizationConfig;
+using System.Globalization;
 
 namespace SIT.Manager.Avalonia.Models
 {
@@ -28,7 +28,7 @@ namespace SIT.Manager.Avalonia.Models
         [ObservableProperty]
         public bool _lookForUpdates = true;
         [ObservableProperty]
-        public int _currentLanguageSelected = (int)Languages.English;
+        public LocalizationModel _currentLanguageSelected = new() { FullNameLanguage = CultureInfo.CurrentCulture.NativeName, ShortNameLanguage = CultureInfo.CurrentCulture.Name };
         [ObservableProperty]
         public bool _acceptedModsDisclaimer = false;
         public string ModCollectionVersion { get; set; } = string.Empty;

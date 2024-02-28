@@ -13,8 +13,7 @@
 		Width="800"
 		Height="475"
 		WindowStartupLocation="CenterScreen"
-		TransparencyLevelHint="AcrylicBlur"
-		Background="Transparent"
+		Background="Black"
 		Closed="Window_Closed">
 	<!--Main content view-->
 	<views:MainView/>
