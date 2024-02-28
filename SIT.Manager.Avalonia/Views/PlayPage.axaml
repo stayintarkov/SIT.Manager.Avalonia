@@ -7,31 +7,5 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:DataType="vm:PlayPageViewModel"
              x:Class="SIT.Manager.Avalonia.Views.PlayPage">
-	<Grid Margin="10" >
-		<StackPanel>
-			<!--Address box-->
-			<Label Content="Address" Margin="10 10 10 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
-			<TextBox Name="AddressBox" Text="{Binding LastServer, Mode=TwoWay}" Margin="10 5 10 10" Width="300" HorizontalAlignment="Left" Watermark="Enter Server Address..." PasswordChar="*" RevealPassword="{Binding $self.IsFocused}"/>
-			<!--Username box-->
-			<Label Content="Username" Margin="10 10 10 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
-			<TextBox Name="UsernameBox" Text="{Binding Username, Mode=TwoWay}" Margin="10 5 10 10" Width="150" HorizontalAlignment="Left" Watermark="Enter Username..."/>
-			<!--Password box-->
-			<Label Content="Password" Margin="10 10 10 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
-			<TextBox Name="PasswordBox" Text="{Binding Password, Mode=TwoWay}" Margin="10 5 10 10" Width="150" HorizontalAlignment="Left" PasswordChar="●" Watermark="Enter Password..."/>
-			<CheckBox Name="RememberMeCheck" Content="Remember Me" Margin="10" IsChecked="{Binding RememberMe}"/>
-			<Button Name="ConnectButton" Command="{Binding ConnectToServerCommand}" Content="Connect" ToolTip.Tip="Connect to the server" Margin="10"/>
-			<Button Name="QuickPlayButton" Command="{Binding QuickPlayCommand}" ToolTip.Tip="Start the Aki server and connect to the server" Margin="10">
-				<StackPanel Orientation="Horizontal">
-					<TextBlock Text="{Binding QuickPlayText}"/>
-					<controls:LoadingSpinner Width="12" 
-											 Height="12" 
-											 Margin="4,0,0,0"
-											 VerticalAlignment="Center"
-											 IsVisible="{Binding QuickPlayCommand.IsRunning}"
-											 Foreground="{DynamicResource TextControlForeground}"
-											 StrokeWidth="2"/>
-				</StackPanel>
-			</Button>
-		</StackPanel>
-	</Grid>
+	
 </UserControl>
