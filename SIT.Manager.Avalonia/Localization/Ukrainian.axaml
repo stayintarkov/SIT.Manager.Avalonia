@@ -1,7 +1,31 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
 					xmlns:system="clr-namespace:System;assembly=System.Runtime"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<!--Play Page / View-->
 	<system:String x:Key="AddressBoxTitle">Адреса</system:String>
 	<system:String x:Key="UsernameBoxTitle">Нікнейм гравця</system:String>
 	<system:String x:Key="PasswordBoxTitle">Пароль</system:String>
+	<system:String x:Key="EnterUserNamePlaceholder">Введіть нікнейм гравця...</system:String>
+	<system:String x:Key="EnterPasswordPlaceholder">Введіть пароль...</system:String>
+	<system:String x:Key="EnterServerAddressPlaceholder">Введіть адресу сервера...</system:String>
+	<system:String x:Key="RememberMeCheckBoxTitle">Запам'ятати</system:String>
+	<system:String x:Key="ConnectButtonTitle">Під'єднатися</system:String>
+	<system:String x:Key="StartServerAndConnectButtonTitleToolTip">Запустіть сервер Aki та підключіться до нього</system:String>
+	<system:String x:Key="ConnectButtonTitleToolTip">Під'єднатися до сервера</system:String>
+	<!--<system:String x:Key="StartServerAndConnectButtonTitle">Start Server and Connect</system:String> For later...-->
+
+	<!--Pane View (Menu on the left also tooltip about update on top)-->
+	<system:String x:Key="UpdateNotification">Оновлення SIT Manager доступне! натисніть, щоб оновити його:</system:String>
+	<system:String x:Key="UpdateButtonTitle">Оновлення</system:String>
+	<system:String x:Key="SetupTitle">Налаштування</system:String>
+	<system:String x:Key="InstallPathErrorNotification">Шлях до встановлення клієнта ще не налаштовано. Перейдіть до налаштувань, щоб налаштувати лаунчер.</system:String>
+	<system:String x:Key="PlayTitle">Грати</system:String>
+	<system:String x:Key="ToolsTitle">Інструменти</system:String>
+	<system:String x:Key="ServerTitle">Сервер</system:String>
+	<system:String x:Key="ModsTitle">Моди</system:String>
+	<system:String x:Key="SettingsTitle">Налаштування</system:String>
+	<system:String x:Key="PlayTitleToolTip">Підключайся і грай.</system:String>
+	<system:String x:Key="ToolsTitleToolTip">Інструменти для управління SIT та Tarkov.</system:String>
+	<system:String x:Key="ServerTitleToolTip">Управління сервером.</system:String>
+	<system:String x:Key="ModsTitleToolTip">Управління модами.</system:String>
 </ResourceDictionary>

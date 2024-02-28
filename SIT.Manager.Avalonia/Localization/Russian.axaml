@@ -1,7 +1,31 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
 					xmlns:system="clr-namespace:System;assembly=System.Runtime"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<!--Play Page / View-->
 	<system:String x:Key="AddressBoxTitle">Адрес</system:String>
 	<system:String x:Key="UsernameBoxTitle">Никнейм игрока</system:String>
 	<system:String x:Key="PasswordBoxTitle">Пароль</system:String>
+	<system:String x:Key="EnterUserNamePlaceholder">Введите никнейм игрока...</system:String>
+	<system:String x:Key="EnterPasswordPlaceholder">Введите пароль...</system:String>
+	<system:String x:Key="EnterServerAddressPlaceholder">Введите адрес сервера...</system:String>
+	<system:String x:Key="RememberMeCheckBoxTitle">Запомнить</system:String>
+	<system:String x:Key="ConnectButtonTitle">Подключится</system:String>
+	<system:String x:Key="StartServerAndConnectButtonTitleToolTip">Запустить сервер Aki и подключится к нему</system:String>
+	<system:String x:Key="ConnectButtonTitleToolTip">Подключится к серверу</system:String>
+	<!--<system:String x:Key="StartServerAndConnectButtonTitle">Start Server and Connect</system:String> For later...-->
+
+	<!--Pane View (Menu on the left also tooltip about update on top)-->
+	<system:String x:Key="UpdateNotification">Доступно обновление SIT Manager, нажмите здесь для обновления:</system:String>
+	<system:String x:Key="UpdateButtonTitle">Обновление</system:String>
+	<system:String x:Key="SetupTitle">Настройка</system:String>
+	<system:String x:Key="InstallPathErrorNotification">Путь установки клиента еще не настроен. Перейдите в настройки, чтобы настроить пусковую установку.</system:String>
+	<system:String x:Key="PlayTitle">Играть</system:String>
+	<system:String x:Key="ToolsTitle">Инструменты</system:String>
+	<system:String x:Key="ServerTitle">Сервер</system:String>
+	<system:String x:Key="ModsTitle">Моды</system:String>
+	<system:String x:Key="SettingsTitle">Настройки</system:String>
+	<system:String x:Key="PlayTitleToolTip">Подключайтесь и играйте.</system:String>
+	<system:String x:Key="ToolsTitleToolTip">Инструменты для управления SIT и Tarkov.</system:String>
+	<system:String x:Key="ServerTitleToolTip">Управление сервером.</system:String>
+	<system:String x:Key="ModsTitleToolTip">Управление модами.</system:String>
 </ResourceDictionary>

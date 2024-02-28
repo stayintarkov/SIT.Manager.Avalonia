@@ -12,16 +12,16 @@
 		<StackPanel>
 			<!--Address box-->
 			<Label Content="{DynamicResource AddressBoxTitle}" Margin="10 10 10 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
-			<TextBox Name="AddressBox" Text="{Binding LastServer, Mode=TwoWay}" Margin="10 5 10 10" Width="300" HorizontalAlignment="Left" Watermark="Enter Server Address..." PasswordChar="*" RevealPassword="{Binding $self.IsFocused}"/>
+			<TextBox Name="AddressBox" Text="{Binding LastServer, Mode=TwoWay}" Margin="10 5 10 10" HorizontalAlignment="Left" Watermark="{DynamicResource EnterServerAddressPlaceholder}" PasswordChar="*" RevealPassword="{Binding $self.IsFocused}"/>
 			<!--Username box-->
 			<Label Content="{DynamicResource UsernameBoxTitle}" Margin="10 10 10 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
-			<TextBox Name="UsernameBox" Text="{Binding Username, Mode=TwoWay}" Margin="10 5 10 10" Width="150" HorizontalAlignment="Left" Watermark="Enter Username..."/>
+			<TextBox Name="UsernameBox" Text="{Binding Username, Mode=TwoWay}" Margin="10 5 10 10" HorizontalAlignment="Left" Watermark="{DynamicResource EnterUserNamePlaceholder}"/>
 			<!--Password box-->
 			<Label Content="{DynamicResource PasswordBoxTitle}" Margin="10 10 10 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
-			<TextBox Name="PasswordBox" Text="{Binding Password, Mode=TwoWay}" Margin="10 5 10 10" Width="150" HorizontalAlignment="Left" PasswordChar="●" Watermark="Enter Password..."/>
-			<CheckBox Name="RememberMeCheck" Content="Remember Me" Margin="10" IsChecked="{Binding RememberMe}"/>
-			<Button Name="ConnectButton" Command="{Binding ConnectToServerCommand}" Content="Connect" ToolTip.Tip="Connect to the server" Margin="10"/>
-			<Button Name="QuickPlayButton" Command="{Binding QuickPlayCommand}" ToolTip.Tip="Start the Aki server and connect to the server" Margin="10">
+			<TextBox Name="PasswordBox" Text="{Binding Password, Mode=TwoWay}" Margin="10 5 10 10" HorizontalAlignment="Left" PasswordChar="●" Watermark="{DynamicResource EnterPasswordPlaceholder}"/>
+			<CheckBox Name="RememberMeCheck" Content="{DynamicResource RememberMeCheckBoxTitle}" Margin="10" IsChecked="{Binding RememberMe}"/>
+			<Button Name="ConnectButton" Command="{Binding ConnectToServerCommand}" Content="{DynamicResource ConnectButtonTitle}" ToolTip.Tip="{DynamicResource ConnectButtonTitleToolTip}" Margin="10"/>
+			<Button Name="QuickPlayButton" Command="{Binding QuickPlayCommand}" ToolTip.Tip="{DynamicResource StartServerAndConnectButtonTitleToolTip}" Margin="10">
 				<StackPanel Orientation="Horizontal">
 					<TextBlock Text="{Binding QuickPlayText}"/>
 					<controls:LoadingSpinner Width="12" 

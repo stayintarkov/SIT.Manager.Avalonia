@@ -1,7 +1,32 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
 					xmlns:system="clr-namespace:System;assembly=System.Runtime"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<!--Play Page / View-->
 	<system:String x:Key="AddressBoxTitle">Address</system:String>
 	<system:String x:Key="UsernameBoxTitle">Username</system:String>
 	<system:String x:Key="PasswordBoxTitle">Password</system:String>
+	<system:String x:Key="EnterUserNamePlaceholder">Enter Username...</system:String>
+	<system:String x:Key="EnterPasswordPlaceholder">Enter Password...</system:String>
+	<system:String x:Key="EnterServerAddressPlaceholder">Enter Server Address...</system:String>
+	<system:String x:Key="RememberMeCheckBoxTitle">Remember Me</system:String>
+	<system:String x:Key="ConnectButtonTitle">Connect</system:String>
+	<system:String x:Key="StartServerAndConnectButtonTitleToolTip">Start the Aki server and connect to the server</system:String>
+	<system:String x:Key="ConnectButtonTitleToolTip">Connect to the server</system:String>
+	<!--<system:String x:Key="StartServerAndConnectButtonTitle">Start Server and Connect</system:String> For later...-->
+
+	<!--Pane View (Menu on the left also tooltip about update on top)-->
+	<system:String x:Key="UpdateNotification">An update to the SIT Manager is available click here to update:</system:String>
+	<system:String x:Key="UpdateButtonTitle">Update</system:String>
+	<system:String x:Key="SetupTitle">Setup</system:String>
+	<system:String x:Key="InstallPathErrorNotification">Client install path isn't configured yet. Go to settings to configure the launcher.</system:String>
+	<system:String x:Key="PlayTitle">Play</system:String>
+	<system:String x:Key="ToolsTitle">Tools</system:String>
+	<system:String x:Key="ServerTitle">Server</system:String>
+	<system:String x:Key="ModsTitle">Mods</system:String>
+	<system:String x:Key="SettingsTitle">Settings</system:String>
+	<system:String x:Key="PlayTitleToolTip">Connect and play.</system:String>
+	<system:String x:Key="ToolsTitleToolTip">Tools to manage SIT and Tarkov.</system:String>
+	<system:String x:Key="ServerTitleToolTip">Server management.</system:String>
+	<system:String x:Key="ModsTitleToolTip">Mod management.</system:String>
+	
 </ResourceDictionary>

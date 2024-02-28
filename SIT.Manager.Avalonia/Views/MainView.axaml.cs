@@ -1,4 +1,5 @@
-﻿using Avalonia.ReactiveUI;
+﻿using Avalonia.Input;
+using Avalonia.ReactiveUI;
 using CommunityToolkit.Mvvm.Messaging;
 using FluentAvalonia.UI.Controls;
 using ReactiveUI;
@@ -6,22 +7,12 @@ using SIT.Manager.Avalonia.Models;
 using SIT.Manager.Avalonia.Models.Messages;
 using SIT.Manager.Avalonia.ViewModels;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace SIT.Manager.Avalonia.Views;
 
 public partial class MainView : ReactiveUserControl<MainViewModel>
 {
-    private static readonly Dictionary<string, Type> NavMenuLookup = new()
-    {
-        { "Play", typeof(PlayPage) },
-        { "Tools", typeof(ToolsPage) },
-        { "Server", typeof(ServerPage) },
-        { "Mods", typeof(ModsPage) },
-        { "Settings", typeof(SettingsPage) },
-    };
-
     public MainView() {
         InitializeComponent();
 
@@ -41,12 +32,53 @@ public partial class MainView : ReactiveUserControl<MainViewModel>
 
     }
 
-    // I hate this so much, Please if someone knows of a better way to do this make a pull request. Even microsoft docs recommend this heathenry
-    private void NavView_ItemInvoked(object? sender, NavigationViewItemInvokedEventArgs e) {
-        string requestedPage = e.InvokedItem.ToString() ?? string.Empty;
-        if (NavMenuLookup.TryGetValue(requestedPage, out Type? page)) {
-            PageNavigation pageNavigation = new(page);
+    /// <summary>
+    /// Event that before checked what button was checked comparing the name of the button, which is stupid when it comes to translating buttons.
+    /// In here we are only handing Settings Button since it's the only thing that is hardcoded here. So this is when "settings button was clicked"
+    /// </summary>
+    private void NavView_ItemInvoked(object? sender, NavigationViewItemInvokedEventArgs e)
+    {
+        if (e.IsSettingsInvoked)
+        {
+            PageNavigation pageNavigation = new(typeof(SettingsPage));
             WeakReferenceMessenger.Default.Send(new PageNavigationMessage(pageNavigation));
+            return;
         }
+    }
+
+    /// <summary>
+    /// <see cref="PlayButton_Clicked(object?, TappedEventArgs)"/> gets fired when you click on PlayButton in Pane View.
+    /// </summary>
+    private void PlayButton_Clicked(object? sender, TappedEventArgs e)
+    {
+        PageNavigation pageNavigation = new(typeof(PlayPage));
+        WeakReferenceMessenger.Default.Send(new PageNavigationMessage(pageNavigation));
+    }
+
+    /// <summary>
+    /// <see cref="ToolsButton_Clicked(object?, TappedEventArgs)"/> gets fired when you click on ToolsButton in Pane View.
+    /// </summary>
+    private void ToolsButton_Clicked(object? sender, TappedEventArgs e)
+    {
+        PageNavigation pageNavigation = new(typeof(ToolsPage));
+        WeakReferenceMessenger.Default.Send(new PageNavigationMessage(pageNavigation));
+    }
+
+    /// <summary>
+    /// <see cref="ServerButton_Clicked(object?, TappedEventArgs)"/> gets fired when you click on ServerButton in Pane View.
+    /// </summary>
+    private void ServerButton_Clicked(object? sender, TappedEventArgs e)
+    {
+        PageNavigation pageNavigation = new(typeof(ServerPage));
+        WeakReferenceMessenger.Default.Send(new PageNavigationMessage(pageNavigation));
+    }
+
+    /// <summary>
+    /// <see cref="ModsButton_Clicked(object?, TappedEventArgs)"/> gets fired when you click on ModsButton in Pane View.
+    /// </summary>
+    private void ModsButton_Clicked(object? sender, TappedEventArgs e)
+    {
+        PageNavigation pageNavigation = new(typeof(ModsPage));
+        WeakReferenceMessenger.Default.Send(new PageNavigationMessage(pageNavigation));
     }
 }

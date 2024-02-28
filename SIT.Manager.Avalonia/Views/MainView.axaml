@@ -8,6 +8,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SIT.Manager.Avalonia.Views.MainView"
              x:DataType="vm:MainViewModel"
+			 x:CompileBindings="True"
 			 Background="Black">
 	<Grid>
 		<Grid.RowDefinitions>
@@ -17,7 +18,7 @@
 
 		<ui:TeachingTip Name="InstallPathTip"
 						Title="Setup"
-						Subtitle="Client install path isn't configured yet. Go to settings to configure the launcher."
+						Subtitle="{DynamicResource InstallPathErrorNotification}"
 						PreferredPlacement="Bottom"
 						IsVisible="False">
 			<ui:TeachingTip.IconSource>
@@ -31,8 +32,8 @@
 					<Ellipse Fill="#1e4f8a" Width="18" Height="18"/>
 					<ui:SymbolIcon Symbol="Important" VerticalAlignment="Center" Margin="0 1 0 0"/>
 				</Panel>
-				<TextBlock Text="An update to the SIT Manager is available click here to update:" Grid.Column="1" VerticalAlignment="Center" FontFamily="Default"/>
-				<Button Content="Update" Command="{Binding UpdateButtonCommand}" VerticalAlignment="Center" FontSize="14" Margin="8 5 0 5" Grid.Column="2"/>
+				<TextBlock Text="{DynamicResource UpdateNotification}" Grid.Column="1" VerticalAlignment="Center" FontFamily="Default"/>
+				<Button Content="{DynamicResource UpdateButtonTitle}" Command="{Binding UpdateButtonCommand}" VerticalAlignment="Center" FontSize="14" Margin="8 5 0 5" Grid.Column="2"/>
 				<Button Command="{Binding CloseButtonCommand}" HorizontalAlignment="Right" Margin="0 0 4 0" MaxWidth="35" MaxHeight="35" Background="Transparent" Grid.Column="4" BorderBrush="Transparent">
 					<ui:SymbolIcon Symbol="Cancel"/>
 				</Button>
@@ -66,10 +67,10 @@
 			
 			<!--TODO: Possibly change these to viewmodel bindings-->
 			<ui:NavigationView.MenuItems>
-				<ui:NavigationViewItem IconSource="Play" Content="Play" Tag="Play" ToolTip.Tip="Connect and play."/>
-				<ui:NavigationViewItem IconSource="AllApps" Content="Tools" Tag="Tools" ToolTip.Tip="Tools to manage SIT and Tarkov."/>
-				<ui:NavigationViewItem IconSource="MapDrive" Content="Server" Tag="Server" ToolTip.Tip="Server management."/>
-				<ui:NavigationViewItem IconSource="Library" Content="Mods" Tag="Mods" ToolTip.Tip="Mod management."/>
+				<ui:NavigationViewItem IconSource="Play" Content="{DynamicResource PlayTitle}" Tag="Play" ToolTip.Tip="{DynamicResource PlayTitleToolTip}" Tapped="PlayButton_Clicked"/>
+				<ui:NavigationViewItem IconSource="AllApps" Content="{DynamicResource ToolsTitle}" Tag="Tools" ToolTip.Tip="{DynamicResource ToolsTitleToolTip}" Tapped="ToolsButton_Clicked"/>
+				<ui:NavigationViewItem IconSource="MapDrive" Content="{DynamicResource ServerTitle}" Tag="Server" ToolTip.Tip="{DynamicResource ServerTitleToolTip}" Tapped="ServerButton_Clicked"/>
+				<ui:NavigationViewItem IconSource="Library" Content="{DynamicResource ModsTitle}" Tag="Mods" ToolTip.Tip="{DynamicResource ModsTitleToolTip}" Tapped="ModsButton_Clicked"/>
 			</ui:NavigationView.MenuItems>
 
 			<Grid RowDefinitions="*,Auto">
