@@ -4,8 +4,10 @@ using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -18,14 +20,38 @@ namespace SIT.Manager.Avalonia.Services
                                   IServiceProvider serviceProvider) : ManagedProcess.ManagedProcess(barNotificationService, configService), IAkiServerService
     {
         private const string SERVER_EXE = "Aki.Server.exe";
+        private const int SERVER_LINE_LIMIT = 10_000;
 
         private readonly IServiceProvider _serviceProvider = serviceProvider;
 
+        private readonly List<string> cachedServerOutput = [];
+
         protected override string EXECUTABLE_NAME => SERVER_EXE;
         public override string ExecutableDirectory => !string.IsNullOrEmpty(_configService.Config.AkiServerPath) ? _configService.Config.AkiServerPath : string.Empty;
+        public bool IsStarted { get; private set; } = false;
+        public int ServerLineLimit => SERVER_LINE_LIMIT;
+
         public event EventHandler<DataReceivedEventArgs>? OutputDataReceived;
         public event EventHandler? ServerStarted;
-        public bool IsStarted { get; private set; } = false;
+
+        private void AkiServer_OutputDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            if (OutputDataReceived != null) {
+                if (cachedServerOutput.Any()) {
+                    cachedServerOutput.Clear();
+                }
+                OutputDataReceived?.Invoke(sender, e);
+            }
+            else {
+                if (cachedServerOutput.Count > ServerLineLimit) {
+                    cachedServerOutput.RemoveAt(0);
+                }
+
+                if (!string.IsNullOrEmpty(e.Data)) {
+                    cachedServerOutput.Add(e.Data);
+                }
+            }
+        }
 
         public override void ClearCache() {
             string serverPath = _configService.Config.AkiServerPath;
@@ -37,6 +63,11 @@ namespace SIT.Manager.Avalonia.Services
                 }
                 Directory.CreateDirectory(serverCachePath);
             }
+        }
+
+        public List<string> GetCachedServerOutput()
+        {
+            throw new NotImplementedException();
         }
 
         public bool IsUnhandledInstanceRunning() {
@@ -75,7 +106,7 @@ namespace SIT.Manager.Avalonia.Services
                 EnableRaisingEvents = true
             };
 
-            _process.OutputDataReceived += new DataReceivedEventHandler((sender, e) => OutputDataReceived?.Invoke(sender, e));
+            _process.OutputDataReceived += AkiServer_OutputDataReceived;
             DataReceivedEventHandler? startedEventHandler = null;
             startedEventHandler = new DataReceivedEventHandler((sender, e) => {
                 if (ServerPageViewModel.ConsoleTextRemoveANSIFilterRegex()
