@@ -64,12 +64,11 @@
 				</Style>
 			</ui:NavigationView.Styles>
 			
-			<!--TODO: Possibly change these to viewmodel bindings-->
 			<ui:NavigationView.MenuItems>
-				<ui:NavigationViewItem IconSource="Play" Content="Play" Tag="Play" ToolTip.Tip="Connect and play."/>
-				<ui:NavigationViewItem IconSource="AllApps" Content="Tools" Tag="Tools" ToolTip.Tip="Tools to manage SIT and Tarkov."/>
-				<ui:NavigationViewItem IconSource="MapDrive" Content="Server" Tag="Server" ToolTip.Tip="Server management."/>
-				<ui:NavigationViewItem IconSource="Library" Content="Mods" Tag="Mods" ToolTip.Tip="Mod management."/>
+				<ui:NavigationViewItem IconSource="Play" Content="Play" Tag="SIT.Manager.Avalonia.Views.PlayPage" ToolTip.Tip="Connect and play."/>
+				<ui:NavigationViewItem IconSource="AllApps" Content="Tools" Tag="SIT.Manager.Avalonia.Views.ToolsPage" ToolTip.Tip="Tools to manage SIT and Tarkov."/>
+				<ui:NavigationViewItem IconSource="MapDrive" Content="Server" Tag="SIT.Manager.Avalonia.Views.ServerPage" ToolTip.Tip="Server management."/>
+				<ui:NavigationViewItem IconSource="Library" Content="Mods" Tag="SIT.Manager.Avalonia.Views.ModsPage" ToolTip.Tip="Mod management."/>
 			</ui:NavigationView.MenuItems>
 
 			<Grid RowDefinitions="*,Auto">
