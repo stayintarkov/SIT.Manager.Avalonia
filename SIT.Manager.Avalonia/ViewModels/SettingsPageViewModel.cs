@@ -81,8 +81,8 @@ public partial class SettingsPageViewModel : ViewModelBase
 
         // Right now, I don't know any better way to load localization files. Only adding them to List using hardcode.
         _availableLocalization.Add(new LocalizationModel() { FullNameLanguage = CultureInfo.GetCultureInfo("en-US").NativeName, ShortNameLanguage = "en-US" });
-        _availableLocalization.Add(new LocalizationModel() { FullNameLanguage = CultureInfo.GetCultureInfo("uk-UA").NativeName, ShortNameLanguage = "en-US" });
-        _availableLocalization.Add(new LocalizationModel() { FullNameLanguage = CultureInfo.GetCultureInfo("ru-RU").NativeName, ShortNameLanguage = "en-US" });
+        _availableLocalization.Add(new LocalizationModel() { FullNameLanguage = CultureInfo.GetCultureInfo("uk-UA").NativeName, ShortNameLanguage = "uk-UA" });
+        _availableLocalization.Add(new LocalizationModel() { FullNameLanguage = CultureInfo.GetCultureInfo("ru-RU").NativeName, ShortNameLanguage = "ru-RU" });
 
         var localization = AvailableLocalization.FirstOrDefault(lang => lang.ShortNameLanguage == _config.CurrentLanguageSelected.ShortNameLanguage);
         if (localization != null)
