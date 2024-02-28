@@ -19,6 +19,7 @@ using Microsoft.Extensions.Logging;
 using ReactiveUI;
 using System.Reactive.Disposables;
 using SIT.Manager.Avalonia.ManagedProcess;
+using static SIT.Manager.Avalonia.Models.LocalizationConfig;
 
 namespace SIT.Manager.Avalonia.ViewModels;
 
@@ -50,6 +51,7 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
         ILogger<MainViewModel> logger,
         HttpClient httpClient)
     {
+        UpdateTranslationStrings((Languages)managerConfigService.Config.CurrentLanguageSelected);
         _actionNotificationService = actionNotificationService;
         _barNotificationService = barNotificationService;
         _managerConfigService = managerConfigService;

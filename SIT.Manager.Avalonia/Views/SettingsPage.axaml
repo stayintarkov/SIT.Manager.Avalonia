@@ -31,6 +31,11 @@
 						<CheckBox Content="Look For Updates" 
 								  ToolTip.Tip="Automatically look for updates when opening the launcher."
 								  IsChecked="{Binding Config.LookForUpdates, Mode=TwoWay}"/>
+						<ComboBox Name="languageComboBox" ToolTip.Tip="Translates to your language, select one!" SelectedIndex="{Binding Config.CurrentLanguageSelected, Mode=TwoWay}" SelectionChanged="ComboBox_SelectionChanged">
+							<ComboBoxItem Content="English"/>
+							<ComboBoxItem Content="Ukrainian"/>
+							<ComboBoxItem Content="Russian"/>
+						</ComboBox>
 					</StackPanel>
 				</Border>
 				
