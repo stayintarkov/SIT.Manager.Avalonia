@@ -48,7 +48,7 @@ public partial class MainView : ReactiveUserControl<MainViewModel>
 
     // I hate this so much, Please if someone knows of a better way to do this make a pull request. Even microsoft docs recommend this heathenry
     private void NavView_ItemInvoked(object? sender, NavigationViewItemInvokedEventArgs e) {
-        string requestedPage = e.InvokedItem.ToString() ?? string.Empty;
+        string requestedPage = e.InvokedItemContainer.Tag as string ?? string.Empty;
         if (NavMenuLookup.TryGetValue(requestedPage, out Type? page)) {
             PageNavigation pageNavigation = new(page);
             WeakReferenceMessenger.Default.Send(new PageNavigationMessage(pageNavigation));
