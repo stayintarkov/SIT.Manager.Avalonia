@@ -3,6 +3,7 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
+using ReactiveUI;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
 using SIT.Manager.Avalonia.Services;
@@ -11,10 +12,9 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reactive.Disposables;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
-using static SIT.Manager.Avalonia.Services.AkiServerService;
 
 namespace SIT.Manager.Avalonia.ViewModels
 {
@@ -23,8 +23,6 @@ namespace SIT.Manager.Avalonia.ViewModels
     /// </summary>
     public partial class ServerPageViewModel : ViewModelBase
     {
-        private const int CONSOLE_LINE_LIMIT = 10_000;
-
         [GeneratedRegex("\\x1B(?:[@-Z\\\\-_]|\\[[0-?]*[ -/]*[@-~])")]
         internal static partial Regex ConsoleTextRemoveANSIFilterRegex();
 
@@ -51,24 +49,31 @@ namespace SIT.Manager.Avalonia.ViewModels
 
             EditServerConfigCommand = new AsyncRelayCommand(EditServerConfig);
 
-            _akiServerService.OutputDataReceived += AkiServer_OutputDataReceived;
-            _akiServerService.RunningStateChanged += AkiServer_RunningStateChanged;
-            
-            UpdateCachedServerProperties(null, _configService.Config);
-            _configService.ConfigChanged += UpdateCachedServerProperties;
-            if(_akiServerService.State != RunningState.NotRunning)
-                AkiServer_RunningStateChanged(null, _akiServerService.State);
+            this.WhenActivated((CompositeDisposable disposables) => {
+                /* Handle activation */
+                UpdateCachedServerProperties(null, _configService.Config);
+                _configService.ConfigChanged += UpdateCachedServerProperties;
+                if (_akiServerService.State != RunningState.NotRunning)
+                    AkiServer_RunningStateChanged(null, _akiServerService.State);
+
+                _akiServerService.OutputDataReceived += AkiServer_OutputDataReceived;
+                _akiServerService.RunningStateChanged += AkiServer_RunningStateChanged;
+
+                UpdateConsoleWithCachedEntries();
+
+                Disposable.Create(() => {
+                    /* Handle deactivation */
+                    _akiServerService.OutputDataReceived -= AkiServer_OutputDataReceived;
+                    _akiServerService.RunningStateChanged -= AkiServer_RunningStateChanged;
+                }).DisposeWith(disposables);
+            });
         }
 
-        private void UpdateCachedServerProperties(object? sender, ManagerConfig newConfig)
-        {
-            
+        private void UpdateCachedServerProperties(object? sender, ManagerConfig newConfig) {
             FontFamily newFont = FontManager.Current.SystemFonts.FirstOrDefault(x => x.Name == newConfig.ConsoleFontFamily, FontFamily.Parse("Bender"));
-            if(!newFont.Name.Equals(cachedFontFamily.Name))
-            {
+            if (!newFont.Name.Equals(cachedFontFamily.Name)) {
                 cachedFontFamily = newFont;
-                foreach (ConsoleText textEntry in ConsoleOutput)
-                {
+                foreach (ConsoleText textEntry in ConsoleOutput) {
                     textEntry.TextFont = cachedFontFamily;
                 }
             }
@@ -76,12 +81,18 @@ namespace SIT.Manager.Avalonia.ViewModels
             cachedColorBrush.Color = newConfig.ConsoleFontColor;
         }
 
+        private void UpdateConsoleWithCachedEntries() {
+            foreach (string entry in _akiServerService.GetCachedServerOutput()) {
+                AddConsole(entry);
+            }
+        }
+
         private void AddConsole(string text) {
             if (string.IsNullOrEmpty(text)) {
                 return;
             }
 
-            if (ConsoleOutput.Count > CONSOLE_LINE_LIMIT) {
+            if (ConsoleOutput.Count > _akiServerService.ServerLineLimit) {
                 ConsoleOutput.RemoveAt(0);
             }
 
@@ -102,8 +113,14 @@ namespace SIT.Manager.Avalonia.ViewModels
         }
 
         private void AkiServer_RunningStateChanged(object? sender, RunningState runningState) {
-            Dispatcher.UIThread.Post(() => {
+            Dispatcher.UIThread.Invoke(() => {
                 switch (runningState) {
+                    case RunningState.Starting: {
+                            AddConsole("Server started!");
+                            StartServerButtonSymbolIcon = Symbol.Stop;
+                            StartServerButtonTextBlock = "Starting Server";
+                            break;
+                        }
                     case RunningState.Running: {
                             AddConsole("Server started!");
                             StartServerButtonSymbolIcon = Symbol.Stop;
