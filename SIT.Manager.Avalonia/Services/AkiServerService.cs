@@ -65,9 +65,9 @@ namespace SIT.Manager.Avalonia.Services
             }
         }
 
-        public List<string> GetCachedServerOutput()
+        public string[] GetCachedServerOutput()
         {
-            throw new NotImplementedException();
+            return [.. cachedServerOutput];
         }
 
         public bool IsUnhandledInstanceRunning() {
