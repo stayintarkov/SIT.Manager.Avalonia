@@ -100,14 +100,18 @@ namespace SIT.Manager.Avalonia.Services
         /// Runs the downgrade patcher
         /// </summary>
         /// <returns>string with result</returns>
-        private async Task<string> RunPatcher() {
+        private async Task<string> RunPatcher()
+        {
             _logger.LogInformation("Starting Patcher");
             _actionNotificationService.StartActionNotification();
             _actionNotificationService.UpdateActionNotification(new ActionNotification("Running Patcher...", 100));
 
             string patcherPath = Path.Combine(_configService.Config.InstallPath, "Patcher.exe");
             if (!File.Exists(patcherPath)) {
+                patcherPath = Path.Combine(_configService.Config.InstallPath, "patcher.exe");
+                if (!File.Exists(patcherPath)) {
                 return $"Patcher.exe not found at {patcherPath}";
+            }
             }
 
             Process patcherProcess = new() {
