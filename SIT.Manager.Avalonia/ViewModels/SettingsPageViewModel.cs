@@ -5,9 +5,9 @@ using CommunityToolkit.Mvvm.Input;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -33,6 +33,8 @@ public partial class SettingsPageViewModel : ViewModelBase
 
     [ObservableProperty]
     private string _managerVersionString;
+
+    public static bool ShowLinuxSettings => OperatingSystem.IsLinux();
 
     public IAsyncRelayCommand ChangeInstallLocationCommand { get; }
 
