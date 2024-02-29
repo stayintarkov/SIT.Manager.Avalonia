@@ -34,7 +34,8 @@ namespace SIT.Manager.Avalonia.Services
         public event EventHandler<DataReceivedEventArgs>? OutputDataReceived;
         public event EventHandler? ServerStarted;
 
-        private void AkiServer_OutputDataReceived(object sender, DataReceivedEventArgs e) {
+        private void AkiServer_OutputDataReceived(object sender, DataReceivedEventArgs e)
+        {
             if (OutputDataReceived != null) {
                 if (cachedServerOutput.Any()) {
                     cachedServerOutput.Clear();
@@ -52,7 +53,8 @@ namespace SIT.Manager.Avalonia.Services
             }
         }
 
-        public override void ClearCache() {
+        public override void ClearCache()
+        {
             string serverPath = _configService.Config.AkiServerPath;
             if (!string.IsNullOrEmpty(serverPath)) {
                 // Combine the serverPath with the additional subpath.
@@ -64,11 +66,13 @@ namespace SIT.Manager.Avalonia.Services
             }
         }
 
-        public string[] GetCachedServerOutput() {
+        public string[] GetCachedServerOutput()
+        {
             return [.. cachedServerOutput];
         }
 
-        public bool IsUnhandledInstanceRunning() {
+        public bool IsUnhandledInstanceRunning()
+        {
             Process[] akiServerProcesses = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(SERVER_EXE));
 
             if (akiServerProcesses.Length > 0) {
@@ -86,7 +90,8 @@ namespace SIT.Manager.Avalonia.Services
             return false;
         }
 
-        public override void Start(string? arguments = null) {
+        public override void Start(string? arguments = null)
+        {
             if (State == RunningState.Running) {
                 return;
             }
@@ -103,6 +108,16 @@ namespace SIT.Manager.Avalonia.Services
                 },
                 EnableRaisingEvents = true
             };
+            if (OperatingSystem.IsLinux()) {
+                _process.StartInfo.FileName = _configService.Config.WineRunner;
+                _process.StartInfo.Arguments = $"\"{ExecutableFilePath}\"";
+
+                string winePrefix = Path.GetFullPath(_configService.Config.WinePrefix);
+                if (!Path.EndsInDirectorySeparator(winePrefix)) {
+                    winePrefix = $"{winePrefix}{Path.DirectorySeparatorChar}";
+                }
+                _process.StartInfo.EnvironmentVariables.Add("WINEPREFIX", winePrefix);
+            }
 
             _process.OutputDataReceived += AkiServer_OutputDataReceived;
             DataReceivedEventHandler? startedEventHandler = null;
