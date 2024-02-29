@@ -60,7 +60,7 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
         _logger = logger;
         _httpClient = httpClient;
 
-        _localizationService.Translate(_localizationService.Localization, new(_managerConfigService.Config.CurrentLanguageSelected.ShortNameLanguage));
+        _localizationService.Translate(new CultureInfo(_managerConfigService.Config.CurrentLanguageSelected));
         _actionNotificationService.ActionNotificationReceived += ActionNotificationService_ActionNotificationReceived;
         _barNotificationService.BarNotificationReceived += BarNotificationService_BarNotificationReceived;
 
@@ -84,7 +84,7 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
         {
             Version currentVersion = Assembly.GetExecutingAssembly().GetName().Version ?? new Version("0");
             string gitVersionString = await _httpClient.GetStringAsync(MANAGER_VERSION_URL);
-            Version gitVersion = new Version(gitVersionString);
+            Version gitVersion = new(gitVersionString);
 
             UpdateAvailable = gitVersion.CompareTo(currentVersion) > 0;
         }

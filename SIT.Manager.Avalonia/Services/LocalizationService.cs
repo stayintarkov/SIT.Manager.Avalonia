@@ -1,13 +1,10 @@
 ﻿using Avalonia.Markup.Xaml.Styling;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
-using SIT.Manager.Avalonia.Models;
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Threading;
 
 namespace SIT.Manager.Avalonia.Services
 {
@@ -15,63 +12,49 @@ namespace SIT.Manager.Avalonia.Services
     {
         private readonly IManagerConfigService _configService = configService;
 
-        private LocalizationModel _localization = new();
-        public LocalizationModel Localization
-        {
-            get => _localization;
-            private set { _localization = value; }
-        }
-
-        public void Translate(LocalizationModel localization, CultureInfo cultureInfo)
+        /// <summary>
+        /// Changes the localization based on your culture info. This specific function changes it inside of Settings. And mainly changes all dynamic Resources in pages.
+        /// </summary>
+        /// <param name="cultureInfo">the current culture</param>
+        public void Translate(CultureInfo cultureInfo)
         {
             resourceInclude = null;
             var translations = App.Current.Resources.MergedDictionaries.OfType<ResourceInclude>().FirstOrDefault(x => x.Source?.OriginalString?.Contains("/Localization/") ?? false);
-
             try
             {
                 if (translations != null) App.Current.Resources.MergedDictionaries.Remove(translations);
-                App.Current.Resources.MergedDictionaries.Add(
-                new ResourceInclude(new Uri($"avares://SIT.Manager.Avalonia/Localization/{cultureInfo.Name}.axaml"))
-                {
-                    Source = new Uri($"avares://SIT.Manager.Avalonia/Localization/{cultureInfo.Name}.axaml")
-                });
-                localization.ShortNameLanguage = cultureInfo.Name;
-                localization.FullNameLanguage = cultureInfo.NativeName;
-                _configService.Config.CurrentLanguageSelected = localization;
+                App.Current.Resources.MergedDictionaries.Add(CreateResourceLocalization($"avares://SIT.Manager.Avalonia/Localization/{cultureInfo.Name}.axaml"));
+                _configService.Config.CurrentLanguageSelected = cultureInfo.Name;
             }
             catch // if there was no translation found for your computer localization give default English.
             {
-                App.Current.Resources.MergedDictionaries.Add(
-                new ResourceInclude(new Uri($"avares://SIT.Manager.Avalonia/Localization/en-US.axaml"))
-                {
-                    Source = new Uri($"avares://SIT.Manager.Avalonia/Localization/en-US.axaml")
-                });
+                App.Current.Resources.MergedDictionaries.Add(CreateResourceLocalization($"avares://SIT.Manager.Avalonia/Localization/en-US.axaml"));
                 CultureInfo culture = new("en-US");
-                localization.ShortNameLanguage = culture.Name;
-                localization.FullNameLanguage = culture.NativeName;
-                _configService.Config.CurrentLanguageSelected = localization;
+                _configService.Config.CurrentLanguageSelected = cultureInfo.Name;
             }
         }
 
         private ResourceInclude? resourceInclude;
         private string currentLanguage = string.Empty;
+        /// <summary>
+        /// Changes the localization in .cs files that contains strings that you cannot change inside the page.
+        /// Functions contain neat parameters that help modify source strings, like in C#, but inside a Resource file.
+        /// Example will be: Your path is %1. %1 → path. | Output: Your path is: C:\Users\...
+        /// where % is the definition of parameter, and 1…n is the hierarchy of parameters passed to the function.
+        /// </summary>
+        /// <param name="key">string that you are accessing in Localization\*culture-info*.axaml file</param>
+        /// <param name="replaces">parameters in hierarchy, example: %1, %2, %3, "10", "20, "30" | output: 10, 20, 30</param>
         public string TranslateSource(string key, params string[] replaces)
         {
-            if (resourceInclude == null || string.IsNullOrEmpty(currentLanguage) || currentLanguage != _configService.Config.CurrentLanguageSelected.ShortNameLanguage)
+            if (resourceInclude == null || string.IsNullOrEmpty(currentLanguage) || currentLanguage != _configService.Config.CurrentLanguageSelected)
             {
                 try
                 {
-                    resourceInclude = new ResourceInclude(new Uri($"avares://SIT.Manager.Avalonia/Localization/{_configService.Config.CurrentLanguageSelected.ShortNameLanguage}.axaml"))
-                    {
-                        Source = new Uri($"avares://SIT.Manager.Avalonia/Localization/{_configService.Config.CurrentLanguageSelected.ShortNameLanguage}.axaml")
-                    };
+                    resourceInclude = CreateResourceLocalization($"avares://SIT.Manager.Avalonia/Localization/{_configService.Config.CurrentLanguageSelected}.axaml");
                 }
-                catch
+                catch // If there was an issue loading current Culture language, we will default by English.
                 {
-                    resourceInclude = new ResourceInclude(new Uri("avares://SIT.Manager.Avalonia/Localization/en-US.axaml"))
-                    {
-                        Source = new Uri("avares://SIT.Manager.Avalonia/Localization/en-US.axaml")
-                    };
+                    resourceInclude = CreateResourceLocalization($"avares://SIT.Manager.Avalonia/Localization/en-US.axaml");
                 }
             }
 
@@ -88,6 +71,49 @@ namespace SIT.Manager.Avalonia.Services
                 }
             }
             return result;
+        }
+
+        /// <summary>
+        /// Function that loads the Available Localizations when program starts.
+        /// </summary>
+        public List<CultureInfo> GetAvailableLocalizations()
+        {
+            List<CultureInfo> result = []; // Initialize the list properly
+            var assembly = typeof(LocalizationService).Assembly;
+            string folderName = string.Format("{0}.Localization", assembly.GetName().Name);
+            result = assembly.GetManifestResourceNames()
+                .Where(r => r.StartsWith(folderName) && r.EndsWith(".axaml"))
+                .Select(r =>
+                {
+                    string[] parts = r.Split('.');
+                    string languageCode = parts[^2];
+                    try
+                    {
+                        CultureInfo cultureInfo = new(languageCode);
+                        return cultureInfo;
+                    }
+                    catch (CultureNotFoundException)
+                    {
+                        CultureInfo cultureInfo = new("en-US");
+                        return cultureInfo;
+                    }
+                })
+                .Where(cultureInfo => cultureInfo != null)
+                .ToList();
+            return result;
+        }
+
+        /// <summary>
+        /// Creates a Resource that will load Localization later on.
+        /// </summary>
+        /// <returns>Resource with Localization</returns>
+        private ResourceInclude CreateResourceLocalization(string url)
+        {
+            var self = new Uri("resm:Styles?assembly=SIT.Manager.Avalonia");
+            return new ResourceInclude(self)
+            {
+                Source = new Uri(url)
+            };
         }
     }
 }

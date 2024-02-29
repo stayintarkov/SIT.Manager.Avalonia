@@ -12,13 +12,13 @@
 		<StackPanel>
 			<!--Address box-->
 			<Label Content="{DynamicResource AddressBoxTitle}" Margin="10 10 10 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
-			<TextBox Name="AddressBox" Text="{Binding LastServer, Mode=TwoWay}" Margin="10 5 10 10" HorizontalAlignment="Left" Watermark="{DynamicResource EnterServerAddressPlaceholder}" PasswordChar="*" RevealPassword="{Binding $self.IsFocused}"/>
+			<TextBox Name="AddressBox" Text="{Binding LastServer, Mode=TwoWay}" MinWidth="300" Margin="10 5 10 10" HorizontalAlignment="Left" Watermark="{DynamicResource EnterServerAddressPlaceholder}" PasswordChar="*" RevealPassword="{Binding $self.IsFocused}"/>
 			<!--Username box-->
 			<Label Content="{DynamicResource UsernameBoxTitle}" Margin="10 10 10 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
-			<TextBox Name="UsernameBox" Text="{Binding Username, Mode=TwoWay}" Margin="10 5 10 10" HorizontalAlignment="Left" Watermark="{DynamicResource EnterUserNamePlaceholder}"/>
+			<TextBox Name="UsernameBox" Text="{Binding Username, Mode=TwoWay}" MinWidth="150" Margin="10 5 10 10" HorizontalAlignment="Left" Watermark="{DynamicResource EnterUserNamePlaceholder}"/>
 			<!--Password box-->
 			<Label Content="{DynamicResource PasswordBoxTitle}" Margin="10 10 10 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
-			<TextBox Name="PasswordBox" Text="{Binding Password, Mode=TwoWay}" Margin="10 5 10 10" HorizontalAlignment="Left" PasswordChar="●" Watermark="{DynamicResource EnterPasswordPlaceholder}"/>
+			<TextBox Name="PasswordBox" Text="{Binding Password, Mode=TwoWay}" MinWidth="150" Margin="10 5 10 10" HorizontalAlignment="Left" PasswordChar="●" Watermark="{DynamicResource EnterPasswordPlaceholder}"/>
 			<CheckBox Name="RememberMeCheck" Content="{DynamicResource RememberMeCheckBoxTitle}" Margin="10" IsChecked="{Binding RememberMe}"/>
 			<Button Name="ConnectButton" Command="{Binding ConnectToServerCommand}" Content="{DynamicResource ConnectButtonTitle}" ToolTip.Tip="{DynamicResource ConnectButtonTitleToolTip}" Margin="10"/>
 			<Button Name="QuickPlayButton" Command="{Binding QuickPlayCommand}" ToolTip.Tip="{DynamicResource StartServerAndConnectButtonTitleToolTip}" Margin="10">

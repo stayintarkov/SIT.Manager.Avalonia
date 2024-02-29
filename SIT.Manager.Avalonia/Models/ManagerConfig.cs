@@ -28,7 +28,7 @@ namespace SIT.Manager.Avalonia.Models
         [ObservableProperty]
         public bool _lookForUpdates = true;
         [ObservableProperty]
-        public LocalizationModel _currentLanguageSelected = new() { FullNameLanguage = CultureInfo.CurrentCulture.NativeName, ShortNameLanguage = CultureInfo.CurrentCulture.Name };
+        public string _currentLanguageSelected = CultureInfo.CurrentCulture.Name;
         [ObservableProperty]
         public bool _acceptedModsDisclaimer = false;
         public string ModCollectionVersion { get; set; } = string.Empty;
