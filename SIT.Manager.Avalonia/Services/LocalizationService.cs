@@ -23,18 +23,18 @@ namespace SIT.Manager.Avalonia.Services
             try
             {
                 if (translations != null) App.Current.Resources.MergedDictionaries.Remove(translations);
-                LoadTranslationResources($"avares://SIT.Manager.Avalonia/Localization/{cultureInfo.Name}.axaml", cultureInfo.Name);
+                LoadTranslationResources(cultureInfo.Name);
             }
             catch // if there was no translation found for your computer localization give default English.
             {
-                LoadTranslationResources("avares://SIT.Manager.Avalonia/Localization/en-US.axaml", "en-US");
+                LoadTranslationResources("en-US");
             }
         }
 
-        private void LoadTranslationResources(string resource, string cultureInfo)
+        private void LoadTranslationResources(string cultureInfo)
         {
-            App.Current.Resources.MergedDictionaries.Add(CreateResourceLocalization(resource));
             CultureInfo culture = new(cultureInfo);
+            App.Current.Resources.MergedDictionaries.Add(CreateResourceLocalization(culture.Name));
             _configService.Config.CurrentLanguageSelected = culture.Name;
         }
 
@@ -54,11 +54,11 @@ namespace SIT.Manager.Avalonia.Services
             {
                 try
                 {
-                    resourceInclude = CreateResourceLocalization($"avares://SIT.Manager.Avalonia/Localization/{_configService.Config.CurrentLanguageSelected}.axaml");
+                    resourceInclude = CreateResourceLocalization(_configService.Config.CurrentLanguageSelected);
                 }
                 catch // If there was an issue loading current Culture language, we will default by English.
                 {
-                    resourceInclude = CreateResourceLocalization($"avares://SIT.Manager.Avalonia/Localization/en-US.axaml");
+                    resourceInclude = CreateResourceLocalization("en-US");
                 }
             }
 
@@ -114,8 +114,9 @@ namespace SIT.Manager.Avalonia.Services
         /// Creates a Resource that will load Localization later on.
         /// </summary>
         /// <returns>Resource with Localization</returns>
-        private ResourceInclude CreateResourceLocalization(string url)
+        private ResourceInclude CreateResourceLocalization(string locale)
         {
+            string url = $"avares://SIT.Manager.Avalonia/Localization/{locale}.axaml";
             var self = new Uri("resm:Styles?assembly=SIT.Manager.Avalonia");
             return new ResourceInclude(self)
             {
