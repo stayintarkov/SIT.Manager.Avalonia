@@ -23,15 +23,19 @@ namespace SIT.Manager.Avalonia.Services
             try
             {
                 if (translations != null) App.Current.Resources.MergedDictionaries.Remove(translations);
-                App.Current.Resources.MergedDictionaries.Add(CreateResourceLocalization($"avares://SIT.Manager.Avalonia/Localization/{cultureInfo.Name}.axaml"));
-                _configService.Config.CurrentLanguageSelected = cultureInfo.Name;
+                LoadTranslationResources($"avares://SIT.Manager.Avalonia/Localization/{cultureInfo.Name}.axaml", cultureInfo.Name);
             }
             catch // if there was no translation found for your computer localization give default English.
             {
-                App.Current.Resources.MergedDictionaries.Add(CreateResourceLocalization($"avares://SIT.Manager.Avalonia/Localization/en-US.axaml"));
-                CultureInfo culture = new("en-US");
-                _configService.Config.CurrentLanguageSelected = cultureInfo.Name;
+                LoadTranslationResources("avares://SIT.Manager.Avalonia/Localization/en-US.axaml", "en-US");
             }
+        }
+
+        private void LoadTranslationResources(string resource, string cultureInfo)
+        {
+            App.Current.Resources.MergedDictionaries.Add(CreateResourceLocalization(resource));
+            CultureInfo culture = new(cultureInfo);
+            _configService.Config.CurrentLanguageSelected = culture.Name;
         }
 
         private ResourceInclude? resourceInclude;
@@ -78,29 +82,32 @@ namespace SIT.Manager.Avalonia.Services
         /// </summary>
         public List<CultureInfo> GetAvailableLocalizations()
         {
-            List<CultureInfo> result = []; // Initialize the list properly
+            List<CultureInfo?> result = [];
             var assembly = typeof(LocalizationService).Assembly;
             string folderName = string.Format("{0}.Localization", assembly.GetName().Name);
             result = assembly.GetManifestResourceNames()
                 .Where(r => r.StartsWith(folderName) && r.EndsWith(".axaml"))
                 .Select(r =>
                 {
-                    string[] parts = r.Split('.');
-                    string languageCode = parts[^2];
+                    string languageCode = r.Split('.')[^2];
                     try
                     {
-                        CultureInfo cultureInfo = new(languageCode);
-                        return cultureInfo;
+                        return new CultureInfo(languageCode);
                     }
-                    catch (CultureNotFoundException)
+                    catch
                     {
-                        CultureInfo cultureInfo = new("en-US");
-                        return cultureInfo;
+                        return null;
                     }
                 })
-                .Where(cultureInfo => cultureInfo != null)
                 .ToList();
-            return result;
+
+            if (result.Count == 0) result.Add(new CultureInfo("en-US"));
+            List<CultureInfo> resultNotNull = [];
+            foreach (var r in result)
+            {
+                if (r != null) resultNotNull.Add(r);
+            }
+            return resultNotNull;
         }
 
         /// <summary>

@@ -122,8 +122,11 @@ public partial class SettingsPageViewModel : ViewModelBase
 
     protected override void OnPropertyChanged(PropertyChangedEventArgs e) {
         base.OnPropertyChanged(e);
-        _localizationService.Translate(CurrentLocalization);
-        Config.CurrentLanguageSelected = CurrentLocalization.Name;
+        if (e.PropertyName == nameof(CurrentLocalization))
+        {
+            _localizationService.Translate(CurrentLocalization);
+            Config.CurrentLanguageSelected = CurrentLocalization.Name;
+        }
         _configsService.UpdateConfig(Config);
     }
 }
