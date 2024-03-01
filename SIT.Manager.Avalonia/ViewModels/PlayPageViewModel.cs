@@ -6,6 +6,7 @@ using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using SIT.Manager.Avalonia.Classes;
 using SIT.Manager.Avalonia.Exceptions;
+using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
 using SIT.Manager.Avalonia.Views.Dialogs;
@@ -47,9 +48,15 @@ namespace SIT.Manager.Avalonia.ViewModels
         private readonly HttpClientHandler _httpClientHandler;
         private readonly ITarkovClientService _tarkovClientService;
         private readonly IAkiServerService _akiServerService;
+        private readonly ILocalizationService _localizationService;
 
         public IAsyncRelayCommand ConnectToServerCommand { get; }
         public IAsyncRelayCommand QuickPlayCommand { get; }
+
+        private string Translate(string key, params string[] replaces)
+        {
+            return _localizationService.TranslateSource(key, replaces);
+        }
 
         public PlayPageViewModel(
             IManagerConfigService configService,
@@ -57,6 +64,7 @@ namespace SIT.Manager.Avalonia.ViewModels
             HttpClientHandler httpClientHandler,
             ITarkovClientService tarkovClientService,
             IAkiServerService akiServerService,
+            ILocalizationService localizationService,
             IServiceProvider serviceProvider) {
             _configService = configService;
             //TODO: Check that this is the best way to implement DI for the TarkovRequesting. Prettysure service provider would be better
@@ -65,6 +73,7 @@ namespace SIT.Manager.Avalonia.ViewModels
             _tarkovClientService = tarkovClientService;
             _akiServerService = akiServerService;
             _serviceProvider = serviceProvider;
+            _localizationService = localizationService;
 
             _lastServer = _configService.Config.LastServer;
             _username = _configService.Config.Username;
@@ -143,7 +152,7 @@ namespace SIT.Manager.Avalonia.ViewModels
             catch (UriFormatException) {
                 return null;
             }
-            catch (Exception ex) {
+            catch (Exception) {
                 //Something BAAAAD has happened here
                 //TODO: Loggy & content dialog
                 return null;

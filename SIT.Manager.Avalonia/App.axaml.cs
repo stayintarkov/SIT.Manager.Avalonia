@@ -73,6 +73,7 @@ public sealed partial class App : Application
             }
         }); 
         services.AddSingleton<IZlibService, ZlibService>();
+        services.AddSingleton<ILocalizationService, LocalizationService>();
 
         // Viewmodels
         services.AddTransient<LocationEditorViewModel>();
