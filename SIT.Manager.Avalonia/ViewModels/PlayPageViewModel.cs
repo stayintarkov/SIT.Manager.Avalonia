@@ -57,7 +57,8 @@ namespace SIT.Manager.Avalonia.ViewModels
             HttpClientHandler httpClientHandler,
             ITarkovClientService tarkovClientService,
             IAkiServerService akiServerService,
-            IServiceProvider serviceProvider) {
+            IServiceProvider serviceProvider)
+        {
             _configService = configService;
             //TODO: Check that this is the best way to implement DI for the TarkovRequesting. Prettysure service provider would be better
             _httpClient = httpClient;
@@ -77,7 +78,8 @@ namespace SIT.Manager.Avalonia.ViewModels
 
 
         //TODO: Refactor this so avoid the repeat after registering. This also violates the one purpose rule anyway
-        private async Task<string> LoginToServerAsync(Uri address) {
+        private async Task<string> LoginToServerAsync(Uri address)
+        {
             TarkovRequesting requesting = ActivatorUtilities.CreateInstance<TarkovRequesting>(_serviceProvider, address);
             TarkovLoginInfo loginInfo = new() {
                 Username = Username,
@@ -134,7 +136,8 @@ namespace SIT.Manager.Avalonia.ViewModels
             return string.Empty;
         }
 
-        private static Uri? GetUriFromAddress(string addressString) {
+        private static Uri? GetUriFromAddress(string addressString)
+        {
             try {
                 UriBuilder addressBuilder = new(addressString);
                 addressBuilder.Port = addressBuilder.Port == 80 ? 6969 : addressBuilder.Port;
@@ -150,7 +153,8 @@ namespace SIT.Manager.Avalonia.ViewModels
             }
         }
 
-        private async Task ConnectToServer(bool launchServer = false) {
+        private async Task ConnectToServer(bool launchServer = false)
+        {
             ManagerConfig config = _configService.Config;
             config.Username = Username;
             config.Password = Password;
@@ -270,12 +274,22 @@ namespace SIT.Manager.Avalonia.ViewModels
                 return;
 
             //Launch game
+            string jsonConfig = JsonSerializer.Serialize(new TarkovLaunchConfig { BackendUrl = serverAddress.AbsoluteUri });
+            if (OperatingSystem.IsLinux()) {
+                jsonConfig = jsonConfig.Replace('\"', '\'');
+            }
+
             Dictionary<string, string> argumentList = new()
             {
                 { "-token", token },
-                { "-config", JsonSerializer.Serialize(new TarkovLaunchConfig{ BackendUrl = serverAddress.AbsoluteUri }) }
+                { "-config", jsonConfig }
             };
+
             string launchArguments = string.Join(' ', argumentList.Select(argument => $"{argument.Key}={argument.Value}"));
+            if (OperatingSystem.IsLinux()) {
+                launchArguments = string.Join(' ', argumentList.Select(argument => $"{argument.Key}=\"{argument.Value}\""));
+            }
+
             _tarkovClientService.Start(launchArguments);
 
             if (_configService.Config.CloseAfterLaunch) {

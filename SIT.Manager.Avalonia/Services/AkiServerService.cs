@@ -118,6 +118,9 @@ namespace SIT.Manager.Avalonia.Services
                 }
                 _process.StartInfo.EnvironmentVariables.Add("WINEPREFIX", winePrefix);
             }
+            else {
+                _process.StartInfo.WorkingDirectory = ExecutableDirectory;
+            }
 
             _process.OutputDataReceived += AkiServer_OutputDataReceived;
             DataReceivedEventHandler? startedEventHandler = null;

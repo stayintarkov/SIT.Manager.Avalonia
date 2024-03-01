@@ -62,7 +62,6 @@ namespace SIT.Manager.Avalonia.Services
         {
             _process = new Process() {
                 StartInfo = new(ExecutableFilePath) {
-                    WorkingDirectory = ExecutableDirectory,
                     UseShellExecute = true,
                     Arguments = arguments
                 },
@@ -70,6 +69,7 @@ namespace SIT.Manager.Avalonia.Services
             };
             if (OperatingSystem.IsLinux()) {
                 _process.StartInfo.FileName = _configService.Config.WineRunner;
+                _process.StartInfo.WorkingDirectory = "";
                 _process.StartInfo.Arguments = $"\"{ExecutableFilePath}\" {arguments}";
                 _process.StartInfo.UseShellExecute = false;
 
@@ -78,6 +78,9 @@ namespace SIT.Manager.Avalonia.Services
                     winePrefix = $"{winePrefix}{Path.DirectorySeparatorChar}";
                 }
                 _process.StartInfo.EnvironmentVariables.Add("WINEPREFIX", winePrefix);
+            }
+            else {
+                _process.StartInfo.WorkingDirectory = ExecutableDirectory;
             }
 
             _process.Exited += new EventHandler(ExitedEvent);
