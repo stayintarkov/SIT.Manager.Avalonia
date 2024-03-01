@@ -74,6 +74,21 @@ namespace SIT.Manager.Avalonia.Services
                     }
                 }
             }
+            else // if the translation was null in selected translation we will try to get that key in default English.
+            {
+                resourceInclude = CreateResourceLocalization("en-US");
+                if (resourceInclude.TryGetResource(key, null, out object? translationDefault))
+                {
+                    if (translationDefault != null)
+                    {
+                        result = (string)translationDefault;
+                        for (int i = 0; i < replaces.Length; i++)
+                        {
+                            result = result.Replace($"%{i + 1}", replaces[i]);
+                        }
+                    }
+                }
+            }
             return result;
         }
 

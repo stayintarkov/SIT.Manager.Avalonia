@@ -155,4 +155,58 @@
 	<system:String x:Key="LocationEditorIgnoreMaxBotsContent">Игнорировать Максимальное Количество Ботов</system:String>
 	<system:String x:Key="LocationEditorRandomTimeSpawnContent">Случайное Время Спауна</system:String>
 
+	<!-- Select Version Dialog -->
+	<system:String x:Key="SelectVersionDialogTitle">Выберите версию</system:String>
+	<system:String x:Key="SelectVersionDialogToInstallTitle">Выберите версию для установки:</system:String>
+	<system:String x:Key="SelectVersionButtonInstallTitle">Установить</system:String>
+	<system:String x:Key="SelectVersionButtonCloseTitle">Отмена</system:String>
+
+	<!-- Select Edition Dialog -->
+	<system:String x:Key="SelectEditionDialogTitle">Выберите издание</system:String>
+	<system:String x:Key="SelectEditionDialogTextBlockTitle">Выберите издание для вашей учетной записи SIT:</system:String>
+	<system:String x:Key="SelectEditionDialogButtonCreateTitle">Создать</system:String>
+
+	<!-- Select Downgrade Dialog -->
+	<system:String x:Key="SelectDowngradeRequiredTitle">Требуется откат версии</system:String>
+	<system:String x:Key="SelectDowngradeRequiredButtonDownload">Скачать</system:String>
+	<system:String x:Key="SelectDowngradeRequiredButtonCancel">Отмена</system:String>
+	<system:String x:Key="SelectDowngradeRequiredTextBlock">Выберите версию для установки:</system:String>
+
+	<!-- Tools Page ViewModel -->
+	<system:String x:Key="ToolsPageViewModelErrorMessageTitle">Ошибка</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageDescription">Не удалось получить релизы</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigTitle">Ошибка конфигурации</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigDescription">'Путь установки' не настроен. Перейдите в настройки, чтобы настроить путь установки.</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigBepInExDescription">Не удалось найти указанный путь. Установлен ли BepInEx?\nПуть: %1</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigSITDescription">Не удалось найти '%1'. Убедитесь, что SIT установлен и что вы один раз запустили игру.</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigLogDescription">Не удалось найти файл журнала.</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigButtonOk">ОК</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigButtonCancel">Отмена</system:String>
+	<system:String x:Key="ToolsPageViewModelConfigClearEFTTitle">Очистить кэш</system:String>
+	<system:String x:Key="ToolsPageViewModelConfigClearEFTDescription">Хотите очистить локальный кэш EFT или весь кэш?</system:String>
+	<system:String x:Key="ToolsPageViewModelConfigClearEFTCache">Очистить кэш EFT</system:String>
+	<system:String x:Key="ToolsPageViewModelConfigClearAllCache">Очистить весь кэш</system:String>
+	<system:String x:Key="ToolsPageViewModelUnhandledExceptionError">Произошла ошибка: %1</system:String>
+
+	<!-- Settings Page ViewModel -->
+	<system:String x:Key="SettingsPageViewModelErrorTitle">Ошибка</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigTitle">Конфигурация</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigErrorEFTDescription">Выбранная папка недействительна. Убедитесь, что это правильная папка игры EFT.</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigInformationEFTDescription">Путь установки EFT установлен на '%1'</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">Путь установки SPT-AKI установлен на '%1'</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigErrorSPTAKI">Выбранная папка недействительна. Убедитесь, что это правильная папка сервера SPT-AKI.</system:String>
+
+	<!-- Server Page ViewModel -->
+	<system:String x:Key="ServerPageViewModelStartingServer">Запуск сервера!</system:String>
+	<system:String x:Key="ServerPageViewModelServerStarted">Сервер запущен!</system:String>
+	<system:String x:Key="ServerPageViewModelServerStopped">Сервер остановлен!</system:String>
+	<system:String x:Key="ServerPageViewModelStopServer">Остановить сервер</system:String>
+	<system:String x:Key="ServerPageViewModelStartServer">Запустить сервер</system:String>
+	<system:String x:Key="ServerPageViewModelServerError">Сервер неожиданно остановился! Проверьте консоль на наличие ошибок.</system:String>
+	<system:String x:Key="ServerPageViewModelSPTAkiRunning">SPT-AKI в настоящее время запущен. Пожалуйста, закройте любой запущенный сервер SPT-AKI.</system:String>
+	<system:String x:Key="ServerPageViewModelSPTAkiNotFound">SPT-AKI не найден. Пожалуйста, настройте путь к SPT-AKI во вкладке Настройки перед запуском сервера.</system:String>
+	<system:String x:Key="ServerPageViewModelStartingServerLog">Запуск сервера...</system:String>
+	<system:String x:Key="ServerPageViewModelStoppingServerLog">Остановка сервера...</system:String>
+
+
 </ResourceDictionary>

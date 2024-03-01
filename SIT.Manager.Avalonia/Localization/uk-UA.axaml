@@ -155,4 +155,58 @@
 	<system:String x:Key="LocationEditorIgnoreMaxBotsContent">Ігнорувати Максимальну Кількість Ботів</system:String>
 	<system:String x:Key="LocationEditorRandomTimeSpawnContent">Випадковий Час Спауну</system:String>
 
+	<!-- Select Version Dialog -->
+	<system:String x:Key="SelectVersionDialogTitle">Виберіть версію</system:String>
+	<system:String x:Key="SelectVersionDialogToInstallTitle">Виберіть версію для встановлення:</system:String>
+	<system:String x:Key="SelectVersionButtonInstallTitle">Встановити</system:String>
+	<system:String x:Key="SelectVersionButtonCloseTitle">Скасувати</system:String>
+
+	<!-- Select Edition Dialog -->
+	<system:String x:Key="SelectEditionDialogTitle">Виберіть Видання</system:String>
+	<system:String x:Key="SelectEditionDialogTextBlockTitle">Виберіть Видання для вашого облікового запису SIT:</system:String>
+	<system:String x:Key="SelectEditionDialogButtonCreateTitle">Створити</system:String>
+
+	<!-- Select Downgrade Dialog -->
+	<system:String x:Key="SelectDowngradeRequiredTitle">Необхідне зниження версії</system:String>
+	<system:String x:Key="SelectDowngradeRequiredButtonDownload">Завантажити</system:String>
+	<system:String x:Key="SelectDowngradeRequiredButtonCancel">Скасувати</system:String>
+	<system:String x:Key="SelectDowngradeRequiredTextBlock">Виберіть версію для встановлення:</system:String>
+
+	<!-- Tools Page ViewModel -->
+	<system:String x:Key="ToolsPageViewModelErrorMessageTitle">Помилка</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageDescription">Не вдалося отримати релізи</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigTitle">Помилка конфігурації</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigDescription">'Шлях встановлення' не налаштований. Перейдіть до налаштувань, щоб налаштувати шлях встановлення.</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigBepInExDescription">Не вдалося знайти вказаний шлях. Чи встановлено BepInEx?\nШлях: %1</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigSITDescription">Не вдалося знайти '%1'. Переконайтеся, що SIT встановлено і що ви один раз запускали гру.</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigLogDescription">Файл журналу не вдалося знайти.</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigButtonOk">ОК</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigButtonCancel">Скасувати</system:String>
+	<system:String x:Key="ToolsPageViewModelConfigClearEFTTitle">Очистити кеш</system:String>
+	<system:String x:Key="ToolsPageViewModelConfigClearEFTDescription">Бажаєте очистити локальний кеш EFT або весь кеш?</system:String>
+	<system:String x:Key="ToolsPageViewModelConfigClearEFTCache">Очистити Кеш EFT</system:String>
+	<system:String x:Key="ToolsPageViewModelConfigClearAllCache">Очистити Весь Кеш</system:String>
+	<system:String x:Key="ToolsPageViewModelUnhandledExceptionError">Сталася помилка: %1</system:String>
+
+	<!-- Settings Page ViewModel -->
+	<system:String x:Key="SettingsPageViewModelErrorTitle">Помилка</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigTitle">Конфігурація</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigErrorEFTDescription">Вибрана тека є недійсною. Переконайтеся, що це вірна тека гри EFT.</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigInformationEFTDescription">Шлях встановлення EFT встановлено на '%1'</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">Шлях встановлення SPT-AKI встановлено на '%1'</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigErrorSPTAKI">Вибрана тека є недійсною. Переконайтеся, що це вірна тека сервера SPT-AKI.</system:String>
+
+	<!-- Server Page ViewModel -->
+	<system:String x:Key="ServerPageViewModelStartingServer">Запуск сервера!</system:String>
+	<system:String x:Key="ServerPageViewModelServerStarted">Сервер запущено!</system:String>
+	<system:String x:Key="ServerPageViewModelServerStopped">Сервер зупинено!</system:String>
+	<system:String x:Key="ServerPageViewModelStopServer">Зупинити сервер</system:String>
+	<system:String x:Key="ServerPageViewModelStartServer">Запустити сервер</system:String>
+	<system:String x:Key="ServerPageViewModelServerError">Сервер несподівано зупинився! Перевірте консоль на наявність помилок.</system:String>
+	<system:String x:Key="ServerPageViewModelSPTAkiRunning">SPT-AKI в даний момент працює. Будь ласка, закрийте будь-який запущений сервер SPT-AKI.</system:String>
+	<system:String x:Key="ServerPageViewModelSPTAkiNotFound">SPT-AKI не знайдено. Будь ласка, налаштуйте шлях до SPT-AKI в вкладці Налаштування перед запуском сервера.</system:String>
+	<system:String x:Key="ServerPageViewModelStartingServerLog">Запуск сервера...</system:String>
+	<system:String x:Key="ServerPageViewModelStoppingServerLog">Зупинка сервера...</system:String>
+
+
 </ResourceDictionary>

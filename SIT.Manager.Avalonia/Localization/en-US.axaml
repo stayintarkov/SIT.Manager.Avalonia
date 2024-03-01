@@ -154,5 +154,59 @@
 	<system:String x:Key="LocationEditorForceSpawnContent">ForceSpawn</system:String>
 	<system:String x:Key="LocationEditorIgnoreMaxBotsContent">IgnoreMaxBots</system:String>
 	<system:String x:Key="LocationEditorRandomTimeSpawnContent">RandomTimeSpawn</system:String>
+	
+	<!-- Select Version Dialog -->
+	<system:String x:Key="SelectVersionDialogTitle">Select Version</system:String>
+	<system:String x:Key="SelectVersionDialogToInstallTitle">Select the version to install:</system:String>
+	<system:String x:Key="SelectVersionButtonInstallTitle">Install</system:String>
+	<system:String x:Key="SelectVersionButtonCloseTitle">Cancel</system:String>
+
+	<!-- Select Edition Dialog -->
+	<system:String x:Key="SelectEditionDialogTitle">Select Edition</system:String>
+	<system:String x:Key="SelectEditionDialogTextBlockTitle">Choose the Edition for your SIT account:</system:String>
+	<system:String x:Key="SelectEditionDialogButtonCreateTitle">Create</system:String>
+	
+	<!-- Select Downgrade Dialog -->
+	<system:String x:Key="SelectDowngradeRequiredTitle">Downgrade Required</system:String>
+	<system:String x:Key="SelectDowngradeRequiredButtonDownload">Download</system:String>
+	<system:String x:Key="SelectDowngradeRequiredButtonCancel">Cancel</system:String>
+	<system:String x:Key="SelectDowngradeRequiredTextBlock">Select the version to install:</system:String>
+	
+	<!-- Tools Page ViewModel -->
+	<system:String x:Key="ToolsPageViewModelErrorMessageTitle">Error</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageDescription">Unable to fetch releases</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigTitle">Config Error</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigDescription">'Install Path' is not configured. Go to settings to configure the installation path.</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigBepInExDescription">Could not find the given path. Is BepInEx installed?\nPath: %1</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigSITDescription">Could not find '%1'. Make sure SIT is installed and that you have started the game once.</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigLogDescription">Log file could not be found.</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigButtonOk">Ok</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigButtonCancel">Cancel</system:String>
+	<system:String x:Key="ToolsPageViewModelConfigClearEFTTitle">Clear Cache</system:String>
+	<system:String x:Key="ToolsPageViewModelConfigClearEFTDescription">Do you want to clear the EFT local cache or clear all cache?</system:String>
+	<system:String x:Key="ToolsPageViewModelConfigClearEFTCache">Clear EFT Local Cache</system:String>
+	<system:String x:Key="ToolsPageViewModelConfigClearAllCache">Clear All Cache</system:String>
+	<system:String x:Key="ToolsPageViewModelUnhandledExceptionError">An error occurred: %1</system:String>
+	
+	<!-- Settings Page ViewModel -->
+	<system:String x:Key="SettingsPageViewModelErrorTitle">Error</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigTitle">Config</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigErrorEFTDescription">The selected folder was invalid. Make sure it's a proper EFT game folder.</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigInformationEFTDescription">EFT installation path set to '%1'</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">SPT-AKI installation path set to '%1'</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigErrorSPTAKI">The selected folder was invalid. Make sure it's a proper SPT-AKI server folder.</system:String>
+
+	<!-- Server Page ViewModel -->
+	<system:String x:Key="ServerPageViewModelStartingServer">Starting Server!</system:String>
+	<system:String x:Key="ServerPageViewModelServerStarted">Server started!</system:String>
+	<system:String x:Key="ServerPageViewModelServerStopped">Server stopped!</system:String>
+	<system:String x:Key="ServerPageViewModelStopServer">Stop Server</system:String>
+	<system:String x:Key="ServerPageViewModelStartServer">Start Server</system:String>
+	<system:String x:Key="ServerPageViewModelServerError">Server stopped unexpectedly! Check console for errors.</system:String>
+	<system:String x:Key="ServerPageViewModelSPTAkiRunning">SPT-AKI is currently running. Please close any running instance of SPT-AKI.</system:String>
+	<system:String x:Key="ServerPageViewModelSPTAkiNotFound">SPT-AKI not found. Please configure the SPT-AKI path in Settings tab before starting the server.</system:String>
+	<system:String x:Key="ServerPageViewModelStartingServerLog">Starting server...</system:String>
+	<system:String x:Key="ServerPageViewModelStoppingServerLog">Stopping server...</system:String>
+
 
 </ResourceDictionary>

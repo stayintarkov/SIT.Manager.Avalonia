@@ -7,15 +7,15 @@
 				  xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
 				  xmlns:vm="clr-namespace:SIT.Manager.Avalonia.ViewModels.Dialogs"
 				  mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-				  Title="Select Version"
+				  Title="{DynamicResource SelectVersionDialogTitle}"
 				  FullSizeDesired="False"
 				  IsPrimaryButtonEnabled="True"
-				  PrimaryButtonText="Install"
-				  CloseButtonText="Cancel"
-				  x:Class="SIT.Manager.Avalonia.Views.Dialogs.SelectVersionDialog"				  
+				  PrimaryButtonText="{DynamicResource SelectVersionButtonInstallTitle}"
+				  CloseButtonText="{DynamicResource SelectVersionButtonCloseTitle}"
+				  x:Class="SIT.Manager.Avalonia.Views.Dialogs.SelectVersionDialog"	
 				  x:DataType="vm:SelectVersionDialogViewModel">
 	<StackPanel>
-		<TextBlock Text="Select the version to install:" Margin="5"/>
+		<TextBlock Text="{DynamicResource SelectVersionDialogToInstallTitle}" Margin="5"/>
 		<ComboBox Width="500"
 				  Name="VersionBox"
 				  VerticalAlignment="Center"

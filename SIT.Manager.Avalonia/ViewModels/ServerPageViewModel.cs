@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using ReactiveUI;
+using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
 using SIT.Manager.Avalonia.Services;
@@ -41,12 +42,15 @@ namespace SIT.Manager.Avalonia.ViewModels
         public ObservableCollection<ConsoleText> ConsoleOutput { get; } = [];
 
         public IAsyncRelayCommand EditServerConfigCommand { get; }
+        private readonly ILocalizationService _localizationService;
 
-        public ServerPageViewModel(IAkiServerService akiServerService, IManagerConfigService configService, IFileService fileService) {
+        public ServerPageViewModel(IAkiServerService akiServerService, ILocalizationService localizationService, IManagerConfigService configService, IFileService fileService) {
             _akiServerService = akiServerService;
             _configService = configService;
             _fileService = fileService;
+            _localizationService = localizationService;
 
+            StartServerButtonTextBlock = localizationService.TranslateSource("ServerPageViewModelStartServer");
             EditServerConfigCommand = new AsyncRelayCommand(EditServerConfig);
 
             this.WhenActivated((CompositeDisposable disposables) => {
@@ -68,6 +72,13 @@ namespace SIT.Manager.Avalonia.ViewModels
                 }).DisposeWith(disposables);
             });
         }
+
+        /// <summary>
+        /// Handy function to compactly translate source code.
+        /// </summary>
+        /// <param name="key">key in the resources</param>
+        /// <param name="parameters">the paramaters that was inside the source string. will be replaced by hierarchy where %1 .. %n is the first paramater.</param>
+        private string Translate(string key, params string[] parameters) => _localizationService.TranslateSource(key, parameters);
 
         private void UpdateCachedServerProperties(object? sender, ManagerConfig newConfig) {
             FontFamily newFont = FontManager.Current.SystemFonts.FirstOrDefault(x => x.Name == newConfig.ConsoleFontFamily, FontFamily.Parse("Bender"));
@@ -114,29 +125,34 @@ namespace SIT.Manager.Avalonia.ViewModels
 
         private void AkiServer_RunningStateChanged(object? sender, RunningState runningState) {
             Dispatcher.UIThread.Invoke(() => {
-                switch (runningState) {
-                    case RunningState.Starting: {
-                            AddConsole("Server started!");
+                switch (runningState)
+                {
+                    case RunningState.Starting:
+                        {
+                            AddConsole(Translate("ServerPageViewModelServerStarted"));
                             StartServerButtonSymbolIcon = Symbol.Stop;
-                            StartServerButtonTextBlock = "Starting Server";
+                            StartServerButtonTextBlock = Translate("ServerPageViewModelStartingServer");
                             break;
                         }
-                    case RunningState.Running: {
-                            AddConsole("Server started!");
+                    case RunningState.Running:
+                        {
+                            AddConsole(Translate("ServerPageViewModelServerStarted"));
                             StartServerButtonSymbolIcon = Symbol.Stop;
-                            StartServerButtonTextBlock = "Stop Server";
+                            StartServerButtonTextBlock = Translate("ServerPageViewModelStopServer");
                             break;
                         }
-                    case RunningState.NotRunning: {
-                            AddConsole("Server stopped!");
+                    case RunningState.NotRunning:
+                        {
+                            AddConsole(Translate("ServerPageViewModelServerStopped"));
                             StartServerButtonSymbolIcon = Symbol.Play;
-                            StartServerButtonTextBlock = "Start Server";
+                            StartServerButtonTextBlock = Translate("ServerPageViewModelStartServer");
                             break;
                         }
-                    case RunningState.StoppedUnexpectedly: {
-                            AddConsole("Server stopped unexpectedly! Check console for errors.");
+                    case RunningState.StoppedUnexpectedly:
+                        {
+                            AddConsole(Translate("ServerPageViewModelServerError"));
                             StartServerButtonSymbolIcon = Symbol.Play;
-                            StartServerButtonTextBlock = "Start Server";
+                            StartServerButtonTextBlock = Translate("ServerPageViewModelStartServer");
                             break;
                         }
                 }
@@ -157,16 +173,16 @@ namespace SIT.Manager.Avalonia.ViewModels
         private void StartServer() {
             if (_akiServerService.State != RunningState.Running) {
                 if (_akiServerService.IsUnhandledInstanceRunning()) {
-                    AddConsole("SPT-AKI is currently running. Please close any running instance of SPT-AKI.");
+                    AddConsole(Translate("ServerPageViewModelSPTAkiRunning"));
                     return;
                 }
 
                 if (!File.Exists(_akiServerService.ExecutableFilePath)) {
-                    AddConsole("SPT-AKI not found. Please configure the SPT-AKI path in Settings tab before starting the server.");
+                    AddConsole(Translate("ServerPageViewModelSPTAkiNotFound"));
                     return;
                 }
 
-                AddConsole("Starting server...");
+                AddConsole(Translate("ServerPageViewModelStartingServerLog"));
                 try {
                     _akiServerService.Start();
                 }
@@ -175,7 +191,7 @@ namespace SIT.Manager.Avalonia.ViewModels
                 }
             }
             else {
-                AddConsole("Stopping server...");
+                AddConsole(Translate("ServerPageViewModelStoppingServerLog"));
                 try {
                     _akiServerService.Stop();
                 }

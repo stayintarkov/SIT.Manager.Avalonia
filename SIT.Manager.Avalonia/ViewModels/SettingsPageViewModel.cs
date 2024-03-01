@@ -68,7 +68,6 @@ public partial class SettingsPageViewModel : ViewModelBase
         installedFonts.Add(FontFamily.Parse("Bender"));
         _installedFonts = [.. installedFonts.OrderBy(x => x.Name)];
 
-
         _selectedConsoleFontFamily = InstalledFonts.FirstOrDefault(x => x.Name == _config.ConsoleFontFamily, FontFamily.Parse("Bender"));
 
         _managerVersionString = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "N/A";
@@ -76,6 +75,13 @@ public partial class SettingsPageViewModel : ViewModelBase
         ChangeInstallLocationCommand = new AsyncRelayCommand(ChangeInstallLocation);
         ChangeAkiServerLocationCommand = new AsyncRelayCommand(ChangeAkiServerLocation);
     }
+
+    /// <summary>
+    /// Handy function to compactly translate source code.
+    /// </summary>
+    /// <param name="key">key in the resources</param>
+    /// <param name="parameters">the paramaters that was inside the source string. will be replaced by hierarchy where %1 .. %n is the first paramater.</param>
+    private string Translate(string key, params string[] parameters) => _localizationService.TranslateSource(key, parameters);
 
     /// <summary>
     /// Gets the path containing the required filename based on the folder picker selection from a user
@@ -98,10 +104,10 @@ public partial class SettingsPageViewModel : ViewModelBase
             Config.InstallPath = targetPath;
             Config.TarkovVersion = _versionService.GetEFTVersion(targetPath);
             Config.SitVersion = _versionService.GetSITVersion(targetPath);
-            _barNotificationService.ShowInformational("Config", $"EFT installation path set to '{targetPath}'");
+            _barNotificationService.ShowInformational(Translate("SettingsPageViewModelConfigTitle"), Translate("SettingsPageViewModelConfigInformationEFTDescription", targetPath));
         }
         else {
-            _barNotificationService.ShowError("Error", $"The selected folder was invalid. Make sure it's a proper EFT game folder.");
+            _barNotificationService.ShowError(Translate("SettingsPageViewModelErrorTitle"), Translate("SettingsPageViewModelConfigErrorEFTDescription"));
         }
     }
 
@@ -109,10 +115,10 @@ public partial class SettingsPageViewModel : ViewModelBase
         string targetPath = await GetPathLocation("Aki.Server.exe");
         if (!string.IsNullOrEmpty(targetPath)) {
             Config.AkiServerPath = targetPath;
-            _barNotificationService.ShowInformational("Config", $"SPT-AKI installation path set to '{targetPath}'");
+            _barNotificationService.ShowInformational(Translate("SettingsPageViewModelConfigTitle"), Translate("SettingsPageViewModelConfigInformationSPTAKIDescription", targetPath));
         }
         else {
-            _barNotificationService.ShowError("Error", "The selected folder was invalid. Make sure it's a proper SPT-AKI server folder.");
+            _barNotificationService.ShowError(Translate("SettingsPageViewModelErrorTitle"), Translate("SettingsPageViewModelConfigErrorSPTAKI"));
         }
     }
 
