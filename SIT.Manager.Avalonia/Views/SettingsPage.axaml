@@ -46,7 +46,7 @@
 				</Border>
 
 				<!--Linux Settings-->
-				<TextBlock Text="Linux Settings"
+				<TextBlock Text="{DynamicResource SettingsLinuxSettingsTitle}"
 						   Margin="5"
 						   VerticalAlignment="Center"
 						   IsVisible="{Binding ShowLinuxSettings}"/>
@@ -57,20 +57,20 @@
 						IsVisible="{Binding ShowLinuxSettings}">
 					<StackPanel>
 						<StackPanel Orientation="Horizontal">
-							<TextBlock Text="Wine Prefix:" Margin="0,0,10,0" VerticalAlignment="Center"/>
-							<TextBox Watermark="Wine Prefix Path"
+							<TextBlock Text="{DynamicResource SettingsLinuxWinePrefixTitle}" Margin="0,0,10,0" VerticalAlignment="Center"/>
+							<TextBox Watermark="{DynamicResource SettingsLinuxWinePrefixPlaceholder}"
 									 MinWidth="425"
 									 MaxWidth="425"
-									 ToolTip.Tip="Set the WINEPREFIX for EFT"
+									 ToolTip.Tip="{DynamicResource SettingsLinuxWinePrefixToolTip}"
 									 Text="{Binding Config.WinePrefix}"/>
 						</StackPanel>
 
 						<StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-							<TextBlock Text="Wine Runner:" Margin="0,0,10,0" VerticalAlignment="Center"/>
-							<TextBox Watermark="Wine Runner Path"
+							<TextBlock Text="{DynamicResource SettingsLinuxWineRunnerTitle}" Margin="0,0,10,0" VerticalAlignment="Center"/>
+							<TextBox Watermark="{DynamicResource SettingsLinuxWineRunnerPlaceholder}"
 									 MinWidth="425"
 									 MaxWidth="425"
-									 ToolTip.Tip="Set the wine runner for EFT"
+									 ToolTip.Tip="{DynamicResource SettingsLinuxWineRunnerToolTip}"
 									 Text="{Binding Config.WineRunner}"/>
 						</StackPanel>
 					</StackPanel>
