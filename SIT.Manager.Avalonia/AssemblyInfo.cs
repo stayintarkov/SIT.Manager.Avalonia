@@ -11,4 +11,4 @@ using System.Runtime.Versioning;
 [assembly: AssemblyCulture("")]
 [assembly: SupportedOSPlatform("windows")]
 [assembly: SupportedOSPlatform("linux")]
-[assembly: AssemblyVersion("0.0.0.0")]
+[assembly: AssemblyVersion("0.0.0.1")]
