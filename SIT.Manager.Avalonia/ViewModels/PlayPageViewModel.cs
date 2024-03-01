@@ -65,7 +65,8 @@ namespace SIT.Manager.Avalonia.ViewModels
             ITarkovClientService tarkovClientService,
             IAkiServerService akiServerService,
             ILocalizationService localizationService,
-            IServiceProvider serviceProvider) {
+            IServiceProvider serviceProvider) 
+        {
             _configService = configService;
             //TODO: Check that this is the best way to implement DI for the TarkovRequesting. Prettysure service provider would be better
             _httpClient = httpClient;
@@ -84,9 +85,31 @@ namespace SIT.Manager.Avalonia.ViewModels
             QuickPlayCommand = new AsyncRelayCommand(async () => await ConnectToServer(true));
         }
 
+        private string CreateLaunchArugments(TarkovLaunchConfig launchConfig, string token)
+        {
+            string jsonConfig = JsonSerializer.Serialize(launchConfig);
+
+            // The json needs single quotes on Linux for some reason even though not valid json
+            // but this seems to work fine on Windows too so might as well do it on both ¯\_(ツ)_/¯
+            jsonConfig = jsonConfig.Replace('\"', '\'');
+
+            Dictionary<string, string> argumentList = new()
+            {
+                { "-token", token },
+                { "-config", jsonConfig }
+            };
+
+            string launchArguments = string.Join(' ', argumentList.Select(argument => $"{argument.Key}={argument.Value}"));
+            if (OperatingSystem.IsLinux()) {
+                // We need to make sure that the json is contained in quotes on Linux otherwise you won't be able to connect to the server.
+                launchArguments = string.Join(' ', argumentList.Select(argument => $"{argument.Key}=\"{argument.Value}\""));
+            }
+            return launchArguments;
+        }
 
         //TODO: Refactor this so avoid the repeat after registering. This also violates the one purpose rule anyway
-        private async Task<string> LoginToServerAsync(Uri address) {
+        private async Task<string> LoginToServerAsync(Uri address)
+        {
             TarkovRequesting requesting = ActivatorUtilities.CreateInstance<TarkovRequesting>(_serviceProvider, address);
             TarkovLoginInfo loginInfo = new() {
                 Username = Username,
@@ -143,7 +166,8 @@ namespace SIT.Manager.Avalonia.ViewModels
             return string.Empty;
         }
 
-        private static Uri? GetUriFromAddress(string addressString) {
+        private static Uri? GetUriFromAddress(string addressString)
+        {
             try {
                 UriBuilder addressBuilder = new(addressString);
                 addressBuilder.Port = addressBuilder.Port == 80 ? 6969 : addressBuilder.Port;
@@ -159,7 +183,8 @@ namespace SIT.Manager.Avalonia.ViewModels
             }
         }
 
-        private async Task ConnectToServer(bool launchServer = false) {
+        private async Task ConnectToServer(bool launchServer = false)
+        {
             ManagerConfig config = _configService.Config;
             config.Username = Username;
             config.Password = Password;
@@ -278,13 +303,8 @@ namespace SIT.Manager.Avalonia.ViewModels
             if (string.IsNullOrEmpty(token))
                 return;
 
-            //Launch game
-            Dictionary<string, string> argumentList = new()
-            {
-                { "-token", token },
-                { "-config", JsonSerializer.Serialize(new TarkovLaunchConfig{ BackendUrl = serverAddress.AbsoluteUri }) }
-            };
-            string launchArguments = string.Join(' ', argumentList.Select(argument => $"{argument.Key}={argument.Value}"));
+            // Launch game
+            string launchArguments = CreateLaunchArugments(new TarkovLaunchConfig { BackendUrl = serverAddress.AbsoluteUri }, token);
             _tarkovClientService.Start(launchArguments);
 
             if (_configService.Config.CloseAfterLaunch) {

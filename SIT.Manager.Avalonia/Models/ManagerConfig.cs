@@ -22,6 +22,10 @@ namespace SIT.Manager.Avalonia.Models
         [ObservableProperty]
         public bool _closeAfterLaunch = false;
         [ObservableProperty]
+        public string _winePrefix = string.Empty;
+        [ObservableProperty]
+        public string _wineRunner = string.Empty;
+        [ObservableProperty]
         public string _tarkovVersion = string.Empty;
         [ObservableProperty]
         public string _sitVersion = string.Empty;

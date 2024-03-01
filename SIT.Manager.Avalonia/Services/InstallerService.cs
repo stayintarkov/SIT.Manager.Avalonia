@@ -117,11 +117,25 @@ namespace SIT.Manager.Avalonia.Services
             Process patcherProcess = new() {
                 StartInfo = new() {
                     FileName = patcherPath,
-                    WorkingDirectory = _configService.Config.InstallPath,
                     Arguments = "autoclose"
                 },
                 EnableRaisingEvents = true
             };
+            if (OperatingSystem.IsLinux()) {
+                patcherProcess.StartInfo.FileName = _configService.Config.WineRunner;
+                patcherProcess.StartInfo.Arguments = $"\"{patcherPath}\" autoclose";
+                patcherProcess.StartInfo.UseShellExecute = false;
+
+                string winePrefix = Path.GetFullPath(_configService.Config.WinePrefix);
+                if (!Path.EndsInDirectorySeparator(winePrefix)) {
+                    winePrefix = $"{winePrefix}{Path.DirectorySeparatorChar}";
+                }
+                patcherProcess.StartInfo.EnvironmentVariables.Add("WINEPREFIX", winePrefix);
+            }
+            else {
+                patcherProcess.StartInfo.WorkingDirectory = _configService.Config.InstallPath;
+            }
+
             patcherProcess.Start();
             await patcherProcess.WaitForExitAsync();
 
