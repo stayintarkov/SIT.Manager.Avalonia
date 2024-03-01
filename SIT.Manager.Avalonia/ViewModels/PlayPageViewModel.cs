@@ -53,11 +53,6 @@ namespace SIT.Manager.Avalonia.ViewModels
         public IAsyncRelayCommand ConnectToServerCommand { get; }
         public IAsyncRelayCommand QuickPlayCommand { get; }
 
-        private string Translate(string key, params string[] replaces)
-        {
-            return _localizationService.TranslateSource(key, replaces);
-        }
-
         public PlayPageViewModel(
             IManagerConfigService configService,
             HttpClient httpClient,
@@ -75,6 +70,7 @@ namespace SIT.Manager.Avalonia.ViewModels
             _akiServerService = akiServerService;
             _serviceProvider = serviceProvider;
             _localizationService = localizationService;
+            QuickPlayText = Translate("PlayPageViewModelQuickPlayText");
 
             _lastServer = _configService.Config.LastServer;
             _username = _configService.Config.Username;
@@ -84,6 +80,13 @@ namespace SIT.Manager.Avalonia.ViewModels
             ConnectToServerCommand = new AsyncRelayCommand(async () => await ConnectToServer());
             QuickPlayCommand = new AsyncRelayCommand(async () => await ConnectToServer(true));
         }
+
+        /// <summary>
+        /// Handy function to compactly translate source code.
+        /// </summary>
+        /// <param name="key">key in the resources</param>
+        /// <param name="parameters">the paramaters that was inside the source string. will be replaced by hierarchy where %1 .. %n is the first paramater.</param>
+        private string Translate(string key, params string[] parameters) => _localizationService.TranslateSource(key, parameters);
 
         private string CreateLaunchArugments(TarkovLaunchConfig launchConfig, string token)
         {

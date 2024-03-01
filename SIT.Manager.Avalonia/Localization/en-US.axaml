@@ -12,7 +12,10 @@
 	<system:String x:Key="ConnectButtonTitle">Connect</system:String>
 	<system:String x:Key="StartServerAndConnectButtonTitleToolTip">Start the Aki server and connect to the server</system:String>
 	<system:String x:Key="ConnectButtonTitleToolTip">Connect to the server</system:String>
-	<!--<system:String x:Key="StartServerAndConnectButtonTitle">Start Server and Connect</system:String> For later...-->
+
+	<!-- Play Page / View | .cs -->
+	<system:String x:Key="PlayPageViewModelQuickPlayText">Start Server and Connect</system:String>
+	
 
 	<!-- Pane View (Menu on the left also tooltip about update on top) -->
 	<system:String x:Key="UpdateNotification">An update to the SIT Manager is available click here to update:</system:String>
@@ -214,6 +217,5 @@
 	<system:String x:Key="ServerPageViewModelSPTAkiNotFound">SPT-AKI not found. Please configure the SPT-AKI path in Settings tab before starting the server.</system:String>
 	<system:String x:Key="ServerPageViewModelStartingServerLog">Starting server...</system:String>
 	<system:String x:Key="ServerPageViewModelStoppingServerLog">Stopping server...</system:String>
-
 
 </ResourceDictionary>

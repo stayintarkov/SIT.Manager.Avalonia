@@ -44,7 +44,8 @@ namespace SIT.Manager.Avalonia.ViewModels
         public IAsyncRelayCommand EditServerConfigCommand { get; }
         private readonly ILocalizationService _localizationService;
 
-        public ServerPageViewModel(IAkiServerService akiServerService, ILocalizationService localizationService, IManagerConfigService configService, IFileService fileService) {
+        public ServerPageViewModel(IAkiServerService akiServerService, ILocalizationService localizationService, IManagerConfigService configService, IFileService fileService)
+        {
             _akiServerService = akiServerService;
             _configService = configService;
             _fileService = fileService;
@@ -53,7 +54,10 @@ namespace SIT.Manager.Avalonia.ViewModels
             StartServerButtonTextBlock = localizationService.TranslateSource("ServerPageViewModelStartServer");
             EditServerConfigCommand = new AsyncRelayCommand(EditServerConfig);
 
-            this.WhenActivated((CompositeDisposable disposables) => {
+            configService.ConfigChanged += ConfigService_ConfigChanged;
+
+            this.WhenActivated((CompositeDisposable disposables) =>
+            {
                 /* Handle activation */
                 UpdateCachedServerProperties(null, _configService.Config);
                 _configService.ConfigChanged += UpdateCachedServerProperties;
@@ -65,7 +69,8 @@ namespace SIT.Manager.Avalonia.ViewModels
 
                 UpdateConsoleWithCachedEntries();
 
-                Disposable.Create(() => {
+                Disposable.Create(() =>
+                {
                     /* Handle deactivation */
                     _akiServerService.OutputDataReceived -= AkiServer_OutputDataReceived;
                     _akiServerService.RunningStateChanged -= AkiServer_RunningStateChanged;
@@ -74,17 +79,25 @@ namespace SIT.Manager.Avalonia.ViewModels
         }
 
         /// <summary>
+        /// Exists only to fix bug when you are changing language and this specific textblock doesn't get updated.
+        /// </summary>
+        private void ConfigService_ConfigChanged(object? sender, ManagerConfig e) => StartServerButtonTextBlock = Translate("ServerPageViewModelStartServer");
+
+        /// <summary>
         /// Handy function to compactly translate source code.
         /// </summary>
         /// <param name="key">key in the resources</param>
         /// <param name="parameters">the paramaters that was inside the source string. will be replaced by hierarchy where %1 .. %n is the first paramater.</param>
         private string Translate(string key, params string[] parameters) => _localizationService.TranslateSource(key, parameters);
 
-        private void UpdateCachedServerProperties(object? sender, ManagerConfig newConfig) {
+        private void UpdateCachedServerProperties(object? sender, ManagerConfig newConfig)
+        {
             FontFamily newFont = FontManager.Current.SystemFonts.FirstOrDefault(x => x.Name == newConfig.ConsoleFontFamily, FontFamily.Parse("Bender"));
-            if (!newFont.Name.Equals(cachedFontFamily.Name)) {
+            if (!newFont.Name.Equals(cachedFontFamily.Name))
+            {
                 cachedFontFamily = newFont;
-                foreach (ConsoleText textEntry in ConsoleOutput) {
+                foreach (ConsoleText textEntry in ConsoleOutput)
+                {
                     textEntry.TextFont = cachedFontFamily;
                 }
             }
@@ -92,25 +105,31 @@ namespace SIT.Manager.Avalonia.ViewModels
             cachedColorBrush.Color = newConfig.ConsoleFontColor;
         }
 
-        private void UpdateConsoleWithCachedEntries() {
-            foreach (string entry in _akiServerService.GetCachedServerOutput()) {
+        private void UpdateConsoleWithCachedEntries()
+        {
+            foreach (string entry in _akiServerService.GetCachedServerOutput())
+            {
                 AddConsole(entry);
             }
         }
 
-        private void AddConsole(string text) {
-            if (string.IsNullOrEmpty(text)) {
+        private void AddConsole(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
                 return;
             }
 
-            if (ConsoleOutput.Count > _akiServerService.ServerLineLimit) {
+            if (ConsoleOutput.Count > _akiServerService.ServerLineLimit)
+            {
                 ConsoleOutput.RemoveAt(0);
             }
 
             //[32m, [2J, [0;0f,
             text = ConsoleTextRemoveANSIFilterRegex().Replace(text, "");
 
-            ConsoleText consoleTextEntry = new() {
+            ConsoleText consoleTextEntry = new()
+            {
                 TextColor = cachedColorBrush,
                 TextFont = cachedFontFamily,
                 Message = text
@@ -119,12 +138,15 @@ namespace SIT.Manager.Avalonia.ViewModels
             ConsoleOutput.Add(consoleTextEntry);
         }
 
-        private void AkiServer_OutputDataReceived(object? sender, DataReceivedEventArgs e) {
+        private void AkiServer_OutputDataReceived(object? sender, DataReceivedEventArgs e)
+        {
             Dispatcher.UIThread.Post(() => AddConsole(e.Data ?? "\n"));
         }
 
-        private void AkiServer_RunningStateChanged(object? sender, RunningState runningState) {
-            Dispatcher.UIThread.Invoke(() => {
+        private void AkiServer_RunningStateChanged(object? sender, RunningState runningState)
+        {
+            Dispatcher.UIThread.Invoke(() =>
+            {
                 switch (runningState)
                 {
                     case RunningState.Starting:
@@ -159,9 +181,11 @@ namespace SIT.Manager.Avalonia.ViewModels
             });
         }
 
-        private async Task EditServerConfig() {
+        private async Task EditServerConfig()
+        {
             string serverPath = _configService.Config.AkiServerPath;
-            if (string.IsNullOrEmpty(serverPath)) {
+            if (string.IsNullOrEmpty(serverPath))
+            {
                 return;
             }
 
@@ -170,32 +194,45 @@ namespace SIT.Manager.Avalonia.ViewModels
         }
 
         [RelayCommand]
-        private void StartServer() {
-            if (_akiServerService.State != RunningState.Running) {
-                if (_akiServerService.IsUnhandledInstanceRunning()) {
+        private void StartServer()
+        {
+            if (_akiServerService.State == RunningState.Starting)
+            {
+                return;
+            }
+            else if (_akiServerService.State != RunningState.Running)
+            {
+                if (_akiServerService.IsUnhandledInstanceRunning())
+                {
                     AddConsole(Translate("ServerPageViewModelSPTAkiRunning"));
                     return;
                 }
 
-                if (!File.Exists(_akiServerService.ExecutableFilePath)) {
+                if (!File.Exists(_akiServerService.ExecutableFilePath))
+                {
                     AddConsole(Translate("ServerPageViewModelSPTAkiNotFound"));
                     return;
                 }
 
                 AddConsole(Translate("ServerPageViewModelStartingServerLog"));
-                try {
+                try
+                {
                     _akiServerService.Start();
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     AddConsole(ex.Message);
                 }
             }
-            else {
+            else
+            {
                 AddConsole(Translate("ServerPageViewModelStoppingServerLog"));
-                try {
+                try
+                {
                     _akiServerService.Stop();
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     AddConsole(ex.Message);
                 }
             }
