@@ -1,0 +1,165 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+					xmlns:system="clr-namespace:System;assembly=System.Runtime"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <!-- Play Page / View -->
+  <system:String x:Key="AddressBoxTitle">伺服器位址</system:String>
+  <system:String x:Key="UsernameBoxTitle">使用者名稱</system:String>
+  <system:String x:Key="PasswordBoxTitle">密碼</system:String>
+  <system:String x:Key="EnterUserNamePlaceholder">請輸入使用者名稱...</system:String>
+  <system:String x:Key="EnterPasswordPlaceholder">請輸入密碼...</system:String>
+  <system:String x:Key="EnterServerAddressPlaceholder">請輸入伺服器位址...</system:String>
+  <system:String x:Key="RememberMeCheckBoxTitle">記住我</system:String>
+  <system:String x:Key="ConnectButtonTitle">連線</system:String>
+  <system:String x:Key="StartServerAndConnectButtonTitleToolTip">啟動本地Aki伺服器並連接至該伺服器</system:String>
+  <system:String x:Key="ConnectButtonTitleToolTip">連接至伺服器</system:String>
+  <!--<system:String x:Key="StartServerAndConnectButtonTitle">Start Server and Connect</system:String> For later...-->
+
+  <!-- Pane View (Menu on the left also tooltip about update on top) -->
+  <system:String x:Key="UpdateNotification">SIT Manager 有更新，請點擊此處來進行更新:</system:String>
+  <system:String x:Key="UpdateButtonTitle">更新</system:String>
+  <system:String x:Key="SetupTitle">安裝</system:String>
+  <system:String x:Key="InstallPathErrorNotification">客戶端安裝路徑尚未配置，請前往設置頁面配置啟動器</system:String>
+  <system:String x:Key="PlayTitle">遊玩</system:String>
+  <system:String x:Key="ToolsTitle">工具</system:String>
+  <system:String x:Key="ServerTitle">本地伺服器</system:String>
+  <system:String x:Key="ModsTitle">模組</system:String>
+  <system:String x:Key="SettingsTitle">設置</system:String>
+  <system:String x:Key="PlayTitleToolTip">連接與啟動遊戲.</system:String>
+  <system:String x:Key="ToolsTitleToolTip">用於管理 SIT 和 Tarkov 的工具</system:String>
+  <system:String x:Key="ServerTitleToolTip">伺服器管理</system:String>
+  <system:String x:Key="ModsTitleToolTip">模組管理</system:String>
+
+  <!-- Mods Page -->
+  <system:String x:Key="ModsWarningTitle">警告</system:String>
+  <system:String x:Key="ModsWarningDescription">使用模組可能會影響遊戲的穩定性，並可能導致遊戲崩潰或出現其他問題！儘管模組可以增強您的遊戲體驗並添加新功能，但它們可能未被 SIT 官方支持或經過兼容性測試；安裝模組需自擔風險，並在進行任何更改之前始終備份遊戲文件；我們對由安裝模組導致的任何損壞或進度丟失概不負責，請謹慎操作！</system:String>
+  <system:String x:Key="ModsWarningButtonTitle">我了解</system:String>
+  <system:String x:Key="ModsPageTitle">模組</system:String>
+  <system:String x:Key="ModsDownloadCollectionButtonTitle">下載模組合集</system:String>
+  <system:String x:Key="ModsDownloadCollectionButtonToolTip">下載最新的移植模組合集</system:String>
+  <system:String x:Key="ModInfoTitle">模組信息</system:String>
+  <system:String x:Key="ModInfoNameTitle">名稱:</system:String>
+  <system:String x:Key="ModInfoAuthorTitle">作者:</system:String>
+  <system:String x:Key="ModInfoSupportedVersionTitle">支援的 SIT 版本:</system:String>
+  <system:String x:Key="ModInfoModVersionTitle">模組版本:</system:String>
+  <system:String x:Key="ModInfoModPageTitle">模組頁面:</system:String>
+  <system:String x:Key="ModInfoExtraFilesToolTip">如果移植模組需要額外文件，請點擊鏈接下載它們</system:String>
+  <system:String x:Key="ModInfoRequiresExtraFilesTitle">需要額外文件:</system:String>
+  <system:String x:Key="ModInfoDescription">描述:</system:String>
+  <system:String x:Key="ModInfoInstallToolTip">安裝模組</system:String>
+  <system:String x:Key="ModInfoInstallTitle">安裝</system:String>
+  <system:String x:Key="ModInfoUninstallToolTip">卸載模組</system:String>
+  <system:String x:Key="ModInfoUninstallTitle">卸載</system:String>
+
+  <!-- Tools Page -->
+  <system:String x:Key="ToolsSITTitle">安裝客戶端 SIT 模組</system:String>
+  <system:String x:Key="ToolsSITToolTip">如果需要，降級 EFT，安裝客戶端 SIT 和模組支持</system:String>
+  <system:String x:Key="ToolsOpenEFTFolderButtonToolTip">打開 EFT 安裝資料夾</system:String>
+  <system:String x:Key="ToolsOpenEFTFolderButtonTitle">打開 EFT 資料夾</system:String>
+  <system:String x:Key="ToolsOpenBepInExFolderButtonToolTip">打開 BepInEx 外掛資料夾</system:String>
+  <system:String x:Key="ToolsOpenBepInExFolderButtonTitle">打開外掛資料夾</system:String>
+  <system:String x:Key="ToolsOpenSITConfigButtonToolTip">使用預設文字編輯器打開 SIT 設定檔</system:String>
+  <system:String x:Key="ToolsOpenSITConfigButtonTitle">打開 SIT 設定檔</system:String>
+  <system:String x:Key="ToolsInstallServerButtonToolTip">下載 SPT 本地伺服器 + SIT 伺服器模組</system:String>
+  <system:String x:Key="ToolsInstallServerButtonTitle">安裝伺服器 + SIT 伺服器模組</system:String>
+  <system:String x:Key="ToolsOpenEFTLogButtonToolTip">使用預設文字編輯器打開 EFT 的 'Player.log' 檔案</system:String>
+  <system:String x:Key="ToolsOpenEFTLogButtonTitle">打開 EFT 日誌</system:String>
+  <system:String x:Key="ToolsOpenLocationEditorButtonToolTip">打開地圖設定編輯器</system:String>
+  <system:String x:Key="ToolsOpenLocationEditorButtonTitle">地圖設定編輯器</system:String>
+  <system:String x:Key="ToolsClearCacheButtonToolTip">清除本地 EFT 快取</system:String>
+  <system:String x:Key="ToolsClearCacheButtonTitle">清除快取</system:String>
+
+  <!-- Server Page -->
+  <system:String x:Key="ServerConsoleOutputTitle">控制臺輸出</system:String>
+  <system:String x:Key="ServerButtonStartToolTip">啟動伺服器</system:String>
+  <system:String x:Key="ServerEditServerConfig">編輯伺服器設定</system:String>
+  <system:String x:Key="ServerEditServerConfigButtonToolTip">編輯伺服器設定檔</system:String>
+
+  <!-- Settings Page -->
+  <system:String x:Key="SettingsLauncherSettingsTitle">啟動器設定</system:String>
+  <system:String x:Key="SettingsCloseLauncherAfterGameLaunchTitle">遊戲啟動後關閉啟動器</system:String>
+  <system:String x:Key="SettingsCloseLauncherAfterGameLaunchToolTip">開啟遊戲後自動關閉啟動器</system:String>
+  <system:String x:Key="SettingsLookForUpdatesTitle">檢查更新</system:String>
+  <system:String x:Key="SettingsLookForUpdatesTitleToolTip">開啟啟動器時自動檢查更新</system:String>
+  <system:String x:Key="SettingsLanguageTitle">語言:</system:String>
+  <system:String x:Key="SettingsLanguageTitleToolTip">將整個啟動器翻譯為您的語言，選擇其中一種!</system:String>
+  <system:String x:Key="SettingsLinuxSettingsTitle">Linux 設定</system:String>
+  <system:String x:Key="SettingsLinuxWinePrefixTitle">Wine 前綴:</system:String>
+  <system:String x:Key="SettingsLinuxWinePrefixPlaceholder">Wine 前綴路徑</system:String>
+  <system:String x:Key="SettingsLinuxWinePrefixToolTip">更改用於啟動 EFT 的 WINEPREFIX</system:String>
+  <system:String x:Key="SettingsLinuxWineRunnerTitle">Wine Runner:</system:String>
+  <system:String x:Key="SettingsLinuxWineRunnerPlaceholder">Wine Runner 路徑</system:String>
+  <system:String x:Key="SettingsLinuxWineRunnerToolTip">設置用於啟動 EFT 的 wine runner</system:String>
+  <system:String x:Key="SettingsEFTSettingsTitle">EFT 設定</system:String>
+  <system:String x:Key="SettingsEFTSettingsButtonChangeTitle">更改</system:String>
+  <system:String x:Key="SettingsEFTInstallPathTitle">EFT 路徑:</system:String>
+  <system:String x:Key="SettingsEFTInstallPathPlaceholder">EFT 安裝路徑...</system:String>
+  <system:String x:Key="SettingsEFTChangeInstallPathToolTip">更改 EFT 安裝路徑</system:String>
+  <system:String x:Key="SettingsEFTVersionTitle">EFT 版本:</system:String>
+  <system:String x:Key="SettingsSITVersionTitle">SIT 版本:</system:String>
+  <system:String x:Key="SettingsSPTAKITitle">SPT-AKI 設定</system:String>
+  <system:String x:Key="SettingsSPTAKIPathTitle">SPT-AKI 路徑:</system:String>
+  <system:String x:Key="SettingsSPTAKIInstallPathPlaceholder">SPT-AKI 安裝路徑...</system:String>
+  <system:String x:Key="SettingsSPTAKIInstallPathToolTip">更改 SPT-AKI 安裝路徑</system:String>
+  <system:String x:Key="SettingsServerConsoleTitle">伺服器控制臺</system:String>
+  <system:String x:Key="SettingsServerConsoleFontFamilyTitle">字體:</system:String>
+  <system:String x:Key="SettingsServerConsoleFontColorTitle">字體顏色:</system:String>
+  <system:String x:Key="SettingsManagerVersionTitle">當前 SIT Manager 版本:</system:String>
+
+  <!-- Location Editor View -->
+  <system:String x:Key="LocationEditorLoadButtonTitle">載入</system:String>
+  <system:String x:Key="LocationEditorSaveButtonTitle">儲存</system:String>
+  <system:String x:Key="LocationEditorLocationTitle">位置</system:String>
+  <system:String x:Key="LocationEditorLocationTextBoxPlaceholder">請先點擊「載入」</system:String>
+  <system:String x:Key="LocationEditorGeneralSettingsTitle">一般設定</system:String>
+  <system:String x:Key="LocationEditorBotMaxHeader">最大機器人數量</system:String>
+  <system:String x:Key="LocationEditorBotMaxPlayerHeader">最大 PMC 機器人數量</system:String>
+  <system:String x:Key="LocationEditorBotNormalHeader">普通機器人</system:String>
+  <system:String x:Key="LocationEditorBotSpawnTimeOffMaxHeader">離線最大機器人生成時間</system:String>
+  <system:String x:Key="LocationEditorBotSpawnTimeOffMinHeader">離線最小機器人生成時間</system:String>
+  <system:String x:Key="LocationEditorBotSpawnTimeOnMaxHeader">線上最大機器人生成時間</system:String>
+  <system:String x:Key="LocationEditorBotSpawnTimeOnMinHeader">線上最小機器人生成時間</system:String>
+  <system:String x:Key="LocationEditorBotStartHeader">起始機器人</system:String>
+  <system:String x:Key="LocationEditorBotStopHeader">終止機器人</system:String>
+  <system:String x:Key="LocationEditorBotSpawnCountStepHeader">單次機器人生成數量</system:String>
+  <system:String x:Key="LocationEditorBotSpawnPeriodCheckHeader">機器人生成檢查週期</system:String>
+  <system:String x:Key="LocationEditorBotMaxToolTip">地圖上允許的最大機器人數量</system:String>
+  <system:String x:Key="LocationEditorBotMaxPlayerToolTip">地圖上允許的最大 PMC 機器人數量</system:String>
+  <system:String x:Key="LocationEditorBotSpawnTimeOffMaxToolTip">離線模式的最大機器人生成時間（秒）</system:String>
+  <system:String x:Key="LocationEditorBotSpawnTimeOffMinToolTip">離線模式的最小機器人生成時間（秒）</system:String>
+  <system:String x:Key="LocationEditorBotSpawnTimeOnMaxToolTip">線上模式的最大機器人生成時間（秒）</system:String>
+  <system:String x:Key="LocationEditorBotSpawnTimeOnMinToolTip">線上模式的最小機器人生成時間（秒）</system:String>
+  <system:String x:Key="LocationEditorWavesSettingsTitle">波次設定</system:String>
+  <system:String x:Key="LocationEditorAddWaveButtonText">新增波次</system:String>
+  <system:String x:Key="LocationEditorRemoveWaveButtonText">移除波次</system:String>
+  <system:String x:Key="LocationEditorSpawnWavesText">生成波次</system:String>
+  <system:String x:Key="LocationEditorBotPresetText">機器人預設</system:String>
+  <system:String x:Key="LocationEditorBotPresetToolTip">設定機器人難度</system:String>
+  <system:String x:Key="LocationEditorBotSideText">機器人陣營</system:String>
+  <system:String x:Key="LocationEditorBotSideToolTip">設定機器人所在陣營</system:String>
+  <system:String x:Key="LocationEditorSpawnPointsText">生成點</system:String>
+  <system:String x:Key="LocationEditorWildSpawnTypeText">野外生成類型</system:String>
+  <system:String x:Key="LocationEditorIsPlayersContent">是否為玩家</system:String>
+  <system:String x:Key="LocationEditorIsPlayersToolTip">需要勾選以使波次在3.8以上的版本中生效</system:String>
+  <system:String x:Key="LocationEditorNumberHeader">波次編號</system:String>
+  <system:String x:Key="LocationEditorNumberToolTip">波次編號（必須大於0）</system:String>
+  <system:String x:Key="LocationEditorSlotsMaxHeader">最大生成數量</system:String>
+  <system:String x:Key="LocationEditorSlotsMaxToolTip">最大生成的數量</system:String>
+  <system:String x:Key="LocationEditorSlotsMinHeader">最低生成數量</system:String>
+  <system:String x:Key="LocationEditorSlotsMinToolTip">最低生成的數量</system:String>
+  <system:String x:Key="LocationEditorTimeMaxHeader">最大生成時間</system:String>
+  <system:String x:Key="LocationEditorTimeMaxToolTip">生成波次的最大時間</system:String>
+  <system:String x:Key="LocationEditorTimeMinHeader">最小生成時間</system:String>
+  <system:String x:Key="LocationEditorTimeMinToolTip">生成波次的最小時間</system:String>
+  <system:String x:Key="LocationEditorBossSettingsTitle">Boss 設定</system:String>
+  <system:String x:Key="LocationEditorAddBossButtonText">新增 Boss</system:String>
+  <system:String x:Key="LocationEditorRemoveBossButtonText">移除 Boss</system:String>
+  <system:String x:Key="LocationEditorBossListText">Boss 列表</system:String>
+  <system:String x:Key="LocationEditorBossChanceHeader">Boss 出現機率</system:String>
+  <system:String x:Key="LocationEditorBossEscortAmountText">Boss 小弟數量</system:String>
+  <system:String x:Key="LocationEditorBossEscortTypeText">Boss 小弟類型</system:String>
+  <system:String x:Key="LocationEditorBossNameText">Boss 名稱</system:String>
+  <system:String x:Key="LocationEditorForceSpawnContent">強制生成</system:String>
+  <system:String x:Key="LocationEditorIgnoreMaxBotsContent">忽略最大機器人數量限制</system:String>
+  <system:String x:Key="LocationEditorRandomTimeSpawnContent">隨機生成時間</system:String>
+
+</ResourceDictionary>
