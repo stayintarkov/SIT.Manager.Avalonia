@@ -42,14 +42,16 @@ namespace SIT.Manager.Avalonia.ViewModels
 
         public IAsyncRelayCommand EditServerConfigCommand { get; }
 
-        public ServerPageViewModel(IAkiServerService akiServerService, IManagerConfigService configService, IFileService fileService) {
+        public ServerPageViewModel(IAkiServerService akiServerService, IManagerConfigService configService, IFileService fileService)
+        {
             _akiServerService = akiServerService;
             _configService = configService;
             _fileService = fileService;
 
             EditServerConfigCommand = new AsyncRelayCommand(EditServerConfig);
 
-            this.WhenActivated((CompositeDisposable disposables) => {
+            this.WhenActivated((CompositeDisposable disposables) =>
+            {
                 /* Handle activation */
                 UpdateCachedServerProperties(null, _configService.Config);
                 _configService.ConfigChanged += UpdateCachedServerProperties;
@@ -61,7 +63,8 @@ namespace SIT.Manager.Avalonia.ViewModels
 
                 UpdateConsoleWithCachedEntries();
 
-                Disposable.Create(() => {
+                Disposable.Create(() =>
+                {
                     /* Handle deactivation */
                     _akiServerService.OutputDataReceived -= AkiServer_OutputDataReceived;
                     _akiServerService.RunningStateChanged -= AkiServer_RunningStateChanged;
@@ -69,11 +72,14 @@ namespace SIT.Manager.Avalonia.ViewModels
             });
         }
 
-        private void UpdateCachedServerProperties(object? sender, ManagerConfig newConfig) {
+        private void UpdateCachedServerProperties(object? sender, ManagerConfig newConfig)
+        {
             FontFamily newFont = FontManager.Current.SystemFonts.FirstOrDefault(x => x.Name == newConfig.ConsoleFontFamily, FontFamily.Parse("Bender"));
-            if (!newFont.Name.Equals(cachedFontFamily.Name)) {
+            if (!newFont.Name.Equals(cachedFontFamily.Name))
+            {
                 cachedFontFamily = newFont;
-                foreach (ConsoleText textEntry in ConsoleOutput) {
+                foreach (ConsoleText textEntry in ConsoleOutput)
+                {
                     textEntry.TextFont = cachedFontFamily;
                 }
             }
@@ -81,25 +87,31 @@ namespace SIT.Manager.Avalonia.ViewModels
             cachedColorBrush.Color = newConfig.ConsoleFontColor;
         }
 
-        private void UpdateConsoleWithCachedEntries() {
-            foreach (string entry in _akiServerService.GetCachedServerOutput()) {
+        private void UpdateConsoleWithCachedEntries()
+        {
+            foreach (string entry in _akiServerService.GetCachedServerOutput())
+            {
                 AddConsole(entry);
             }
         }
 
-        private void AddConsole(string text) {
-            if (string.IsNullOrEmpty(text)) {
+        private void AddConsole(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
                 return;
             }
 
-            if (ConsoleOutput.Count > _akiServerService.ServerLineLimit) {
+            if (ConsoleOutput.Count > _akiServerService.ServerLineLimit)
+            {
                 ConsoleOutput.RemoveAt(0);
             }
 
             //[32m, [2J, [0;0f,
             text = ConsoleTextRemoveANSIFilterRegex().Replace(text, "");
 
-            ConsoleText consoleTextEntry = new() {
+            ConsoleText consoleTextEntry = new()
+            {
                 TextColor = cachedColorBrush,
                 TextFont = cachedFontFamily,
                 Message = text
@@ -108,32 +120,40 @@ namespace SIT.Manager.Avalonia.ViewModels
             ConsoleOutput.Add(consoleTextEntry);
         }
 
-        private void AkiServer_OutputDataReceived(object? sender, DataReceivedEventArgs e) {
+        private void AkiServer_OutputDataReceived(object? sender, DataReceivedEventArgs e)
+        {
             Dispatcher.UIThread.Post(() => AddConsole(e.Data ?? "\n"));
         }
 
-        private void AkiServer_RunningStateChanged(object? sender, RunningState runningState) {
-            Dispatcher.UIThread.Invoke(() => {
-                switch (runningState) {
-                    case RunningState.Starting: {
+        private void AkiServer_RunningStateChanged(object? sender, RunningState runningState)
+        {
+            Dispatcher.UIThread.Invoke(() =>
+            {
+                switch (runningState)
+                {
+                    case RunningState.Starting:
+                        {
                             AddConsole("Server started!");
                             StartServerButtonSymbolIcon = Symbol.Stop;
                             StartServerButtonTextBlock = "Starting Server";
                             break;
                         }
-                    case RunningState.Running: {
+                    case RunningState.Running:
+                        {
                             AddConsole("Server started!");
                             StartServerButtonSymbolIcon = Symbol.Stop;
                             StartServerButtonTextBlock = "Stop Server";
                             break;
                         }
-                    case RunningState.NotRunning: {
+                    case RunningState.NotRunning:
+                        {
                             AddConsole("Server stopped!");
                             StartServerButtonSymbolIcon = Symbol.Play;
                             StartServerButtonTextBlock = "Start Server";
                             break;
                         }
-                    case RunningState.StoppedUnexpectedly: {
+                    case RunningState.StoppedUnexpectedly:
+                        {
                             AddConsole("Server stopped unexpectedly! Check console for errors.");
                             StartServerButtonSymbolIcon = Symbol.Play;
                             StartServerButtonTextBlock = "Start Server";
@@ -143,9 +163,11 @@ namespace SIT.Manager.Avalonia.ViewModels
             });
         }
 
-        private async Task EditServerConfig() {
+        private async Task EditServerConfig()
+        {
             string serverPath = _configService.Config.AkiServerPath;
-            if (string.IsNullOrEmpty(serverPath)) {
+            if (string.IsNullOrEmpty(serverPath))
+            {
                 return;
             }
 
@@ -154,32 +176,45 @@ namespace SIT.Manager.Avalonia.ViewModels
         }
 
         [RelayCommand]
-        private void StartServer() {
-            if (_akiServerService.State != RunningState.Running) {
-                if (_akiServerService.IsUnhandledInstanceRunning()) {
+        private void StartServer()
+        {
+            if (_akiServerService.State == RunningState.Starting)
+            {
+                return;
+            }
+            else if (_akiServerService.State != RunningState.Running)
+            {
+                if (_akiServerService.IsUnhandledInstanceRunning())
+                {
                     AddConsole("SPT-AKI is currently running. Please close any running instance of SPT-AKI.");
                     return;
                 }
 
-                if (!File.Exists(_akiServerService.ExecutableFilePath)) {
+                if (!File.Exists(_akiServerService.ExecutableFilePath))
+                {
                     AddConsole("SPT-AKI not found. Please configure the SPT-AKI path in Settings tab before starting the server.");
                     return;
                 }
 
                 AddConsole("Starting server...");
-                try {
+                try
+                {
                     _akiServerService.Start();
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     AddConsole(ex.Message);
                 }
             }
-            else {
+            else
+            {
                 AddConsole("Stopping server...");
-                try {
+                try
+                {
                     _akiServerService.Stop();
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     AddConsole(ex.Message);
                 }
             }
