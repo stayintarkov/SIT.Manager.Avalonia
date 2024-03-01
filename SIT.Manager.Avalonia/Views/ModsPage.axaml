@@ -8,17 +8,18 @@
              xmlns:vm="clr-namespace:SIT.Manager.Avalonia.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SIT.Manager.Avalonia.Views.ModsPage"
+			 x:CompileBindings="True"
 			 Background="{DynamicResource ApplicationPageBackgroundThemeBrush}"
 			 x:DataType="vm:ModsPageViewModel">
 	<Grid>
 		<Grid Name="DisclaimerGrid"
 			  IsVisible="{Binding ShowModsDisclaimer}">
 			<StackPanel Margin="10" VerticalAlignment="Center">
-				<TextBlock Text="WARNING" HorizontalAlignment="Center" Margin="0 20" FontFamily="{StaticResource BenderFont}" FontWeight="Bold" FontSize="64" Foreground="OrangeRed"/>
-				<TextBlock TextWrapping="Wrap" Text="The use of mods can affect the stability of your game and might cause it to crash or malfunction. While mods can enhance your gaming experience and add new features, they may not be officially supported by SIT or tested for compatibility. Install mods at your own risk and always make backup copies of your game files before making any changes. We are not liable for any damage or loss of progress caused by the installation of mods. Proceed with caution." FontSize="16" TextAlignment="Center"/>
+				<TextBlock Text="{DynamicResource ModsWarningTitle}" HorizontalAlignment="Center" Margin="0 20" FontFamily="{StaticResource BenderFont}" FontWeight="Bold" FontSize="64" Foreground="OrangeRed"/>
+				<TextBlock TextWrapping="Wrap" Text="{DynamicResource ModsWarningDescription}" FontSize="16" TextAlignment="Center"/>
 				<Button Name="IUnderstandButton" 
 						Margin="20" 
-						Content="I Understand" 
+						Content="{DynamicResource ModsWarningButtonTitle}" 
 						HorizontalAlignment="Center"
 						Command="{Binding AcceptModsDisclaimerCommand}"/>
 			</StackPanel>
@@ -32,7 +33,7 @@
 			</Grid.ColumnDefinitions>
 			
 			<StackPanel Margin="10" HorizontalAlignment="Left">
-				<TextBlock Text="Mods" FontFamily="{StaticResource BenderFont}" FontSize="32" FontWeight="Bold" TextDecorations="Underline"/>
+				<TextBlock Text="{DynamicResource ModsPageTitle}" FontFamily="{StaticResource BenderFont}" FontSize="32" FontWeight="Bold" TextDecorations="Underline"/>
 				<ListBox Name="ModsList"
 						 BorderThickness="1"
 						 BorderBrush="Gray"
@@ -51,15 +52,14 @@
 					</ListBox.ItemTemplate>
 				</ListBox>
 
-				<Button Name="DownloadModPackageButton" 
-						Margin="10" 
+				<Button Name="DownloadModPackageButton"  
+						Margin="10"
 						HorizontalAlignment="Center" 
-						Width="200"
-						ToolTip.Tip="Download the latest ported mod collection." 
+						ToolTip.Tip="{DynamicResource ModsDownloadCollectionButtonToolTip}" 
 						Command="{Binding DownloadModPackageCommand}">
 					<StackPanel Orientation="Horizontal">
 						<ui:SymbolIcon Margin="5,0" Symbol="Download"/>
-						<TextBlock Margin="5,0" Text="Download Collection"/>
+						<TextBlock Margin="5,0" Text="{DynamicResource ModsDownloadCollectionButtonTitle}"/>
 					</StackPanel>
 				</Button>
 			</StackPanel>
@@ -73,43 +73,43 @@
 							HorizontalAlignment="Left"
 							Grid.Row="0">
 
-                    <TextBlock Text="Mod Info" FontFamily="{StaticResource BenderFont}" FontSize="32" FontWeight="Bold" TextDecorations="Underline"/>
+                    <TextBlock Text="{DynamicResource ModInfoTitle}" FontFamily="{StaticResource BenderFont}" FontSize="32" FontWeight="Bold" TextDecorations="Underline"/>
 
 					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="Name:" Margin="5" FontWeight="Bold"/>
+						<TextBlock Text="{DynamicResource ModInfoNameTitle}" Margin="5" FontWeight="Bold"/>
 						<TextBlock Text="{Binding Name}" Margin="5"/>
 					</StackPanel>
 
 					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="Author:" Margin="5" FontWeight="Bold"/>
+						<TextBlock Text="{DynamicResource ModInfoAuthorTitle}" Margin="5" FontWeight="Bold"/>
 						<TextBlock Text="{Binding Author}" Margin="5"/>
 					</StackPanel>
 
 					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="Supported SIT Version:" Margin="5" FontWeight="Bold"/>
+						<TextBlock Text="{DynamicResource ModInfoSupportedVersionTitle}" Margin="5" FontWeight="Bold"/>
 						<TextBlock Text="{Binding SupportedVersion}" Margin="5"/>
 					</StackPanel>
 
 					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="Mod Version:" Margin="5" FontWeight="Bold"/>
+						<TextBlock Text="{DynamicResource ModInfoModVersionTitle}" Margin="5" FontWeight="Bold"/>
 						<TextBlock Text="{Binding ModVersion}" Margin="5"/>
 					</StackPanel>
 
 					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="Mod Page:" Margin="5" FontWeight="Bold"/>
+						<TextBlock Text="{DynamicResource ModInfoModPageTitle}" Margin="5" FontWeight="Bold"/>
 						<ui:HyperlinkButton Content="Link" NavigateUri="{Binding ModUrl}"/>
 					</StackPanel>
 
-					<Grid ToolTip.Tip="If the ported mod requires additional files. Click the link to download them."
+					<Grid ToolTip.Tip="{DynamicResource ModInfoExtraFilesToolTip}"
 						  Background="Transparent">
-						<CheckBox Content="Requires Extra Files" 
+						<CheckBox Content="{DynamicResource ModInfoRequiresExtraFilesTitle}" 
 								  IsChecked="{Binding RequiresFiles}" 
 								  Margin="5" 
 								  IsHitTestVisible="False"/>
 					</Grid>
 					
 					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="Description:" Margin="5" FontWeight="Bold"/>
+						<TextBlock Text="{DynamicResource ModInfoDescription}" Margin="5" FontWeight="Bold"/>
 						<ScrollViewer MaxHeight="100">
 							<TextBlock Text="{Binding Description}" 
 									   Margin="5" 
@@ -126,24 +126,24 @@
 							Grid.Row="1">
 					<Button Name="InstallButton" 
 							Margin="10" 
-							ToolTip.Tip="Install the mod." 
+							ToolTip.Tip="{DynamicResource ModInfoInstallToolTip}" 
 							MinHeight="32"
 							Command="{Binding InstallModCommand}"
 							IsEnabled="{Binding EnableInstall}">
 						<StackPanel Orientation="Horizontal">
 							<ui:SymbolIcon Symbol="Add" Margin="0,0,5,0"/>
-							<TextBlock Text="Install"/>
+							<TextBlock Text="{DynamicResource ModInfoInstallTitle}"/>
 						</StackPanel>
 					</Button>
 					<Button Name="UninstallButton" 
 							Margin="10" 
-							ToolTip.Tip="Uninstall the mod." 
+							ToolTip.Tip="{DynamicResource ModInfoUninstallToolTip}" 
 							MinHeight="32"
 							Command="{Binding UninstallModCommand}"
 							IsEnabled="{Binding !EnableInstall}">
 						<StackPanel Orientation="Horizontal">
 							<ui:SymbolIcon Symbol="Remove" Margin="0,0,5,0"/>
-							<TextBlock Text="Uninstall"/>
+							<TextBlock Text="{DynamicResource ModInfoUninstallTitle}"/>
 						</StackPanel>
 					</Button>
 				</StackPanel>

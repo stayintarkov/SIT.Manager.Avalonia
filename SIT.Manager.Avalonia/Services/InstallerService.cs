@@ -108,13 +108,11 @@ namespace SIT.Manager.Avalonia.Services
             _actionNotificationService.StartActionNotification();
             _actionNotificationService.UpdateActionNotification(new ActionNotification("Running Patcher...", 100));
 
-            string patcherPath = Path.Combine(_configService.Config.InstallPath, "Patcher.exe");
-            if (!File.Exists(patcherPath)) {
-                patcherPath = Path.Combine(_configService.Config.InstallPath, "patcher.exe");
-                if (!File.Exists(patcherPath)) {
-                    return $"Patcher.exe not found at {patcherPath}";
-                }
+            string[] files = Directory.GetFiles(_configService.Config.InstallPath, "Patcher.exe", new EnumerationOptions() { MatchCasing = MatchCasing.CaseInsensitive, MaxRecursionDepth = 0 });
+            if (!files.Any()) {
+                return $"Patcher.exe not found in {_configService.Config.InstallPath}";
             }
+            string patcherPath = files[0];
 
             Process patcherProcess = new() {
                 StartInfo = new() {
