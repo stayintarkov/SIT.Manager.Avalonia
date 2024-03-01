@@ -1,6 +1,15 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
 					xmlns:system="clr-namespace:System;assembly=System.Runtime"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<!-- Main Page ViewModel -->
+	<system:String x:Key="MainPageViewModelUpdateConfirmationTitle">Подтверждение обновления</system:String>
+	<system:String x:Key="MainPageViewModelUpdateConfirmationDescription">Вы уверены, что хотите обновить? Это приведет к закрытию менеджера для выполнения обновления.</system:String>
+	<system:String x:Key="MainPageViewModelButtonYes">Да</system:String>
+	<system:String x:Key="MainPageViewModelButtonNo">Нет</system:String>
+	<system:String x:Key="MainPageViewModelUnsupportedTitle">Неподдерживаемая операция</system:String>
+	<system:String x:Key="MainPageViewModelUnsupportedDescription">Автоматическое обновление в настоящее время недоступно для Linux.</system:String>
+	<system:String x:Key="MainPageViewModelButtonOk">Автоматическое обновление в настоящее время недоступно для Linux.</system:String>
+
 	<!-- Play Page / View -->
 	<system:String x:Key="AddressBoxTitle">Адрес</system:String>
 	<system:String x:Key="UsernameBoxTitle">Никнейм игрока</system:String>
@@ -12,7 +21,33 @@
 	<system:String x:Key="ConnectButtonTitle">Подключится</system:String>
 	<system:String x:Key="StartServerAndConnectButtonTitleToolTip">Запустить сервер Aki и подключится к нему</system:String>
 	<system:String x:Key="ConnectButtonTitleToolTip">Подключится к серверу</system:String>
-	<!--<system:String x:Key="StartServerAndConnectButtonTitle">Start Server and Connect</system:String> For later...-->
+
+	<!-- Play Page ViewModel -->
+	<system:String x:Key="PlayPageViewModelQuickPlayText">Запустить сервер и подключиться</system:String>
+	<system:String x:Key="PlayPageViewModelAccountNotFound">Аккаунт не найден</system:String>
+	<system:String x:Key="PlayPageViewModelAccountNotFoundDescription">Ваш аккаунт не найден. Хотели бы вы зарегистрировать новый аккаунт с этими учетными данными?</system:String>
+	<system:String x:Key="PlayPageViewModelButtonYes">Да</system:String>
+	<system:String x:Key="PlayPageViewModelButtonOk">ОК</system:String>
+	<system:String x:Key="PlayPageViewModelButtonNo">Нет</system:String>
+	<system:String x:Key="PlayPageViewModelLoginErrorTitle">Ошибка входа</system:String>
+	<system:String x:Key="PlayPageViewModelLoginErrorDescription">Невозможно связаться с сервером, %1</system:String>
+	<system:String x:Key="PlayPageViewModelServerAddressTitle">Адрес сервера</system:String>
+	<system:String x:Key="PlayPageViewModelServerAddressDescription">Пожалуйста, исправьте адрес сервера и попробуйте снова</system:String>
+	<system:String x:Key="PlayPageViewModelInstallPathTitle">Путь установки</system:String>
+	<system:String x:Key="PlayPageViewModelInstallPathDescription">'Путь установки' не настроен. Перейдите в настройки и настройте путь установки.</system:String>
+	<system:String x:Key="PlayPageViewModelSITInstallationTitle">Установка SIT</system:String>
+	<system:String x:Key="PlayPageViewModelSITInstallationDescription">Не удалось найти '%1'. Установите SIT перед подключением.</system:String>
+	<system:String x:Key="PlayPageViewModelEFTInstallationTitle">Установка EFT</system:String>
+	<system:String x:Key="PlayPageViewModelEFTInstallationDescription">Не удалось найти '%1' в пути установки.</system:String>
+	<system:String x:Key="PlayPageViewModelInputValidationTitle">Проверка ввода</system:String>
+	<system:String x:Key="PlayPageViewModelInputValidationDescription">Отсутствует поле ввода.</system:String>
+	<system:String x:Key="PlayPageViewModelUnhandledAkiInstanceTitle">Необработанный экземпляр Aki</system:String>
+	<system:String x:Key="PlayPageViewModelUnhandledAkiInstanceDescription">SPT-AKI в настоящее время запущен. Пожалуйста, закройте любой запущенный экземпляр SPT-AKI.</system:String>
+	<system:String x:Key="PlayPageViewModelMissingAKIInstallationTitle">Отсутствует установка AKI</system:String>
+	<system:String x:Key="PlayPageViewModelMissingAKIInstallationDescription">Отсутствует исполняемый файл сервера SPT-AKI.</system:String>
+	<system:String x:Key="PlayPageViewModelWaitingForServerTitle">Ожидание сервера</system:String>
+	<system:String x:Key="PlayPageViewModelServerErrorTitle">Ошибка сервера</system:String>
+	<system:String x:Key="PlayPageViewModelServerErrorDescription">Сервер не запустился. Пожалуйста, проверьте журналы для получения дополнительной информации.</system:String>
 
 	<!-- Pane View (Menu on the left also tooltip about update on top) -->
 	<system:String x:Key="UpdateNotification">Доступно обновление SIT Manager, нажмите здесь для обновления:</system:String>
@@ -49,6 +84,11 @@
 	<system:String x:Key="ModInfoInstallTitle">Установить</system:String>
 	<system:String x:Key="ModInfoUninstallToolTip">Удалить мод.</system:String>
 	<system:String x:Key="ModInfoUninstallTitle">Удалить</system:String>
+
+	<!-- Mods Page ViewModel -->
+	<system:String x:Key="ModsPageViewModelErrorTitle">Ошибка</system:String>
+	<system:String x:Key="ModsPageViewModelErrorInstallPathDescription">Путь установки не указан. Укажите его в настройках.</system:String>
+	<system:String x:Key="ModsPageViewModelErrorNoModsFound">Моды не найдены</system:String>
 
 	<!-- Tools Page -->
 	<system:String x:Key="ToolsSITTitle">Установить SIT</system:String>
@@ -155,6 +195,16 @@
 	<system:String x:Key="LocationEditorIgnoreMaxBotsContent">Игнорировать Максимальное Количество Ботов</system:String>
 	<system:String x:Key="LocationEditorRandomTimeSpawnContent">Случайное Время Спауна</system:String>
 
+	<!-- LocationEditor ViewModel -->
+	<system:String x:Key="LocationEditorViewModelLoadErrorTitle">Ошибка загрузки</system:String>
+	<system:String x:Key="LocationEditorViewModelLoadErrorDescription">При сохранении файла произошла ошибка.</system:String>
+	<system:String x:Key="LocationEditorViewModelLoadLocationTitle">Загрузить местоположение</system:String>
+	<system:String x:Key="LocationEditorViewModelLoadLocationDescription">Местоположение %1 успешно загружено.</system:String>
+	<system:String x:Key="LocationEditorViewModelSaveErrorTitle">Ошибка сохранения</system:String>
+	<system:String x:Key="LocationEditorViewModelSaveErrorDescription">При сохранении файла произошла ошибка.</system:String>
+	<system:String x:Key="LocationEditorViewModelSaveSuccessTitle">Сохранено</system:String>
+	<system:String x:Key="LocationEditorViewModelSaveSuccessDescription">Файл успешно сохранен в: %1</system:String>
+
 	<!-- Select Version Dialog -->
 	<system:String x:Key="SelectVersionDialogTitle">Выберите версию</system:String>
 	<system:String x:Key="SelectVersionDialogToInstallTitle">Выберите версию для установки:</system:String>
@@ -177,7 +227,7 @@
 	<system:String x:Key="ToolsPageViewModelErrorMessageDescription">Не удалось получить релизы</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigTitle">Ошибка конфигурации</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigDescription">'Путь установки' не настроен. Перейдите в настройки, чтобы настроить путь установки.</system:String>
-	<system:String x:Key="ToolsPageViewModelErrorMessageConfigBepInExDescription">Не удалось найти указанный путь. Установлен ли BepInEx?\nПуть: %1</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigBepInExDescription">Не удалось найти указанный путь. Установлен ли BepInEx? Путь: %1</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigSITDescription">Не удалось найти '%1'. Убедитесь, что SIT установлен и что вы один раз запустили игру.</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigLogDescription">Не удалось найти файл журнала.</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigButtonOk">ОК</system:String>
@@ -208,5 +258,48 @@
 	<system:String x:Key="ServerPageViewModelStartingServerLog">Запуск сервера...</system:String>
 	<system:String x:Key="ServerPageViewModelStoppingServerLog">Остановка сервера...</system:String>
 
+	<!-- Tarkov Client Service -->
+	<system:String x:Key="TarkovClientServiceCacheClearedTitle">Кеш очищен</system:String>
+	<system:String x:Key="TarkovClientServiceCacheClearedErrorTitle">Ошибка очистки кеша</system:String>
+	<system:String x:Key="TarkovClientServiceCacheClearedDescription">Все успешно очищено!</system:String>
+	<system:String x:Key="TarkovClientServiceCacheClearedErrorDescription">Не удалось найти путь установки в настройках</system:String>
+	<system:String x:Key="TarkovClientServiceCacheClearedErrorEFTDescription">Локальный каталог кеша EFT не найден по пути: %1</system:String>
+	<system:String x:Key="TarkovClientServiceCacheClearedEFTDescription">Локальный кеш EFT успешно очищен!</system:String>
+
+	<!-- Mod Service -->
+	<system:String x:Key="ModServiceOutdatedDescription">У вас %1 устаревших модов. Хотите автоматически обновить их? Устаревшие моды: %2</system:String>
+	<system:String x:Key="ModServiceOutdatedModsFoundTitle">Обнаружены устаревшие моды</system:String>
+	<system:String x:Key="ModServiceButtonNo">Нет</system:String>
+	<system:String x:Key="ModServiceButtonYes">Да</system:String>
+	<system:String x:Key="ModServiceUpdatedModsTitle">Обновленные моды</system:String>
+	<system:String x:Key="ModServiceUpdatedModsDescription">Обновлено %1 модов.</system:String>
+	<system:String x:Key="ModServiceInstallModTitle">Установить мод</system:String>
+	<system:String x:Key="ModServiceInstallErrorModDescription">Путь установки не указан. Настройте его в разделе Настройки.</system:String>
+	<system:String x:Key="ModServiceWarningTitle">Предупреждение</system:String>
+	<system:String x:Key="ModServiceWarningDescription">Мод, который вы пытаетесь установить, не совместим с текущей установленной версией SIT. Поддерживаемая версия SIT: %1 Установленная версия SIT: %2 Продолжить в любом случае?</system:String>
+	<system:String x:Key="ModServiceUnknownTitle">Неизвестно</system:String>
+	<system:String x:Key="ModServiceInstallModDescription">%1 успешно установлен.</system:String>
+	<system:String x:Key="ModServiceErrorInstallModDescription">%1 не удалось установить. Проверьте файл Launcher.log</system:String>
+	<system:String x:Key="ModServiceErrorUninstallModTitle">Ошибка при удалении мода</system:String>
+	<system:String x:Key="ModServiceErrorUninstallModDescription">В моде %1 отсутствовал файл: '%2'. Принудительно удалить мод из списка установленных модов?</system:String>
+	<system:String x:Key="ModServiceErrorExceptionUninstallModDescription">В моде %1 отсутствовал файл: '%2'. Принудительно удалить мод из списка установленных модов?</system:String>
+	<system:String x:Key="ModServiceErrorExceptionFileUninstallModDescription">В моде %1 отсутствовал файл: '%2'</system:String>
+	<system:String x:Key="ModServiceFileUninstallModTitle">Удалить мод</system:String>
+	<system:String x:Key="ModServiceFileUninstallModDescription">%1 успешно удален.</system:String>
+
+
+	<!-- Install Service -->
+	<system:String x:Key="InstallServiceErrorTitle">Ошибка</system:String>
+	<system:String x:Key="InstallServiceErrorInstallServerDescription">Пожалуйста, настройте путь к EFT в разделе Настройки.</system:String>
+	<system:String x:Key="InstallServiceErrorInstallSITDescription">Путь к EFT не указан. Настройте его в разделе Настройки.</system:String>
+	<system:String x:Key="InstallServiceConfigTitle">Конфигурация</system:String>
+	<system:String x:Key="InstallServiceConfigDescription">Путь установки сервера установлен на '%1'</system:String>
+	<system:String x:Key="InstallServiceInstallSuccessfulTitle">Установка</system:String>
+	<system:String x:Key="InstallServiceInstallSuccessfulDescription">Установка сервера прошла успешно.</system:String>
+	<system:String x:Key="InstallServiceInstallSITSuccessfulDescription">Установка SIT прошла успешно.</system:String>
+
+	<!-- File Service -->
+	<system:String x:Key="FileServiceProgressDownloading">Загрузка файла '%1'</system:String>
+	<system:String x:Key="FileServiceProgressExtracting">Извлечение файла %1 (%2)</system:String>
 
 </ResourceDictionary>

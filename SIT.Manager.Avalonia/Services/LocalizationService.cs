@@ -1,4 +1,5 @@
 ﻿using Avalonia.Markup.Xaml.Styling;
+using CommunityToolkit.Mvvm.ComponentModel;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using System;

@@ -1,7 +1,9 @@
 using Avalonia.ReactiveUI;
 using CommunityToolkit.Mvvm.Messaging;
 using FluentAvalonia.UI.Controls;
+using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
+using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.Models;
 using SIT.Manager.Avalonia.Models.Messages;
 using SIT.Manager.Avalonia.ViewModels;
@@ -12,6 +14,10 @@ namespace SIT.Manager.Avalonia.Views;
 
 public partial class MainView : ReactiveUserControl<MainViewModel>
 {
+    private readonly ILocalizationService? _localizationService = App.Current.Services.GetService<ILocalizationService>();
+    private static NavigationViewItem? _settingsItem;
+    public static NavigationViewItem? SettingsItem { get => _settingsItem; set => _settingsItem = value; }
+
     public MainView() {
         InitializeComponent();
 
@@ -26,6 +32,8 @@ public partial class MainView : ReactiveUserControl<MainViewModel>
             if (DataContext is MainViewModel dataContext) {
                 // Register the content frame so that we can update it from the view model
                 dataContext.RegisterContentFrame(ContentFrame);
+                SettingsItem = NavView.SettingsItem;
+                SettingsItem.Content = _localizationService?.TranslateSource("SettingsTitle");
             }
         });
 

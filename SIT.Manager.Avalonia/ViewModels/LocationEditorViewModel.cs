@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.Models;
+using SIT.Manager.Avalonia.Services;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
@@ -14,6 +15,7 @@ namespace SIT.Manager.Avalonia.ViewModels
     {
         private readonly IBarNotificationService _barNotificationService;
         private readonly IPickerDialogService _pickerDialogService;
+        private readonly ILocalizationService _localizationService;
 
         private static Dictionary<string, string> _mapLocationMapping = new Dictionary<string, string>() {
             { "maps/factory_day_preset.bundle","Factory (Day)" },
@@ -97,13 +99,21 @@ namespace SIT.Manager.Avalonia.ViewModels
         public IAsyncRelayCommand LoadCommand { get; }
         public IAsyncRelayCommand SaveCommand { get; }
 
-        public LocationEditorViewModel(IBarNotificationService barNotificationService, IPickerDialogService pickerDialogService) {
+        public LocationEditorViewModel(IBarNotificationService barNotificationService, ILocalizationService localizationService, IPickerDialogService pickerDialogService) {
             _barNotificationService = barNotificationService;
             _pickerDialogService = pickerDialogService;
+            _localizationService = localizationService;
 
             LoadCommand = new AsyncRelayCommand(Load);
             SaveCommand = new AsyncRelayCommand(Save);
         }
+
+        /// <summary>
+        /// Handy function to compactly translate source code.
+        /// </summary>
+        /// <param name="key">key in the resources</param>
+        /// <param name="parameters">the paramaters that was inside the source string. will be replaced by hierarchy where %1 .. %n is the first paramater.</param>
+        private string Translate(string key, params string[] parameters) => _localizationService.TranslateSource(key, parameters);
 
         private async Task Load() {
             IStorageFile? file = await _pickerDialogService.GetFileFromPickerAsync();
@@ -115,7 +125,7 @@ namespace SIT.Manager.Avalonia.ViewModels
                 string jsonString = await File.ReadAllTextAsync(file.Path.LocalPath);
                 BaseLocation? location = JsonSerializer.Deserialize<BaseLocation>(jsonString);
                 if (location == null) {
-                    _barNotificationService.ShowError("Load Error", "There was an error saving the file.");
+                    _barNotificationService.ShowError(Translate("LocationEditorViewModelLoadErrorTitle"), Translate("LocationEditorViewModelLoadErrorDescription"));
                     return;
                 }
 
@@ -140,7 +150,7 @@ namespace SIT.Manager.Avalonia.ViewModels
                     SelectedBossLocationSpawn = location.BossLocationSpawn[0];
                 }
 
-                _barNotificationService.ShowSuccess("Load Location", $"Loaded location {LoadedLocation} successfully.");
+                _barNotificationService.ShowSuccess(Translate("LocationEditorViewModelLoadLocationTitle"), Translate("LocationEditorViewModelLoadLocationDescription", LoadedLocation));
             }
         }
 
@@ -156,13 +166,13 @@ namespace SIT.Manager.Avalonia.ViewModels
             }
 
             if (Location == null) {
-                _barNotificationService.ShowError("Save Error", "There was an error saving the file.");
+                _barNotificationService.ShowError(Translate("LocationEditorViewModelSaveErrorTitle"), Translate("LocationEditorViewModelSaveErrorDescription"));
                 return;
             }
             string json = JsonSerializer.Serialize(Location, new JsonSerializerOptions() { WriteIndented = true });
             await File.WriteAllTextAsync(file.Path.LocalPath, json);
 
-            _barNotificationService.ShowSuccess("Save", $"Successfully saved the file to: {file.Path}");
+            _barNotificationService.ShowSuccess(Translate("LocationEditorViewModelSaveSuccessTitle"), Translate("LocationEditorViewModelSaveSuccessDescription", file.Path.ToString()));
         }
 
         [RelayCommand]

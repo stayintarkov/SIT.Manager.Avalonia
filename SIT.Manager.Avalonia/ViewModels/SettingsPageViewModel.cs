@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
+using SIT.Manager.Avalonia.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -138,6 +139,7 @@ public partial class SettingsPageViewModel : ViewModelBase
     partial void OnCurrentLocalizationChanged(CultureInfo value)
     {
         _localizationService.Translate(value);
+        if (MainView.SettingsItem != null) MainView.SettingsItem.Content = Translate("SettingsTitle");
         Config.CurrentLanguageSelected = value.Name;
     }
 }

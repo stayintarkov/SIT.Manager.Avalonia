@@ -20,6 +20,7 @@ namespace SIT.Manager.Avalonia.ViewModels
     {
         private readonly IBarNotificationService _barNotificationService;
         private readonly IManagerConfigService _managerConfigService;
+        private readonly ILocalizationService _localizationService;
         private readonly ILogger _logger;
         private readonly IModService _modService;
 
@@ -44,11 +45,13 @@ namespace SIT.Manager.Avalonia.ViewModels
         public IAsyncRelayCommand UninstallModCommand { get; }
 
         public ModsPageViewModel(IManagerConfigService managerConfigService,
+                                 ILocalizationService localizationService,
                                  IBarNotificationService barNotificationService,
                                  ILogger<ModsPageViewModel> logger,
                                  IModService modService) {
             _barNotificationService = barNotificationService;
             _managerConfigService = managerConfigService;
+            _localizationService = localizationService;
             _logger = logger;
             _modService = modService;
 
@@ -70,9 +73,16 @@ namespace SIT.Manager.Avalonia.ViewModels
             });
         }
 
+        /// <summary>
+        /// Handy function to compactly translate source code.
+        /// </summary>
+        /// <param name="key">key in the resources</param>
+        /// <param name="parameters">the paramaters that was inside the source string. will be replaced by hierarchy where %1 .. %n is the first paramater.</param>
+        private string Translate(string key, params string[] parameters) => _localizationService.TranslateSource(key, parameters);
+
         private async Task LoadMasterList() {
             if (string.IsNullOrEmpty(_managerConfigService.Config.InstallPath)) {
-                _barNotificationService.ShowError("Error", "Install Path is not set. Configure it in Settings.");
+                _barNotificationService.ShowError(Translate("ModsPageViewModelErrorTitle"), Translate("ModsPageViewModelErrorInstallPathDescription"));
                 return;
             }
 
@@ -84,7 +94,7 @@ namespace SIT.Manager.Avalonia.ViewModels
             string modsListFile = Path.Combine(modsDirectory, "MasterList.json");
             if (!File.Exists(modsListFile)) {
                 ModList.Add(new ModInfo() {
-                    Name = "No mods found"
+                    Name = Translate("ModsPageViewModelErrorNoModsFound")
                 });
                 return;
             }
@@ -129,7 +139,7 @@ namespace SIT.Manager.Avalonia.ViewModels
 
         private async Task DownloadModPackage() {
             if (string.IsNullOrEmpty(_managerConfigService.Config.InstallPath)) {
-                _barNotificationService.ShowError("Error", "Install Path is not set. Configure it in Settings.");
+                _barNotificationService.ShowError(Translate("ModsPageViewModelErrorTitle"), Translate("ModsPageViewModelErrorInstallPathDescription"));
                 return;
             }
             _logger.LogInformation("DownloadModPack: Starting download of mod package.");

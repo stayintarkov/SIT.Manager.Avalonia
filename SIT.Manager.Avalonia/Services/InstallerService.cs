@@ -18,6 +18,7 @@ namespace SIT.Manager.Avalonia.Services
     public partial class InstallerService(IActionNotificationService actionNotificationService,
                                           IBarNotificationService barNotificationService,
                                           IManagerConfigService configService,
+                                          ILocalizationService localizationService,
                                           IFileService fileService,
                                           HttpClient httpClient,
                                           ILogger<InstallerService> logger,
@@ -30,10 +31,17 @@ namespace SIT.Manager.Avalonia.Services
         private readonly HttpClient _httpClient = httpClient;
         private readonly ILogger<InstallerService> _logger = logger;
         private readonly IVersionService _versionService = versionService;
+        private readonly ILocalizationService _localizationService = localizationService;
+
+        /// <summary>
+        /// Handy function to compactly translate source code.
+        /// </summary>
+        /// <param name="key">key in the resources</param>
+        /// <param name="parameters">the paramaters that was inside the source string. will be replaced by hierarchy where %1 .. %n is the first paramater.</param>
+        private string Translate(string key, params string[] parameters) => _localizationService.TranslateSource(key, parameters);
 
         [GeneratedRegex("This server version works with version ([0]{1,}\\.[0-9]{1,2}\\.[0-9]{1,2})\\.[0-9]{1,2}\\.[0-9]{1,5}")]
         private static partial Regex ServerReleaseVersionRegex();
-
 
         [GeneratedRegex("This version works with version [0]{1,}\\.[0-9]{1,2}\\.[0-9]{1,2}\\.[0-9]{1,2}\\.[0-9]{1,5}")]
         private static partial Regex SITReleaseVersionRegex();
@@ -345,7 +353,7 @@ namespace SIT.Manager.Avalonia.Services
         public async Task InstallServer(GithubRelease selectedVersion)
         {
             if (string.IsNullOrEmpty(_configService.Config.InstallPath)) {
-                _barNotificationService.ShowError("Error", "Please configure EFT Path in Settings.");
+                _barNotificationService.ShowError(Translate("InstallServiceErrorTitle"), Translate("InstallServiceErrorInstallServerDescription"));
                 return;
             }
 
@@ -395,11 +403,11 @@ namespace SIT.Manager.Avalonia.Services
                 // Attempt to automatically set the AKI Server Path after successful installation and save it to config
                 if (!string.IsNullOrEmpty(sitServerDirectory) && string.IsNullOrEmpty(_configService.Config.AkiServerPath)) {
                     config.AkiServerPath = sitServerDirectory;
-                    _barNotificationService.ShowSuccess("Config", $"Server installation path set to '{sitServerDirectory}'");
+                    _barNotificationService.ShowSuccess(Translate("InstallServiceConfigTitle"), Translate("InstallServiceConfigDescription", sitServerDirectory));
                 }
                 _configService.UpdateConfig(config);
 
-                _barNotificationService.ShowSuccess("Install", "Installation of Server was successful.");
+                _barNotificationService.ShowSuccess(Translate("InstallServiceInstallSuccessfulTitle"), Translate("InstallServiceInstallSuccessfulDescription"));
             }
             catch (Exception ex) {
                 // TODO ShowInfoBarWithLogButton("Install Error", "Encountered an error during installation.", InfoBarSeverity.Error, 10);
@@ -410,7 +418,7 @@ namespace SIT.Manager.Avalonia.Services
         public async Task InstallSIT(GithubRelease selectedVersion)
         {
             if (string.IsNullOrEmpty(_configService.Config.InstallPath)) {
-                _barNotificationService.ShowError("Error", "EFT Path is not set. Configure it in Settings.");
+                _barNotificationService.ShowError(Translate("InstallServiceErrorTitle"), Translate("InstallServiceErrorInstallSITDescription"));
                 return;
             }
 
@@ -479,7 +487,7 @@ namespace SIT.Manager.Avalonia.Services
                 config.SitVersion = _versionService.GetSITVersion(config.InstallPath);
                 _configService.UpdateConfig(config);
 
-                _barNotificationService.ShowSuccess("Install", "Installation of SIT was successful.");
+                _barNotificationService.ShowSuccess(Translate("InstallServiceInstallSuccessfulTitle"), Translate("InstallServiceInstallSITSuccessfulDescription"));
             }
             catch (Exception ex) {
                 // TODO ShowInfoBarWithLogButton("Install Error", "Encountered an error during installation.", InfoBarSeverity.Error, 10);

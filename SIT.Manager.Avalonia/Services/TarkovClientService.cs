@@ -8,12 +8,21 @@ using System.IO;
 namespace SIT.Manager.Avalonia.Services
 {
     public class TarkovClientService(IBarNotificationService barNotificationService,
+                                     ILocalizationService localizationService,
                                      IManagerConfigService configService) : ManagedProcess.ManagedProcess(barNotificationService, configService), ITarkovClientService
     {
         private const string TARKOV_EXE = "EscapeFromTarkov.exe";
         public override string ExecutableDirectory => !string.IsNullOrEmpty(_configService.Config.InstallPath) ? _configService.Config.InstallPath : string.Empty;
 
         protected override string EXECUTABLE_NAME => TARKOV_EXE;
+        private readonly ILocalizationService _localizationService = localizationService;
+
+        /// <summary>
+        /// Handy function to compactly translate source code.
+        /// </summary>
+        /// <param name="key">key in the resources</param>
+        /// <param name="parameters">the paramaters that was inside the source string. will be replaced by hierarchy where %1 .. %n is the first paramater.</param>
+        private string Translate(string key, params string[] parameters) => _localizationService.TranslateSource(key, parameters);
 
         private void ClearModCache()
         {
@@ -25,14 +34,13 @@ namespace SIT.Manager.Avalonia.Services
                     Directory.Delete(cachePath, true);
                 }
                 Directory.CreateDirectory(cachePath);
-                _barNotificationService.ShowInformational("Cache Cleared", "Everything cleared successfully!");
+                _barNotificationService.ShowInformational(Translate("TarkovClientServiceCacheClearedTitle"), Translate("TarkovClientServiceCacheClearedDescription"));
             }
             else {
                 // Handle the case where InstallPath is not found or empty.
-                _barNotificationService.ShowError("Cache Clear Error", "InstallPath not found in settings");
+                _barNotificationService.ShowError(Translate("TarkovClientServiceCacheClearedErrorTitle"), Translate("TarkovClientServiceCacheClearedErrorDescription"));
             }
         }
-
 
         public override void ClearCache()
         {
@@ -50,12 +58,12 @@ namespace SIT.Manager.Avalonia.Services
             }
             else {
                 // Handle the case where the cache directory does not exist.
-                _barNotificationService.ShowWarning("Cache Clear Error", $"EFT local cache directory not found at: {eftCachePath}");
+                _barNotificationService.ShowWarning(Translate("TarkovClientServiceCacheClearedErrorTitle"), Translate("TarkovClientServiceCacheClearedErrorEFTDescription", eftCachePath));
                 return;
             }
 
             Directory.CreateDirectory(eftCachePath);
-            _barNotificationService.ShowInformational("Cache Cleared", "EFT local cache cleared successfully!");
+            _barNotificationService.ShowInformational(Translate("TarkovClientServiceCacheClearedTitle"), Translate("TarkovClientServiceCacheClearedEFTDescription"));
         }
 
         public override void Start(string? arguments)

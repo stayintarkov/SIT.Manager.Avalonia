@@ -1,6 +1,15 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
 					xmlns:system="clr-namespace:System;assembly=System.Runtime"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<!-- Main Page ViewModel -->
+	<system:String x:Key="MainPageViewModelUpdateConfirmationTitle">Update Confirmation</system:String>
+	<system:String x:Key="MainPageViewModelUpdateConfirmationDescription">Are you sure you want to update? This will close the manager to perform an update.</system:String>
+	<system:String x:Key="MainPageViewModelButtonYes">Yes</system:String>
+	<system:String x:Key="MainPageViewModelButtonNo">No</system:String>
+	<system:String x:Key="MainPageViewModelUnsupportedTitle">Unsupported</system:String>
+	<system:String x:Key="MainPageViewModelUnsupportedDescription">Automatic updating isn't currently available for Linux.</system:String>
+	<system:String x:Key="MainPageViewModelButtonOk">Automatic updating isn't currently available for Linux.</system:String>
+	
 	<!-- Play Page / View -->
 	<system:String x:Key="AddressBoxTitle">Address</system:String>
 	<system:String x:Key="UsernameBoxTitle">Username</system:String>
@@ -13,10 +22,33 @@
 	<system:String x:Key="StartServerAndConnectButtonTitleToolTip">Start the Aki server and connect to the server</system:String>
 	<system:String x:Key="ConnectButtonTitleToolTip">Connect to the server</system:String>
 
-	<!-- Play Page / View | .cs -->
+	<!-- Play Page ViewModel -->
 	<system:String x:Key="PlayPageViewModelQuickPlayText">Start Server and Connect</system:String>
+	<system:String x:Key="PlayPageViewModelAccountNotFound">Account Not Found</system:String>
+	<system:String x:Key="PlayPageViewModelAccountNotFoundDescription">Your account has not been found, would you like to register a new account with these credentials?</system:String>
+	<system:String x:Key="PlayPageViewModelButtonYes">Yes</system:String>
+	<system:String x:Key="PlayPageViewModelButtonOk">Ok</system:String>
+	<system:String x:Key="PlayPageViewModelButtonNo">No</system:String>
+	<system:String x:Key="PlayPageViewModelLoginErrorTitle">Login Error</system:String>
+	<system:String x:Key="PlayPageViewModelLoginErrorDescription">Unable to communicate with the server %1</system:String>
+	<system:String x:Key="PlayPageViewModelServerAddressTitle">Server Address</system:String>
+	<system:String x:Key="PlayPageViewModelServerAddressDescription">Please fix your server address and try again</system:String>
+	<system:String x:Key="PlayPageViewModelInstallPathTitle">Install Path</system:String>
+	<system:String x:Key="PlayPageViewModelInstallPathDescription">'Install Path' is not configured. Go to settings and configure the installtion path.</system:String>
+	<system:String x:Key="PlayPageViewModelSITInstallationTitle">SIT Installation</system:String>
+	<system:String x:Key="PlayPageViewModelSITInstallationDescription">Unable to find '%1'. Install SIT before connecting.</system:String>
+	<system:String x:Key="PlayPageViewModelEFTInstallationTitle">EFT Installation</system:String>
+	<system:String x:Key="PlayPageViewModelEFTInstallationDescription">Unable to find '%1' in the installation path.</system:String>
+	<system:String x:Key="PlayPageViewModelInputValidationTitle">Input Validation</system:String>
+	<system:String x:Key="PlayPageViewModelInputValidationDescription">Missing input field.</system:String>
+	<system:String x:Key="PlayPageViewModelUnhandledAkiInstanceTitle">Unhandled Aki Instance</system:String>
+	<system:String x:Key="PlayPageViewModelUnhandledAkiInstanceDescription">SPT-AKI is currently running. Please close any running instance of SPT-AKI.</system:String>
+	<system:String x:Key="PlayPageViewModelMissingAKIInstallationTitle">Missing AKI Installation</system:String>
+	<system:String x:Key="PlayPageViewModelMissingAKIInstallationDescription">SPT-AKI server executable is missing.</system:String>
+	<system:String x:Key="PlayPageViewModelWaitingForServerTitle">Waiting for server</system:String>
+	<system:String x:Key="PlayPageViewModelServerErrorTitle">Server Error</system:String>
+	<system:String x:Key="PlayPageViewModelServerErrorDescription">The server never started. Please check the logs for more information.</system:String>
 	
-
 	<!-- Pane View (Menu on the left also tooltip about update on top) -->
 	<system:String x:Key="UpdateNotification">An update to the SIT Manager is available click here to update:</system:String>
 	<system:String x:Key="UpdateButtonTitle">Update</system:String>
@@ -52,6 +84,11 @@
 	<system:String x:Key="ModInfoInstallTitle">Install</system:String>
 	<system:String x:Key="ModInfoUninstallToolTip">Uninstall the mod.</system:String>
 	<system:String x:Key="ModInfoUninstallTitle">Uninstall</system:String>
+	
+	<!-- Mods Page ViewModel -->
+	<system:String x:Key="ModsPageViewModelErrorTitle">Error</system:String>
+	<system:String x:Key="ModsPageViewModelErrorInstallPathDescription">Install Path is not set. Configure it in Settings.</system:String>
+	<system:String x:Key="ModsPageViewModelErrorNoModsFound">No mods found</system:String>
 	
 	<!-- Tools Page -->
 	<system:String x:Key="ToolsSITTitle">Install SIT</system:String>
@@ -165,6 +202,16 @@
 	<system:String x:Key="LocationEditorIgnoreMaxBotsContent">IgnoreMaxBots</system:String>
 	<system:String x:Key="LocationEditorRandomTimeSpawnContent">RandomTimeSpawn</system:String>
 	
+	<!-- LocationEditor ViewModel -->
+	<system:String x:Key="LocationEditorViewModelLoadErrorTitle">Load Error</system:String>
+	<system:String x:Key="LocationEditorViewModelLoadErrorDescription">There was an error saving the file.</system:String>
+	<system:String x:Key="LocationEditorViewModelLoadLocationTitle">Load Location</system:String>
+	<system:String x:Key="LocationEditorViewModelLoadLocationDescription">Loaded location %1 successfully.</system:String>
+	<system:String x:Key="LocationEditorViewModelSaveErrorTitle">Save Error</system:String>
+	<system:String x:Key="LocationEditorViewModelSaveErrorDescription">There was an error saving the file.</system:String>
+	<system:String x:Key="LocationEditorViewModelSaveSuccessTitle">Save</system:String>
+	<system:String x:Key="LocationEditorViewModelSaveSuccessDescription">Successfully saved the file to: %1</system:String>
+	
 	<!-- Select Version Dialog -->
 	<system:String x:Key="SelectVersionDialogTitle">Select Version</system:String>
 	<system:String x:Key="SelectVersionDialogToInstallTitle">Select the version to install:</system:String>
@@ -187,7 +234,7 @@
 	<system:String x:Key="ToolsPageViewModelErrorMessageDescription">Unable to fetch releases</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigTitle">Config Error</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigDescription">'Install Path' is not configured. Go to settings to configure the installation path.</system:String>
-	<system:String x:Key="ToolsPageViewModelErrorMessageConfigBepInExDescription">Could not find the given path. Is BepInEx installed?\nPath: %1</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigBepInExDescription">Could not find the given path. Is BepInEx installed? Path: %1</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigSITDescription">Could not find '%1'. Make sure SIT is installed and that you have started the game once.</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigLogDescription">Log file could not be found.</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigButtonOk">Ok</system:String>
@@ -218,4 +265,47 @@
 	<system:String x:Key="ServerPageViewModelStartingServerLog">Starting server...</system:String>
 	<system:String x:Key="ServerPageViewModelStoppingServerLog">Stopping server...</system:String>
 
+	<!-- Tarkov Client Service -->
+	<system:String x:Key="TarkovClientServiceCacheClearedTitle">Cache Cleared</system:String>
+	<system:String x:Key="TarkovClientServiceCacheClearedErrorTitle">Cache Clear Error</system:String>
+	<system:String x:Key="TarkovClientServiceCacheClearedDescription">Everything cleared successfully!</system:String>
+	<system:String x:Key="TarkovClientServiceCacheClearedErrorDescription">InstallPath not found in settings</system:String>
+	<system:String x:Key="TarkovClientServiceCacheClearedErrorEFTDescription">EFT local cache directory not found at: %1</system:String>
+	<system:String x:Key="TarkovClientServiceCacheClearedEFTDescription">EFT local cache cleared successfully!</system:String>
+
+	<!-- Mod Service -->
+	<system:String x:Key="ModServiceOutdatedDescription">You have %1 outdated mods. Would you like to automatically update them? Outdated Mods: %2</system:String>
+	<system:String x:Key="ModServiceOutdatedModsFoundTitle">Outdated Mods Found</system:String>
+	<system:String x:Key="ModServiceButtonNo">No</system:String>
+	<system:String x:Key="ModServiceButtonYes">Yes</system:String>
+	<system:String x:Key="ModServiceUpdatedModsTitle">Updated Mods</system:String>
+	<system:String x:Key="ModServiceUpdatedModsDescription">Updated %1 mods.</system:String>
+	<system:String x:Key="ModServiceInstallModTitle">Install Mod</system:String>
+	<system:String x:Key="ModServiceInstallErrorModDescription">Install Path is not set. Configure it in Settings.</system:String>
+	<system:String x:Key="ModServiceWarningTitle">Warning</system:String>
+	<system:String x:Key="ModServiceWarningDescription">The mod you are trying to install is not compatible with your currently installed version of SIT. Supported SIT Version: %1 Installed SIT Version: %2 Continue anyway?</system:String>
+	<system:String x:Key="ModServiceUnknownTitle">Unknown</system:String>
+	<system:String x:Key="ModServiceInstallModDescription">%1 was successfully installed.</system:String>
+	<system:String x:Key="ModServiceErrorInstallModDescription">%1 failed to install. Check your Launcher.log</system:String>
+	<system:String x:Key="ModServiceErrorUninstallModTitle">Error Uninstalling Mod</system:String>
+	<system:String x:Key="ModServiceErrorUninstallModDescription">A file was missing from the mod %1: '%2' Force remove the mod from the list of installed mods anyway?</system:String>
+	<system:String x:Key="ModServiceErrorExceptionUninstallModDescription">A file was missing from the mod %1: '%2' Force remove the mod from the list of installed mods anyway?</system:String>
+	<system:String x:Key="ModServiceErrorExceptionFileUninstallModDescription">A file was missing from the mod %1: '%2'</system:String>
+	<system:String x:Key="ModServiceFileUninstallModTitle">Uninstall Mod</system:String>
+	<system:String x:Key="ModServiceFileUninstallModDescription">%1 was successfully uninstalled.</system:String>
+
+	<!-- Install Service -->
+	<system:String x:Key="InstallServiceErrorTitle">Error</system:String>
+	<system:String x:Key="InstallServiceErrorInstallServerDescription">Please configure EFT Path in Settings.</system:String>
+	<system:String x:Key="InstallServiceErrorInstallSITDescription">EFT Path is not set. Configure it in Settings.</system:String>
+	<system:String x:Key="InstallServiceConfigTitle">Config</system:String>
+	<system:String x:Key="InstallServiceConfigDescription">Server installation path set to '%1'</system:String>
+	<system:String x:Key="InstallServiceInstallSuccessfulTitle">Install</system:String>
+	<system:String x:Key="InstallServiceInstallSuccessfulDescription">Installation of Server was successful.</system:String>
+	<system:String x:Key="InstallServiceInstallSITSuccessfulDescription">Installation of SIT was successful.</system:String>
+	
+	<!-- File Service -->
+	<system:String x:Key="FileServiceProgressDownloading">Downloading '%1'</system:String>
+	<system:String x:Key="FileServiceProgressExtracting">Extracting file %1 (%2)</system:String>
+	
 </ResourceDictionary>

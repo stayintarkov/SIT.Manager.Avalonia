@@ -61,6 +61,7 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
         _httpClient = httpClient;
 
         _localizationService.Translate(new CultureInfo(_managerConfigService.Config.CurrentLanguageSelected));
+
         _actionNotificationService.ActionNotificationReceived += ActionNotificationService_ActionNotificationReceived;
         _barNotificationService.BarNotificationReceived += BarNotificationService_BarNotificationReceived;
 
@@ -73,8 +74,15 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
         {
             await CheckForUpdate();
         });
-        _managerConfigService.ConfigChanged += async (o, c) => await CheckForUpdate();
+        _managerConfigService.ConfigChanged += async (o, c) =>  await CheckForUpdate();
     }
+
+    /// <summary>
+    /// Handy function to compactly translate source code.
+    /// </summary>
+    /// <param name="key">key in the resources</param>
+    /// <param name="parameters">the paramaters that was inside the source string. will be replaced by hierarchy where %1 .. %n is the first paramater.</param>
+    private string Translate(string key, params string[] parameters) => _localizationService.TranslateSource(key, parameters);
 
     private async Task CheckForUpdate()
     {
@@ -98,10 +106,10 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
     {
         ContentDialogResult updateResult = await new ContentDialog()
         {
-            Title = "Update Confirmation",
-            Content = "Are you sure you want to update? This will close the manager to perform an update.",
-            PrimaryButtonText = "Yes",
-            CloseButtonText = "No"
+            Title = Translate("MainPageViewModelUpdateConfirmationTitle"),
+            Content = Translate("MainPageViewModelUpdateConfirmationDescription"),
+            PrimaryButtonText = Translate("MainPageViewModelButtonYes"),
+            CloseButtonText = Translate("MainPageViewModelButtonNo")
         }.ShowAsync();
 
         if(updateResult == ContentDialogResult.Primary)
@@ -129,9 +137,9 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
             {
                 await new ContentDialog()
                 {
-                    Title = "Unsupported",
-                    Content = "Automatic updating isn't currently available for Linux.",
-                    CloseButtonText = "Ok"
+                    Title = Translate("MainPageViewModelUnsupportedTitle"),
+                    Content = Translate("MainPageViewModelUnsupportedDescription"),
+                    CloseButtonText = Translate("MainPageViewModelButtonOk")
                 }.ShowAsync();
             }
         }
