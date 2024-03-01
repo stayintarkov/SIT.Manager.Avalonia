@@ -69,7 +69,6 @@ namespace SIT.Manager.Avalonia.Services
             };
             if (OperatingSystem.IsLinux()) {
                 _process.StartInfo.FileName = _configService.Config.WineRunner;
-                _process.StartInfo.WorkingDirectory = "";
                 _process.StartInfo.Arguments = $"\"{ExecutableFilePath}\" {arguments}";
                 _process.StartInfo.UseShellExecute = false;
 
