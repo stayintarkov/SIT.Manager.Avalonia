@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Linq;
 using SIT.Manager.Avalonia.Classes;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
@@ -123,17 +124,6 @@ namespace SIT.Manager.Avalonia.Services
             }
 
             _process.OutputDataReceived += AkiServer_OutputDataReceived;
-            DataReceivedEventHandler? startedEventHandler = null;
-            startedEventHandler = new DataReceivedEventHandler((sender, e) => {
-                if (ServerPageViewModel.ConsoleTextRemoveANSIFilterRegex()
-                .Replace(e.Data ?? string.Empty, "")
-                .Equals("Server is running, do not close while playing SPT, Happy playing!!", StringComparison.InvariantCultureIgnoreCase)) {
-                    IsStarted = true;
-                    ServerStarted?.Invoke(sender, e);
-                    _process.OutputDataReceived -= startedEventHandler;
-                }
-            });
-            _process.OutputDataReceived += startedEventHandler;
             _process.Exited += new EventHandler((sender, e) => {
                 ExitedEvent(sender, e);
                 IsStarted = false;
@@ -147,7 +137,19 @@ namespace SIT.Manager.Avalonia.Services
             }
 
             Task.Run(async () => {
-                TarkovRequesting requesting = ActivatorUtilities.CreateInstance<TarkovRequesting>(_serviceProvider, new Uri("http://127.0.0.1:6969/"));
+                Uri serverUri = new Uri("http://127.0.0.1");
+
+                string httpConfigPath = Path.Combine(_configService.Config.AkiServerPath, "Aki_Data", "Server", "configs", "http.json");
+                if(File.Exists(httpConfigPath))
+                {
+                    JObject httpConfig = JObject.Parse(File.ReadAllText(httpConfigPath));
+                    if(httpConfig.TryGetValue("ip", out JToken IPToken) && httpConfig.TryGetValue("port", out JToken PortToken))
+                    {
+                        serverUri = new Uri($"http://{IPToken}:{PortToken}");
+                    }
+                }
+
+                TarkovRequesting requesting = ActivatorUtilities.CreateInstance<TarkovRequesting>(_serviceProvider, serverUri);
                 int retryCounter = 0;
                 while (retryCounter < 6) {
                     using (CancellationTokenSource cts = new()) {
