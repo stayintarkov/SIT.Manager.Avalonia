@@ -123,17 +123,6 @@ namespace SIT.Manager.Avalonia.Services
             }
 
             _process.OutputDataReceived += AkiServer_OutputDataReceived;
-            DataReceivedEventHandler? startedEventHandler = null;
-            startedEventHandler = new DataReceivedEventHandler((sender, e) => {
-                if (ServerPageViewModel.ConsoleTextRemoveANSIFilterRegex()
-                .Replace(e.Data ?? string.Empty, "")
-                .Equals("Server is running, do not close while playing SPT, Happy playing!!", StringComparison.InvariantCultureIgnoreCase)) {
-                    IsStarted = true;
-                    ServerStarted?.Invoke(sender, e);
-                    _process.OutputDataReceived -= startedEventHandler;
-                }
-            });
-            _process.OutputDataReceived += startedEventHandler;
             _process.Exited += new EventHandler((sender, e) => {
                 ExitedEvent(sender, e);
                 IsStarted = false;
