@@ -1,0 +1,158 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+					xmlns:system="clr-namespace:System;assembly=System.Runtime"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<!-- Play Page / View -->
+	<system:String x:Key="AddressBoxTitle">Адрес</system:String>
+	<system:String x:Key="UsernameBoxTitle">Никнейм игрока</system:String>
+	<system:String x:Key="PasswordBoxTitle">Пароль</system:String>
+	<system:String x:Key="EnterUserNamePlaceholder">Введите никнейм игрока...</system:String>
+	<system:String x:Key="EnterPasswordPlaceholder">Введите пароль...</system:String>
+	<system:String x:Key="EnterServerAddressPlaceholder">Введите адрес сервера...</system:String>
+	<system:String x:Key="RememberMeCheckBoxTitle">Запомнить</system:String>
+	<system:String x:Key="ConnectButtonTitle">Подключится</system:String>
+	<system:String x:Key="StartServerAndConnectButtonTitleToolTip">Запустить сервер Aki и подключится к нему</system:String>
+	<system:String x:Key="ConnectButtonTitleToolTip">Подключится к серверу</system:String>
+	<!--<system:String x:Key="StartServerAndConnectButtonTitle">Start Server and Connect</system:String> For later...-->
+
+	<!-- Pane View (Menu on the left also tooltip about update on top) -->
+	<system:String x:Key="UpdateNotification">Доступно обновление SIT Manager, нажмите здесь для обновления:</system:String>
+	<system:String x:Key="UpdateButtonTitle">Обновление</system:String>
+	<system:String x:Key="SetupTitle">Настройка</system:String>
+	<system:String x:Key="InstallPathErrorNotification">Путь установки клиента еще не настроен. Перейдите в настройки, чтобы настроить пусковую установку.</system:String>
+	<system:String x:Key="PlayTitle">Играть</system:String>
+	<system:String x:Key="ToolsTitle">Инструменты</system:String>
+	<system:String x:Key="ServerTitle">Сервер</system:String>
+	<system:String x:Key="ModsTitle">Моды</system:String>
+	<system:String x:Key="SettingsTitle">Настройки</system:String>
+	<system:String x:Key="PlayTitleToolTip">Подключайтесь и играйте.</system:String>
+	<system:String x:Key="ToolsTitleToolTip">Инструменты для управления SIT и Tarkov.</system:String>
+	<system:String x:Key="ServerTitleToolTip">Управление сервером.</system:String>
+	<system:String x:Key="ModsTitleToolTip">Управление модами.</system:String>
+
+	<!-- Mods Page -->
+	<system:String x:Key="ModsWarningTitle">ПРЕДУПРЕЖДЕНИЕ</system:String>
+	<system:String x:Key="ModsWarningDescription">Использование модов может повлиять на стабильность вашей игры и вызвать ее сбой или неправильную работу. Хотя моды могут улучшить ваш игровой опыт и добавить новые функции, они могут не быть официально поддерживаемыми SIT или протестированы на совместимость. Устанавливайте моды на свой страх и риск и всегда делайте резервные копии файлов вашей игры перед внесением изменений. Мы не несем ответственности за любые ущерб или потерю прогресса, вызванные установкой модов. Действуйте осторожно.</system:String>
+	<system:String x:Key="ModsWarningButtonTitle">Понятно</system:String>
+	<system:String x:Key="ModsPageTitle">Моды</system:String>
+	<system:String x:Key="ModsDownloadCollectionButtonTitle">Загрузить коллекцию модификаций</system:String>
+	<system:String x:Key="ModsDownloadCollectionButtonToolTip">Загрузить последнюю портированную коллекцию модов.</system:String>
+	<system:String x:Key="ModInfoTitle">Информация о моде</system:String>
+	<system:String x:Key="ModInfoNameTitle">Название:</system:String>
+	<system:String x:Key="ModInfoAuthorTitle">Автор:</system:String>
+	<system:String x:Key="ModInfoSupportedVersionTitle">Поддерживаемая версия SIT:</system:String>
+	<system:String x:Key="ModInfoModVersionTitle">Версия Мода:</system:String>
+	<system:String x:Key="ModInfoModPageTitle">Страница Мода:</system:String>
+	<system:String x:Key="ModInfoExtraFilesToolTip">Если портированный мод требует дополнительных файлов. Нажмите на ссылку, чтобы их загрузить.</system:String>
+	<system:String x:Key="ModInfoRequiresExtraFilesTitle">Требуются Дополнительные Файлы</system:String>
+	<system:String x:Key="ModInfoDescription">Описание:</system:String>
+	<system:String x:Key="ModInfoInstallToolTip">Установить мод.</system:String>
+	<system:String x:Key="ModInfoInstallTitle">Установить</system:String>
+	<system:String x:Key="ModInfoUninstallToolTip">Удалить мод.</system:String>
+	<system:String x:Key="ModInfoUninstallTitle">Удалить</system:String>
+
+	<!-- Tools Page -->
+	<system:String x:Key="ToolsSITTitle">Установить SIT</system:String>
+	<system:String x:Key="ToolsSITToolTip">Понижение версии EFT при необходимости, установка SIT и поддержки модов.</system:String>
+	<system:String x:Key="ToolsOpenEFTFolderButtonToolTip">Открыть папку установки EFT.</system:String>
+	<system:String x:Key="ToolsOpenEFTFolderButtonTitle">Открыть папку EFT</system:String>
+	<system:String x:Key="ToolsOpenBepInExFolderButtonToolTip">Открыть папку плагинов BepInEx.</system:String>
+	<system:String x:Key="ToolsOpenBepInExFolderButtonTitle">Открыть папку плагинов</system:String>
+	<system:String x:Key="ToolsOpenSITConfigButtonToolTip">Открыть файл конфигурации SIT с помощью текстового редактора по умолчанию.</system:String>
+	<system:String x:Key="ToolsOpenSITConfigButtonTitle">Открыть конфигурацию SIT</system:String>
+	<system:String x:Key="ToolsInstallServerButtonToolTip">Скачать сервер SPT + мод сервера SIT.</system:String>
+	<system:String x:Key="ToolsInstallServerButtonTitle">Установить сервер + мод SIT</system:String>
+	<system:String x:Key="ToolsOpenEFTLogButtonToolTip">Открыть 'Player.log' EFT с помощью текстового редактора по умолчанию.</system:String>
+	<system:String x:Key="ToolsOpenEFTLogButtonTitle">Открыть лог EFT</system:String>
+	<system:String x:Key="ToolsOpenLocationEditorButtonToolTip">Открыть графический интерфейс редактора локаций.</system:String>
+	<system:String x:Key="ToolsOpenLocationEditorButtonTitle">Редактор локаций</system:String>
+	<system:String x:Key="ToolsClearCacheButtonToolTip">Очистить кеш локального пользователя EFT.</system:String>
+	<system:String x:Key="ToolsClearCacheButtonTitle">Очистить кеш</system:String>
+
+	<!-- Server Page -->
+	<system:String x:Key="ServerConsoleOutputTitle">Вывод консоли</system:String>
+	<system:String x:Key="ServerButtonStartToolTip">Запустить сервер.</system:String>
+	<system:String x:Key="ServerEditServerConfig">Редактировать конфигурацию сервера</system:String>
+	<system:String x:Key="ServerEditServerConfigButtonToolTip">Редактировать сервер</system:String>
+
+	<!-- Settings Page -->
+	<system:String x:Key="SettingsLauncherSettingsTitle">Настройки Лаунчера</system:String>
+	<system:String x:Key="SettingsCloseLauncherAfterGameLaunchTitle">Закрыть лаунчер после запуска игры</system:String>
+	<system:String x:Key="SettingsCloseLauncherAfterGameLaunchToolTip">Автоматически закрывает лаунчер после открытия игры.</system:String>
+	<system:String x:Key="SettingsLookForUpdatesTitle">Проверять Обновления</system:String>
+	<system:String x:Key="SettingsLookForUpdatesTitleToolTip">Автоматически проверяет обновления при открытии лаунчера.</system:String>
+	<system:String x:Key="SettingsLanguageTitle">Язык:</system:String>
+	<system:String x:Key="SettingsLanguageTitleToolTip">Переводит весь лаунчер на ваш язык, выберите свой язык!</system:String>
+	<system:String x:Key="SettingsEFTSettingsTitle">Настройки EFT</system:String>
+	<system:String x:Key="SettingsEFTSettingsButtonChangeTitle">Сменить</system:String>
+	<system:String x:Key="SettingsEFTInstallPathTitle">Путь EFT:</system:String>
+	<system:String x:Key="SettingsEFTInstallPathPlaceholder">Путь Установки EFT...</system:String>
+	<system:String x:Key="SettingsEFTChangeInstallPathToolTip">Изменить Путь Установки EFT.</system:String>
+	<system:String x:Key="SettingsEFTVersionTitle">Версия EFT:</system:String>
+	<system:String x:Key="SettingsSITVersionTitle">Версия SIT:</system:String>
+	<system:String x:Key="SettingsSPTAKITitle">Настройки SPT-AKI</system:String>
+	<system:String x:Key="SettingsSPTAKIPathTitle">Путь SPT-AKI:</system:String>
+	<system:String x:Key="SettingsSPTAKIInstallPathPlaceholder">Путь Установки SPT-AKI...</system:String>
+	<system:String x:Key="SettingsSPTAKIInstallPathToolTip">Изменить Путь Установки SPT-AKI.</system:String>
+	<system:String x:Key="SettingsServerConsoleTitle">Консоль Сервера</system:String>
+	<system:String x:Key="SettingsServerConsoleFontFamilyTitle">Шрифт:</system:String>
+	<system:String x:Key="SettingsServerConsoleFontColorTitle">Цвет Шрифта:</system:String>
+	<system:String x:Key="SettingsManagerVersionTitle">Версия Менеджера (Лаунчера):</system:String>
+
+	<!-- Location Editor View -->
+	<system:String x:Key="LocationEditorLoadButtonTitle">Загрузить</system:String>
+	<system:String x:Key="LocationEditorSaveButtonTitle">Сохранить</system:String>
+	<system:String x:Key="LocationEditorLocationTitle">Местоположение</system:String>
+	<system:String x:Key="LocationEditorLocationTextBoxPlaceholder">Нажмите 'Загрузить'</system:String>
+	<system:String x:Key="LocationEditorGeneralSettingsTitle">Общие настройки</system:String>
+	<system:String x:Key="LocationEditorBotMaxHeader">МаксБотов</system:String>
+	<system:String x:Key="LocationEditorBotMaxPlayerHeader">МаксБотовИгроков</system:String>
+	<system:String x:Key="LocationEditorBotNormalHeader">ОбычныйБот</system:String>
+	<system:String x:Key="LocationEditorBotSpawnTimeOffMaxHeader">МаксВремяСпаунаБотаОффлайн</system:String>
+	<system:String x:Key="LocationEditorBotSpawnTimeOffMinHeader">МинВремяСпаунаБотаОффлайн</system:String>
+	<system:String x:Key="LocationEditorBotSpawnTimeOnMaxHeader">МаксВремяСпаунаБотаОнлайн</system:String>
+	<system:String x:Key="LocationEditorBotSpawnTimeOnMinHeader">МинВремяСпаунаБотаОнлайн</system:String>
+	<system:String x:Key="LocationEditorBotStartHeader">СтартБота</system:String>
+	<system:String x:Key="LocationEditorBotStopHeader">СтопБота</system:String>
+	<system:String x:Key="LocationEditorBotSpawnCountStepHeader">ШагКоличестваСпаунаБота</system:String>
+	<system:String x:Key="LocationEditorBotSpawnPeriodCheckHeader">ПериодПроверкиСпаунаБота</system:String>
+	<system:String x:Key="LocationEditorBotMaxToolTip">Общее максимальное количество ботов на карте</system:String>
+	<system:String x:Key="LocationEditorBotMaxPlayerToolTip">Общее максимальное количество ботов, которые являются PMC</system:String>
+	<system:String x:Key="LocationEditorBotSpawnTimeOffMaxToolTip">Максимальное время спауна в секундах при работе в автономном режиме</system:String>
+	<system:String x:Key="LocationEditorBotSpawnTimeOffMinToolTip">Минимальное время спауна в секундах при работе в автономном режиме</system:String>
+	<system:String x:Key="LocationEditorBotSpawnTimeOnMaxToolTip">Максимальное время спауна в секундах при работе в сети</system:String>
+	<system:String x:Key="LocationEditorBotSpawnTimeOnMinToolTip">Минимальное время спауна в секундах при работе в сети</system:String>
+	<system:String x:Key="LocationEditorWavesSettingsTitle">Настройки Волн</system:String>
+	<system:String x:Key="LocationEditorAddWaveButtonText">Добавить Волну</system:String>
+	<system:String x:Key="LocationEditorRemoveWaveButtonText">Удалить Волну</system:String>
+	<system:String x:Key="LocationEditorSpawnWavesText">Волны Спауна</system:String>
+	<system:String x:Key="LocationEditorBotPresetText">Пресет Бота</system:String>
+	<system:String x:Key="LocationEditorBotPresetToolTip">Сложность Бота</system:String>
+	<system:String x:Key="LocationEditorBotSideText">Сторона Бота</system:String>
+	<system:String x:Key="LocationEditorBotSideToolTip">Сторона Бота</system:String>
+	<system:String x:Key="LocationEditorSpawnPointsText">Точки Спауна</system:String>
+	<system:String x:Key="LocationEditorWildSpawnTypeText">Тип Дикого Спауна</system:String>
+	<system:String x:Key="LocationEditorIsPlayersContent">естьИгроки</system:String>
+	<system:String x:Key="LocationEditorIsPlayersToolTip">Должно быть отмечено, чтобы волны работали на версии >3.8</system:String>
+	<system:String x:Key="LocationEditorNumberHeader">номер</system:String>
+	<system:String x:Key="LocationEditorNumberToolTip">Номер волны (должен быть >0)</system:String>
+	<system:String x:Key="LocationEditorSlotsMaxHeader">макс_слоты</system:String>
+	<system:String x:Key="LocationEditorSlotsMaxToolTip">Максимальное количество слотов для спауна</system:String>
+	<system:String x:Key="LocationEditorSlotsMinHeader">мин_слоты</system:String>
+	<system:String x:Key="LocationEditorSlotsMinToolTip">Минимальное количество слотов для спауна</system:String>
+	<system:String x:Key="LocationEditorTimeMaxHeader">время_макс</system:String>
+	<system:String x:Key="LocationEditorTimeMaxToolTip">Максимальное время для спауна волны ботов</system:String>
+	<system:String x:Key="LocationEditorTimeMinHeader">время_мин</system:String>
+	<system:String x:Key="LocationEditorTimeMinToolTip">Минимальное время для спауна волны ботов</system:String>
+	<system:String x:Key="LocationEditorBossSettingsTitle">Настройки Босса</system:String>
+	<system:String x:Key="LocationEditorAddBossButtonText">Добавить Босса</system:String>
+	<system:String x:Key="LocationEditorRemoveBossButtonText">Удалить Босса</system:String>
+	<system:String x:Key="LocationEditorBossListText">Список Боссов</system:String>
+	<system:String x:Key="LocationEditorBossChanceHeader">Шанс Босса</system:String>
+	<system:String x:Key="LocationEditorBossEscortAmountText">Количество Сопровождения Босса</system:String>
+	<system:String x:Key="LocationEditorBossEscortTypeText">Тип Сопровождения Босса</system:String>
+	<system:String x:Key="LocationEditorBossNameText">Имя Босса</system:String>
+	<system:String x:Key="LocationEditorForceSpawnContent">Принудительный Спаун</system:String>
+	<system:String x:Key="LocationEditorIgnoreMaxBotsContent">Игнорировать Максимальное Количество Ботов</system:String>
+	<system:String x:Key="LocationEditorRandomTimeSpawnContent">Случайное Время Спауна</system:String>
+
+</ResourceDictionary>

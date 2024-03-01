@@ -7,7 +7,7 @@ using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -18,6 +18,7 @@ namespace SIT.Manager.Avalonia.ViewModels;
 public partial class SettingsPageViewModel : ViewModelBase
 {
     private readonly IManagerConfigService _configsService;
+    private readonly ILocalizationService _localizationService;
     private readonly IBarNotificationService _barNotificationService;
     private readonly IPickerDialogService _pickerDialogService;
     private readonly IVersionService _versionService;
@@ -32,6 +33,12 @@ public partial class SettingsPageViewModel : ViewModelBase
     private List<FontFamily> _installedFonts;
 
     [ObservableProperty]
+    private List<CultureInfo> _availableLocalization = [];
+    
+    [ObservableProperty]
+    private CultureInfo _currentLocalization;
+    
+    [ObservableProperty]
     private string _managerVersionString;
 
     public IAsyncRelayCommand ChangeInstallLocationCommand { get; }
@@ -39,6 +46,7 @@ public partial class SettingsPageViewModel : ViewModelBase
     public IAsyncRelayCommand ChangeAkiServerLocationCommand { get; }
 
     public SettingsPageViewModel(IManagerConfigService configService,
+                                 ILocalizationService localizationService,
                                  IBarNotificationService barNotificationService,
                                  IPickerDialogService pickerDialogService,
                                  IVersionService versionService) {
@@ -46,13 +54,20 @@ public partial class SettingsPageViewModel : ViewModelBase
         _pickerDialogService = pickerDialogService;
         _barNotificationService = barNotificationService;
         _versionService = versionService;
+        _localizationService = localizationService;
 
         _config = _configsService.Config;
+
+        _currentLocalization = new CultureInfo(Config.CurrentLanguageSelected);
+        _availableLocalization = _localizationService.GetAvailableLocalizations();
+        _localizationService.Translate(_currentLocalization);
+
         _config.PropertyChanged += (o, e) => OnPropertyChanged(e);
 
         List<FontFamily> installedFonts = [.. FontManager.Current.SystemFonts];
         installedFonts.Add(FontFamily.Parse("Bender"));
         _installedFonts = [.. installedFonts.OrderBy(x => x.Name)];
+
 
         _selectedConsoleFontFamily = InstalledFonts.FirstOrDefault(x => x.Name == _config.ConsoleFontFamily, FontFamily.Parse("Bender"));
 
@@ -107,7 +122,12 @@ public partial class SettingsPageViewModel : ViewModelBase
 
     protected override void OnPropertyChanged(PropertyChangedEventArgs e) {
         base.OnPropertyChanged(e);
-
         _configsService.UpdateConfig(Config);
+    }
+
+    partial void OnCurrentLocalizationChanged(CultureInfo value)
+    {
+        _localizationService.Translate(value);
+        Config.CurrentLanguageSelected = value.Name;
     }
 }

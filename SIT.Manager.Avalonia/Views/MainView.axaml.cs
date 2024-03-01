@@ -1,4 +1,4 @@
-﻿using Avalonia.ReactiveUI;
+using Avalonia.ReactiveUI;
 using CommunityToolkit.Mvvm.Messaging;
 using FluentAvalonia.UI.Controls;
 using ReactiveUI;

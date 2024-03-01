@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 using SIT.Manager.Avalonia.Converters;
+using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
 using System;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 
 namespace SIT.Manager.Avalonia.Services
@@ -20,9 +22,10 @@ namespace SIT.Manager.Avalonia.Services
 
         public event EventHandler<ManagerConfig>? ConfigChanged;
 
-        public ManagerConfigService(ILogger<ManagerConfigService> logger) {
+        public ManagerConfigService(ILogger<ManagerConfigService> logger) 
+        {
             _logger = logger;
-
+            _config.CurrentLanguageSelected = CheckLocaleAvailability(_config.CurrentLanguageSelected);
             Load();
         }
 
@@ -68,6 +71,23 @@ namespace SIT.Manager.Avalonia.Services
             }
 
             ConfigChanged?.Invoke(this, _config);
+        }
+
+        public string CheckLocaleAvailability(string currentLanguageSelected)
+        {
+            var assembly = typeof(LocalizationService).Assembly;
+            string folderName = string.Format("{0}.Localization", assembly.GetName().Name);
+            var availableLocales = assembly.GetManifestResourceNames()
+                .Where(r => r.StartsWith(folderName) && r.EndsWith(".axaml")).ToList();
+            foreach (var item in availableLocales)
+            {
+                string languageCode = item.Split('.')[^2];
+                if (currentLanguageSelected == languageCode)
+                {
+                    return currentLanguageSelected;
+                }
+            }
+            return "en-US";
         }
     }
 }
