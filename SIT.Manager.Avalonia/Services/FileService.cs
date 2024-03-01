@@ -1,5 +1,8 @@
 ﻿using CG.Web.MegaApiClient;
 using Microsoft.Extensions.Logging;
+using SharpCompress.Archives;
+using SharpCompress.Archives.Zip;
+using SharpCompress.Common;
 using SIT.Manager.Avalonia.Extentions;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
@@ -7,7 +10,6 @@ using SIT.Manager.Avalonia.Models;
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
@@ -115,7 +117,8 @@ namespace SIT.Manager.Avalonia.Services
             return result;
         }
 
-        public async Task ExtractArchive(string filePath, string destination) {
+        public async Task ExtractArchive(string filePath, string destination)
+        {
             _actionNotificationService.StartActionNotification();
 
             // Ensures that the last character on the extraction path is the directory separator char.
@@ -129,8 +132,8 @@ namespace SIT.Manager.Avalonia.Services
 
             ActionNotification actionNotification = new(string.Empty, 0, true);
             try {
-                using ZipArchive archive = await Task.Run(() => ZipFile.OpenRead(filePath));
-                int totalFiles = archive.Entries.Count;
+                using ZipArchive archive = await Task.Run(() => ZipArchive.Open(filePath));
+                int totalFiles = archive.Entries.Where(file => !file.IsDirectory).Count();
                 int completed = 0;
 
                 Progress<float> progress = new((prog) => {
@@ -139,18 +142,17 @@ namespace SIT.Manager.Avalonia.Services
                 });
 
                 foreach (ZipArchiveEntry entry in archive.Entries) {
-                    bool isDirectory = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }.Any(x => entry.FullName.EndsWith(x));
-
-                    if (isDirectory) {
-                        DirectoryInfo entryDestination = destinationInfo.CreateSubdirectory(entry.FullName);
+                    if (entry.IsDirectory) {
+                        continue;
                     }
                     else {
-                        DirectoryInfo? entryParentInfo = Directory.GetParent(Path.Combine(destinationInfo.FullName, entry.FullName));
-                        entryParentInfo?.Create();
-                        entry.ExtractToFile(Path.Combine(entryParentInfo?.FullName ?? destinationInfo.FullName, entry.Name));
+                        entry.WriteToDirectory(destination, new ExtractionOptions() {
+                            ExtractFullPath = true,
+                            Overwrite = true
+                        });
                     }
 
-                    actionNotification.ActionText = $"Extracting file {Path.GetFileName(entry.FullName)} ({++completed}/{totalFiles})";
+                    actionNotification.ActionText = $"Extracting file {Path.GetFileName(entry.Key)} ({++completed}/{totalFiles})";
                     ((IProgress<float>) progress).Report((float) completed / totalFiles * 100);
                 }
             }

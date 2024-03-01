@@ -52,7 +52,8 @@ namespace SIT.Manager.Avalonia.Services
         /// Cleans up the EFT directory
         /// </summary>
         /// <returns></returns>
-        public void CleanUpEFTDirectory() {
+        public void CleanUpEFTDirectory()
+        {
             _logger.LogInformation("Cleaning up EFT directory...");
             try {
                 string battlEyeDir = Path.Combine(_configService.Config.InstallPath, "BattlEye");
@@ -84,7 +85,8 @@ namespace SIT.Manager.Avalonia.Services
         /// <param name="root">Root path to clone</param>
         /// <param name="dest">Destination path to clone to</param>
         /// <returns></returns>
-        private void CloneDirectory(string root, string dest) {
+        private void CloneDirectory(string root, string dest)
+        {
             foreach (var directory in Directory.GetDirectories(root)) {
                 var newDirectory = Path.Combine(dest, Path.GetFileName(directory));
                 Directory.CreateDirectory(newDirectory);
@@ -100,24 +102,40 @@ namespace SIT.Manager.Avalonia.Services
         /// Runs the downgrade patcher
         /// </summary>
         /// <returns>string with result</returns>
-        private async Task<string> RunPatcher() {
+        private async Task<string> RunPatcher()
+        {
             _logger.LogInformation("Starting Patcher");
             _actionNotificationService.StartActionNotification();
             _actionNotificationService.UpdateActionNotification(new ActionNotification("Running Patcher...", 100));
 
-            string patcherPath = Path.Combine(_configService.Config.InstallPath, "Patcher.exe");
-            if (!File.Exists(patcherPath)) {
-                return $"Patcher.exe not found at {patcherPath}";
+            string[] files = Directory.GetFiles(_configService.Config.InstallPath, "Patcher.exe", new EnumerationOptions() { MatchCasing = MatchCasing.CaseInsensitive, MaxRecursionDepth = 0 });
+            if (!files.Any()) {
+                return $"Patcher.exe not found in {_configService.Config.InstallPath}";
             }
+            string patcherPath = files[0];
 
             Process patcherProcess = new() {
                 StartInfo = new() {
                     FileName = patcherPath,
-                    WorkingDirectory = _configService.Config.InstallPath,
                     Arguments = "autoclose"
                 },
                 EnableRaisingEvents = true
             };
+            if (OperatingSystem.IsLinux()) {
+                patcherProcess.StartInfo.FileName = _configService.Config.WineRunner;
+                patcherProcess.StartInfo.Arguments = $"\"{patcherPath}\" autoclose";
+                patcherProcess.StartInfo.UseShellExecute = false;
+
+                string winePrefix = Path.GetFullPath(_configService.Config.WinePrefix);
+                if (!Path.EndsInDirectorySeparator(winePrefix)) {
+                    winePrefix = $"{winePrefix}{Path.DirectorySeparatorChar}";
+                }
+                patcherProcess.StartInfo.EnvironmentVariables.Add("WINEPREFIX", winePrefix);
+            }
+            else {
+                patcherProcess.StartInfo.WorkingDirectory = _configService.Config.InstallPath;
+            }
+
             patcherProcess.Start();
             await patcherProcess.WaitForExitAsync();
 
@@ -143,7 +161,8 @@ namespace SIT.Manager.Avalonia.Services
             return patcherResult ?? "Unknown error.";
         }
 
-        public async Task<List<GithubRelease>> GetServerReleases() {
+        public async Task<List<GithubRelease>> GetServerReleases()
+        {
             List<GithubRelease> githubReleases;
             try {
                 string releasesJsonString = await _httpClient.GetStringAsync(@"https://api.github.com/repos/stayintarkov/SIT.Aki-Server-Mod/releases");
@@ -184,7 +203,8 @@ namespace SIT.Manager.Avalonia.Services
         /// </summary>
         /// <param name="sitVersionTarget"></param>
         /// <returns></returns>
-        public async Task<bool> DownloadAndRunPatcher(string url) {
+        public async Task<bool> DownloadAndRunPatcher(string url)
+        {
             _logger.LogInformation("Downloading Patcher");
 
             if (string.IsNullOrEmpty(_configService.Config.TarkovVersion)) {
@@ -227,7 +247,8 @@ namespace SIT.Manager.Avalonia.Services
         }
 
 
-        public async Task<Dictionary<string, string>?> GetAvaiableMirrorsForVerison(string sitVersionTarget) {
+        public async Task<Dictionary<string, string>?> GetAvaiableMirrorsForVerison(string sitVersionTarget)
+        {
             Dictionary<string, string> providerLinks = new Dictionary<string, string>();
             if (_configService.Config.TarkovVersion == null) {
                 _logger.LogError("DownloadPatcher: TarkovVersion is 'null'");
@@ -286,7 +307,8 @@ namespace SIT.Manager.Avalonia.Services
             return null;
         }
 
-        public async Task<List<GithubRelease>> GetSITReleases() {
+        public async Task<List<GithubRelease>> GetSITReleases()
+        {
             List<GithubRelease> githubReleases;
             try {
                 string releasesJsonString = await _httpClient.GetStringAsync(@"https://api.github.com/repos/stayintarkov/StayInTarkov.Client/releases");
@@ -320,7 +342,8 @@ namespace SIT.Manager.Avalonia.Services
             return result;
         }
 
-        public async Task InstallServer(GithubRelease selectedVersion) {
+        public async Task InstallServer(GithubRelease selectedVersion)
+        {
             if (string.IsNullOrEmpty(_configService.Config.InstallPath)) {
                 _barNotificationService.ShowError("Error", "Please configure EFT Path in Settings.");
                 return;
@@ -384,7 +407,8 @@ namespace SIT.Manager.Avalonia.Services
             }
         }
 
-        public async Task InstallSIT(GithubRelease selectedVersion) {
+        public async Task InstallSIT(GithubRelease selectedVersion)
+        {
             if (string.IsNullOrEmpty(_configService.Config.InstallPath)) {
                 _barNotificationService.ShowError("Error", "EFT Path is not set. Configure it in Settings.");
                 return;

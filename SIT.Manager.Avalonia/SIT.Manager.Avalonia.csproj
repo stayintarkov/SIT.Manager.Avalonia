@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
 	  <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-	  <TargetFramework>net7.0</TargetFramework>
+	  <TargetFramework>net8.0</TargetFramework>
 	  <Nullable>enable</Nullable>
 	  <LangVersion>latest</LangVersion>
 	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -28,12 +28,13 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
     <PackageReference Include="PeNet" Version="4.0.4" />
+    <PackageReference Include="SharpCompress" Version="0.36.0" />
     <PackageReference Include="SkiaSharp" Version="2.88.7" />
     <PackageReference Include="System.Threading.Channels" Version="8.0.0" />
     <PackageReference Include="ThemeEditor.Controls.ColorPicker" Version="11.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-	  <EmbeddedResource Include="Localization\*.axaml"/>
+	  <EmbeddedResource Include="Localization\*.axaml" />
   </ItemGroup>
 </Project>

@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -41,6 +42,8 @@ public partial class SettingsPageViewModel : ViewModelBase
     [ObservableProperty]
     private string _managerVersionString;
 
+    public static bool ShowLinuxSettings => OperatingSystem.IsLinux();
+
     public IAsyncRelayCommand ChangeInstallLocationCommand { get; }
 
     public IAsyncRelayCommand ChangeAkiServerLocationCommand { get; }
@@ -49,7 +52,8 @@ public partial class SettingsPageViewModel : ViewModelBase
                                  ILocalizationService localizationService,
                                  IBarNotificationService barNotificationService,
                                  IPickerDialogService pickerDialogService,
-                                 IVersionService versionService) {
+                                 IVersionService versionService) 
+    {
         _configsService = configService;
         _pickerDialogService = pickerDialogService;
         _barNotificationService = barNotificationService;

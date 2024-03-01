@@ -82,6 +82,13 @@
 	<system:String x:Key="SettingsLookForUpdatesTitleToolTip">Automatically look for updates when opening the launcher.</system:String>
 	<system:String x:Key="SettingsLanguageTitle">Language:</system:String>
 	<system:String x:Key="SettingsLanguageTitleToolTip">Translates entire launcher to your language, select one!</system:String>
+	<system:String x:Key="SettingsLinuxSettingsTitle">Linux Settings</system:String>
+	<system:String x:Key="SettingsLinuxWinePrefixTitle">Wine Prefix:</system:String>
+	<system:String x:Key="SettingsLinuxWinePrefixPlaceholder">Wine Prefix Path</system:String>
+	<system:String x:Key="SettingsLinuxWinePrefixToolTip">Change the WINEPREFIX used for EFT</system:String>
+	<system:String x:Key="SettingsLinuxWineRunnerTitle">Wine Runner:</system:String>
+	<system:String x:Key="SettingsLinuxWineRunnerPlaceholder">Wine Runner Path</system:String>
+	<system:String x:Key="SettingsLinuxWineRunnerToolTip">Set the wine runner used for EFT</system:String>
 	<system:String x:Key="SettingsEFTSettingsTitle">EFT Settings</system:String>
 	<system:String x:Key="SettingsEFTSettingsButtonChangeTitle">Change</system:String>
 	<system:String x:Key="SettingsEFTInstallPathTitle">EFT Path:</system:String>

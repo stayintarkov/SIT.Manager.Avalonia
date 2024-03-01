@@ -15,7 +15,8 @@ namespace SIT.Manager.Avalonia.Services
 
         protected override string EXECUTABLE_NAME => TARKOV_EXE;
 
-        private void ClearModCache() {
+        private void ClearModCache()
+        {
             string cachePath = _configService.Config.InstallPath;
             if (!string.IsNullOrEmpty(cachePath) && Directory.Exists(cachePath)) {
                 // Combine the installPath with the additional subpath.
@@ -33,12 +34,14 @@ namespace SIT.Manager.Avalonia.Services
         }
 
 
-        public override void ClearCache() {
+        public override void ClearCache()
+        {
             ClearLocalCache();
             ClearModCache();
         }
 
-        public void ClearLocalCache() {
+        public void ClearLocalCache()
+        {
             string eftCachePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Temp", "Battlestate Games", "EscapeFromTarkov");
 
             // Check if the directory exists.
@@ -55,16 +58,31 @@ namespace SIT.Manager.Avalonia.Services
             _barNotificationService.ShowInformational("Cache Cleared", "EFT local cache cleared successfully!");
         }
 
-        public override void Start(string? arguments) {
+        public override void Start(string? arguments)
+        {
             _process = new Process() {
                 StartInfo = new(ExecutableFilePath) {
-                    WorkingDirectory = ExecutableDirectory,
                     UseShellExecute = true,
                     Arguments = arguments
                 },
                 EnableRaisingEvents = true,
             };
-            _process.Exited += new EventHandler((sender, e) => ExitedEvent(sender, e));
+            if (OperatingSystem.IsLinux()) {
+                _process.StartInfo.FileName = _configService.Config.WineRunner;
+                _process.StartInfo.Arguments = $"\"{ExecutableFilePath}\" {arguments}";
+                _process.StartInfo.UseShellExecute = false;
+
+                string winePrefix = Path.GetFullPath(_configService.Config.WinePrefix);
+                if (!Path.EndsInDirectorySeparator(winePrefix)) {
+                    winePrefix = $"{winePrefix}{Path.DirectorySeparatorChar}";
+                }
+                _process.StartInfo.EnvironmentVariables.Add("WINEPREFIX", winePrefix);
+            }
+            else {
+                _process.StartInfo.WorkingDirectory = ExecutableDirectory;
+            }
+
+            _process.Exited += new EventHandler(ExitedEvent);
             _process.Start();
 
             if (_configService.Config.CloseAfterLaunch) {
