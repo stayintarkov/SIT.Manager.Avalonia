@@ -124,7 +124,6 @@ namespace SIT.Manager.Avalonia.Services
             }
 
             _process.OutputDataReceived += AkiServer_OutputDataReceived;
-            
             _process.Exited += new EventHandler((sender, e) => {
                 ExitedEvent(sender, e);
                 IsStarted = false;
