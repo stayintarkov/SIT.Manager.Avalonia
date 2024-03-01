@@ -4,6 +4,7 @@ using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using SIT.Manager.Avalonia.Interfaces;
+using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
 using SIT.Manager.Avalonia.Models.Messages;
 using SIT.Manager.Avalonia.ViewModels;
@@ -15,10 +16,10 @@ namespace SIT.Manager.Avalonia.Views;
 public partial class MainView : ReactiveUserControl<MainViewModel>
 {
     private readonly ILocalizationService? _localizationService = App.Current.Services.GetService<ILocalizationService>();
-    private static NavigationViewItem? _settingsItem;
-    public static NavigationViewItem? SettingsItem { get => _settingsItem; set => _settingsItem = value; }
+    private readonly IManagerConfigService? _configService = App.Current.Services.GetService<IManagerConfigService>();
 
-    public MainView() {
+    public MainView()
+    {
         InitializeComponent();
 
         // Set the initially loaded page to be the play page and highlight this
@@ -27,32 +28,49 @@ public partial class MainView : ReactiveUserControl<MainViewModel>
         NavView.SelectedItem = NavView.MenuItems.First();
 
         // MainViewModel's WhenActivated block will also get called.
-        this.WhenActivated(disposables => {
+        this.WhenActivated(disposables =>
+        {
             /* Handle view activation etc. */
-            if (DataContext is MainViewModel dataContext) {
+            if (DataContext is MainViewModel dataContext)
+            {
                 // Register the content frame so that we can update it from the view model
                 dataContext.RegisterContentFrame(ContentFrame);
-                SettingsItem = NavView.SettingsItem;
-                SettingsItem.Content = _localizationService?.TranslateSource("SettingsTitle");
+                if (_configService != null) _configService.ConfigChanged += ConfigService_ConfigChanged;
+                NavView.SettingsItem.Content = _localizationService?.TranslateSource("SettingsTitle");
             }
         });
 
     }
 
+    private string lastSelectedLanguage = string.Empty;
+    private void ConfigService_ConfigChanged(object? sender, ManagerConfig e)
+    {
+        if (lastSelectedLanguage != e.CurrentLanguageSelected || string.IsNullOrEmpty(lastSelectedLanguage))
+        {
+            lastSelectedLanguage = e.CurrentLanguageSelected;
+            NavView.SettingsItem.Content = _localizationService?.TranslateSource("SettingsTitle");
+        }
+    }
+
     // I hate this so much, Please if someone knows of a better way to do this make a pull request. Even microsoft docs recommend this heathenry
-    private void NavView_ItemInvoked(object? sender, NavigationViewItemInvokedEventArgs e) {
+    private void NavView_ItemInvoked(object? sender, NavigationViewItemInvokedEventArgs e)
+    {
         PageNavigation? pageNavigation = null;
-        if (e.IsSettingsInvoked == true) {
+        if (e.IsSettingsInvoked == true)
+        {
             pageNavigation = new(typeof(SettingsPage));
         }
-        else if (e.InvokedItemContainer != null) {
+        else if (e.InvokedItemContainer != null)
+        {
             Type? navPageType = Type.GetType(e.InvokedItemContainer.Tag?.ToString() ?? string.Empty);
-            if (navPageType != null) {
+            if (navPageType != null)
+            {
                 pageNavigation = new(navPageType);
             }
         }
 
-        if (pageNavigation != null) {
+        if (pageNavigation != null)
+        {
             WeakReferenceMessenger.Default.Send(new PageNavigationMessage(pageNavigation));
         }
     }

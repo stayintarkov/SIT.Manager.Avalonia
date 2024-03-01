@@ -139,7 +139,6 @@ public partial class SettingsPageViewModel : ViewModelBase
     partial void OnCurrentLocalizationChanged(CultureInfo value)
     {
         _localizationService.Translate(value);
-        if (MainView.SettingsItem != null) MainView.SettingsItem.Content = Translate("SettingsTitle");
         Config.CurrentLanguageSelected = value.Name;
     }
 }
