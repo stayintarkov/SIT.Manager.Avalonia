@@ -43,7 +43,7 @@
 
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<TextBlock Text="{Binding Message}"
+								<SelectableTextBlock Text="{Binding Message}"
 										   Foreground="{Binding TextColor}"
 										   FontFamily="{Binding TextFont}"
 										   TextWrapping="WrapWithOverflow"/>

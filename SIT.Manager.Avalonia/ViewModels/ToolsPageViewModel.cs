@@ -25,6 +25,7 @@ namespace SIT.Manager.Avalonia.ViewModels
         private readonly IInstallerService _installerService;
         private readonly ITarkovClientService _tarkovClientService;
         private readonly IVersionService _versionService;
+        private readonly ILocalizationService _localizationService;
 
         public IAsyncRelayCommand InstallSITCommand { get; }
 
@@ -44,6 +45,7 @@ namespace SIT.Manager.Avalonia.ViewModels
                                   IBarNotificationService barNotificationService,
                                   IManagerConfigService configService,
                                   IFileService fileService,
+                                  ILocalizationService localizationService,
                                   IInstallerService installerService,
                                   ITarkovClientService tarkovClientService,
                                   IVersionService versionService) {
@@ -54,9 +56,10 @@ namespace SIT.Manager.Avalonia.ViewModels
             _installerService = installerService;
             _tarkovClientService = tarkovClientService;
             _versionService = versionService;
+            _localizationService = localizationService;
 
             InstallSITCommand = new AsyncRelayCommand(InstallSIT);
-            OpenEFTFolderCommand = new AsyncRelayCommand(OpenETFFolder);
+            OpenEFTFolderCommand = new AsyncRelayCommand(OpenEFTFolder);
             OpenBepInExFolderCommand = new AsyncRelayCommand(OpenBepInExFolder);
             OpenSITConfigCommand = new AsyncRelayCommand(OpenSITConfig);
             InstallServerCommand = new AsyncRelayCommand(InstallServer);
@@ -78,7 +81,7 @@ namespace SIT.Manager.Avalonia.ViewModels
 
         private async Task<GithubRelease?> EnsureEftVersion(List<GithubRelease> releases) {
             if (!releases.Any()) {
-                _barNotificationService.ShowWarning("Error", "Unable to fetch releases");
+                _barNotificationService.ShowWarning(_localizationService.TranslateSource("ToolsPageViewModelErrorMessageTitle"), _localizationService.TranslateSource("ToolsPageViewModelErrorMessageDescription"));
                 return null;
             }
 
@@ -117,12 +120,12 @@ namespace SIT.Manager.Avalonia.ViewModels
             }
         }
 
-        private async Task OpenETFFolder() {
+        private async Task OpenEFTFolder() {
             if (string.IsNullOrEmpty(_configService.Config.InstallPath)) {
                 ContentDialog contentDialog = new() {
-                    Title = "Config Error",
-                    Content = "'Install Path' is not configured. Go to settings to configure the installation path.",
-                    CloseButtonText = "Ok"
+                    Title = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigTitle"),
+                    Content = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigDescription"),
+                    CloseButtonText = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigButtonOk")
                 };
                 await contentDialog.ShowAsync();
             }
@@ -134,9 +137,9 @@ namespace SIT.Manager.Avalonia.ViewModels
         private async Task OpenBepInExFolder() {
             if (string.IsNullOrEmpty(_configService.Config.InstallPath)) {
                 ContentDialog contentDialog = new() {
-                    Title = "Config Error",
-                    Content = "'Install Path' is not configured. Go to settings to configure the installation path.",
-                    CloseButtonText = "Ok"
+                    Title = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigTitle"),
+                    Content = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigDescription"),
+                    CloseButtonText = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigButtonOk")
                 };
                 await contentDialog.ShowAsync();
             }
@@ -147,9 +150,9 @@ namespace SIT.Manager.Avalonia.ViewModels
                 }
                 else {
                     ContentDialog contentDialog = new() {
-                        Title = "Config Error",
-                        Content = $"Could not find the given path. Is BepInEx installed?\nPath: {dirPath}",
-                        CloseButtonText = "Ok"
+                        Title = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigTitle"),
+                        Content = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigBepInExDescription", dirPath),
+                        CloseButtonText = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigButtonOk")
                     };
                     await contentDialog.ShowAsync();
                 }
@@ -167,9 +170,9 @@ namespace SIT.Manager.Avalonia.ViewModels
 
             if (!File.Exists(Path.Combine(path, sitCfg))) {
                 ContentDialog contentDialog = new() {
-                    Title = "Config Error",
-                    Content = $"Could not find '{sitCfg}'. Make sure SIT is installed and that you have started the game once.",
-                    CloseButtonText = "Ok"
+                    Title = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigTitle"),
+                    Content = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigSITDescription", sitCfg),
+                    CloseButtonText = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigButtonOk")
                 };
                 await contentDialog.ShowAsync();
             }
@@ -195,9 +198,9 @@ namespace SIT.Manager.Avalonia.ViewModels
             }
             else {
                 ContentDialog contentDialog = new() {
-                    Title = "Config Error",
-                    Content = "Log file could not be found.",
-                    CloseButtonText = "Ok"
+                    Title = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigTitle"),
+                    Content = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigLogDescription"),
+                    CloseButtonText = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigButtonOk")
                 };
                 await contentDialog.ShowAsync();
             }
@@ -212,11 +215,11 @@ namespace SIT.Manager.Avalonia.ViewModels
         private async Task ClearCache() {
             // Prompt the user for their choice using a dialog.
             ContentDialog choiceDialog = new() {
-                Title = "Clear Cache",
-                Content = "Do you want to clear the EFT local cache or clear all cache?",
-                PrimaryButtonText = "Clear EFT Local Cache",
-                SecondaryButtonText = "Clear All Cache",
-                CloseButtonText = "Cancel"
+                Title = _localizationService.TranslateSource("ToolsPageViewModelConfigClearEFTTitle"),
+                Content = _localizationService.TranslateSource("ToolsPageViewModelConfigClearEFTDescription"),
+                PrimaryButtonText = _localizationService.TranslateSource("ToolsPageViewModelConfigClearEFTCache"),
+                SecondaryButtonText = _localizationService.TranslateSource("ToolsPageViewModelConfigClearAllCache"),
+                CloseButtonText = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigButtonCancel")
             };
             ContentDialogResult result = await choiceDialog.ShowAsync();
 
@@ -227,7 +230,7 @@ namespace SIT.Manager.Avalonia.ViewModels
                 }
                 catch (Exception ex) {
                     // Handle any exceptions that may occur during the process.
-                    _barNotificationService.ShowError("Error", $"An error occurred: {ex.Message}");
+                    _barNotificationService.ShowError(_localizationService.TranslateSource("ToolsPageViewModelErrorMessageTitle"), _localizationService.TranslateSource("ToolsPageViewModelUnhandledExceptionError", ex.Message));
                 }
             }
             else if (result == ContentDialogResult.Secondary) {
@@ -238,7 +241,7 @@ namespace SIT.Manager.Avalonia.ViewModels
                 }
                 catch (Exception ex) {
                     // Handle any exceptions that may occur during the process.
-                    _barNotificationService.ShowError("Error", $"An error occurred: {ex.Message}");
+                    _barNotificationService.ShowError(_localizationService.TranslateSource("ToolsPageViewModelErrorMessageTitle"), _localizationService.TranslateSource("ToolsPageViewModelUnhandledExceptionError", ex.Message));
                 }
             }
         }

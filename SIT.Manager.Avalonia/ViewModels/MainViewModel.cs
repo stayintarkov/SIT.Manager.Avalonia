@@ -61,6 +61,7 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
         _httpClient = httpClient;
 
         _localizationService.Translate(new CultureInfo(_managerConfigService.Config.CurrentLanguageSelected));
+
         _actionNotificationService.ActionNotificationReceived += ActionNotificationService_ActionNotificationReceived;
         _barNotificationService.BarNotificationReceived += BarNotificationService_BarNotificationReceived;
 
@@ -73,7 +74,7 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
         {
             await CheckForUpdate();
         });
-        _managerConfigService.ConfigChanged += async (o, c) => await CheckForUpdate();
+        _managerConfigService.ConfigChanged += async (o, c) =>  await CheckForUpdate();
     }
 
     private async Task CheckForUpdate()
@@ -98,10 +99,10 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
     {
         ContentDialogResult updateResult = await new ContentDialog()
         {
-            Title = "Update Confirmation",
-            Content = "Are you sure you want to update? This will close the manager to perform an update.",
-            PrimaryButtonText = "Yes",
-            CloseButtonText = "No"
+            Title = _localizationService.TranslateSource("MainPageViewModelUpdateConfirmationTitle"),
+            Content = _localizationService.TranslateSource("MainPageViewModelUpdateConfirmationDescription"),
+            PrimaryButtonText = _localizationService.TranslateSource("MainPageViewModelButtonYes"),
+            CloseButtonText = _localizationService.TranslateSource("MainPageViewModelButtonNo")
         }.ShowAsync();
 
         if(updateResult == ContentDialogResult.Primary)
@@ -129,9 +130,9 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
             {
                 await new ContentDialog()
                 {
-                    Title = "Unsupported",
-                    Content = "Automatic updating isn't currently available for Linux.",
-                    CloseButtonText = "Ok"
+                    Title = _localizationService.TranslateSource("MainPageViewModelUnsupportedTitle"),
+                    Content = _localizationService.TranslateSource("MainPageViewModelUnsupportedDescription"),
+                    CloseButtonText = _localizationService.TranslateSource("MainPageViewModelButtonOk")
                 }.ShowAsync();
             }
         }

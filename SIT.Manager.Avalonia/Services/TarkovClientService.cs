@@ -8,12 +8,14 @@ using System.IO;
 namespace SIT.Manager.Avalonia.Services
 {
     public class TarkovClientService(IBarNotificationService barNotificationService,
+                                     ILocalizationService localizationService,
                                      IManagerConfigService configService) : ManagedProcess.ManagedProcess(barNotificationService, configService), ITarkovClientService
     {
         private const string TARKOV_EXE = "EscapeFromTarkov.exe";
         public override string ExecutableDirectory => !string.IsNullOrEmpty(_configService.Config.InstallPath) ? _configService.Config.InstallPath : string.Empty;
 
         protected override string EXECUTABLE_NAME => TARKOV_EXE;
+        private readonly ILocalizationService _localizationService = localizationService;
 
         private void ClearModCache()
         {
@@ -25,14 +27,13 @@ namespace SIT.Manager.Avalonia.Services
                     Directory.Delete(cachePath, true);
                 }
                 Directory.CreateDirectory(cachePath);
-                _barNotificationService.ShowInformational("Cache Cleared", "Everything cleared successfully!");
+                _barNotificationService.ShowInformational(_localizationService.TranslateSource("TarkovClientServiceCacheClearedTitle"), _localizationService.TranslateSource("TarkovClientServiceCacheClearedDescription"));
             }
             else {
                 // Handle the case where InstallPath is not found or empty.
-                _barNotificationService.ShowError("Cache Clear Error", "InstallPath not found in settings");
+                _barNotificationService.ShowError(_localizationService.TranslateSource("TarkovClientServiceCacheClearedErrorTitle"), _localizationService.TranslateSource("TarkovClientServiceCacheClearedErrorDescription"));
             }
         }
-
 
         public override void ClearCache()
         {
@@ -50,12 +51,12 @@ namespace SIT.Manager.Avalonia.Services
             }
             else {
                 // Handle the case where the cache directory does not exist.
-                _barNotificationService.ShowWarning("Cache Clear Error", $"EFT local cache directory not found at: {eftCachePath}");
+                _barNotificationService.ShowWarning(_localizationService.TranslateSource("TarkovClientServiceCacheClearedErrorTitle"), _localizationService.TranslateSource("TarkovClientServiceCacheClearedErrorEFTDescription", eftCachePath));
                 return;
             }
 
             Directory.CreateDirectory(eftCachePath);
-            _barNotificationService.ShowInformational("Cache Cleared", "EFT local cache cleared successfully!");
+            _barNotificationService.ShowInformational(_localizationService.TranslateSource("TarkovClientServiceCacheClearedTitle"), _localizationService.TranslateSource("TarkovClientServiceCacheClearedEFTDescription"));
         }
 
         public override void Start(string? arguments)

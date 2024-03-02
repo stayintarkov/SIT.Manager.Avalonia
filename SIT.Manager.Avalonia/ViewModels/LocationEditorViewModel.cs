@@ -14,6 +14,7 @@ namespace SIT.Manager.Avalonia.ViewModels
     {
         private readonly IBarNotificationService _barNotificationService;
         private readonly IPickerDialogService _pickerDialogService;
+        private readonly ILocalizationService _localizationService;
 
         private static Dictionary<string, string> _mapLocationMapping = new Dictionary<string, string>() {
             { "maps/factory_day_preset.bundle","Factory (Day)" },
@@ -97,9 +98,10 @@ namespace SIT.Manager.Avalonia.ViewModels
         public IAsyncRelayCommand LoadCommand { get; }
         public IAsyncRelayCommand SaveCommand { get; }
 
-        public LocationEditorViewModel(IBarNotificationService barNotificationService, IPickerDialogService pickerDialogService) {
+        public LocationEditorViewModel(IBarNotificationService barNotificationService, ILocalizationService localizationService, IPickerDialogService pickerDialogService) {
             _barNotificationService = barNotificationService;
             _pickerDialogService = pickerDialogService;
+            _localizationService = localizationService;
 
             LoadCommand = new AsyncRelayCommand(Load);
             SaveCommand = new AsyncRelayCommand(Save);
@@ -115,7 +117,7 @@ namespace SIT.Manager.Avalonia.ViewModels
                 string jsonString = await File.ReadAllTextAsync(file.Path.LocalPath);
                 BaseLocation? location = JsonSerializer.Deserialize<BaseLocation>(jsonString);
                 if (location == null) {
-                    _barNotificationService.ShowError("Load Error", "There was an error saving the file.");
+                    _barNotificationService.ShowError(_localizationService.TranslateSource("LocationEditorViewModelLoadErrorTitle"), _localizationService.TranslateSource("LocationEditorViewModelLoadErrorDescription"));
                     return;
                 }
 
@@ -140,7 +142,7 @@ namespace SIT.Manager.Avalonia.ViewModels
                     SelectedBossLocationSpawn = location.BossLocationSpawn[0];
                 }
 
-                _barNotificationService.ShowSuccess("Load Location", $"Loaded location {LoadedLocation} successfully.");
+                _barNotificationService.ShowSuccess(_localizationService.TranslateSource("LocationEditorViewModelLoadLocationTitle"), _localizationService.TranslateSource("LocationEditorViewModelLoadLocationDescription", LoadedLocation));
             }
         }
 
@@ -156,13 +158,13 @@ namespace SIT.Manager.Avalonia.ViewModels
             }
 
             if (Location == null) {
-                _barNotificationService.ShowError("Save Error", "There was an error saving the file.");
+                _barNotificationService.ShowError(_localizationService.TranslateSource("LocationEditorViewModelSaveErrorTitle"), _localizationService.TranslateSource("LocationEditorViewModelSaveErrorDescription"));
                 return;
             }
             string json = JsonSerializer.Serialize(Location, new JsonSerializerOptions() { WriteIndented = true });
             await File.WriteAllTextAsync(file.Path.LocalPath, json);
 
-            _barNotificationService.ShowSuccess("Save", $"Successfully saved the file to: {file.Path}");
+            _barNotificationService.ShowSuccess(_localizationService.TranslateSource("LocationEditorViewModelSaveSuccessTitle"), _localizationService.TranslateSource("LocationEditorViewModelSaveSuccessDescription", file.Path.ToString()));
         }
 
         [RelayCommand]

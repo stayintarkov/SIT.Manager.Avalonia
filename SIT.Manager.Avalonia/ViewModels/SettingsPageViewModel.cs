@@ -101,10 +101,10 @@ public partial class SettingsPageViewModel : ViewModelBase
             Config.InstallPath = targetPath;
             Config.TarkovVersion = _versionService.GetEFTVersion(targetPath);
             Config.SitVersion = _versionService.GetSITVersion(targetPath);
-            _barNotificationService.ShowInformational("Config", $"EFT installation path set to '{targetPath}'");
+            _barNotificationService.ShowInformational(_localizationService.TranslateSource("SettingsPageViewModelConfigTitle"), _localizationService.TranslateSource("SettingsPageViewModelConfigInformationEFTDescription", targetPath));
         }
         else {
-            _barNotificationService.ShowError("Error", $"The selected folder was invalid. Make sure it's a proper EFT game folder.");
+            _barNotificationService.ShowError(_localizationService.TranslateSource("SettingsPageViewModelErrorTitle"), _localizationService.TranslateSource("SettingsPageViewModelConfigErrorEFTDescription"));
         }
     }
 
@@ -112,10 +112,10 @@ public partial class SettingsPageViewModel : ViewModelBase
         string targetPath = await GetPathLocation("Aki.Server.exe");
         if (!string.IsNullOrEmpty(targetPath)) {
             Config.AkiServerPath = targetPath;
-            _barNotificationService.ShowInformational("Config", $"SPT-AKI installation path set to '{targetPath}'");
+            _barNotificationService.ShowInformational(_localizationService.TranslateSource("SettingsPageViewModelConfigTitle"), _localizationService.TranslateSource("SettingsPageViewModelConfigInformationSPTAKIDescription", targetPath));
         }
         else {
-            _barNotificationService.ShowError("Error", "The selected folder was invalid. Make sure it's a proper SPT-AKI server folder.");
+            _barNotificationService.ShowError(_localizationService.TranslateSource("SettingsPageViewModelErrorTitle"), _localizationService.TranslateSource("SettingsPageViewModelConfigErrorSPTAKI"));
         }
     }
 

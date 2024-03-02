@@ -1,4 +1,5 @@
 ﻿using Avalonia.Markup.Xaml.Styling;
+using CommunityToolkit.Mvvm.ComponentModel;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using System;
@@ -63,7 +64,7 @@ namespace SIT.Manager.Avalonia.Services
             }
 
             string result = "not found";
-            if (resourceInclude.TryGetResource(key, null, out object? translation))
+            if (resourceInclude.TryGetResource(key, null, out object? translation) || (resourceInclude = CreateResourceLocalization("en-US")).TryGetResource(key, null, out translation))
             {
                 if (translation != null)
                 {

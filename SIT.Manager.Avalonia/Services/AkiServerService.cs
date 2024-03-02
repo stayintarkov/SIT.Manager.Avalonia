@@ -3,7 +3,6 @@ using Newtonsoft.Json.Linq;
 using SIT.Manager.Avalonia.Classes;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
-using SIT.Manager.Avalonia.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -137,13 +136,13 @@ namespace SIT.Manager.Avalonia.Services
             }
 
             Task.Run(async () => {
-                Uri serverUri = new Uri("http://127.0.0.1");
+                Uri serverUri = new("http://127.0.0.1");
 
                 string httpConfigPath = Path.Combine(_configService.Config.AkiServerPath, "Aki_Data", "Server", "configs", "http.json");
-                if(File.Exists(httpConfigPath))
+                if (File.Exists(httpConfigPath))
                 {
                     JObject httpConfig = JObject.Parse(File.ReadAllText(httpConfigPath));
-                    if(httpConfig.TryGetValue("ip", out JToken IPToken) && httpConfig.TryGetValue("port", out JToken PortToken))
+                    if (httpConfig.TryGetValue("ip", out JToken IPToken) && httpConfig.TryGetValue("port", out JToken PortToken))
                     {
                         serverUri = new Uri($"http://{IPToken}:{PortToken}");
                     }

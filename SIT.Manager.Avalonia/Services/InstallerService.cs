@@ -18,6 +18,7 @@ namespace SIT.Manager.Avalonia.Services
     public partial class InstallerService(IActionNotificationService actionNotificationService,
                                           IBarNotificationService barNotificationService,
                                           IManagerConfigService configService,
+                                          ILocalizationService localizationService,
                                           IFileService fileService,
                                           HttpClient httpClient,
                                           ILogger<InstallerService> logger,
@@ -30,10 +31,10 @@ namespace SIT.Manager.Avalonia.Services
         private readonly HttpClient _httpClient = httpClient;
         private readonly ILogger<InstallerService> _logger = logger;
         private readonly IVersionService _versionService = versionService;
+        private readonly ILocalizationService _localizationService = localizationService;
 
         [GeneratedRegex("This server version works with version ([0]{1,}\\.[0-9]{1,2}\\.[0-9]{1,2})\\.[0-9]{1,2}\\.[0-9]{1,5}")]
         private static partial Regex ServerReleaseVersionRegex();
-
 
         [GeneratedRegex("This version works with version [0]{1,}\\.[0-9]{1,2}\\.[0-9]{1,2}\\.[0-9]{1,2}\\.[0-9]{1,5}")]
         private static partial Regex SITReleaseVersionRegex();
@@ -345,7 +346,7 @@ namespace SIT.Manager.Avalonia.Services
         public async Task InstallServer(GithubRelease selectedVersion)
         {
             if (string.IsNullOrEmpty(_configService.Config.InstallPath)) {
-                _barNotificationService.ShowError("Error", "Please configure EFT Path in Settings.");
+                _barNotificationService.ShowError(_localizationService.TranslateSource("InstallServiceErrorTitle"), _localizationService.TranslateSource("InstallServiceErrorInstallServerDescription"));
                 return;
             }
 
@@ -395,11 +396,11 @@ namespace SIT.Manager.Avalonia.Services
                 // Attempt to automatically set the AKI Server Path after successful installation and save it to config
                 if (!string.IsNullOrEmpty(sitServerDirectory) && string.IsNullOrEmpty(_configService.Config.AkiServerPath)) {
                     config.AkiServerPath = sitServerDirectory;
-                    _barNotificationService.ShowSuccess("Config", $"Server installation path set to '{sitServerDirectory}'");
+                    _barNotificationService.ShowSuccess(_localizationService.TranslateSource("InstallServiceConfigTitle"), _localizationService.TranslateSource("InstallServiceConfigDescription", sitServerDirectory));
                 }
                 _configService.UpdateConfig(config);
 
-                _barNotificationService.ShowSuccess("Install", "Installation of Server was successful.");
+                _barNotificationService.ShowSuccess(_localizationService.TranslateSource("InstallServiceInstallSuccessfulTitle"), _localizationService.TranslateSource("InstallServiceInstallSuccessfulDescription"));
             }
             catch (Exception ex) {
                 // TODO ShowInfoBarWithLogButton("Install Error", "Encountered an error during installation.", InfoBarSeverity.Error, 10);
@@ -410,7 +411,7 @@ namespace SIT.Manager.Avalonia.Services
         public async Task InstallSIT(GithubRelease selectedVersion)
         {
             if (string.IsNullOrEmpty(_configService.Config.InstallPath)) {
-                _barNotificationService.ShowError("Error", "EFT Path is not set. Configure it in Settings.");
+                _barNotificationService.ShowError(_localizationService.TranslateSource("InstallServiceErrorTitle"), _localizationService.TranslateSource("InstallServiceErrorInstallSITDescription"));
                 return;
             }
 
@@ -479,7 +480,7 @@ namespace SIT.Manager.Avalonia.Services
                 config.SitVersion = _versionService.GetSITVersion(config.InstallPath);
                 _configService.UpdateConfig(config);
 
-                _barNotificationService.ShowSuccess("Install", "Installation of SIT was successful.");
+                _barNotificationService.ShowSuccess(_localizationService.TranslateSource("InstallServiceInstallSuccessfulTitle"), _localizationService.TranslateSource("InstallServiceInstallSITSuccessfulDescription"));
             }
             catch (Exception ex) {
                 // TODO ShowInfoBarWithLogButton("Install Error", "Encountered an error during installation.", InfoBarSeverity.Error, 10);

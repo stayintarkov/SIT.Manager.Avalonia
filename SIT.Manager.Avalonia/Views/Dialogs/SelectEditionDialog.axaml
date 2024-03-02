@@ -7,15 +7,15 @@
 				  xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
 				  xmlns:vm="clr-namespace:SIT.Manager.Avalonia.ViewModels.Dialogs"
 				  mc:Ignorable="d"
-				  Title="Select Edition"
+				  Title="{DynamicResource SelectEditionDialogTitle}"
 				  FullSizeDesired="False"
-				  CloseButtonText="Create"
+				  CloseButtonText="{DynamicResource SelectEditionDialogButtonCreateTitle}"
 				  Height="225"
 				  Width="300"
 				  x:Class="SIT.Manager.Avalonia.Views.Dialogs.SelectEditionDialog"
 				  x:DataType="vm:SelectEditionDialogViewModel">
 	<StackPanel>
-		<TextBlock Text="Choose the Edition for your SIT account:" Margin="5"/>
+		<TextBlock Text="{DynamicResource SelectEditionDialogTextBlockTitle}" Margin="5"/>
 		<ComboBox Name="EditionsList"
 				 Width="200"
 				 HorizontalAlignment="Center"

@@ -19,6 +19,7 @@ namespace SIT.Manager.Avalonia.Services
 {
     public class FileService(IActionNotificationService actionNotificationService,
                              IManagerConfigService configService,
+                             ILocalizationService localizationService,
                              HttpClient httpClient,
                              ILogger<FileService> logger) : IFileService
     {
@@ -26,6 +27,7 @@ namespace SIT.Manager.Avalonia.Services
         private readonly IManagerConfigService _configService = configService;
         private readonly HttpClient _httpClient = httpClient;
         private readonly ILogger<FileService> _logger = logger;
+        private readonly ILocalizationService _localizationService = localizationService;
 
         private static async Task OpenAtLocation(string path) {
             using (Process opener = new()) {
@@ -60,7 +62,7 @@ namespace SIT.Manager.Avalonia.Services
                 _logger.LogInformation($"Starting download of '{fileName}' from '{fileUrl}'");
 
                 Progress<double> progress = new((prog) => {
-                    _actionNotificationService.UpdateActionNotification(new ActionNotification($"Downloading '{fileName}'", prog, showProgress));
+                    _actionNotificationService.UpdateActionNotification(new ActionNotification(_localizationService.TranslateSource("FileServiceProgressDownloading", fileName), prog, showProgress));
                 });
 
                 Uri fileLink = new(fileUrl);
@@ -99,7 +101,7 @@ namespace SIT.Manager.Avalonia.Services
                 }
 
                 Progress<double> progress = new((prog) => {
-                    _actionNotificationService.UpdateActionNotification(new ActionNotification($"Downloading '{fileName}'", Math.Floor(prog), showProgress));
+                    _actionNotificationService.UpdateActionNotification(new ActionNotification(_localizationService.TranslateSource("FileServiceProgressDownloading", fileName), Math.Floor(prog), showProgress));
                 });
 
                 try {
@@ -127,7 +129,7 @@ namespace SIT.Manager.Avalonia.Services
                 destination += Path.DirectorySeparatorChar;
             }
 
-            DirectoryInfo destinationInfo = new DirectoryInfo(destination);
+            DirectoryInfo destinationInfo = new(destination);
             destinationInfo.Create();
 
             ActionNotification actionNotification = new(string.Empty, 0, true);
@@ -152,7 +154,7 @@ namespace SIT.Manager.Avalonia.Services
                         });
                     }
 
-                    actionNotification.ActionText = $"Extracting file {Path.GetFileName(entry.Key)} ({++completed}/{totalFiles})";
+                    actionNotification.ActionText = _localizationService.TranslateSource("FileServiceProgressExtracting", $"{Path.GetFileName(entry.Key)}", $"{++completed}/{totalFiles}");
                     ((IProgress<float>) progress).Report((float) completed / totalFiles * 100);
                 }
             }
