@@ -122,6 +122,13 @@
 	<system:String x:Key="SettingsLookForUpdatesTitleToolTip">Автоматично перевіряє оновлення при відкритті лаунчера.</system:String>
 	<system:String x:Key="SettingsLanguageTitle">Мова:</system:String>
 	<system:String x:Key="SettingsLanguageTitleToolTip">Перекладає весь лаунчер на вашу мову, оберіть свою мову!</system:String>
+	<system:String x:Key="SettingsLinuxSettingsTitle">Налаштування Linux</system:String>
+	<system:String x:Key="SettingsLinuxWinePrefixTitle">Префікс Wine:</system:String>
+	<system:String x:Key="SettingsLinuxWinePrefixPlaceholder">Шлях до префіксу Wine</system:String>
+	<system:String x:Key="SettingsLinuxWinePrefixToolTip">Змініть використаний WINEPREFIX для EFT</system:String>
+	<system:String x:Key="SettingsLinuxWineRunnerTitle">Запускач Wine:</system:String>
+	<system:String x:Key="SettingsLinuxWineRunnerPlaceholder">Шлях до запускача Wine</system:String>
+	<system:String x:Key="SettingsLinuxWineRunnerToolTip">Встановіть використовуваний запускач Wine для EFT</system:String>
 	<system:String x:Key="SettingsEFTSettingsTitle">Налаштування EFT</system:String>
 	<system:String x:Key="SettingsEFTSettingsButtonChangeTitle">Змінити</system:String>
 	<system:String x:Key="SettingsEFTInstallPathTitle">Шлях EFT:</system:String>
