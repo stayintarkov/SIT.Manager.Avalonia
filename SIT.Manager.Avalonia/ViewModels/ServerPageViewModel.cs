@@ -57,7 +57,7 @@ namespace SIT.Manager.Avalonia.ViewModels
             configService.ConfigChanged += (o, e) =>
             {
                 StartServerButtonTextBlock = _localizationService.TranslateSource("ServerPageViewModelStartServer");
-            });
+            };
 
             this.WhenActivated((CompositeDisposable disposables) =>
             {
