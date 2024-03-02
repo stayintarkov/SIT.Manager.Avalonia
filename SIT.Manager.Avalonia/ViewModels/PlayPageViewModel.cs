@@ -304,8 +304,11 @@ namespace SIT.Manager.Avalonia.ViewModels
             if (string.IsNullOrEmpty(token))
                 return;
 
+            // TODO: Temporary fix for SIT 1.9 expecting no ending slash in backendUrl URI. To be removed when SIT 1.9 is no longer used as this was addressed in SIT 1.10+.
+            string backendUrlFixed = serverAddress.AbsoluteUri.Substring(0, serverAddress.AbsoluteUri.Length - 1);
+
             // Launch game
-            string launchArguments = CreateLaunchArugments(new TarkovLaunchConfig { BackendUrl = serverAddress.AbsoluteUri }, token);
+            string launchArguments = CreateLaunchArugments(new TarkovLaunchConfig { BackendUrl = backendUrlFixed }, token);
             _tarkovClientService.Start(launchArguments);
 
             if (_configService.Config.CloseAfterLaunch) {
