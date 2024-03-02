@@ -79,16 +79,9 @@ namespace SIT.Manager.Avalonia.ViewModels
             }
         }
 
-        /// <summary>
-        /// Handy function to compactly translate source code.
-        /// </summary>
-        /// <param name="key">key in the resources</param>
-        /// <param name="parameters">the paramaters that was inside the source string. will be replaced by hierarchy where %1 .. %n is the first paramater.</param>
-        private string Translate(string key, params string[] parameters) => _localizationService.TranslateSource(key, parameters);
-
         private async Task<GithubRelease?> EnsureEftVersion(List<GithubRelease> releases) {
             if (!releases.Any()) {
-                _barNotificationService.ShowWarning(Translate("ToolsPageViewModelErrorMessageTitle"), Translate("ToolsPageViewModelErrorMessageDescription"));
+                _barNotificationService.ShowWarning(_localizationService.TranslateSource("ToolsPageViewModelErrorMessageTitle"), _localizationService.TranslateSource("ToolsPageViewModelErrorMessageDescription"));
                 return null;
             }
 
@@ -130,9 +123,9 @@ namespace SIT.Manager.Avalonia.ViewModels
         private async Task OpenEFTFolder() {
             if (string.IsNullOrEmpty(_configService.Config.InstallPath)) {
                 ContentDialog contentDialog = new() {
-                    Title = Translate("ToolsPageViewModelErrorMessageConfigTitle"),
-                    Content = Translate("ToolsPageViewModelErrorMessageConfigDescription"),
-                    CloseButtonText = Translate("ToolsPageViewModelErrorMessageConfigButtonOk")
+                    Title = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigTitle"),
+                    Content = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigDescription"),
+                    CloseButtonText = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigButtonOk")
                 };
                 await contentDialog.ShowAsync();
             }
@@ -144,9 +137,9 @@ namespace SIT.Manager.Avalonia.ViewModels
         private async Task OpenBepInExFolder() {
             if (string.IsNullOrEmpty(_configService.Config.InstallPath)) {
                 ContentDialog contentDialog = new() {
-                    Title = Translate("ToolsPageViewModelErrorMessageConfigTitle"),
-                    Content = Translate("ToolsPageViewModelErrorMessageConfigDescription"),
-                    CloseButtonText = Translate("ToolsPageViewModelErrorMessageConfigButtonOk")
+                    Title = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigTitle"),
+                    Content = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigDescription"),
+                    CloseButtonText = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigButtonOk")
                 };
                 await contentDialog.ShowAsync();
             }
@@ -157,9 +150,9 @@ namespace SIT.Manager.Avalonia.ViewModels
                 }
                 else {
                     ContentDialog contentDialog = new() {
-                        Title = Translate("ToolsPageViewModelErrorMessageConfigTitle"),
-                        Content = Translate("ToolsPageViewModelErrorMessageConfigBepInExDescription", dirPath),
-                        CloseButtonText = Translate("ToolsPageViewModelErrorMessageConfigButtonOk")
+                        Title = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigTitle"),
+                        Content = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigBepInExDescription", dirPath),
+                        CloseButtonText = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigButtonOk")
                     };
                     await contentDialog.ShowAsync();
                 }
@@ -177,9 +170,9 @@ namespace SIT.Manager.Avalonia.ViewModels
 
             if (!File.Exists(Path.Combine(path, sitCfg))) {
                 ContentDialog contentDialog = new() {
-                    Title = Translate("ToolsPageViewModelErrorMessageConfigTitle"),
-                    Content = Translate("ToolsPageViewModelErrorMessageConfigSITDescription", sitCfg),
-                    CloseButtonText = Translate("ToolsPageViewModelErrorMessageConfigButtonOk")
+                    Title = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigTitle"),
+                    Content = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigSITDescription", sitCfg),
+                    CloseButtonText = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigButtonOk")
                 };
                 await contentDialog.ShowAsync();
             }
@@ -205,9 +198,9 @@ namespace SIT.Manager.Avalonia.ViewModels
             }
             else {
                 ContentDialog contentDialog = new() {
-                    Title = Translate("ToolsPageViewModelErrorMessageConfigTitle"),
-                    Content = Translate("ToolsPageViewModelErrorMessageConfigLogDescription"),
-                    CloseButtonText = Translate("ToolsPageViewModelErrorMessageConfigButtonOk")
+                    Title = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigTitle"),
+                    Content = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigLogDescription"),
+                    CloseButtonText = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigButtonOk")
                 };
                 await contentDialog.ShowAsync();
             }
@@ -222,11 +215,11 @@ namespace SIT.Manager.Avalonia.ViewModels
         private async Task ClearCache() {
             // Prompt the user for their choice using a dialog.
             ContentDialog choiceDialog = new() {
-                Title = Translate("ToolsPageViewModelConfigClearEFTTitle"),
-                Content = Translate("ToolsPageViewModelConfigClearEFTDescription"),
-                PrimaryButtonText = Translate("ToolsPageViewModelConfigClearEFTCache"),
-                SecondaryButtonText = Translate("ToolsPageViewModelConfigClearAllCache"),
-                CloseButtonText = Translate("ToolsPageViewModelErrorMessageConfigButtonCancel")
+                Title = _localizationService.TranslateSource("ToolsPageViewModelConfigClearEFTTitle"),
+                Content = _localizationService.TranslateSource("ToolsPageViewModelConfigClearEFTDescription"),
+                PrimaryButtonText = _localizationService.TranslateSource("ToolsPageViewModelConfigClearEFTCache"),
+                SecondaryButtonText = _localizationService.TranslateSource("ToolsPageViewModelConfigClearAllCache"),
+                CloseButtonText = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigButtonCancel")
             };
             ContentDialogResult result = await choiceDialog.ShowAsync();
 
@@ -237,7 +230,7 @@ namespace SIT.Manager.Avalonia.ViewModels
                 }
                 catch (Exception ex) {
                     // Handle any exceptions that may occur during the process.
-                    _barNotificationService.ShowError(Translate("ToolsPageViewModelErrorMessageTitle"), Translate("ToolsPageViewModelUnhandledExceptionError", ex.Message));
+                    _barNotificationService.ShowError(_localizationService.TranslateSource("ToolsPageViewModelErrorMessageTitle"), _localizationService.TranslateSource("ToolsPageViewModelUnhandledExceptionError", ex.Message));
                 }
             }
             else if (result == ContentDialogResult.Secondary) {
@@ -248,7 +241,7 @@ namespace SIT.Manager.Avalonia.ViewModels
                 }
                 catch (Exception ex) {
                     // Handle any exceptions that may occur during the process.
-                    _barNotificationService.ShowError(Translate("ToolsPageViewModelErrorMessageTitle"), Translate("ToolsPageViewModelUnhandledExceptionError", ex.Message));
+                    _barNotificationService.ShowError(_localizationService.TranslateSource("ToolsPageViewModelErrorMessageTitle"), _localizationService.TranslateSource("ToolsPageViewModelUnhandledExceptionError", ex.Message));
                 }
             }
         }

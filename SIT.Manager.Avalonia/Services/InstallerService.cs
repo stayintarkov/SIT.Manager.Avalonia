@@ -33,13 +33,6 @@ namespace SIT.Manager.Avalonia.Services
         private readonly IVersionService _versionService = versionService;
         private readonly ILocalizationService _localizationService = localizationService;
 
-        /// <summary>
-        /// Handy function to compactly translate source code.
-        /// </summary>
-        /// <param name="key">key in the resources</param>
-        /// <param name="parameters">the paramaters that was inside the source string. will be replaced by hierarchy where %1 .. %n is the first paramater.</param>
-        private string Translate(string key, params string[] parameters) => _localizationService.TranslateSource(key, parameters);
-
         [GeneratedRegex("This server version works with version ([0]{1,}\\.[0-9]{1,2}\\.[0-9]{1,2})\\.[0-9]{1,2}\\.[0-9]{1,5}")]
         private static partial Regex ServerReleaseVersionRegex();
 
@@ -353,7 +346,7 @@ namespace SIT.Manager.Avalonia.Services
         public async Task InstallServer(GithubRelease selectedVersion)
         {
             if (string.IsNullOrEmpty(_configService.Config.InstallPath)) {
-                _barNotificationService.ShowError(Translate("InstallServiceErrorTitle"), Translate("InstallServiceErrorInstallServerDescription"));
+                _barNotificationService.ShowError(_localizationService.TranslateSource("InstallServiceErrorTitle"), _localizationService.TranslateSource("InstallServiceErrorInstallServerDescription"));
                 return;
             }
 
@@ -403,11 +396,11 @@ namespace SIT.Manager.Avalonia.Services
                 // Attempt to automatically set the AKI Server Path after successful installation and save it to config
                 if (!string.IsNullOrEmpty(sitServerDirectory) && string.IsNullOrEmpty(_configService.Config.AkiServerPath)) {
                     config.AkiServerPath = sitServerDirectory;
-                    _barNotificationService.ShowSuccess(Translate("InstallServiceConfigTitle"), Translate("InstallServiceConfigDescription", sitServerDirectory));
+                    _barNotificationService.ShowSuccess(_localizationService.TranslateSource("InstallServiceConfigTitle"), _localizationService.TranslateSource("InstallServiceConfigDescription", sitServerDirectory));
                 }
                 _configService.UpdateConfig(config);
 
-                _barNotificationService.ShowSuccess(Translate("InstallServiceInstallSuccessfulTitle"), Translate("InstallServiceInstallSuccessfulDescription"));
+                _barNotificationService.ShowSuccess(_localizationService.TranslateSource("InstallServiceInstallSuccessfulTitle"), _localizationService.TranslateSource("InstallServiceInstallSuccessfulDescription"));
             }
             catch (Exception ex) {
                 // TODO ShowInfoBarWithLogButton("Install Error", "Encountered an error during installation.", InfoBarSeverity.Error, 10);
@@ -418,7 +411,7 @@ namespace SIT.Manager.Avalonia.Services
         public async Task InstallSIT(GithubRelease selectedVersion)
         {
             if (string.IsNullOrEmpty(_configService.Config.InstallPath)) {
-                _barNotificationService.ShowError(Translate("InstallServiceErrorTitle"), Translate("InstallServiceErrorInstallSITDescription"));
+                _barNotificationService.ShowError(_localizationService.TranslateSource("InstallServiceErrorTitle"), _localizationService.TranslateSource("InstallServiceErrorInstallSITDescription"));
                 return;
             }
 
@@ -487,7 +480,7 @@ namespace SIT.Manager.Avalonia.Services
                 config.SitVersion = _versionService.GetSITVersion(config.InstallPath);
                 _configService.UpdateConfig(config);
 
-                _barNotificationService.ShowSuccess(Translate("InstallServiceInstallSuccessfulTitle"), Translate("InstallServiceInstallSITSuccessfulDescription"));
+                _barNotificationService.ShowSuccess(_localizationService.TranslateSource("InstallServiceInstallSuccessfulTitle"), _localizationService.TranslateSource("InstallServiceInstallSITSuccessfulDescription"));
             }
             catch (Exception ex) {
                 // TODO ShowInfoBarWithLogButton("Install Error", "Encountered an error during installation.", InfoBarSeverity.Error, 10);

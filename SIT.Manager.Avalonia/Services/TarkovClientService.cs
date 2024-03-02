@@ -17,13 +17,6 @@ namespace SIT.Manager.Avalonia.Services
         protected override string EXECUTABLE_NAME => TARKOV_EXE;
         private readonly ILocalizationService _localizationService = localizationService;
 
-        /// <summary>
-        /// Handy function to compactly translate source code.
-        /// </summary>
-        /// <param name="key">key in the resources</param>
-        /// <param name="parameters">the paramaters that was inside the source string. will be replaced by hierarchy where %1 .. %n is the first paramater.</param>
-        private string Translate(string key, params string[] parameters) => _localizationService.TranslateSource(key, parameters);
-
         private void ClearModCache()
         {
             string cachePath = _configService.Config.InstallPath;
@@ -34,11 +27,11 @@ namespace SIT.Manager.Avalonia.Services
                     Directory.Delete(cachePath, true);
                 }
                 Directory.CreateDirectory(cachePath);
-                _barNotificationService.ShowInformational(Translate("TarkovClientServiceCacheClearedTitle"), Translate("TarkovClientServiceCacheClearedDescription"));
+                _barNotificationService.ShowInformational(_localizationService.TranslateSource("TarkovClientServiceCacheClearedTitle"), _localizationService.TranslateSource("TarkovClientServiceCacheClearedDescription"));
             }
             else {
                 // Handle the case where InstallPath is not found or empty.
-                _barNotificationService.ShowError(Translate("TarkovClientServiceCacheClearedErrorTitle"), Translate("TarkovClientServiceCacheClearedErrorDescription"));
+                _barNotificationService.ShowError(_localizationService.TranslateSource("TarkovClientServiceCacheClearedErrorTitle"), _localizationService.TranslateSource("TarkovClientServiceCacheClearedErrorDescription"));
             }
         }
 
@@ -58,12 +51,12 @@ namespace SIT.Manager.Avalonia.Services
             }
             else {
                 // Handle the case where the cache directory does not exist.
-                _barNotificationService.ShowWarning(Translate("TarkovClientServiceCacheClearedErrorTitle"), Translate("TarkovClientServiceCacheClearedErrorEFTDescription", eftCachePath));
+                _barNotificationService.ShowWarning(_localizationService.TranslateSource("TarkovClientServiceCacheClearedErrorTitle"), _localizationService.TranslateSource("TarkovClientServiceCacheClearedErrorEFTDescription", eftCachePath));
                 return;
             }
 
             Directory.CreateDirectory(eftCachePath);
-            _barNotificationService.ShowInformational(Translate("TarkovClientServiceCacheClearedTitle"), Translate("TarkovClientServiceCacheClearedEFTDescription"));
+            _barNotificationService.ShowInformational(_localizationService.TranslateSource("TarkovClientServiceCacheClearedTitle"), _localizationService.TranslateSource("TarkovClientServiceCacheClearedEFTDescription"));
         }
 
         public override void Start(string? arguments)

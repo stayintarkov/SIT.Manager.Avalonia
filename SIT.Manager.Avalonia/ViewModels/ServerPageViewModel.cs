@@ -51,7 +51,7 @@ namespace SIT.Manager.Avalonia.ViewModels
             _fileService = fileService;
             _localizationService = localizationService;
 
-            StartServerButtonTextBlock = localizationService.TranslateSource("ServerPageViewModelStartServer");
+            StartServerButtonTextBlock = _localizationService.TranslateSource("ServerPageViewModelStartServer");
             EditServerConfigCommand = new AsyncRelayCommand(EditServerConfig);
 
             configService.ConfigChanged += ConfigService_ConfigChanged;
@@ -81,14 +81,7 @@ namespace SIT.Manager.Avalonia.ViewModels
         /// <summary>
         /// Exists only to fix bug when you are changing language and this specific textblock doesn't get updated.
         /// </summary>
-        private void ConfigService_ConfigChanged(object? sender, ManagerConfig e) => StartServerButtonTextBlock = Translate("ServerPageViewModelStartServer");
-
-        /// <summary>
-        /// Handy function to compactly translate source code.
-        /// </summary>
-        /// <param name="key">key in the resources</param>
-        /// <param name="parameters">the paramaters that was inside the source string. will be replaced by hierarchy where %1 .. %n is the first paramater.</param>
-        private string Translate(string key, params string[] parameters) => _localizationService.TranslateSource(key, parameters);
+        private void ConfigService_ConfigChanged(object? sender, ManagerConfig e) => StartServerButtonTextBlock = _localizationService.TranslateSource("ServerPageViewModelStartServer");
 
         private void UpdateCachedServerProperties(object? sender, ManagerConfig newConfig)
         {
@@ -151,30 +144,30 @@ namespace SIT.Manager.Avalonia.ViewModels
                 {
                     case RunningState.Starting:
                         {
-                            AddConsole(Translate("ServerPageViewModelServerStarted"));
+                            AddConsole(_localizationService.TranslateSource("ServerPageViewModelServerStarted"));
                             StartServerButtonSymbolIcon = Symbol.Stop;
-                            StartServerButtonTextBlock = Translate("ServerPageViewModelStartingServer");
+                            StartServerButtonTextBlock = _localizationService.TranslateSource("ServerPageViewModelStartingServer");
                             break;
                         }
                     case RunningState.Running:
                         {
-                            AddConsole(Translate("ServerPageViewModelServerStarted"));
+                            AddConsole(_localizationService.TranslateSource("ServerPageViewModelServerStarted"));
                             StartServerButtonSymbolIcon = Symbol.Stop;
-                            StartServerButtonTextBlock = Translate("ServerPageViewModelStopServer");
+                            StartServerButtonTextBlock = _localizationService.TranslateSource("ServerPageViewModelStopServer");
                             break;
                         }
                     case RunningState.NotRunning:
                         {
-                            AddConsole(Translate("ServerPageViewModelServerStopped"));
+                            AddConsole(_localizationService.TranslateSource("ServerPageViewModelServerStopped"));
                             StartServerButtonSymbolIcon = Symbol.Play;
-                            StartServerButtonTextBlock = Translate("ServerPageViewModelStartServer");
+                            StartServerButtonTextBlock = _localizationService.TranslateSource("ServerPageViewModelStartServer");
                             break;
                         }
                     case RunningState.StoppedUnexpectedly:
                         {
-                            AddConsole(Translate("ServerPageViewModelServerError"));
+                            AddConsole(_localizationService.TranslateSource("ServerPageViewModelServerError"));
                             StartServerButtonSymbolIcon = Symbol.Play;
-                            StartServerButtonTextBlock = Translate("ServerPageViewModelStartServer");
+                            StartServerButtonTextBlock = _localizationService.TranslateSource("ServerPageViewModelStartServer");
                             break;
                         }
                 }
@@ -204,17 +197,17 @@ namespace SIT.Manager.Avalonia.ViewModels
             {
                 if (_akiServerService.IsUnhandledInstanceRunning())
                 {
-                    AddConsole(Translate("ServerPageViewModelSPTAkiRunning"));
+                    AddConsole(_localizationService.TranslateSource("ServerPageViewModelSPTAkiRunning"));
                     return;
                 }
 
                 if (!File.Exists(_akiServerService.ExecutableFilePath))
                 {
-                    AddConsole(Translate("ServerPageViewModelSPTAkiNotFound"));
+                    AddConsole(_localizationService.TranslateSource("ServerPageViewModelSPTAkiNotFound"));
                     return;
                 }
 
-                AddConsole(Translate("ServerPageViewModelStartingServerLog"));
+                AddConsole(_localizationService.TranslateSource("ServerPageViewModelStartingServerLog"));
                 try
                 {
                     _akiServerService.Start();
@@ -226,7 +219,7 @@ namespace SIT.Manager.Avalonia.ViewModels
             }
             else
             {
-                AddConsole(Translate("ServerPageViewModelStoppingServerLog"));
+                AddConsole(_localizationService.TranslateSource("ServerPageViewModelStoppingServerLog"));
                 try
                 {
                     _akiServerService.Stop();

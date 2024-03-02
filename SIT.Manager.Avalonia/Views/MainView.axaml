@@ -55,7 +55,7 @@
 		<ui:NavigationView PaneDisplayMode="Left"
 						   IsBackButtonVisible="False"
 						   IsPaneToggleButtonVisible="False"
-						   OpenPaneLength="170"
+						   OpenPaneLength="166"
 						   Grid.Row="1"
 						   Name="NavView"
 						   ItemInvoked="NavView_ItemInvoked">

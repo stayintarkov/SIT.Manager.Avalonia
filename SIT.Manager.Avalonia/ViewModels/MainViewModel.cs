@@ -77,13 +77,6 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
         _managerConfigService.ConfigChanged += async (o, c) =>  await CheckForUpdate();
     }
 
-    /// <summary>
-    /// Handy function to compactly translate source code.
-    /// </summary>
-    /// <param name="key">key in the resources</param>
-    /// <param name="parameters">the paramaters that was inside the source string. will be replaced by hierarchy where %1 .. %n is the first paramater.</param>
-    private string Translate(string key, params string[] parameters) => _localizationService.TranslateSource(key, parameters);
-
     private async Task CheckForUpdate()
     {
         if (!_managerConfigService.Config.LookForUpdates)
@@ -106,10 +99,10 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
     {
         ContentDialogResult updateResult = await new ContentDialog()
         {
-            Title = Translate("MainPageViewModelUpdateConfirmationTitle"),
-            Content = Translate("MainPageViewModelUpdateConfirmationDescription"),
-            PrimaryButtonText = Translate("MainPageViewModelButtonYes"),
-            CloseButtonText = Translate("MainPageViewModelButtonNo")
+            Title = _localizationService.TranslateSource("MainPageViewModelUpdateConfirmationTitle"),
+            Content = _localizationService.TranslateSource("MainPageViewModelUpdateConfirmationDescription"),
+            PrimaryButtonText = _localizationService.TranslateSource("MainPageViewModelButtonYes"),
+            CloseButtonText = _localizationService.TranslateSource("MainPageViewModelButtonNo")
         }.ShowAsync();
 
         if(updateResult == ContentDialogResult.Primary)
@@ -137,9 +130,9 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
             {
                 await new ContentDialog()
                 {
-                    Title = Translate("MainPageViewModelUnsupportedTitle"),
-                    Content = Translate("MainPageViewModelUnsupportedDescription"),
-                    CloseButtonText = Translate("MainPageViewModelButtonOk")
+                    Title = _localizationService.TranslateSource("MainPageViewModelUnsupportedTitle"),
+                    Content = _localizationService.TranslateSource("MainPageViewModelUnsupportedDescription"),
+                    CloseButtonText = _localizationService.TranslateSource("MainPageViewModelButtonOk")
                 }.ShowAsync();
             }
         }

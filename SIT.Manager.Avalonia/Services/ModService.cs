@@ -27,13 +27,6 @@ namespace SIT.Manager.Avalonia.Services
         private readonly ILogger<ModService> _logger = logger;
         private readonly ILocalizationService _localizationService = localizationService;
 
-        /// <summary>
-        /// Handy function to compactly translate source code.
-        /// </summary>
-        /// <param name="key">key in the resources</param>
-        /// <param name="parameters">the paramaters that was inside the source string. will be replaced by hierarchy where %1 .. %n is the first paramater.</param>
-        private string Translate(string key, params string[] parameters) => _localizationService.TranslateSource(key, parameters);
-
         public async Task DownloadModsCollection() {
             string modsDirectory = Path.Combine(_configService.Config.InstallPath, "SITLauncher", "Mods");
             if (!Directory.Exists(modsDirectory)) {
@@ -56,16 +49,16 @@ namespace SIT.Manager.Avalonia.Services
 
             ScrollViewer scrollView = new() {
                 Content = new TextBlock() {
-                    Text = Translate("ModServiceOutdatedDescription", $"{outdatedMods.Count}", outdatedString)
+                    Text = _localizationService.TranslateSource("ModServiceOutdatedDescription", $"{outdatedMods.Count}", outdatedString)
                 }
             };
 
             ContentDialog contentDialog = new() {
-                Title = Translate("ModServiceOutdatedModsFoundTitle"),
+                Title = _localizationService.TranslateSource("ModServiceOutdatedModsFoundTitle"),
                 Content = scrollView,
-                CloseButtonText = Translate("ModServiceButtonNo"),
+                CloseButtonText = _localizationService.TranslateSource("ModServiceButtonNo"),
                 IsPrimaryButtonEnabled = true,
-                PrimaryButtonText = Translate("ModServiceButtonYes")
+                PrimaryButtonText = _localizationService.TranslateSource("ModServiceButtonYes")
             };
 
             ContentDialogResult result = await contentDialog.ShowAsync();
@@ -82,24 +75,24 @@ namespace SIT.Manager.Avalonia.Services
                 return;
             }
 
-            _barNotificationService.ShowSuccess(Translate("ModServiceUpdatedModsTitle"), Translate("ModServiceUpdatedModsDescription", $"{outdatedMods.Count}"));
+            _barNotificationService.ShowSuccess(_localizationService.TranslateSource("ModServiceUpdatedModsTitle"), _localizationService.TranslateSource("ModServiceUpdatedModsDescription", $"{outdatedMods.Count}"));
         }
 
         public async Task<bool> InstallMod(ModInfo mod, bool suppressNotification = false) {
             if (string.IsNullOrEmpty(_configService.Config.InstallPath)) {
-                _barNotificationService.ShowError(Translate("ModServiceInstallModTitle"), Translate("ModServiceInstallErrorModDescription"));
+                _barNotificationService.ShowError(_localizationService.TranslateSource("ModServiceInstallModTitle"), _localizationService.TranslateSource("ModServiceInstallErrorModDescription"));
                 return false;
             }
 
             try {
                 if (mod.SupportedVersion != _configService.Config.SitVersion) {
                     ContentDialog contentDialog = new() {
-                        Title = Translate("ModServiceWarningTitle"),
-                        Content = Translate("ModServiceWarningDescription", mod.SupportedVersion, $"{(string.IsNullOrEmpty(_configService.Config.SitVersion) ? Translate("ModServiceUnknownTitle") : _configService.Config.SitVersion)}"),
+                        Title = _localizationService.TranslateSource("ModServiceWarningTitle"),
+                        Content = _localizationService.TranslateSource("ModServiceWarningDescription", mod.SupportedVersion, $"{(string.IsNullOrEmpty(_configService.Config.SitVersion) ? _localizationService.TranslateSource("ModServiceUnknownTitle") : _configService.Config.SitVersion)}"),
                         HorizontalContentAlignment = HorizontalAlignment.Center,
                         IsPrimaryButtonEnabled = true,
-                        PrimaryButtonText = Translate("ModServiceButtonYes"),
-                        CloseButtonText = Translate("ModServiceButtonNo")
+                        PrimaryButtonText = _localizationService.TranslateSource("ModServiceButtonYes"),
+                        CloseButtonText = _localizationService.TranslateSource("ModServiceButtonNo")
                     };
                     ContentDialogResult response = await contentDialog.ShowAsync();
                     if (response != ContentDialogResult.Primary) {
@@ -132,12 +125,12 @@ namespace SIT.Manager.Avalonia.Services
                 _configService.UpdateConfig(config);
 
                 if (!suppressNotification) {
-                    _barNotificationService.ShowSuccess(Translate("ModServiceInstallModTitle"), Translate("ModServiceInstallModDescription", mod.Name));
+                    _barNotificationService.ShowSuccess(_localizationService.TranslateSource("ModServiceInstallModTitle"), _localizationService.TranslateSource("ModServiceInstallModDescription", mod.Name));
                 }
             }
             catch (Exception ex) {
                 _logger.LogError(ex, "InstallMod");
-                _barNotificationService.ShowError(Translate("ModServiceInstallModTitle"), Translate("ModServiceErrorInstallModDescription", mod.Name));
+                _barNotificationService.ShowError(_localizationService.TranslateSource("ModServiceInstallModTitle"), _localizationService.TranslateSource("ModServiceErrorInstallModDescription", mod.Name));
                 return false;
             }
 
@@ -161,16 +154,16 @@ namespace SIT.Manager.Avalonia.Services
                     }
                     else {
                         ContentDialog dialog = new() {
-                            Title = Translate("ModServiceErrorUninstallModTitle"),
-                            Content = Translate("ModServiceErrorUninstallModDescription", mod.Name, pluginFile),
-                            CloseButtonText = Translate("ModServiceButtonNo"),
+                            Title = _localizationService.TranslateSource("ModServiceErrorUninstallModTitle"),
+                            Content = _localizationService.TranslateSource("ModServiceErrorUninstallModDescription", mod.Name, pluginFile),
+                            CloseButtonText = _localizationService.TranslateSource("ModServiceButtonNo"),
                             IsPrimaryButtonEnabled = true,
-                            PrimaryButtonText = Translate("ModServiceButtonYes")
+                            PrimaryButtonText = _localizationService.TranslateSource("ModServiceButtonYes")
                         };
 
                         ContentDialogResult result = await dialog.ShowAsync();
                         if (result != ContentDialogResult.Primary) {
-                            throw new FileNotFoundException(Translate("ModServiceErrorExceptionUninstallModDescription", mod.Name, pluginFile));
+                            throw new FileNotFoundException(_localizationService.TranslateSource("ModServiceErrorExceptionUninstallModDescription", mod.Name, pluginFile));
                         }
                     }
                 }
@@ -182,17 +175,17 @@ namespace SIT.Manager.Avalonia.Services
                     }
                     else {
                         ContentDialog dialog = new() {
-                            Title = Translate("ModServiceErrorUninstallModTitle"),
-                            Content = Translate("ModServiceErrorExceptionUninstallModDescription", mod.Name, configFile),
-                            CloseButtonText = Translate("ModServiceButtonNo"),
+                            Title = _localizationService.TranslateSource("ModServiceErrorUninstallModTitle"),
+                            Content = _localizationService.TranslateSource("ModServiceErrorExceptionUninstallModDescription", mod.Name, configFile),
+                            CloseButtonText = _localizationService.TranslateSource("ModServiceButtonNo"),
                             IsPrimaryButtonEnabled = true,
-                            PrimaryButtonText = Translate("ModServiceButtonYes")
+                            PrimaryButtonText = _localizationService.TranslateSource("ModServiceButtonYes")
                         };
 
                         ContentDialogResult result = await dialog.ShowAsync();
 
                         if (result != ContentDialogResult.Primary) {
-                            throw new FileNotFoundException(Translate("ModServiceErrorExceptionFileUninstallModDescription", mod.Name, configFile));
+                            throw new FileNotFoundException(_localizationService.TranslateSource("ModServiceErrorExceptionFileUninstallModDescription", mod.Name, configFile));
                         }
                     }
                 }
@@ -201,11 +194,11 @@ namespace SIT.Manager.Avalonia.Services
                 config.InstalledMods.Remove(mod.Name);
                 _configService.UpdateConfig(config);
 
-                _barNotificationService.ShowSuccess(Translate("ModServiceFileUninstallModTitle"), Translate("ModServiceFileUninstallModDescription", mod.Name));
+                _barNotificationService.ShowSuccess(_localizationService.TranslateSource("ModServiceFileUninstallModTitle"), _localizationService.TranslateSource("ModServiceFileUninstallModDescription", mod.Name));
             }
             catch (Exception ex) {
                 _logger.LogError(ex, "UninstallMod");
-                _barNotificationService.ShowError(Translate("ModServiceFileUninstallModTitle"), Translate("ModServiceErrorInstallModDescription", mod.Name));
+                _barNotificationService.ShowError(_localizationService.TranslateSource("ModServiceFileUninstallModTitle"), _localizationService.TranslateSource("ModServiceErrorInstallModDescription", mod.Name));
                 return false;
             }
 

@@ -73,16 +73,9 @@ namespace SIT.Manager.Avalonia.ViewModels
             });
         }
 
-        /// <summary>
-        /// Handy function to compactly translate source code.
-        /// </summary>
-        /// <param name="key">key in the resources</param>
-        /// <param name="parameters">the paramaters that was inside the source string. will be replaced by hierarchy where %1 .. %n is the first paramater.</param>
-        private string Translate(string key, params string[] parameters) => _localizationService.TranslateSource(key, parameters);
-
         private async Task LoadMasterList() {
             if (string.IsNullOrEmpty(_managerConfigService.Config.InstallPath)) {
-                _barNotificationService.ShowError(Translate("ModsPageViewModelErrorTitle"), Translate("ModsPageViewModelErrorInstallPathDescription"));
+                _barNotificationService.ShowError(_localizationService.TranslateSource("ModsPageViewModelErrorTitle"), _localizationService.TranslateSource("ModsPageViewModelErrorInstallPathDescription"));
                 return;
             }
 
@@ -94,7 +87,7 @@ namespace SIT.Manager.Avalonia.ViewModels
             string modsListFile = Path.Combine(modsDirectory, "MasterList.json");
             if (!File.Exists(modsListFile)) {
                 ModList.Add(new ModInfo() {
-                    Name = Translate("ModsPageViewModelErrorNoModsFound")
+                    Name = _localizationService.TranslateSource("ModsPageViewModelErrorNoModsFound")
                 });
                 return;
             }
@@ -139,7 +132,7 @@ namespace SIT.Manager.Avalonia.ViewModels
 
         private async Task DownloadModPackage() {
             if (string.IsNullOrEmpty(_managerConfigService.Config.InstallPath)) {
-                _barNotificationService.ShowError(Translate("ModsPageViewModelErrorTitle"), Translate("ModsPageViewModelErrorInstallPathDescription"));
+                _barNotificationService.ShowError(_localizationService.TranslateSource("ModsPageViewModelErrorTitle"), _localizationService.TranslateSource("ModsPageViewModelErrorInstallPathDescription"));
                 return;
             }
             _logger.LogInformation("DownloadModPack: Starting download of mod package.");

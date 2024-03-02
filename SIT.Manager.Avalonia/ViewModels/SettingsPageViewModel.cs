@@ -5,7 +5,6 @@ using CommunityToolkit.Mvvm.Input;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
-using SIT.Manager.Avalonia.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -82,13 +81,6 @@ public partial class SettingsPageViewModel : ViewModelBase
     }
 
     /// <summary>
-    /// Handy function to compactly translate source code.
-    /// </summary>
-    /// <param name="key">key in the resources</param>
-    /// <param name="parameters">the paramaters that was inside the source string. will be replaced by hierarchy where %1 .. %n is the first paramater.</param>
-    private string Translate(string key, params string[] parameters) => _localizationService.TranslateSource(key, parameters);
-
-    /// <summary>
     /// Gets the path containing the required filename based on the folder picker selection from a user
     /// </summary>
     /// <param name="filename">The filename to look for in the user specified directory</param>
@@ -109,10 +101,10 @@ public partial class SettingsPageViewModel : ViewModelBase
             Config.InstallPath = targetPath;
             Config.TarkovVersion = _versionService.GetEFTVersion(targetPath);
             Config.SitVersion = _versionService.GetSITVersion(targetPath);
-            _barNotificationService.ShowInformational(Translate("SettingsPageViewModelConfigTitle"), Translate("SettingsPageViewModelConfigInformationEFTDescription", targetPath));
+            _barNotificationService.ShowInformational(_localizationService.TranslateSource("SettingsPageViewModelConfigTitle"), _localizationService.TranslateSource("SettingsPageViewModelConfigInformationEFTDescription", targetPath));
         }
         else {
-            _barNotificationService.ShowError(Translate("SettingsPageViewModelErrorTitle"), Translate("SettingsPageViewModelConfigErrorEFTDescription"));
+            _barNotificationService.ShowError(_localizationService.TranslateSource("SettingsPageViewModelErrorTitle"), _localizationService.TranslateSource("SettingsPageViewModelConfigErrorEFTDescription"));
         }
     }
 
@@ -120,10 +112,10 @@ public partial class SettingsPageViewModel : ViewModelBase
         string targetPath = await GetPathLocation("Aki.Server.exe");
         if (!string.IsNullOrEmpty(targetPath)) {
             Config.AkiServerPath = targetPath;
-            _barNotificationService.ShowInformational(Translate("SettingsPageViewModelConfigTitle"), Translate("SettingsPageViewModelConfigInformationSPTAKIDescription", targetPath));
+            _barNotificationService.ShowInformational(_localizationService.TranslateSource("SettingsPageViewModelConfigTitle"), _localizationService.TranslateSource("SettingsPageViewModelConfigInformationSPTAKIDescription", targetPath));
         }
         else {
-            _barNotificationService.ShowError(Translate("SettingsPageViewModelErrorTitle"), Translate("SettingsPageViewModelConfigErrorSPTAKI"));
+            _barNotificationService.ShowError(_localizationService.TranslateSource("SettingsPageViewModelErrorTitle"), _localizationService.TranslateSource("SettingsPageViewModelConfigErrorSPTAKI"));
         }
     }
 

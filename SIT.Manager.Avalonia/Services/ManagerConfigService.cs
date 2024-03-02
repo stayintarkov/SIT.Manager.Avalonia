@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using SIT.Manager.Avalonia.Converters;
-using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
 using System;

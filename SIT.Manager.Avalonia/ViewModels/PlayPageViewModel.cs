@@ -71,8 +71,11 @@ namespace SIT.Manager.Avalonia.ViewModels
             _serviceProvider = serviceProvider;
             _localizationService = localizationService;
 
-            QuickPlayText = Translate("PlayPageViewModelQuickPlayText");
-            _configService.ConfigChanged += ConfigService_ConfigChanged;
+            QuickPlayText = _localizationService.TranslateSource("PlayPageViewModelQuickPlayText");
+            _configService.ConfigChanged += (o, e) =>
+            {
+                QuickPlayText = _localizationService.TranslateSource("PlayPageViewModelQuickPlayText");
+            };
 
             _lastServer = _configService.Config.LastServer;
             _username = _configService.Config.Username;
@@ -82,18 +85,6 @@ namespace SIT.Manager.Avalonia.ViewModels
             ConnectToServerCommand = new AsyncRelayCommand(async () => await ConnectToServer());
             QuickPlayCommand = new AsyncRelayCommand(async () => await ConnectToServer(true));
         }
-
-        /// <summary>
-        /// Exists only to fix bug when you are changing language and this specific textblock doesn't get updated.
-        /// </summary>
-        private void ConfigService_ConfigChanged(object? sender, ManagerConfig e) => QuickPlayText = Translate("PlayPageViewModelQuickPlayText");
-
-        /// <summary>
-        /// Handy function to compactly translate source code.
-        /// </summary>
-        /// <param name="key">key in the resources</param>
-        /// <param name="parameters">the paramaters that was inside the source string. will be replaced by hierarchy where %1 .. %n is the first paramater.</param>
-        private string Translate(string key, params string[] parameters) => _localizationService.TranslateSource(key, parameters);
 
         private string CreateLaunchArugments(TarkovLaunchConfig launchConfig, string token)
         {
@@ -142,11 +133,11 @@ namespace SIT.Manager.Avalonia.ViewModels
                 }
 
                 ContentDialogResult createAccountResponse = await new ContentDialog() {
-                    Title = Translate("PlayPageViewModelAccountNotFound"),
-                    Content = Translate("PlayPageViewModelAccountNotFoundDescription"),
+                    Title = _localizationService.TranslateSource("PlayPageViewModelAccountNotFound"),
+                    Content = _localizationService.TranslateSource("PlayPageViewModelAccountNotFoundDescription"),
                     IsPrimaryButtonEnabled = true,
-                    PrimaryButtonText = Translate("PlayPageViewModelButtonYes"),
-                    CloseButtonText = Translate("PlayPageViewModelButtonNo")
+                    PrimaryButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonYes"),
+                    CloseButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonNo")
                 }.ShowAsync();
 
                 if (createAccountResponse == ContentDialogResult.Primary) {
@@ -168,9 +159,9 @@ namespace SIT.Manager.Avalonia.ViewModels
             }
             catch (Exception ex) {
                 await new ContentDialog() {
-                    Title = Translate("PlayPageViewModelLoginErrorTitle"),
-                    Content = Translate("PlayPageViewModelLoginErrorDescription", ex.Message),
-                    CloseButtonText = Translate("PlayPageViewModelButtonOk")
+                    Title = _localizationService.TranslateSource("PlayPageViewModelLoginErrorTitle"),
+                    Content = _localizationService.TranslateSource("PlayPageViewModelLoginErrorDescription", ex.Message),
+                    CloseButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonOk")
                 }.ShowAsync();
             }
             return string.Empty;
@@ -209,36 +200,36 @@ namespace SIT.Manager.Avalonia.ViewModels
                 //Address
                 new()
                 {
-                    Name = Translate("PlayPageViewModelServerAddressTitle"),
-                    ErrorMessage = Translate("PlayPageViewModelServerAddressDescription"),
+                    Name = _localizationService.TranslateSource("PlayPageViewModelServerAddressTitle"),
+                    ErrorMessage = _localizationService.TranslateSource("PlayPageViewModelServerAddressDescription"),
                     Check = () => { return serverAddress != null; }
                 },
                 //Install path
                 new()
                 {
-                    Name = Translate("PlayPageViewModelInstallPathTitle"),
-                    ErrorMessage = Translate("PlayPageViewModelInstallPathDescription"),
+                    Name = _localizationService.TranslateSource("PlayPageViewModelInstallPathTitle"),
+                    ErrorMessage = _localizationService.TranslateSource("PlayPageViewModelInstallPathDescription"),
                     Check = () => { return !string.IsNullOrEmpty(_configService.Config.InstallPath); }
                 },
                 //SIT check
                 new()
                 {
-                    Name = Translate("PlayPageViewModelSITInstallationTitle"),
-                    ErrorMessage = Translate("PlayPageViewModelSITInstallationDescription", SIT_DLL_FILENAME),
+                    Name = _localizationService.TranslateSource("PlayPageViewModelSITInstallationTitle"),
+                    ErrorMessage = _localizationService.TranslateSource("PlayPageViewModelSITInstallationDescription", SIT_DLL_FILENAME),
                     Check = () =>{ return File.Exists(Path.Combine(_configService.Config.InstallPath, "BepInEx", "plugins", SIT_DLL_FILENAME)); }
                 },
                 //EFT Check
                 new()
                 {
-                    Name = Translate("PlayPageViewModelEFTInstallationTitle"),
-                    ErrorMessage = Translate("PlayPageViewModelEFTInstallationDescription", EFT_EXE_FILENAME),
+                    Name = _localizationService.TranslateSource("PlayPageViewModelEFTInstallationTitle"),
+                    ErrorMessage = _localizationService.TranslateSource("PlayPageViewModelEFTInstallationDescription", EFT_EXE_FILENAME),
                     Check = () => { return File.Exists(Path.Combine(_configService.Config.InstallPath, EFT_EXE_FILENAME)); }
                 },
                 //Field Check
                 new()
                 {
-                    Name = Translate("PlayPageViewModelInputValidationTitle"),
-                    ErrorMessage = Translate("PlayPageViewModelInputValidationDescription"),
+                    Name = _localizationService.TranslateSource("PlayPageViewModelInputValidationTitle"),
+                    ErrorMessage = _localizationService.TranslateSource("PlayPageViewModelInputValidationDescription"),
                     Check = () => { return LastServer.Length > 0 && Username.Length > 0 && Password.Length > 0; }
                 }
             ];
@@ -249,15 +240,15 @@ namespace SIT.Manager.Avalonia.ViewModels
                     //Unhandled Instance
                     new ValidationRule()
                     {
-                        Name = Translate("PlayPageViewModelUnhandledAkiInstanceTitle"),
-                        ErrorMessage = Translate("PlayPageViewModelUnhandledAkiInstanceDescription"),
+                        Name = _localizationService.TranslateSource("PlayPageViewModelUnhandledAkiInstanceTitle"),
+                        ErrorMessage = _localizationService.TranslateSource("PlayPageViewModelUnhandledAkiInstanceDescription"),
                         Check = () => { return !_akiServerService.IsUnhandledInstanceRunning(); }
                     },
                     //Missing executable
                     new ValidationRule()
                     {
-                        Name = Translate("PlayPageViewModelMissingAKIInstallationTitle"),
-                        ErrorMessage = Translate("PlayPageViewModelMissingAKIInstallationDescription"),
+                        Name = _localizationService.TranslateSource("PlayPageViewModelMissingAKIInstallationTitle"),
+                        ErrorMessage = _localizationService.TranslateSource("PlayPageViewModelMissingAKIInstallationDescription"),
                         Check = () => { return File.Exists(_akiServerService.ExecutableFilePath); }
                     }
                     ]);
@@ -268,7 +259,7 @@ namespace SIT.Manager.Avalonia.ViewModels
                     await new ContentDialog() {
                         Title = rule?.Name,
                         Content = rule?.ErrorMessage,
-                        CloseButtonText = Translate("PlayPageViewModelButtonOk")
+                        CloseButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonOk")
                     }.ShowAsync();
                     return;
                 }
@@ -280,7 +271,7 @@ namespace SIT.Manager.Avalonia.ViewModels
                 bool aborted = false;
                 RunningState serverState;
                 while ((serverState = _akiServerService.State) == RunningState.Starting) {
-                    QuickPlayText = Translate("PlayPageViewModelWaitingForServerTitle");
+                    QuickPlayText = _localizationService.TranslateSource("PlayPageViewModelWaitingForServerTitle");
 
                     if (serverState == RunningState.Running) {
                         // We're done the server is running now
@@ -290,9 +281,9 @@ namespace SIT.Manager.Avalonia.ViewModels
                         // We have a state that is not right so need to alert the user and abort
                         await Dispatcher.UIThread.InvokeAsync(() => {
                             new ContentDialog() {
-                                Title = Translate("PlayPageViewModelServerErrorTitle"),
-                                Content = Translate("PlayPageViewModelServerErrorDescription"),
-                                CloseButtonText = Translate("PlayPageViewModelButtonOk")
+                                Title = _localizationService.TranslateSource("PlayPageViewModelServerErrorTitle"),
+                                Content = _localizationService.TranslateSource("PlayPageViewModelServerErrorDescription"),
+                                CloseButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonOk")
                             }.ShowAsync();
                         });
                         aborted = true;
@@ -302,7 +293,7 @@ namespace SIT.Manager.Avalonia.ViewModels
                     await Task.Delay(1000);
                 }
 
-                QuickPlayText = Translate("PlayPageViewModelQuickPlayText");
+                QuickPlayText = _localizationService.TranslateSource("PlayPageViewModelQuickPlayText");
                 if (aborted) {
                     return;
                 }

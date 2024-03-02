@@ -3,7 +3,6 @@ using Newtonsoft.Json.Linq;
 using SIT.Manager.Avalonia.Classes;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
-using SIT.Manager.Avalonia.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

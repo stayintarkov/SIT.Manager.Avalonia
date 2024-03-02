@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.Models;
-using SIT.Manager.Avalonia.Services;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
@@ -108,13 +107,6 @@ namespace SIT.Manager.Avalonia.ViewModels
             SaveCommand = new AsyncRelayCommand(Save);
         }
 
-        /// <summary>
-        /// Handy function to compactly translate source code.
-        /// </summary>
-        /// <param name="key">key in the resources</param>
-        /// <param name="parameters">the paramaters that was inside the source string. will be replaced by hierarchy where %1 .. %n is the first paramater.</param>
-        private string Translate(string key, params string[] parameters) => _localizationService.TranslateSource(key, parameters);
-
         private async Task Load() {
             IStorageFile? file = await _pickerDialogService.GetFileFromPickerAsync();
             if (file == null) {
@@ -125,7 +117,7 @@ namespace SIT.Manager.Avalonia.ViewModels
                 string jsonString = await File.ReadAllTextAsync(file.Path.LocalPath);
                 BaseLocation? location = JsonSerializer.Deserialize<BaseLocation>(jsonString);
                 if (location == null) {
-                    _barNotificationService.ShowError(Translate("LocationEditorViewModelLoadErrorTitle"), Translate("LocationEditorViewModelLoadErrorDescription"));
+                    _barNotificationService.ShowError(_localizationService.TranslateSource("LocationEditorViewModelLoadErrorTitle"), _localizationService.TranslateSource("LocationEditorViewModelLoadErrorDescription"));
                     return;
                 }
 
@@ -150,7 +142,7 @@ namespace SIT.Manager.Avalonia.ViewModels
                     SelectedBossLocationSpawn = location.BossLocationSpawn[0];
                 }
 
-                _barNotificationService.ShowSuccess(Translate("LocationEditorViewModelLoadLocationTitle"), Translate("LocationEditorViewModelLoadLocationDescription", LoadedLocation));
+                _barNotificationService.ShowSuccess(_localizationService.TranslateSource("LocationEditorViewModelLoadLocationTitle"), _localizationService.TranslateSource("LocationEditorViewModelLoadLocationDescription", LoadedLocation));
             }
         }
 
@@ -166,13 +158,13 @@ namespace SIT.Manager.Avalonia.ViewModels
             }
 
             if (Location == null) {
-                _barNotificationService.ShowError(Translate("LocationEditorViewModelSaveErrorTitle"), Translate("LocationEditorViewModelSaveErrorDescription"));
+                _barNotificationService.ShowError(_localizationService.TranslateSource("LocationEditorViewModelSaveErrorTitle"), _localizationService.TranslateSource("LocationEditorViewModelSaveErrorDescription"));
                 return;
             }
             string json = JsonSerializer.Serialize(Location, new JsonSerializerOptions() { WriteIndented = true });
             await File.WriteAllTextAsync(file.Path.LocalPath, json);
 
-            _barNotificationService.ShowSuccess(Translate("LocationEditorViewModelSaveSuccessTitle"), Translate("LocationEditorViewModelSaveSuccessDescription", file.Path.ToString()));
+            _barNotificationService.ShowSuccess(_localizationService.TranslateSource("LocationEditorViewModelSaveSuccessTitle"), _localizationService.TranslateSource("LocationEditorViewModelSaveSuccessDescription", file.Path.ToString()));
         }
 
         [RelayCommand]

@@ -64,7 +64,7 @@ namespace SIT.Manager.Avalonia.Services
             }
 
             string result = "not found";
-            if (resourceInclude.TryGetResource(key, null, out object? translation))
+            if (resourceInclude.TryGetResource(key, null, out object? translation) || (resourceInclude = CreateResourceLocalization("en-US")).TryGetResource(key, null, out translation))
             {
                 if (translation != null)
                 {
@@ -72,21 +72,6 @@ namespace SIT.Manager.Avalonia.Services
                     for (int i = 0; i < replaces.Length; i++)
                     {
                         result = result.Replace($"%{i + 1}", replaces[i]);
-                    }
-                }
-            }
-            else // if the translation was null in selected translation we will try to get that key in default English.
-            {
-                resourceInclude = CreateResourceLocalization("en-US");
-                if (resourceInclude.TryGetResource(key, null, out object? translationDefault))
-                {
-                    if (translationDefault != null)
-                    {
-                        result = (string)translationDefault;
-                        for (int i = 0; i < replaces.Length; i++)
-                        {
-                            result = result.Replace($"%{i + 1}", replaces[i]);
-                        }
                     }
                 }
             }

@@ -17,7 +17,7 @@ public partial class MainView : ReactiveUserControl<MainViewModel>
 {
     private readonly ILocalizationService? _localizationService = App.Current.Services.GetService<ILocalizationService>();
     private readonly IManagerConfigService? _configService = App.Current.Services.GetService<IManagerConfigService>();
-
+    private string lastSelectedLanguage = string.Empty;
     public MainView()
     {
         InitializeComponent();
@@ -35,21 +35,17 @@ public partial class MainView : ReactiveUserControl<MainViewModel>
             {
                 // Register the content frame so that we can update it from the view model
                 dataContext.RegisterContentFrame(ContentFrame);
-                if (_configService != null) _configService.ConfigChanged += ConfigService_ConfigChanged;
+                if (_configService != null) _configService.ConfigChanged += (o, e)=>
+                {
+                    if (lastSelectedLanguage != e.CurrentLanguageSelected || string.IsNullOrEmpty(lastSelectedLanguage))
+                    {
+                        lastSelectedLanguage = e.CurrentLanguageSelected;
+                        NavView.SettingsItem.Content = _localizationService?.TranslateSource("SettingsTitle");
+                    }
+                };
                 NavView.SettingsItem.Content = _localizationService?.TranslateSource("SettingsTitle");
             }
         });
-
-    }
-
-    private string lastSelectedLanguage = string.Empty;
-    private void ConfigService_ConfigChanged(object? sender, ManagerConfig e)
-    {
-        if (lastSelectedLanguage != e.CurrentLanguageSelected || string.IsNullOrEmpty(lastSelectedLanguage))
-        {
-            lastSelectedLanguage = e.CurrentLanguageSelected;
-            NavView.SettingsItem.Content = _localizationService?.TranslateSource("SettingsTitle");
-        }
     }
 
     // I hate this so much, Please if someone knows of a better way to do this make a pull request. Even microsoft docs recommend this heathenry
