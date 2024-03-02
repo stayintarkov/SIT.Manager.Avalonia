@@ -1,4 +1,5 @@
-<Window xmlns="https://github.com/avaloniaui"
+<window:AppWindow xmlns="https://github.com/avaloniaui"
+		xmlns:window="using:FluentAvalonia.UI.Windowing"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:SIT.Manager.Avalonia.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -18,4 +19,4 @@
 		Closed="Window_Closed">
 	<!--Main content view-->
 	<views:MainView/>
-</Window>
+</window:AppWindow>
