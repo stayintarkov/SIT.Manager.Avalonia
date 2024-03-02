@@ -54,7 +54,10 @@ namespace SIT.Manager.Avalonia.ViewModels
             StartServerButtonTextBlock = _localizationService.TranslateSource("ServerPageViewModelStartServer");
             EditServerConfigCommand = new AsyncRelayCommand(EditServerConfig);
 
-            configService.ConfigChanged += ConfigService_ConfigChanged;
+            configService.ConfigChanged += (o, e) =>
+            {
+                StartServerButtonTextBlock = _localizationService.TranslateSource("ServerPageViewModelStartServer");
+            });
 
             this.WhenActivated((CompositeDisposable disposables) =>
             {
@@ -77,11 +80,6 @@ namespace SIT.Manager.Avalonia.ViewModels
                 }).DisposeWith(disposables);
             });
         }
-
-        /// <summary>
-        /// Exists only to fix bug when you are changing language and this specific textblock doesn't get updated.
-        /// </summary>
-        private void ConfigService_ConfigChanged(object? sender, ManagerConfig e) => StartServerButtonTextBlock = _localizationService.TranslateSource("ServerPageViewModelStartServer");
 
         private void UpdateCachedServerProperties(object? sender, ManagerConfig newConfig)
         {
