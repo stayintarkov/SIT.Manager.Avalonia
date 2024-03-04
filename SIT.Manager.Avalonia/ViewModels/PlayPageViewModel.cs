@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SIT.Manager.Avalonia.Classes;
 using SIT.Manager.Avalonia.Exceptions;
 using SIT.Manager.Avalonia.Interfaces;
@@ -49,6 +50,7 @@ namespace SIT.Manager.Avalonia.ViewModels
         private readonly ITarkovClientService _tarkovClientService;
         private readonly IAkiServerService _akiServerService;
         private readonly ILocalizationService _localizationService;
+        private readonly ILogger<PlayPageViewModel> _logger;
 
         public IAsyncRelayCommand ConnectToServerCommand { get; }
         public IAsyncRelayCommand QuickPlayCommand { get; }
@@ -60,6 +62,7 @@ namespace SIT.Manager.Avalonia.ViewModels
             ITarkovClientService tarkovClientService,
             IAkiServerService akiServerService,
             ILocalizationService localizationService,
+            ILogger<PlayPageViewModel> logger,
             IServiceProvider serviceProvider) 
         {
             _configService = configService;
@@ -70,6 +73,7 @@ namespace SIT.Manager.Avalonia.ViewModels
             _akiServerService = akiServerService;
             _serviceProvider = serviceProvider;
             _localizationService = localizationService;
+            _logger = logger;
 
             QuickPlayText = _localizationService.TranslateSource("PlayPageViewModelQuickPlayText");
             _configService.ConfigChanged += (o, e) =>
@@ -309,7 +313,20 @@ namespace SIT.Manager.Avalonia.ViewModels
 
             // Launch game
             string launchArguments = CreateLaunchArugments(new TarkovLaunchConfig { BackendUrl = backendUrlFixed }, token);
-            _tarkovClientService.Start(launchArguments);
+            try
+            {
+                _tarkovClientService.Start(launchArguments);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError("An exception occured while launching Tarkov: {exMessage}", ex.Message);
+                await new ContentDialog()
+                {
+                    Title = _localizationService.TranslateSource("ModsPageViewModelErrorTitle"),
+                    Content = ex.Message
+                }.ShowAsync();
+                return;
+            }
 
             if (_configService.Config.CloseAfterLaunch) {
                 IApplicationLifetime? lifetime = App.Current.ApplicationLifetime;
