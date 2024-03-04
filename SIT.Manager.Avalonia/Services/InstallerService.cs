@@ -460,7 +460,7 @@ namespace SIT.Manager.Avalonia.Services
 
                 File.Copy(Path.Combine(coreFilesPath, "StayInTarkov-Release", "StayInTarkov.dll"), Path.Combine(pluginsPath, "StayInTarkov.dll"), true);
 
-                using (Stream? resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("SIT.Manager.Resources.Aki.Common.dll")) {
+                using (Stream? resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("SIT.Manager.Avalonia.Resources.Aki.Common.dll")) {
                     using (FileStream file = new(Path.Combine(eftDataManagedPath, "Aki.Common.dll"), FileMode.Create, FileAccess.Write)) {
                         if (resource != null) {
                             await resource.CopyToAsync(file);
@@ -468,7 +468,7 @@ namespace SIT.Manager.Avalonia.Services
                     }
                 }
 
-                using (Stream? resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("SIT.Manager.Resources.Aki.Reflection.dll")) {
+                using (Stream? resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("SIT.Manager.Avalonia.Resources.Aki.Reflection.dll")) {
                     using (FileStream file = new FileStream(Path.Combine(eftDataManagedPath, "Aki.Reflection.dll"), FileMode.Create, FileAccess.Write)) {
                         if (resource != null) {
                             await resource.CopyToAsync(file);
