@@ -32,7 +32,7 @@
 					Classes="toolsButton"
 					ToolTip.Tip="{DynamicResource ToolsSITToolTip}"
 					Command="{Binding InstallSITCommand}">
-				<StackPanel Orientation="Horizontal">
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 					<ui:SymbolIcon Symbol="Add" Margin="0,0,10,0"/>
 					<TextBlock Text="{DynamicResource ToolsSITTitle}"/>
 				</StackPanel>
@@ -43,7 +43,7 @@
 					Classes="toolsButton"
 					ToolTip.Tip="{DynamicResource ToolsOpenEFTFolderButtonToolTip}"
 					Command="{Binding OpenEFTFolderCommand}">
-				<StackPanel Orientation="Horizontal">
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 					<ui:SymbolIcon Symbol="Folder" Margin="0,0,10,0"/>
 					<TextBlock Text="{DynamicResource ToolsOpenEFTFolderButtonTitle}"/>
 				</StackPanel>
@@ -54,7 +54,7 @@
 					Classes="toolsButton"
 					ToolTip.Tip="{DynamicResource ToolsOpenBepInExFolderButtonToolTip}"
 					Command="{Binding OpenBepInExFolderCommand}">
-				<StackPanel Orientation="Horizontal">
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 					<ui:SymbolIcon Symbol="Folder" Margin="0,0,10,0"/>
 					<TextBlock Text="{DynamicResource ToolsOpenBepInExFolderButtonTitle}"/>
 				</StackPanel>
@@ -65,7 +65,7 @@
 					Classes="toolsButton"
 					ToolTip.Tip="{DynamicResource ToolsOpenSITConfigButtonToolTip}"
 					Command="{Binding OpenSITConfigCommand}">
-				<StackPanel Orientation="Horizontal">
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 					<ui:SymbolIcon Symbol="Setting" Margin="0,0,10,0"/>
 					<TextBlock Text="{DynamicResource ToolsOpenSITConfigButtonTitle}"/>
 				</StackPanel>
@@ -79,7 +79,7 @@
 					Classes="toolsButton"
 					ToolTip.Tip="{DynamicResource ToolsInstallServerButtonToolTip}"
 					Command="{Binding InstallServerCommand}">
-				<StackPanel Orientation="Horizontal">
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 					<ui:SymbolIcon Symbol="Download" Margin="0,0,10,0"/>
 					<TextBlock Text="{DynamicResource ToolsInstallServerButtonTitle}"/>
 				</StackPanel>
@@ -91,7 +91,7 @@
 					Classes="toolsButton"
 					ToolTip.Tip="{DynamicResource ToolsOpenEFTLogButtonToolTip}"
 					Command="{Binding OpenEFTLogCommand}">
-				<StackPanel Orientation="Horizontal">
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 					<ui:SymbolIcon Symbol="OpenFile" Margin="0,0,10,0"/>
 					<TextBlock Text="{DynamicResource ToolsOpenEFTLogButtonTitle}"/>
 				</StackPanel>
@@ -102,7 +102,7 @@
 					Classes="toolsButton"
 					ToolTip.Tip="{DynamicResource ToolsOpenLocationEditorButtonToolTip}"
 					Command="{Binding OpenLocationEditorCommand}">
-				<StackPanel Orientation="Horizontal">
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 					<ui:SymbolIcon Symbol="Edit" Margin="0,0,10,0"/>
 					<TextBlock Text="{DynamicResource ToolsOpenLocationEditorButtonTitle}"/>
 				</StackPanel>
@@ -113,7 +113,7 @@
 					Classes="toolsButton"
 					ToolTip.Tip="{DynamicResource ToolsClearCacheButtonToolTip}"
 					Command="{Binding ClearCacheCommand}">
-				<StackPanel Orientation="Horizontal">
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 					<ui:SymbolIcon Symbol="Delete" Margin="0,0,10,0"/>
 					<TextBlock Text="{DynamicResource ToolsClearCacheButtonTitle}"/>
 				</StackPanel>
