@@ -24,7 +24,6 @@
 	
     <Application.Styles>
 		<sty:FluentAvaloniaTheme />
-		<StyleInclude Source="avares://ThemeEditor.Controls.ColorPicker/ColorPicker.axaml" />
 
 		<Style Selector="SelectableTextBlock">
 			<Setter Property="SelectionBrush" Value="{StaticResource TextControlSelection}"/>
