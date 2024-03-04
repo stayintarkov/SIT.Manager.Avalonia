@@ -46,8 +46,9 @@ namespace SIT.Manager.Avalonia.Services
         }
 
 
-        public void UpdateConfig(ManagerConfig config, bool ShouldSave = true, bool SaveAccount = false) {
+        public void UpdateConfig(ManagerConfig config, bool ShouldSave = true, bool? SaveAccount = null) {
             _config = config;
+            SaveAccount ??= config.RememberLogin;
 
             var options = new JsonSerializerOptions() {
                 Converters = {
@@ -58,7 +59,7 @@ namespace SIT.Manager.Avalonia.Services
 
             if (ShouldSave) {
                 ManagerConfig newLauncherConfig = _config;
-                if (!SaveAccount) {
+                if (!SaveAccount.Value) {
                     newLauncherConfig.Username = string.Empty;
                     newLauncherConfig.Password = string.Empty;
                 }
