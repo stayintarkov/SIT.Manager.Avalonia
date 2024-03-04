@@ -148,6 +148,11 @@
 							<TextBlock Text="{DynamicResource SettingsServerConsoleFontColorTitle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
 							<ui:ColorPickerButton Name="PickerButton" 
 												  Margin="0,10,0,0"
+												  IsCompact="True"
+												  IsMoreButtonVisible="False"
+												  UseColorPalette="False"
+												  UseColorWheel="False"
+												  UseSpectrum="True"
 												  Color="{Binding Config.ConsoleFontColor, Mode=TwoWay}" />
 						</StackPanel>
 					</StackPanel>
