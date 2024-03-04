@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using FluentAvalonia.UI.Controls;
+using Microsoft.Extensions.Logging;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
@@ -284,6 +285,11 @@ namespace SIT.Manager.Avalonia.Services
 
             if (compatibleDowngradePatcher == null) {
                 _logger.LogError("No applicable patcher found for the specified SIT version.");
+                await new ContentDialog()
+                {
+                    Title = _localizationService.TranslateSource("ModsPageViewModelErrorTitle"),
+                    Content = _localizationService.TranslateSource("InstallerServiceNoDowngradePatcher")
+                }.ShowAsync();
                 return null;
             }
 
