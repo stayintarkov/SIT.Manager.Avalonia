@@ -303,6 +303,7 @@
 	<system:String x:Key="InstallServiceInstallSuccessfulTitle">Install</system:String>
 	<system:String x:Key="InstallServiceInstallSuccessfulDescription">Installation of Server was successful.</system:String>
 	<system:String x:Key="InstallServiceInstallSITSuccessfulDescription">Installation of SIT was successful.</system:String>
+	<system:String x:Key="InstallerServiceNoDowngradePatcher">No downgrader is available for these versions of Tarkov.</system:String>
 	
 	<!-- File Service -->
 	<system:String x:Key="FileServiceProgressDownloading">Downloading '%1'</system:String>
