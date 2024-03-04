@@ -24,7 +24,7 @@
 	</Application.Resources>
 	
     <Application.Styles>
-		<sty:FluentAvaloniaTheme CustomAccentColor="#323232" />
+		<sty:FluentAvaloniaTheme CustomAccentColor="#7f7f7f" />
 		<StyleInclude Source="avares://ThemeEditor.Controls.ColorPicker/ColorPicker.axaml" />
 
 		<Style Selector="SelectableTextBlock">
