@@ -4,6 +4,7 @@
              x:Class="SIT.Manager.Avalonia.App"
              RequestedThemeVariant="Dark">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+	
 	<Application.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
@@ -23,7 +24,8 @@
 	</Application.Resources>
 	
     <Application.Styles>
-		<sty:FluentAvaloniaTheme />
+		<sty:FluentAvaloniaTheme CustomAccentColor="#7f7f7f" />
+		<StyleInclude Source="avares://ThemeEditor.Controls.ColorPicker/ColorPicker.axaml" />
 
 		<Style Selector="SelectableTextBlock">
 			<Setter Property="SelectionBrush" Value="{StaticResource TextControlSelection}"/>
