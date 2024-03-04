@@ -31,10 +31,34 @@
     <PackageReference Include="SharpCompress" Version="0.36.0" />
     <PackageReference Include="SkiaSharp" Version="2.88.7" />
     <PackageReference Include="System.Threading.Channels" Version="8.0.0" />
-    <PackageReference Include="ThemeEditor.Controls.ColorPicker" Version="11.0.0" />
   </ItemGroup>
 
   <ItemGroup>
 	  <EmbeddedResource Include="Localization\*.axaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\Aki.Common.dll" />
+    <None Remove="Resources\Aki.Reflection.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Aki.Common.dll" />
+    <EmbeddedResource Include="Resources\Aki.Reflection.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

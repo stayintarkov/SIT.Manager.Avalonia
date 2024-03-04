@@ -1,5 +1,4 @@
 ﻿using Avalonia.Markup.Xaml.Styling;
-using CommunityToolkit.Mvvm.ComponentModel;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using System;
@@ -9,9 +8,28 @@ using System.Linq;
 
 namespace SIT.Manager.Avalonia.Services
 {
-    public partial class LocalizationService(IManagerConfigService configService) : ILocalizationService
+    public partial class LocalizationService : ILocalizationService
     {
-        private readonly IManagerConfigService _configService = configService;
+        private const string DEFAULT_LANGUAGE = "en-US";
+
+        private readonly IManagerConfigService _configService;
+
+        private ResourceInclude? resourceInclude;
+
+        public LocalizationService(IManagerConfigService configService)
+        {
+            _configService = configService;
+            VerifyLocaleAvailability();
+        }
+
+        private void VerifyLocaleAvailability()
+        {
+            string currentLanguage = _configService.Config.CurrentLanguageSelected;
+            List<CultureInfo> availableLanguages = GetAvailableLocalizations();
+            if (!availableLanguages.Any(x => x.Name == _configService.Config.CurrentLanguageSelected)) {
+                _configService.Config.CurrentLanguageSelected = DEFAULT_LANGUAGE;
+            }
+        }
 
         /// <summary>
         /// Changes the localization based on your culture info. This specific function changes it inside of Settings. And mainly changes all dynamic Resources in pages.
@@ -28,7 +46,7 @@ namespace SIT.Manager.Avalonia.Services
             }
             catch // if there was no translation found for your computer localization give default English.
             {
-                LoadTranslationResources("en-US");
+                LoadTranslationResources(DEFAULT_LANGUAGE);
             }
         }
 
@@ -39,8 +57,6 @@ namespace SIT.Manager.Avalonia.Services
             _configService.Config.CurrentLanguageSelected = culture.Name;
         }
 
-        private ResourceInclude? resourceInclude;
-        private string currentLanguage = string.Empty;
         /// <summary>
         /// Changes the localization in .cs files that contains strings that you cannot change inside the page.
         /// Functions contain neat parameters that help modify source strings, like in C#, but inside a Resource file.
@@ -51,7 +67,7 @@ namespace SIT.Manager.Avalonia.Services
         /// <param name="replaces">parameters in hierarchy, example: %1, %2, %3, "10", "20, "30" | output: 10, 20, 30</param>
         public string TranslateSource(string key, params string[] replaces)
         {
-            if (resourceInclude == null || string.IsNullOrEmpty(currentLanguage) || currentLanguage != _configService.Config.CurrentLanguageSelected)
+            if (resourceInclude == null)
             {
                 try
                 {
@@ -102,7 +118,7 @@ namespace SIT.Manager.Avalonia.Services
                 })
                 .ToList();
 
-            if (result.Count == 0) result.Add(new CultureInfo("en-US"));
+            if (result.Count == 0) result.Add(new CultureInfo(DEFAULT_LANGUAGE));
             List<CultureInfo> resultNotNull = [];
             foreach (var r in result)
             {
@@ -118,9 +134,8 @@ namespace SIT.Manager.Avalonia.Services
         private ResourceInclude CreateResourceLocalization(string locale)
         {
             string url = $"avares://SIT.Manager.Avalonia/Localization/{locale}.axaml";
-            var self = new Uri("resm:Styles?assembly=SIT.Manager.Avalonia");
-            return new ResourceInclude(self)
-            {
+            Uri self = new("resm:Styles?assembly=SIT.Manager.Avalonia");
+            return new ResourceInclude(self) {
                 Source = new Uri(url)
             };
         }
