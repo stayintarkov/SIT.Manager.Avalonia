@@ -287,7 +287,7 @@ namespace SIT.Manager.Avalonia.Services
                 _logger.LogError("No applicable patcher found for the specified SIT version.");
                 await new ContentDialog()
                 {
-                    Title = _localizationService.TranslateSource("ModsPageViewModelErrorTitle"),
+                    Title = _localizationService.TranslateSource("InstallServiceErrorTitle"),
                     Content = _localizationService.TranslateSource("InstallerServiceNoDowngradePatcher")
                 }.ShowAsync();
                 return null;
