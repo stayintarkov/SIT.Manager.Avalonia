@@ -31,7 +31,6 @@
     <PackageReference Include="SharpCompress" Version="0.36.0" />
     <PackageReference Include="SkiaSharp" Version="2.88.7" />
     <PackageReference Include="System.Threading.Channels" Version="8.0.0" />
-    <PackageReference Include="ThemeEditor.Controls.ColorPicker" Version="11.0.0" />
   </ItemGroup>
 
   <ItemGroup>

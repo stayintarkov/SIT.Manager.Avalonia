@@ -2,18 +2,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:cp="clr-namespace:ThemeEditor.Controls.ColorPicker;assembly=ThemeEditor.Controls.ColorPicker"
-			 xmlns:converters="clr-namespace:SIT.Manager.Avalonia.Converters"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:vm="clr-namespace:SIT.Manager.Avalonia.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="550"
              x:Class="SIT.Manager.Avalonia.Views.SettingsPage"
 			 x:CompileBindings="True"
 			 Background="{DynamicResource ApplicationPageBackgroundThemeBrush}"	 
 			 x:DataType="vm:SettingsPageViewModel">
-	<UserControl.Resources>
-		<converters:ColorToBrushConverter x:Key="ColorToBrushConverter"/>
-	</UserControl.Resources>
-	
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="*"/>
@@ -151,49 +146,14 @@
 						</StackPanel>
 						<StackPanel Orientation="Horizontal">
 							<TextBlock Text="{DynamicResource SettingsServerConsoleFontColorTitle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
-							<ToggleButton Name="ConsoleColorPopupButton"
-										  Width="30"
-										  Height="15" 
-										  BorderThickness="0"
-										  Padding="0"
-										  Margin="0,10,10,0"
-										  HorizontalAlignment="Stretch"
-										  VerticalAlignment="Stretch"
-										  HorizontalContentAlignment="Stretch"
-										  VerticalContentAlignment="Stretch">
-								<ToggleButton.Styles>
-									<Style Selector="ToggleButton">
-										<Setter Property="RenderTransform" Value="none" />
-										<Setter Property="Transitions" Value="{x:Null}" />
-									</Style>
-									<Style Selector="ToggleButton:pressed">
-										<Setter Property="RenderTransform" Value="none" />
-									</Style>
-									<Style Selector="ToggleButton:checked /template/ ContentPresenter, ToggleButton:pressed /template/ ContentPresenter">
-										<Setter Property="Background"
-												Value="{Binding Config.ConsoleFontColor, Mode=OneWay, Converter={StaticResource ColorToBrushConverter}}"/>
-									</Style>
-									<Style Selector="ToggleButton:checked /template/ ContentPresenter">
-										<Setter Property="BorderBrush"
-												Value="{Binding Config.ConsoleFontColor, Mode=OneWay, Converter={StaticResource ColorToBrushConverter}}"/>
-									</Style>
-								</ToggleButton.Styles>
-								<Panel DockPanel.Dock="Top"
-									   VerticalAlignment="Stretch">
-									<Border BorderThickness="0" CornerRadius="0" />
-									<Border BorderThickness="0" CornerRadius="0" />
-									<Border BorderThickness="0" CornerRadius="0"
-											Background="{Binding Config.ConsoleFontColor, Mode=OneWay, Converter={StaticResource ColorToBrushConverter}}"/>
-								</Panel>
-							</ToggleButton>
-							<Popup IsOpen="{Binding #ConsoleColorPopupButton.IsChecked, Mode=TwoWay}"
-								   IsLightDismissEnabled="True"
-								   PlacementMode="Pointer">
-								<Border Background="{DynamicResource ApplicationPageBackgroundThemeBrush}" 
-										CornerRadius="5">
-									<cp:ColorPicker Color="{Binding Config.ConsoleFontColor, Mode=TwoWay}"/>
-								</Border>
-							</Popup>
+							<ui:ColorPickerButton Name="PickerButton" 
+												  Margin="0,10,0,0"
+												  IsCompact="True"
+												  IsMoreButtonVisible="False"
+												  UseColorPalette="False"
+												  UseColorWheel="False"
+												  UseSpectrum="True"
+												  Color="{Binding Config.ConsoleFontColor, Mode=TwoWay}" />
 						</StackPanel>
 					</StackPanel>
 				</Border>
