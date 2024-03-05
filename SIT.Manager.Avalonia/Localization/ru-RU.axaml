@@ -122,6 +122,8 @@
 	<system:String x:Key="SettingsLookForUpdatesTitleToolTip">Автоматически проверяет обновления при открытии лаунчера.</system:String>
 	<system:String x:Key="SettingsLanguageTitle">Язык:</system:String>
 	<system:String x:Key="SettingsLanguageTitleToolTip">Переводит весь лаунчер на ваш язык, выберите свой язык!</system:String>
+	<system:String x:Key="SettingsAccentColorTitle">Цвет акцента:</system:String>
+	<system:String x:Key="SettingsAccentColorToolTip">Изменяет цвет выбранных элементов под ваш выбор!</system:String>
 	<system:String x:Key="SettingsLinuxSettingsTitle">Настройки Linux</system:String>
 	<system:String x:Key="SettingsLinuxWinePrefixTitle">Префикс Wine:</system:String>
 	<system:String x:Key="SettingsLinuxWinePrefixPlaceholder">Путь к префиксу Wine</system:String>
@@ -304,6 +306,7 @@
 	<system:String x:Key="InstallServiceInstallSuccessfulTitle">Установка</system:String>
 	<system:String x:Key="InstallServiceInstallSuccessfulDescription">Установка сервера прошла успешно.</system:String>
 	<system:String x:Key="InstallServiceInstallSITSuccessfulDescription">Установка SIT прошла успешно.</system:String>
+	<system:String x:Key="InstallerServiceNoDowngradePatcher">Для этой версии Таркова нет доступных программ для отката.</system:String>
 
 	<!-- File Service -->
 	<system:String x:Key="FileServiceProgressDownloading">Загрузка файла '%1'</system:String>

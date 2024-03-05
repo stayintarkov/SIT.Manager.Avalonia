@@ -3,6 +3,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using FluentAvalonia.Styling;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Media.Animation;
 using Microsoft.Extensions.Logging;
@@ -16,6 +17,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Reactive.Disposables;
 using System.Reflection;
@@ -61,6 +63,9 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
         _httpClient = httpClient;
 
         _localizationService.Translate(new CultureInfo(_managerConfigService.Config.CurrentLanguageSelected));
+
+        var faTheme = Application.Current?.Styles.OfType<FluentAvaloniaTheme>().FirstOrDefault();
+        if (faTheme != null) faTheme.CustomAccentColor = _managerConfigService.Config.AccentColor;
 
         _actionNotificationService.ActionNotificationReceived += ActionNotificationService_ActionNotificationReceived;
         _barNotificationService.BarNotificationReceived += BarNotificationService_BarNotificationReceived;

@@ -1,7 +1,10 @@
-﻿using Avalonia.Media;
+﻿using Avalonia;
+using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FluentAvalonia.Styling;
+using FluentAvalonia.UI.Controls;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
@@ -48,6 +51,8 @@ public partial class SettingsPageViewModel : ViewModelBase
 
     public IAsyncRelayCommand ChangeAkiServerLocationCommand { get; }
 
+    private readonly FluentAvaloniaTheme? faTheme = Application.Current?.Styles.OfType<FluentAvaloniaTheme>().FirstOrDefault();
+
     public SettingsPageViewModel(IManagerConfigService configService,
                                  ILocalizationService localizationService,
                                  IBarNotificationService barNotificationService,
@@ -61,6 +66,11 @@ public partial class SettingsPageViewModel : ViewModelBase
         _localizationService = localizationService;
 
         _config = _configsService.Config;
+
+        _configsService.ConfigChanged += (o, e) =>
+        {
+            if (faTheme != null && faTheme.CustomAccentColor != e.AccentColor) faTheme.CustomAccentColor = e.AccentColor;
+        };
 
         _currentLocalization = new CultureInfo(Config.CurrentLanguageSelected);
         _availableLocalization = _localizationService.GetAvailableLocalizations();
