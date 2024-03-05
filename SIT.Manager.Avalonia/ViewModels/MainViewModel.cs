@@ -6,7 +6,6 @@ using CommunityToolkit.Mvvm.Messaging;
 using FluentAvalonia.Styling;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Media.Animation;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ReactiveUI;
 using SIT.Manager.Avalonia.Interfaces;
