@@ -306,6 +306,7 @@
 	<system:String x:Key="InstallServiceInstallSuccessfulTitle">Установка</system:String>
 	<system:String x:Key="InstallServiceInstallSuccessfulDescription">Установка сервера прошла успешно.</system:String>
 	<system:String x:Key="InstallServiceInstallSITSuccessfulDescription">Установка SIT прошла успешно.</system:String>
+	<system:String x:Key="InstallerServiceNoDowngradePatcher">Для этой версии Таркова нет доступных программ для отката.</system:String>
 
 	<!-- File Service -->
 	<system:String x:Key="FileServiceProgressDownloading">Загрузка файла '%1'</system:String>

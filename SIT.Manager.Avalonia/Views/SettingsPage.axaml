@@ -45,7 +45,7 @@
 												  UseColorPalette="False"
 												  UseColorWheel="False"
 												  UseSpectrum="True"
-												  Color="{Binding CurrentAccentColor, Mode=TwoWay}"/>
+												  Color="{Binding Config.AccentColor, Mode=TwoWay}"/>
 						</Grid>
 					</StackPanel>
 				</Border>

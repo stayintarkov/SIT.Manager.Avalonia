@@ -288,7 +288,9 @@ namespace SIT.Manager.Avalonia.Services
                 await new ContentDialog()
                 {
                     Title = _localizationService.TranslateSource("InstallServiceErrorTitle"),
-                    Content = _localizationService.TranslateSource("InstallerServiceNoDowngradePatcher")
+                    Content = _localizationService.TranslateSource("InstallerServiceNoDowngradePatcher"),
+                    PrimaryButtonText = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigButtonOk"),
+                    IsPrimaryButtonEnabled = true
                 }.ShowAsync();
                 return null;
             }

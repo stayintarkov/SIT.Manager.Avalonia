@@ -4,6 +4,7 @@ using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.Styling;
+using FluentAvalonia.UI.Controls;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
@@ -40,9 +41,6 @@ public partial class SettingsPageViewModel : ViewModelBase
     
     [ObservableProperty]
     private CultureInfo _currentLocalization;
-
-    [ObservableProperty]
-    private Color? _currentAccentColor;
     
     [ObservableProperty]
     private string _managerVersionString;
@@ -53,7 +51,7 @@ public partial class SettingsPageViewModel : ViewModelBase
 
     public IAsyncRelayCommand ChangeAkiServerLocationCommand { get; }
 
-    private FluentAvaloniaTheme? faTheme;
+    private readonly FluentAvaloniaTheme? faTheme = Application.Current?.Styles.OfType<FluentAvaloniaTheme>().FirstOrDefault();
 
     public SettingsPageViewModel(IManagerConfigService configService,
                                  ILocalizationService localizationService,
@@ -68,7 +66,11 @@ public partial class SettingsPageViewModel : ViewModelBase
         _localizationService = localizationService;
 
         _config = _configsService.Config;
-        _currentAccentColor = _config.AccentColor;
+
+        _configsService.ConfigChanged += (o, e) =>
+        {
+            if (faTheme != null && faTheme.CustomAccentColor != e.AccentColor) faTheme.CustomAccentColor = e.AccentColor;
+        };
 
         _currentLocalization = new CultureInfo(Config.CurrentLanguageSelected);
         _availableLocalization = _localizationService.GetAvailableLocalizations();
@@ -140,15 +142,5 @@ public partial class SettingsPageViewModel : ViewModelBase
     {
         _localizationService.Translate(value);
         Config.CurrentLanguageSelected = value.Name;
-    }
-
-    partial void OnCurrentAccentColorChanged(Color? value)
-    {
-        if (faTheme == null) faTheme = Application.Current?.Styles.OfType<FluentAvaloniaTheme>().FirstOrDefault();
-        if (faTheme != null)
-        {
-            faTheme.CustomAccentColor = value;
-            Config.AccentColor = value;
-        }
     }
 }
