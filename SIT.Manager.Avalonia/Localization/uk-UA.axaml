@@ -122,6 +122,8 @@
 	<system:String x:Key="SettingsLookForUpdatesTitleToolTip">Автоматично перевіряє оновлення при відкритті лаунчера.</system:String>
 	<system:String x:Key="SettingsLanguageTitle">Мова:</system:String>
 	<system:String x:Key="SettingsLanguageTitleToolTip">Перекладає весь лаунчер на вашу мову, оберіть свою мову!</system:String>
+	<system:String x:Key="SettingsAccentColorTitle">Колір акценту:</system:String>
+	<system:String x:Key="SettingsAccentColorToolTip">Змінює колір обраних візуальних елементів на ваш вибір!</system:String>
 	<system:String x:Key="SettingsLinuxSettingsTitle">Налаштування Linux</system:String>
 	<system:String x:Key="SettingsLinuxWinePrefixTitle">Префікс Wine:</system:String>
 	<system:String x:Key="SettingsLinuxWinePrefixPlaceholder">Шлях до префіксу Wine</system:String>

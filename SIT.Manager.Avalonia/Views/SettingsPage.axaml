@@ -37,6 +37,16 @@
 								</ComboBox.ItemTemplate>
 							</ComboBox>
 						</Grid>
+						<Grid Margin="0,5,0,0" ColumnDefinitions="auto, *">
+							<TextBlock Text="{DynamicResource SettingsAccentColorTitle}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+							<ui:ColorPickerButton Margin="5,0,0,0" Grid.Column="1" ToolTip.Tip="{DynamicResource SettingsAccentColorToolTip}"
+												  IsCompact="True"
+												  IsMoreButtonVisible="False"
+												  UseColorPalette="False"
+												  UseColorWheel="False"
+												  UseSpectrum="True"
+												  Color="{Binding CurrentAccentColor, Mode=TwoWay}"/>
+						</Grid>
 					</StackPanel>
 				</Border>
 

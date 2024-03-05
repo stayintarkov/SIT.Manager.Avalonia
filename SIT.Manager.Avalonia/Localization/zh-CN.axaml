@@ -122,6 +122,8 @@
   <system:String x:Key="SettingsLookForUpdatesTitleToolTip">打开启动器时自动检查更新</system:String>
   <system:String x:Key="SettingsLanguageTitle">语言:</system:String>
   <system:String x:Key="SettingsLanguageTitleToolTip">将整个启动器翻译为您的语言，选择其中一种!</system:String>
+  <system:String x:Key="SettingsAccentColorTitle">强调颜色:</system:String>
+  <system:String x:Key="SettingsAccentColorToolTip">将所选视觉的颜色更改为您选择的颜色！</system:String>
   <system:String x:Key="SettingsLinuxSettingsTitle">Linux 设置</system:String>
   <system:String x:Key="SettingsLinuxWinePrefixTitle">Wine 前缀:</system:String>
   <system:String x:Key="SettingsLinuxWinePrefixPlaceholder">Wine 前缀路径</system:String>

@@ -122,6 +122,8 @@
 	<system:String x:Key="SettingsLookForUpdatesTitleToolTip">Automatically look for updates when opening the launcher.</system:String>
 	<system:String x:Key="SettingsLanguageTitle">Language:</system:String>
 	<system:String x:Key="SettingsLanguageTitleToolTip">Translates entire launcher to your language, select one!</system:String>
+	<system:String x:Key="SettingsAccentColorTitle">Accent Color:</system:String>
+	<system:String x:Key="SettingsAccentColorToolTip">Changes color of selected visuals to your choice!</system:String>
 	<system:String x:Key="SettingsLinuxSettingsTitle">Linux Settings</system:String>
 	<system:String x:Key="SettingsLinuxWinePrefixTitle">Wine Prefix:</system:String>
 	<system:String x:Key="SettingsLinuxWinePrefixPlaceholder">Wine Prefix Path</system:String>
