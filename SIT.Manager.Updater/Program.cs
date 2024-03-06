@@ -92,18 +92,6 @@ using (CLIProgressBar progressBar = new(progressBarUpdateRate))
 Console.WriteLine("\nDownload complete.");
 Console.WriteLine("Creating backup of SIT.Manager");
 
-string backupPath = Path.Combine(workingDir, "Backup");
-if (Directory.Exists(backupPath))
-    Directory.Delete(backupPath, true);
-
-DirectoryInfo workingFolderInfo = new(workingDir);
-await workingFolderInfo.MoveSIT(backupPath);
-FileInfo configFile = new(Path.Combine(backupPath, "ManagerConfig.json"));
-if (configFile.Exists)
-    configFile.CopyTo(Path.Combine(workingFolderInfo.FullName, configFile.Name));
-
-Console.WriteLine("\nBackup complete. Extracting new version..\n");
-
 DirectoryInfo releasePath = new(Path.Combine(tempPath, "Release"));
 releasePath.Create();
 using (ZipArchive archive = ZipArchive.Open(zipPath))
@@ -124,6 +112,18 @@ using (ZipArchive archive = ZipArchive.Open(zipPath))
         }
     }
 }
+
+string backupPath = Path.Combine(workingDir, "Backup");
+if (Directory.Exists(backupPath))
+    Directory.Delete(backupPath, true);
+
+DirectoryInfo workingFolderInfo = new(workingDir);
+await workingFolderInfo.MoveSIT(backupPath);
+FileInfo configFile = new(Path.Combine(backupPath, "ManagerConfig.json"));
+if (configFile.Exists)
+    configFile.CopyTo(Path.Combine(workingFolderInfo.FullName, configFile.Name));
+
+Console.WriteLine("\nBackup complete. Extracting new version..\n");
 
 await releasePath.MoveSIT(workingDir);
 
