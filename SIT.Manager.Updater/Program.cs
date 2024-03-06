@@ -2,8 +2,8 @@
 using System.Diagnostics;
 using System.IO.Compression;
 
-const string SITMANAGER_PROC_NAME = "SIT.Manager.exe";
-const string SITMANAGER_RELEASE_URL = @"https://github.com/stayintarkov/SIT.Manager.Avalonia/releases/latest/download/SIT.Manager.Avalonia.zip";
+const string SITMANAGER_PROC_NAME = "SIT.Manager.Avalonia.Desktop.exe";
+const string SITMANAGER_RELEASE_URL = @"https://github.com/stayintarkov/SIT.Manager.Avalonia/releases/download/beta/win-x64.zip";
 
 bool skipInteractivity = false;
 bool killProcNoPrompt = false;
@@ -29,7 +29,7 @@ if(managerProcesses.Length > 0)
     {
         if(skipInteractivity)
             Environment.Exit(2);
-        Console.WriteLine("An instance of 'SIT.Manager' was found. Would you like to close all instances? Y/N");
+        Console.WriteLine("An instance of 'SIT.Manager.Avalonia' was found. Would you like to close all instances? Y/N");
         string? response = Console.ReadLine();
         if (response == null || !response.Equals("y", StringComparison.InvariantCultureIgnoreCase))
             Environment.Exit(1);
@@ -102,9 +102,10 @@ if (configFile.Exists)
 
 Console.WriteLine("\nBackup complete. Extracting new version..\n");
 
-ZipFile.ExtractToDirectory(zipPath, tempPath, false);
-
 DirectoryInfo releasePath = new(Path.Combine(tempPath, "Release"));
+releasePath.Create();
+ZipFile.ExtractToDirectory(zipPath, releasePath.FullName, true);
+
 await releasePath.MoveSIT(workingDir);
 
 Directory.Delete(tempPath, true);
