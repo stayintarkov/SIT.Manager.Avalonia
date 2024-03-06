@@ -22,6 +22,7 @@
 					  IsMouseSelectable="False" 
 					  Grid.Row="0"
 					  Margin="8,0,8,0"
+					  SelectedIndex="{Binding CurrentInstallStep}"
 					  Dock="Left">
 			<labs:StepBarItem>Select</labs:StepBarItem>
 			<labs:StepBarItem>Configure</labs:StepBarItem>
@@ -29,10 +30,15 @@
 			<labs:StepBarItem>Patch</labs:StepBarItem>
 			<labs:StepBarItem>Install</labs:StepBarItem>
 			<labs:StepBarItem>Complete</labs:StepBarItem>
-		</labs:StepBar>	
+		</labs:StepBar>
 
-		<Panel Grid.Column="1" Margin="4">
-			<iv:SelectView/>
-		</Panel>		
+		<TransitioningContentControl Grid.Column="1" 
+									 Margin="4">
+			<TransitioningContentControl.PageTransition>
+				<PageSlide Orientation="Vertical" Duration="0:00:00.500" />
+			</TransitioningContentControl.PageTransition>
+
+			<ContentControl Content="{Binding InstallStepControl}"/>
+		</TransitioningContentControl>
 	</Grid>
 </UserControl>

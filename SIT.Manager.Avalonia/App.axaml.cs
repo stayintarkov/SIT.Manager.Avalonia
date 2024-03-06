@@ -8,6 +8,7 @@ using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Services;
 using SIT.Manager.Avalonia.ViewModels;
+using SIT.Manager.Avalonia.ViewModels.Installation;
 using SIT.Manager.Avalonia.Views;
 using System;
 using System.Net.Http;
@@ -77,7 +78,7 @@ public sealed partial class App : Application
         services.AddSingleton<IZlibService, ZlibService>();
         services.AddSingleton<ILocalizationService, LocalizationService>();
 
-        // Viewmodels
+        // Page Viewmodels
         services.AddTransient<InstallPageViewModel>();
         services.AddTransient<LocationEditorViewModel>();
         services.AddTransient<MainViewModel>();
@@ -86,6 +87,9 @@ public sealed partial class App : Application
         services.AddTransient<SettingsPageViewModel>();
         services.AddTransient<ServerPageViewModel>();
         services.AddTransient<ToolsPageViewModel>();
+
+        // Installation View Models
+        services.AddTransient<SelectViewModel>();
 
         return services.BuildServiceProvider();
     }
