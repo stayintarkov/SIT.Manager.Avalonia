@@ -122,6 +122,8 @@
   <system:String x:Key="SettingsLookForUpdatesTitleToolTip">打开启动器时自动检查更新</system:String>
   <system:String x:Key="SettingsLanguageTitle">语言:</system:String>
   <system:String x:Key="SettingsLanguageTitleToolTip">将整个启动器翻译为您的语言，选择其中一种!</system:String>
+  <system:String x:Key="SettingsAccentColorTitle">强调颜色:</system:String>
+  <system:String x:Key="SettingsAccentColorToolTip">将所选视觉的颜色更改为您选择的颜色！</system:String>
   <system:String x:Key="SettingsLinuxSettingsTitle">Linux 设置</system:String>
   <system:String x:Key="SettingsLinuxWinePrefixTitle">Wine 前缀:</system:String>
   <system:String x:Key="SettingsLinuxWinePrefixPlaceholder">Wine 前缀路径</system:String>
@@ -303,6 +305,7 @@
   <system:String x:Key="InstallServiceInstallSuccessfulTitle">安装</system:String>
   <system:String x:Key="InstallServiceInstallSuccessfulDescription">服务器端安装成功</system:String>
   <system:String x:Key="InstallServiceInstallSITSuccessfulDescription">SIT 安装成功</system:String>
+  <system:String x:Key="InstallerServiceNoDowngradePatcher">这些版本的《逃离塔科夫》没有可用的降级补丁程序。</system:String>
 
   <!-- File Service -->
   <system:String x:Key="FileServiceProgressDownloading">正在下载 '%1'</system:String>

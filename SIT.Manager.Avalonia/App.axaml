@@ -24,8 +24,7 @@
 	</Application.Resources>
 	
     <Application.Styles>
-		<sty:FluentAvaloniaTheme CustomAccentColor="#7f7f7f" />
-
+		<sty:FluentAvaloniaTheme/>
 		<Style Selector="SelectableTextBlock">
 			<Setter Property="SelectionBrush" Value="{StaticResource TextControlSelection}"/>
 		</Style>

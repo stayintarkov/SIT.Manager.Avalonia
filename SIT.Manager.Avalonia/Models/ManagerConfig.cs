@@ -40,6 +40,8 @@ namespace SIT.Manager.Avalonia.Models
         [ObservableProperty]
         private Color _consoleFontColor = Colors.LightBlue;
         [ObservableProperty]
+        private Color? _accentColor = Color.FromRgb(0x7f, 0x7f, 0x7f); // 7f7f7f 
+        [ObservableProperty]
         public string _consoleFontFamily = "Consolas";
     }
 }
