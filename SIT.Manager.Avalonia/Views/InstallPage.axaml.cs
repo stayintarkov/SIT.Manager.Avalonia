@@ -1,4 +1,6 @@
 using Avalonia.Controls;
+using Microsoft.Extensions.DependencyInjection;
+using SIT.Manager.Avalonia.ViewModels;
 
 namespace SIT.Manager.Avalonia.Views
 {
@@ -7,6 +9,7 @@ namespace SIT.Manager.Avalonia.Views
         public InstallPage()
         {
             InitializeComponent();
+            this.DataContext = App.Current.Services.GetService<InstallPageViewModel>();
         }
     }
 }

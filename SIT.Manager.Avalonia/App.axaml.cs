@@ -26,14 +26,16 @@ public sealed partial class App : Application
     /// </summary>
     public IServiceProvider Services { get; }
 
-    public App() {
+    public App()
+    {
         Services = ConfigureServices();
     }
 
     /// <summary>
     /// Configures the services for the application.
     /// </summary>
-    private static IServiceProvider ConfigureServices() {
+    private static IServiceProvider ConfigureServices()
+    {
         var services = new ServiceCollection();
 
         var configuration = new ConfigurationBuilder()
@@ -71,11 +73,12 @@ public sealed partial class App : Application
                 { "X-GitHub-Api-Version", "2022-11-28" },
                 { "User-Agent", "request" }
             }
-        }); 
+        });
         services.AddSingleton<IZlibService, ZlibService>();
         services.AddSingleton<ILocalizationService, LocalizationService>();
 
         // Viewmodels
+        services.AddTransient<InstallPageViewModel>();
         services.AddTransient<LocationEditorViewModel>();
         services.AddTransient<MainViewModel>();
         services.AddTransient<ModsPageViewModel>();
@@ -87,11 +90,13 @@ public sealed partial class App : Application
         return services.BuildServiceProvider();
     }
 
-    public override void Initialize() {
+    public override void Initialize()
+    {
         AvaloniaXamlLoader.Load(this);
     }
 
-    public override void OnFrameworkInitializationCompleted() {
+    public override void OnFrameworkInitializationCompleted()
+    {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
             desktop.MainWindow = new MainWindow {
                 DataContext = Current.Services.GetService<MainViewModel>()

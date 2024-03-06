@@ -2,9 +2,38 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"					 
+			 xmlns:labs="using:Avalonia.Labs.Controls"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:iv="clr-namespace:SIT.Manager.Avalonia.Views.Installation"
 			 xmlns:vm="clr-namespace:SIT.Manager.Avalonia.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SIT.Manager.Avalonia.Views.InstallPage"
-			 x:DataType="vm:InstallPageViewModel">
-  Welcome to Avalonia!
+			 x:DataType="vm:InstallPageViewModel"
+			 Background="Black">
+	<UserControl.Styles>
+		<Style Selector="Button.installButton">
+			<Setter Property="Height" Value="50"/>
+			<Setter Property="HorizontalAlignment" Value="Center"/>
+			<Setter Property="Margin" Value="7"/>
+		</Style>
+	</UserControl.Styles>
+					
+	<Grid ColumnDefinitions="Auto, *">		
+        <labs:StepBar Grid.Column="0" 
+					  IsMouseSelectable="False" 
+					  Grid.Row="0"
+					  Margin="8,0,8,0"
+					  Dock="Left">
+			<labs:StepBarItem>Select</labs:StepBarItem>
+			<labs:StepBarItem>Configure</labs:StepBarItem>
+			<labs:StepBarItem>Dowload</labs:StepBarItem>
+			<labs:StepBarItem>Patch</labs:StepBarItem>
+			<labs:StepBarItem>Install</labs:StepBarItem>
+			<labs:StepBarItem>Complete</labs:StepBarItem>
+		</labs:StepBar>	
+
+		<Panel Grid.Column="1" Margin="4">
+			<iv:SelectView/>
+		</Panel>		
+	</Grid>
 </UserControl>

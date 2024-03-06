@@ -1,6 +1,5 @@
-﻿namespace SIT.Manager.Avalonia.ViewModels
+﻿namespace SIT.Manager.Avalonia.ViewModels;
+
+public partial class InstallPageViewModel : ViewModelBase
 {
-    public partial class InstallPageViewModel : ViewModelBase
-    {
-    }
 }

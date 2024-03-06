@@ -1,5 +1,6 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:labs="using:Avalonia.Labs.Controls"
 			 xmlns:sty="using:FluentAvalonia.Styling"
              x:Class="SIT.Manager.Avalonia.App"
              RequestedThemeVariant="Dark">
@@ -24,7 +25,9 @@
 	</Application.Resources>
 	
     <Application.Styles>
-		<sty:FluentAvaloniaTheme/>
+		<sty:FluentAvaloniaTheme CustomAccentColor="#7f7f7f" />
+		<labs:ControlThemes/>
+
 		<Style Selector="SelectableTextBlock">
 			<Setter Property="SelectionBrush" Value="{StaticResource TextControlSelection}"/>
 		</Style>
