@@ -5,7 +5,7 @@
 		<Nullable>enable</Nullable>
 		<OutputType>WinExe</OutputType>
 		<PublishSingleFile>true</PublishSingleFile>
-		<PublishTrimmed>True</PublishTrimmed>
+		<PublishTrimmed>False</PublishTrimmed>
 		<SelfContained>true</SelfContained>
 		<!--If you are willing to use Windows/MacOS native APIs you will need to create 3 projects.
 		One for Windows with net7.0-windows TFM, one for MacOS with net7.0-macos and one with net7.0 TFM for Linux.-->
