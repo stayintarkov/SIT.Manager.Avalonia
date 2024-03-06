@@ -4,7 +4,6 @@ using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.Styling;
-using FluentAvalonia.UI.Controls;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
@@ -38,10 +37,10 @@ public partial class SettingsPageViewModel : ViewModelBase
 
     [ObservableProperty]
     private List<CultureInfo> _availableLocalization = [];
-    
+
     [ObservableProperty]
     private CultureInfo _currentLocalization;
-    
+
     [ObservableProperty]
     private string _managerVersionString;
 
@@ -57,7 +56,7 @@ public partial class SettingsPageViewModel : ViewModelBase
                                  ILocalizationService localizationService,
                                  IBarNotificationService barNotificationService,
                                  IPickerDialogService pickerDialogService,
-                                 IVersionService versionService) 
+                                 IVersionService versionService)
     {
         _configsService = configService;
         _pickerDialogService = pickerDialogService;
@@ -95,45 +94,56 @@ public partial class SettingsPageViewModel : ViewModelBase
     /// </summary>
     /// <param name="filename">The filename to look for in the user specified directory</param>
     /// <returns>The path if the file exists, otherwise an empty string</returns>
-    private async Task<string> GetPathLocation(string filename) {
+    private async Task<string> GetPathLocation(string filename)
+    {
         IStorageFolder? directorySelected = await _pickerDialogService.GetDirectoryFromPickerAsync();
-        if (directorySelected != null) {
-            if (File.Exists(Path.Combine(directorySelected.Path.LocalPath, filename))) {
+        if (directorySelected != null)
+        {
+            if (File.Exists(Path.Combine(directorySelected.Path.LocalPath, filename)))
+            {
                 return directorySelected.Path.LocalPath;
             }
         }
         return string.Empty;
     }
 
-    private async Task ChangeInstallLocation() {
+    private async Task ChangeInstallLocation()
+    {
         string targetPath = await GetPathLocation("EscapeFromTarkov.exe");
-        if (!string.IsNullOrEmpty(targetPath)) {
+        if (!string.IsNullOrEmpty(targetPath))
+        {
             Config.InstallPath = targetPath;
             Config.TarkovVersion = _versionService.GetEFTVersion(targetPath);
             Config.SitVersion = _versionService.GetSITVersion(targetPath);
             _barNotificationService.ShowInformational(_localizationService.TranslateSource("SettingsPageViewModelConfigTitle"), _localizationService.TranslateSource("SettingsPageViewModelConfigInformationEFTDescription", targetPath));
         }
-        else {
+        else
+        {
             _barNotificationService.ShowError(_localizationService.TranslateSource("SettingsPageViewModelErrorTitle"), _localizationService.TranslateSource("SettingsPageViewModelConfigErrorEFTDescription"));
         }
     }
 
-    private async Task ChangeAkiServerLocation() {
+    private async Task ChangeAkiServerLocation()
+    {
         string targetPath = await GetPathLocation("Aki.Server.exe");
-        if (!string.IsNullOrEmpty(targetPath)) {
+        if (!string.IsNullOrEmpty(targetPath))
+        {
             Config.AkiServerPath = targetPath;
             _barNotificationService.ShowInformational(_localizationService.TranslateSource("SettingsPageViewModelConfigTitle"), _localizationService.TranslateSource("SettingsPageViewModelConfigInformationSPTAKIDescription", targetPath));
         }
-        else {
+        else
+        {
             _barNotificationService.ShowError(_localizationService.TranslateSource("SettingsPageViewModelErrorTitle"), _localizationService.TranslateSource("SettingsPageViewModelConfigErrorSPTAKI"));
         }
     }
 
-    partial void OnSelectedConsoleFontFamilyChanged(FontFamily value) {
+    partial void OnSelectedConsoleFontFamilyChanged(FontFamily value)
+    {
         Config.ConsoleFontFamily = value.Name;
     }
 
-    protected override void OnPropertyChanged(PropertyChangedEventArgs e) {
+    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+    {
         base.OnPropertyChanged(e);
         _configsService.UpdateConfig(Config);
     }
