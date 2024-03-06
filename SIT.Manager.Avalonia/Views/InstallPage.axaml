@@ -11,10 +11,9 @@
 			 x:DataType="vm:InstallPageViewModel"
 			 Background="Black">
 	<UserControl.Styles>
-		<Style Selector="Button.installButton">
-			<Setter Property="Height" Value="50"/>
-			<Setter Property="HorizontalAlignment" Value="Center"/>
-			<Setter Property="Margin" Value="7"/>
+		<Style Selector="labs|StepBarItem:selected">
+			<Setter Property="Foreground" Value="{StaticResource TextControlForeground}"/>
+			<Setter Property="Background" Value="{StaticResource AppAccentColor}"/>
 		</Style>
 	</UserControl.Styles>
 					

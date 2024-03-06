@@ -12,12 +12,12 @@
 				<ResourceDictionary>
 					<FontFamily x:Key="BenderFont">/Assets/Fonts/Bender.otf#Bender</FontFamily>
 
-					<Color x:Key="AppWhiteColor">#FFFFFFFF</Color>
+					<Color x:Key="AppAccentColor">#FF7F7F7F</Color>
 					<Color x:Key="AppBlueColor">#3399FFFF</Color>
+					<Color x:Key="AppWhiteColor">#FFFFFFFF</Color>
 
 					<StaticResource x:Key="TextControlForeground" ResourceKey="AppWhiteColor"/>
 					<StaticResource x:Key="TextControlSelection" ResourceKey="AppBlueColor"/>
-
 				</ResourceDictionary>
 				<ResourceInclude Source="avares://SIT.Manager.Avalonia/Localization/en-US.axaml"/>
 			</ResourceDictionary.MergedDictionaries>
@@ -25,7 +25,7 @@
 	</Application.Resources>
 	
     <Application.Styles>
-		<sty:FluentAvaloniaTheme CustomAccentColor="#7f7f7f" />
+		<sty:FluentAvaloniaTheme CustomAccentColor="{StaticResource AppAccentColor}" />
 		<labs:ControlThemes/>
 
 		<Style Selector="SelectableTextBlock">
