@@ -45,6 +45,8 @@ namespace SIT.Manager.Avalonia.ViewModels
 
         [ObservableProperty]
         private string _quickPlayText = "Start Server and Connect";
+        [ObservableProperty]
+        private ManagerConfig _managerConfig;
 
         private readonly HttpClient _httpClient;
         private readonly HttpClientHandler _httpClientHandler;
@@ -52,7 +54,6 @@ namespace SIT.Manager.Avalonia.ViewModels
         private readonly IAkiServerService _akiServerService;
         private readonly ILocalizationService _localizationService;
         private readonly ILogger<PlayPageViewModel> _logger;
-        private TextBox? addressBox;
 
         public IAsyncRelayCommand ConnectToServerCommand { get; }
         public IAsyncRelayCommand QuickPlayCommand { get; }
@@ -68,6 +69,7 @@ namespace SIT.Manager.Avalonia.ViewModels
             IServiceProvider serviceProvider)
         {
             _configService = configService;
+            _managerConfig = _configService.Config;
             //TODO: Check that this is the best way to implement DI for the TarkovRequesting. Prettysure service provider would be better
             _httpClient = httpClient;
             _httpClientHandler = httpClientHandler;
@@ -81,7 +83,6 @@ namespace SIT.Manager.Avalonia.ViewModels
             _configService.ConfigChanged += (o, e) =>
             {
                 QuickPlayText = _localizationService.TranslateSource("PlayPageViewModelQuickPlayText");
-                if (addressBox != null) addressBox.RevealPassword = !_configService.Config.HideIpAddress;
             };
 
             _lastServer = _configService.Config.LastServer;
@@ -368,7 +369,5 @@ namespace SIT.Manager.Avalonia.ViewModels
                 }
             }
         }
-
-        public void RegisterAddressBox(TextBox addressBox) => this.addressBox = addressBox;
     }
 }
