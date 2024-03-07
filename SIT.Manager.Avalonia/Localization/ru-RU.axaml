@@ -120,6 +120,8 @@
 	<system:String x:Key="SettingsCloseLauncherAfterGameLaunchToolTip">Автоматически закрывает лаунчер после открытия игры.</system:String>
 	<system:String x:Key="SettingsLookForUpdatesTitle">Проверять Обновления</system:String>
 	<system:String x:Key="SettingsLookForUpdatesTitleToolTip">Автоматически проверяет обновления при открытии лаунчера.</system:String>
+	<system:String x:Key="SettingsHideIpAddressTitle">Скрыть IP-адрес</system:String>
+	<system:String x:Key="SettingsHideIpAddressToolTip">Скрывает IP-адрес звездочками в поле IP-адреcа.</system:String>
 	<system:String x:Key="SettingsLanguageTitle">Язык:</system:String>
 	<system:String x:Key="SettingsLanguageTitleToolTip">Переводит весь лаунчер на ваш язык, выберите свой язык!</system:String>
 	<system:String x:Key="SettingsAccentColorTitle">Цвет акцента:</system:String>
