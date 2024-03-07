@@ -29,6 +29,7 @@ namespace SIT.Manager.Avalonia.ViewModels
         private const string EFT_EXE_FILENAME = "EscapeFromTarkov.exe";
         private readonly IManagerConfigService _configService;
         private readonly IServiceProvider _serviceProvider;
+        private static readonly Version standardUriFormatSupportedVersion = new Version("1.10.8827.30098");
 
         [ObservableProperty]
         private string _lastServer;
@@ -308,11 +309,11 @@ namespace SIT.Manager.Avalonia.ViewModels
             if (string.IsNullOrEmpty(token))
                 return;
 
-            // TODO: Temporary fix for SIT 1.9 expecting no ending slash in backendUrl URI. To be removed when SIT 1.9 is no longer used as this was addressed in SIT 1.10+.
-            string backendUrlFixed = serverAddress.AbsoluteUri.Substring(0, serverAddress.AbsoluteUri.Length - 1);
+            Version SITVersion = new(_configService.Config.SitVersion);
+            string backendUrl = serverAddress.AbsoluteUri[..^(SITVersion >= standardUriFormatSupportedVersion ? 0 : 1)];
 
             // Launch game
-            string launchArguments = CreateLaunchArugments(new TarkovLaunchConfig { BackendUrl = backendUrlFixed }, token);
+            string launchArguments = CreateLaunchArugments(new TarkovLaunchConfig { BackendUrl = backendUrl }, token);
             try
             {
                 _tarkovClientService.Start(launchArguments);
