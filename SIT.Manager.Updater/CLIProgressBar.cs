@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Metrics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using System.Timers;
 
 namespace SIT.Manager.Updater
@@ -32,7 +27,7 @@ namespace SIT.Manager.Updater
             };
             _timer.Elapsed += DrawProgress;
             //Microsoft in their infinite wisdom made this return an int despite the fact it can only be as large as BufferWidth which is a short. AAAAAAAAAAAAAAAA
-            _cursorPos = (short)Console.CursorLeft;
+            _cursorPos = (short) Console.CursorLeft;
             Console.CursorVisible = false;
 
             ArgumentOutOfRangeException.ThrowIfLessThan(barLength, 5);
@@ -41,11 +36,11 @@ namespace SIT.Manager.Updater
 
         private void DrawProgress(object? state, ElapsedEventArgs? e)
         {
-            lock(consoleLocker)
+            lock (consoleLocker)
             {
                 //Bar
                 int progressLength = _barLength - 2;
-                int progressPosition = (int)Math.Round(progressLength * _progress);
+                int progressPosition = (int) Math.Round(progressLength * _progress);
                 StringBuilder progressBarBuilder = new();
                 progressBarBuilder.Append(BarChars[0]);
                 progressBarBuilder.Append(new string(BarChars[1], progressPosition));
@@ -59,7 +54,7 @@ namespace SIT.Manager.Updater
                 //Progress spinner
                 if (DateTime.Now - _lastSpinnerChange > TimeSpan.FromMilliseconds(100))
                 {
-                    _counter = ++_counter == SpinnerChars.Length ? (byte)0 : _counter;
+                    _counter = ++_counter == SpinnerChars.Length ? (byte) 0 : _counter;
                     _lastSpinnerChange = DateTime.Now;
                 }
                 char spinnerChar = SpinnerChars[_counter];

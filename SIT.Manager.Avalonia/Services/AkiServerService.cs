@@ -36,18 +36,23 @@ namespace SIT.Manager.Avalonia.Services
 
         private void AkiServer_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
-            if (OutputDataReceived != null) {
-                if (cachedServerOutput.Any()) {
+            if (OutputDataReceived != null)
+            {
+                if (cachedServerOutput.Any())
+                {
                     cachedServerOutput.Clear();
                 }
                 OutputDataReceived?.Invoke(sender, e);
             }
-            else {
-                if (cachedServerOutput.Count > ServerLineLimit) {
+            else
+            {
+                if (cachedServerOutput.Count > ServerLineLimit)
+                {
                     cachedServerOutput.RemoveAt(0);
                 }
 
-                if (!string.IsNullOrEmpty(e.Data)) {
+                if (!string.IsNullOrEmpty(e.Data))
+                {
                     cachedServerOutput.Add(e.Data);
                 }
             }
@@ -56,10 +61,12 @@ namespace SIT.Manager.Avalonia.Services
         public override void ClearCache()
         {
             string serverPath = _configService.Config.AkiServerPath;
-            if (!string.IsNullOrEmpty(serverPath)) {
+            if (!string.IsNullOrEmpty(serverPath))
+            {
                 // Combine the serverPath with the additional subpath.
                 string serverCachePath = Path.Combine(serverPath, "user", "cache");
-                if (Directory.Exists(serverCachePath)) {
+                if (Directory.Exists(serverCachePath))
+                {
                     Directory.Delete(serverCachePath, true);
                 }
                 Directory.CreateDirectory(serverCachePath);
@@ -75,13 +82,17 @@ namespace SIT.Manager.Avalonia.Services
         {
             Process[] akiServerProcesses = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(SERVER_EXE));
 
-            if (akiServerProcesses.Length > 0) {
-                if (_process == null || _process.HasExited) {
+            if (akiServerProcesses.Length > 0)
+            {
+                if (_process == null || _process.HasExited)
+                {
                     return true;
                 }
 
-                foreach (Process akiServerProcess in akiServerProcesses) {
-                    if (_process.Id != akiServerProcess.Id) {
+                foreach (Process akiServerProcess in akiServerProcesses)
+                {
+                    if (_process.Id != akiServerProcess.Id)
+                    {
                         return true;
                     }
                 }
@@ -92,13 +103,16 @@ namespace SIT.Manager.Avalonia.Services
 
         public override void Start(string? arguments = null)
         {
-            if (State == RunningState.Running) {
+            if (State == RunningState.Running)
+            {
                 return;
             }
 
             bool cal = _configService.Config.CloseAfterLaunch;
-            _process = new Process() {
-                StartInfo = new ProcessStartInfo() {
+            _process = new Process()
+            {
+                StartInfo = new ProcessStartInfo()
+                {
                     FileName = ExecutableFilePath,
                     WorkingDirectory = ExecutableDirectory,
                     UseShellExecute = false,
@@ -108,22 +122,26 @@ namespace SIT.Manager.Avalonia.Services
                 },
                 EnableRaisingEvents = true
             };
-            if (OperatingSystem.IsLinux()) {
+            if (OperatingSystem.IsLinux())
+            {
                 _process.StartInfo.FileName = _configService.Config.WineRunner;
                 _process.StartInfo.Arguments = $"\"{ExecutableFilePath}\"";
 
                 string winePrefix = Path.GetFullPath(_configService.Config.WinePrefix);
-                if (!Path.EndsInDirectorySeparator(winePrefix)) {
+                if (!Path.EndsInDirectorySeparator(winePrefix))
+                {
                     winePrefix = $"{winePrefix}{Path.DirectorySeparatorChar}";
                 }
                 _process.StartInfo.EnvironmentVariables.Add("WINEPREFIX", winePrefix);
             }
-            else {
+            else
+            {
                 _process.StartInfo.WorkingDirectory = ExecutableDirectory;
             }
 
             _process.OutputDataReceived += AkiServer_OutputDataReceived;
-            _process.Exited += new EventHandler((sender, e) => {
+            _process.Exited += new EventHandler((sender, e) =>
+            {
                 ExitedEvent(sender, e);
                 IsStarted = false;
             });
@@ -131,11 +149,13 @@ namespace SIT.Manager.Avalonia.Services
             _process.Start();
             UpdateRunningState(RunningState.Starting);
 
-            if (!cal) {
+            if (!cal)
+            {
                 _process.BeginOutputReadLine();
             }
 
-            Task.Run(async () => {
+            Task.Run(async () =>
+            {
                 Uri serverUri = new("http://127.0.0.1");
 
                 string httpConfigPath = Path.Combine(_configService.Config.AkiServerPath, "Aki_Data", "Server", "configs", "http.json");
@@ -150,26 +170,32 @@ namespace SIT.Manager.Avalonia.Services
 
                 TarkovRequesting requesting = ActivatorUtilities.CreateInstance<TarkovRequesting>(_serviceProvider, serverUri);
                 int retryCounter = 0;
-                while (retryCounter < 6) {
-                    using (CancellationTokenSource cts = new()) {
+                while (retryCounter < 6)
+                {
+                    using (CancellationTokenSource cts = new())
+                    {
                         DateTime abortTime = DateTime.Now + TimeSpan.FromSeconds(10);
                         cts.CancelAfter(abortTime - DateTime.Now);
 
                         bool pingReponse;
-                        try {
+                        try
+                        {
                             pingReponse = await requesting.PingServer(cts.Token);
                         }
-                        catch (HttpRequestException) {
+                        catch (HttpRequestException)
+                        {
                             pingReponse = false;
                         }
 
-                        if (pingReponse && _process?.HasExited == false) {
+                        if (pingReponse && _process?.HasExited == false)
+                        {
                             IsStarted = true;
                             ServerStarted?.Invoke(this, new EventArgs());
                             UpdateRunningState(RunningState.Running);
                             return;
                         }
-                        else if (_process?.HasExited == true) {
+                        else if (_process?.HasExited == true)
+                        {
                             UpdateRunningState(RunningState.NotRunning);
                             return;
                         }

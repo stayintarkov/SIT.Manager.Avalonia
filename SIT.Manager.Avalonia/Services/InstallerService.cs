@@ -57,25 +57,31 @@ namespace SIT.Manager.Avalonia.Services
         public void CleanUpEFTDirectory()
         {
             _logger.LogInformation("Cleaning up EFT directory...");
-            try {
+            try
+            {
                 string battlEyeDir = Path.Combine(_configService.Config.InstallPath, "BattlEye");
-                if (Directory.Exists(battlEyeDir)) {
+                if (Directory.Exists(battlEyeDir))
+                {
                     Directory.Delete(battlEyeDir, true);
                 }
                 string battlEyeExe = Path.Combine(_configService.Config.InstallPath, "EscapeFromTarkov_BE.exe");
-                if (File.Exists(battlEyeExe)) {
+                if (File.Exists(battlEyeExe))
+                {
                     File.Delete(battlEyeExe);
                 }
                 string cacheDir = Path.Combine(_configService.Config.InstallPath, "cache");
-                if (Directory.Exists(cacheDir)) {
+                if (Directory.Exists(cacheDir))
+                {
                     Directory.Delete(cacheDir, true);
                 }
                 string logsDirPath = Path.Combine(_configService.Config.InstallPath, "Logs");
-                if (Directory.Exists(logsDirPath)) {
+                if (Directory.Exists(logsDirPath))
+                {
                     Directory.Delete(logsDirPath);
                 }
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 _logger.LogError(ex, "Cleanup");
             }
             _logger.LogInformation("Cleanup done.");
@@ -89,13 +95,15 @@ namespace SIT.Manager.Avalonia.Services
         /// <returns></returns>
         private void CloneDirectory(string root, string dest)
         {
-            foreach (var directory in Directory.GetDirectories(root)) {
+            foreach (var directory in Directory.GetDirectories(root))
+            {
                 var newDirectory = Path.Combine(dest, Path.GetFileName(directory));
                 Directory.CreateDirectory(newDirectory);
                 CloneDirectory(directory, newDirectory);
             }
 
-            foreach (var file in Directory.GetFiles(root)) {
+            foreach (var file in Directory.GetFiles(root))
+            {
                 File.Copy(file, Path.Combine(dest, Path.GetFileName(file)), true);
             }
         }
@@ -111,30 +119,36 @@ namespace SIT.Manager.Avalonia.Services
             _actionNotificationService.UpdateActionNotification(new ActionNotification("Running Patcher...", 100));
 
             string[] files = Directory.GetFiles(_configService.Config.InstallPath, "Patcher.exe", new EnumerationOptions() { MatchCasing = MatchCasing.CaseInsensitive, MaxRecursionDepth = 0 });
-            if (!files.Any()) {
+            if (!files.Any())
+            {
                 return $"Patcher.exe not found in {_configService.Config.InstallPath}";
             }
             string patcherPath = files[0];
 
-            Process patcherProcess = new() {
-                StartInfo = new() {
+            Process patcherProcess = new()
+            {
+                StartInfo = new()
+                {
                     FileName = patcherPath,
                     Arguments = "autoclose"
                 },
                 EnableRaisingEvents = true
             };
-            if (OperatingSystem.IsLinux()) {
+            if (OperatingSystem.IsLinux())
+            {
                 patcherProcess.StartInfo.FileName = _configService.Config.WineRunner;
                 patcherProcess.StartInfo.Arguments = $"\"{patcherPath}\" autoclose";
                 patcherProcess.StartInfo.UseShellExecute = false;
 
                 string winePrefix = Path.GetFullPath(_configService.Config.WinePrefix);
-                if (!Path.EndsInDirectorySeparator(winePrefix)) {
+                if (!Path.EndsInDirectorySeparator(winePrefix))
+                {
                     winePrefix = $"{winePrefix}{Path.DirectorySeparatorChar}";
                 }
                 patcherProcess.StartInfo.EnvironmentVariables.Add("WINEPREFIX", winePrefix);
             }
-            else {
+            else
+            {
                 patcherProcess.StartInfo.WorkingDirectory = _configService.Config.InstallPath;
             }
 
@@ -142,16 +156,20 @@ namespace SIT.Manager.Avalonia.Services
             await patcherProcess.WaitForExitAsync();
 
             // Success exit code
-            if (patcherProcess.ExitCode == 10) {
-                if (File.Exists(patcherPath)) {
+            if (patcherProcess.ExitCode == 10)
+            {
+                if (File.Exists(patcherPath))
+                {
                     File.Delete(patcherPath);
                 }
 
-                if (File.Exists(Path.Combine(_configService.Config.InstallPath, "Patcher.log"))) {
+                if (File.Exists(Path.Combine(_configService.Config.InstallPath, "Patcher.log")))
+                {
                     File.Delete(Path.Combine(_configService.Config.InstallPath, "Patcher.log"));
                 }
 
-                if (Directory.Exists(Path.Combine(_configService.Config.InstallPath, "Aki_Patches"))) {
+                if (Directory.Exists(Path.Combine(_configService.Config.InstallPath, "Aki_Patches")))
+                {
                     Directory.Delete(Path.Combine(_configService.Config.InstallPath, "Aki_Patches"), true);
                 }
             }
@@ -166,34 +184,42 @@ namespace SIT.Manager.Avalonia.Services
         public async Task<List<GithubRelease>> GetServerReleases()
         {
             List<GithubRelease> githubReleases;
-            try {
+            try
+            {
                 string releasesJsonString = await _httpClient.GetStringAsync(@"https://api.github.com/repos/stayintarkov/SIT.Aki-Server-Mod/releases");
                 githubReleases = JsonSerializer.Deserialize<List<GithubRelease>>(releasesJsonString) ?? [];
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 githubReleases = [];
                 _logger.LogError(ex, "Failed to get server releases");
             }
 
             List<GithubRelease> result = [];
-            if (githubReleases.Any()) {
-                foreach (GithubRelease release in githubReleases) {
+            if (githubReleases.Any())
+            {
+                foreach (GithubRelease release in githubReleases)
+                {
                     var zipAsset = release.assets.Find(asset => asset.name.EndsWith(".zip"));
-                    if (zipAsset != null) {
+                    if (zipAsset != null)
+                    {
                         Match match = ServerReleaseVersionRegex().Match(release.body);
-                        if (match.Success) {
+                        if (match.Success)
+                        {
                             string releasePatch = match.Value.Replace("This server version works with version ", "");
                             release.tag_name = $"{release.name} - Tarkov Version: {releasePatch}";
                             release.body = releasePatch;
                             result.Add(release);
                         }
-                        else {
+                        else
+                        {
                             _logger.LogWarning($"FetchReleases: There was a server release without a version defined: {release.html_url}");
                         }
                     }
                 }
             }
-            else {
+            else
+            {
                 _logger.LogWarning("Getting Server Releases: githubReleases was 0 for official branch");
             }
             return result;
@@ -209,36 +235,42 @@ namespace SIT.Manager.Avalonia.Services
         {
             _logger.LogInformation("Downloading Patcher");
 
-            if (string.IsNullOrEmpty(_configService.Config.TarkovVersion)) {
+            if (string.IsNullOrEmpty(_configService.Config.TarkovVersion))
+            {
                 _logger.LogError("DownloadPatcher: TarkovVersion is 'null'");
                 return false;
             }
 
             string patcherPath = Path.Combine(_configService.Config.InstallPath, @"Patcher.zip");
-            if (File.Exists(patcherPath)) {
+            if (File.Exists(patcherPath))
+            {
                 File.Delete(patcherPath);
             }
 
             bool downloadSuccess = await _fileService.DownloadFile("Patcher.zip", _configService.Config.InstallPath, url, true);
-            if (!downloadSuccess) {
+            if (!downloadSuccess)
+            {
                 _logger.LogError("Failed to download the patcher from the selected mirror.");
                 return false;
             }
 
 
-            if (File.Exists(patcherPath)) {
+            if (File.Exists(patcherPath))
+            {
                 await _fileService.ExtractArchive(patcherPath, _configService.Config.InstallPath);
                 File.Delete(patcherPath);
             }
 
             var patcherDir = Directory.GetDirectories(_configService.Config.InstallPath, "Patcher*").FirstOrDefault();
-            if (!string.IsNullOrEmpty(patcherDir)) {
+            if (!string.IsNullOrEmpty(patcherDir))
+            {
                 CloneDirectory(patcherDir, _configService.Config.InstallPath);
                 Directory.Delete(patcherDir, true);
             }
 
             string patcherResult = await RunPatcher();
-            if (patcherResult != "Patcher was successful.") {
+            if (patcherResult != "Patcher was successful.")
+            {
                 _logger.LogError($"Patcher failed: {patcherResult}");
                 return false;
             }
@@ -252,14 +284,16 @@ namespace SIT.Manager.Avalonia.Services
         public async Task<Dictionary<string, string>?> GetAvaiableMirrorsForVerison(string sitVersionTarget)
         {
             Dictionary<string, string> providerLinks = new Dictionary<string, string>();
-            if (_configService.Config.TarkovVersion == null) {
+            if (_configService.Config.TarkovVersion == null)
+            {
                 _logger.LogError("DownloadPatcher: TarkovVersion is 'null'");
                 return null;
             }
 
             string releasesString = await _httpClient.GetStringAsync(@"https://sitcoop.publicvm.com/api/v1/repos/SIT/Downgrade-Patches/releases");
             List<GiteaRelease> giteaReleases = JsonSerializer.Deserialize<List<GiteaRelease>>(releasesString);
-            if (giteaReleases == null) {
+            if (giteaReleases == null)
+            {
                 _logger.LogError("DownloadPatcher: giteaReleases is 'null'");
                 return null;
             }
@@ -268,22 +302,26 @@ namespace SIT.Manager.Avalonia.Services
             string sitVersionTargetBuild = sitVersionTarget.Split(".").Last();
 
             GiteaRelease? compatibleDowngradePatcher = null;
-            foreach (var release in giteaReleases) {
+            foreach (var release in giteaReleases)
+            {
                 string[] splitRelease = release.name.Split("to");
-                if (splitRelease.Length != 2) {
+                if (splitRelease.Length != 2)
+                {
                     continue;
                 }
 
                 string patcherFrom = splitRelease[0].Trim();
                 string patcherTo = splitRelease[1].Trim();
 
-                if (patcherFrom == tarkovBuild && patcherTo == sitVersionTargetBuild) {
+                if (patcherFrom == tarkovBuild && patcherTo == sitVersionTargetBuild)
+                {
                     compatibleDowngradePatcher = release;
                     break;
                 }
             }
 
-            if (compatibleDowngradePatcher == null) {
+            if (compatibleDowngradePatcher == null)
+            {
                 _logger.LogError("No applicable patcher found for the specified SIT version.");
                 await new ContentDialog()
                 {
@@ -299,18 +337,21 @@ namespace SIT.Manager.Avalonia.Services
             string mirrorsString = await _httpClient.GetStringAsync(mirrorsUrl);
             List<Mirrors> mirrors = JsonSerializer.Deserialize<List<Mirrors>>(mirrorsString) ?? [];
 
-            if (mirrors == null || mirrors.Count == 0) {
+            if (mirrors == null || mirrors.Count == 0)
+            {
                 _logger.LogError("No download mirrors found for patcher.");
                 return null;
             }
 
-            foreach (var mirror in mirrors) {
+            foreach (var mirror in mirrors)
+            {
                 Uri uri = new(mirror.Link);
                 string host = uri.Host.Replace("www.", "").Split('.')[0];
                 providerLinks.TryAdd(host, mirror.Link);
             }
 
-            if (providerLinks.Keys.Count > 0) {
+            if (providerLinks.Keys.Count > 0)
+            {
                 return providerLinks;
             }
             return null;
@@ -319,32 +360,39 @@ namespace SIT.Manager.Avalonia.Services
         public async Task<List<GithubRelease>> GetSITReleases()
         {
             List<GithubRelease> githubReleases;
-            try {
+            try
+            {
                 string releasesJsonString = await _httpClient.GetStringAsync(@"https://api.github.com/repos/stayintarkov/StayInTarkov.Client/releases");
                 githubReleases = JsonSerializer.Deserialize<List<GithubRelease>>(releasesJsonString) ?? [];
 
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 githubReleases = [];
                 _logger.LogError(ex, "Failed to get SIT releases");
             }
 
             List<GithubRelease> result = [];
-            if (githubReleases.Any()) {
-                foreach (GithubRelease release in githubReleases) {
+            if (githubReleases.Any())
+            {
+                foreach (GithubRelease release in githubReleases)
+                {
                     Match match = SITReleaseVersionRegex().Match(release.body);
-                    if (match.Success) {
+                    if (match.Success)
+                    {
                         string releasePatch = match.Value.Replace("This version works with version ", "");
                         release.tag_name = $"{release.name} - Tarkov Version: {releasePatch}";
                         release.body = releasePatch;
                         result.Add(release);
                     }
-                    else {
+                    else
+                    {
                         _logger.LogWarning($"FetchReleases: There was a SIT release without a version defined: {release.html_url}");
                     }
                 }
             }
-            else {
+            else
+            {
                 _logger.LogWarning("Getting SIT releases: githubReleases was 0 for official branch");
             }
 
@@ -353,20 +401,24 @@ namespace SIT.Manager.Avalonia.Services
 
         public async Task InstallServer(GithubRelease selectedVersion)
         {
-            if (string.IsNullOrEmpty(_configService.Config.InstallPath)) {
+            if (string.IsNullOrEmpty(_configService.Config.InstallPath))
+            {
                 _barNotificationService.ShowError(_localizationService.TranslateSource("InstallServiceErrorTitle"), _localizationService.TranslateSource("InstallServiceErrorInstallServerDescription"));
                 return;
             }
 
-            if (selectedVersion == null) {
+            if (selectedVersion == null)
+            {
                 _logger.LogWarning("Install Server: selectVersion is 'null'");
                 return;
             }
 
-            try {
+            try
+            {
                 // Dynamically find the asset that starts with "SITCoop" and ends with ".zip"
                 var releaseAsset = selectedVersion.assets.FirstOrDefault(a => a.name.StartsWith("SITCoop") && a.name.EndsWith(".zip"));
-                if (releaseAsset == null) {
+                if (releaseAsset == null)
+                {
                     _logger.LogError("No matching release asset found.");
                     return;
                 }
@@ -374,7 +426,8 @@ namespace SIT.Manager.Avalonia.Services
 
                 // Create the "Server" folder if SPT-Path is not configured.
                 string sitServerDirectory = _configService.Config.AkiServerPath;
-                if (string.IsNullOrEmpty(sitServerDirectory)) {
+                if (string.IsNullOrEmpty(sitServerDirectory))
+                {
                     // Navigate one level up from InstallPath
                     string baseDirectory = Directory.GetParent(_configService.Config.InstallPath)?.FullName ?? string.Empty;
 
@@ -383,7 +436,8 @@ namespace SIT.Manager.Avalonia.Services
                 }
 
                 // Create SPT-AKI directory (default: Server)
-                if (!Directory.Exists(sitServerDirectory)) {
+                if (!Directory.Exists(sitServerDirectory))
+                {
                     Directory.CreateDirectory(sitServerDirectory);
                 }
 
@@ -402,7 +456,8 @@ namespace SIT.Manager.Avalonia.Services
                 config.SitVersion = _versionService.GetSITVersion(config.InstallPath);
 
                 // Attempt to automatically set the AKI Server Path after successful installation and save it to config
-                if (!string.IsNullOrEmpty(sitServerDirectory) && string.IsNullOrEmpty(_configService.Config.AkiServerPath)) {
+                if (!string.IsNullOrEmpty(sitServerDirectory) && string.IsNullOrEmpty(_configService.Config.AkiServerPath))
+                {
                     config.AkiServerPath = sitServerDirectory;
                     _barNotificationService.ShowSuccess(_localizationService.TranslateSource("InstallServiceConfigTitle"), _localizationService.TranslateSource("InstallServiceConfigDescription", sitServerDirectory));
                 }
@@ -410,7 +465,8 @@ namespace SIT.Manager.Avalonia.Services
 
                 _barNotificationService.ShowSuccess(_localizationService.TranslateSource("InstallServiceInstallSuccessfulTitle"), _localizationService.TranslateSource("InstallServiceInstallSuccessfulDescription"));
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 // TODO ShowInfoBarWithLogButton("Install Error", "Encountered an error during installation.", InfoBarSeverity.Error, 10);
                 _logger.LogError(ex, "Install Server");
             }
@@ -418,12 +474,14 @@ namespace SIT.Manager.Avalonia.Services
 
         public async Task InstallSIT(GithubRelease selectedVersion)
         {
-            if (string.IsNullOrEmpty(_configService.Config.InstallPath)) {
+            if (string.IsNullOrEmpty(_configService.Config.InstallPath))
+            {
                 _barNotificationService.ShowError(_localizationService.TranslateSource("InstallServiceErrorTitle"), _localizationService.TranslateSource("InstallServiceErrorInstallSITDescription"));
                 return;
             }
 
-            if (selectedVersion == null) {
+            if (selectedVersion == null)
+            {
                 _logger.LogWarning("InstallSIT: selectVersion is 'null'");
                 return;
             }
@@ -435,12 +493,15 @@ namespace SIT.Manager.Avalonia.Services
             string pluginsPath = Path.Combine(_configService.Config.InstallPath, "BepInEx", "plugins");
             string eftDataManagedPath = Path.Combine(_configService.Config.InstallPath, "EscapeFromTarkov_Data", "Managed");
 
-            try {
-                if (File.Exists(Path.Combine(_configService.Config.InstallPath, "EscapeFromTarkov_BE.exe"))) {
+            try
+            {
+                if (File.Exists(Path.Combine(_configService.Config.InstallPath, "EscapeFromTarkov_BE.exe")))
+                {
                     CleanUpEFTDirectory();
                 }
 
-                if (File.Exists(sitReleaseZipPath)) {
+                if (File.Exists(sitReleaseZipPath))
+                {
                     File.Delete(sitReleaseZipPath);
                 }
 
@@ -450,7 +511,8 @@ namespace SIT.Manager.Avalonia.Services
                 if (!Directory.Exists(backupCoreFilesPath))
                     Directory.CreateDirectory(backupCoreFilesPath);
 
-                if (!Directory.Exists(pluginsPath)) {
+                if (!Directory.Exists(pluginsPath))
+                {
                     await _fileService.DownloadFile("BepInEx5.zip", Path.Combine(_configService.Config.InstallPath, "SITLauncher"), "https://github.com/BepInEx/BepInEx/releases/download/v5.4.22/BepInEx_x64_5.4.22.0.zip", true);
                     await _fileService.ExtractArchive(Path.Combine(_configService.Config.InstallPath, "SITLauncher", "BepInEx5.zip"), _configService.Config.InstallPath);
                     Directory.CreateDirectory(pluginsPath);
@@ -468,17 +530,23 @@ namespace SIT.Manager.Avalonia.Services
 
                 File.Copy(Path.Combine(coreFilesPath, "StayInTarkov-Release", "StayInTarkov.dll"), Path.Combine(pluginsPath, "StayInTarkov.dll"), true);
 
-                using (Stream? resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("SIT.Manager.Avalonia.Resources.Aki.Common.dll")) {
-                    using (FileStream file = new(Path.Combine(eftDataManagedPath, "Aki.Common.dll"), FileMode.Create, FileAccess.Write)) {
-                        if (resource != null) {
+                using (Stream? resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("SIT.Manager.Avalonia.Resources.Aki.Common.dll"))
+                {
+                    using (FileStream file = new(Path.Combine(eftDataManagedPath, "Aki.Common.dll"), FileMode.Create, FileAccess.Write))
+                    {
+                        if (resource != null)
+                        {
                             await resource.CopyToAsync(file);
                         }
                     }
                 }
 
-                using (Stream? resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("SIT.Manager.Avalonia.Resources.Aki.Reflection.dll")) {
-                    using (FileStream file = new FileStream(Path.Combine(eftDataManagedPath, "Aki.Reflection.dll"), FileMode.Create, FileAccess.Write)) {
-                        if (resource != null) {
+                using (Stream? resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("SIT.Manager.Avalonia.Resources.Aki.Reflection.dll"))
+                {
+                    using (FileStream file = new FileStream(Path.Combine(eftDataManagedPath, "Aki.Reflection.dll"), FileMode.Create, FileAccess.Write))
+                    {
+                        if (resource != null)
+                        {
                             await resource.CopyToAsync(file);
                         }
                     }
@@ -490,7 +558,8 @@ namespace SIT.Manager.Avalonia.Services
 
                 _barNotificationService.ShowSuccess(_localizationService.TranslateSource("InstallServiceInstallSuccessfulTitle"), _localizationService.TranslateSource("InstallServiceInstallSITSuccessfulDescription"));
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 // TODO ShowInfoBarWithLogButton("Install Error", "Encountered an error during installation.", InfoBarSeverity.Error, 10);
                 _logger.LogError(ex, "Install SIT");
             }

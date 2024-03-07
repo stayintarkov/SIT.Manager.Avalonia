@@ -10,8 +10,10 @@ namespace SIT.Manager.Avalonia.Services
 
         public event EventHandler<ActionNotification>? ActionNotificationReceived;
 
-        public void StartActionNotification() {
-            if (_isShowingNotification) {
+        public void StartActionNotification()
+        {
+            if (_isShowingNotification)
+            {
                 return;
             }
             _isShowingNotification = true;
@@ -19,8 +21,10 @@ namespace SIT.Manager.Avalonia.Services
             ActionNotificationReceived?.Invoke(this, new ActionNotification(string.Empty, 0, true));
         }
 
-        public void StopActionNotification() {
-            if (!_isShowingNotification) {
+        public void StopActionNotification()
+        {
+            if (!_isShowingNotification)
+            {
                 return;
             }
             _isShowingNotification = false;
@@ -28,8 +32,10 @@ namespace SIT.Manager.Avalonia.Services
             ActionNotificationReceived?.Invoke(this, new ActionNotification(string.Empty, 0, false));
         }
 
-        public void UpdateActionNotification(ActionNotification notification) {
-            if (!_isShowingNotification) {
+        public void UpdateActionNotification(ActionNotification notification)
+        {
+            if (!_isShowingNotification)
+            {
                 return;
             }
             ActionNotificationReceived?.Invoke(this, notification);
