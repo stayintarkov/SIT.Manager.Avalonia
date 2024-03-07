@@ -19,13 +19,15 @@ namespace SIT.Manager.Avalonia.ManagedProcess
         public RunningState State { get; protected set; } = RunningState.NotRunning;
 
         public event EventHandler<RunningState>? RunningStateChanged;
-        protected virtual void ExitedEvent(object? sender, EventArgs e) {
+        protected virtual void ExitedEvent(object? sender, EventArgs e)
+        {
             RunningState newState = (State == RunningState.Running && !_stopRequest) ? RunningState.StoppedUnexpectedly : RunningState.NotRunning;
             _stopRequest = false;
             UpdateRunningState(newState);
         }
 
-        protected void UpdateRunningState(RunningState newState) {
+        protected void UpdateRunningState(RunningState newState)
+        {
             State = newState;
             //It's 3am, this probably sucks, idk anymore
             RunningStateChanged?.Invoke(this, State);
@@ -35,8 +37,10 @@ namespace SIT.Manager.Avalonia.ManagedProcess
 
         public abstract void Start(string? arguments);
 
-        public virtual void Stop() {
-            if (State == RunningState.NotRunning || _process == null || _process.HasExited) {
+        public virtual void Stop()
+        {
+            if (State == RunningState.NotRunning || _process == null || _process.HasExited)
+            {
                 return;
             }
 

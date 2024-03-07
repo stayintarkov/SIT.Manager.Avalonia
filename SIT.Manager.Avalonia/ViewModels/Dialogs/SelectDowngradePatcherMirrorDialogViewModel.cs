@@ -12,9 +12,11 @@ namespace SIT.Manager.Avalonia.ViewModels.Dialogs
 
         public ObservableCollection<KeyValuePair<string, string>> AvailableMirrors { get; }
 
-        public SelectDowngradePatcherMirrorDialogViewModel(Dictionary<string, string> mirrors) {
+        public SelectDowngradePatcherMirrorDialogViewModel(Dictionary<string, string> mirrors)
+        {
             AvailableMirrors = new(mirrors);
-            if (AvailableMirrors.Any()) {
+            if (AvailableMirrors.Any())
+            {
                 SelectedMirror = AvailableMirrors[0];
             }
         }

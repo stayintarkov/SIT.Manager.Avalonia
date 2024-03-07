@@ -35,7 +35,7 @@ public partial class MainView : ReactiveUserControl<MainViewModel>
             {
                 // Register the content frame so that we can update it from the view model
                 dataContext.RegisterContentFrame(ContentFrame);
-                if (_configService != null) _configService.ConfigChanged += (o, e)=>
+                if (_configService != null) _configService.ConfigChanged += (o, e) =>
                 {
                     if (lastSelectedLanguage != e.CurrentLanguageSelected || string.IsNullOrEmpty(lastSelectedLanguage))
                     {
