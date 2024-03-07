@@ -29,7 +29,7 @@ namespace SIT.Manager.Avalonia.ViewModels
         private const string SIT_DLL_FILENAME = "StayInTarkov.dll";
         private const string EFT_EXE_FILENAME = "EscapeFromTarkov.exe";
         private readonly IServiceProvider _serviceProvider;
-        public readonly IManagerConfigService _configService;
+        private readonly IManagerConfigService _configService;
 
         [ObservableProperty]
         private string _lastServer;
@@ -44,6 +44,9 @@ namespace SIT.Manager.Avalonia.ViewModels
         private bool _rememberMe;
 
         [ObservableProperty]
+        private ManagerConfig _managerConfig;
+
+        [ObservableProperty]
         private string _quickPlayText = "Start Server and Connect";
 
         private readonly HttpClient _httpClient;
@@ -52,7 +55,6 @@ namespace SIT.Manager.Avalonia.ViewModels
         private readonly IAkiServerService _akiServerService;
         private readonly ILocalizationService _localizationService;
         private readonly ILogger<PlayPageViewModel> _logger;
-        private TextBox? addressBox;
 
         public IAsyncRelayCommand ConnectToServerCommand { get; }
         public IAsyncRelayCommand QuickPlayCommand { get; }
@@ -75,13 +77,13 @@ namespace SIT.Manager.Avalonia.ViewModels
             _akiServerService = akiServerService;
             _serviceProvider = serviceProvider;
             _localizationService = localizationService;
+            _managerConfig = configService.Config;
             _logger = logger;
 
             QuickPlayText = _localizationService.TranslateSource("PlayPageViewModelQuickPlayText");
             _configService.ConfigChanged += (o, e) =>
             {
                 QuickPlayText = _localizationService.TranslateSource("PlayPageViewModelQuickPlayText");
-                if (addressBox != null) addressBox.RevealPassword = !_configService.Config.HideIpAddress;
             };
 
             _lastServer = _configService.Config.LastServer;
@@ -368,7 +370,5 @@ namespace SIT.Manager.Avalonia.ViewModels
                 }
             }
         }
-
-        public void RegisterAddressBox(TextBox addressBox) => this.addressBox = addressBox;
     }
 }
