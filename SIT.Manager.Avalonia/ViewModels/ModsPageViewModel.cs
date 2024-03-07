@@ -48,14 +48,16 @@ namespace SIT.Manager.Avalonia.ViewModels
                                  ILocalizationService localizationService,
                                  IBarNotificationService barNotificationService,
                                  ILogger<ModsPageViewModel> logger,
-                                 IModService modService) {
+                                 IModService modService)
+        {
             _barNotificationService = barNotificationService;
             _managerConfigService = managerConfigService;
             _localizationService = localizationService;
             _logger = logger;
             _modService = modService;
 
-            if (_managerConfigService.Config.AcceptedModsDisclaimer) {
+            if (_managerConfigService.Config.AcceptedModsDisclaimer)
+            {
                 ShowModsDisclaimer = false;
             }
 
@@ -63,18 +65,22 @@ namespace SIT.Manager.Avalonia.ViewModels
             InstallModCommand = new AsyncRelayCommand(InstallMod);
             UninstallModCommand = new AsyncRelayCommand(UninstallMod);
 
-            this.WhenActivated(async (CompositeDisposable disposables) => {
+            this.WhenActivated(async (CompositeDisposable disposables) =>
+            {
                 /* Handle activation */
                 await LoadMasterList();
 
-                Disposable.Create(() => {
+                Disposable.Create(() =>
+                {
                     /* Handle deactivation */
                 }).DisposeWith(disposables);
             });
         }
 
-        private async Task LoadMasterList() {
-            if (string.IsNullOrEmpty(_managerConfigService.Config.InstallPath)) {
+        private async Task LoadMasterList()
+        {
+            if (string.IsNullOrEmpty(_managerConfigService.Config.InstallPath))
+            {
                 _barNotificationService.ShowError(_localizationService.TranslateSource("ModsPageViewModelErrorTitle"), _localizationService.TranslateSource("ModsPageViewModelErrorInstallPathDescription"));
                 return;
             }
@@ -85,8 +91,10 @@ namespace SIT.Manager.Avalonia.ViewModels
             List<ModInfo> outdatedMods = [];
 
             string modsListFile = Path.Combine(modsDirectory, "MasterList.json");
-            if (!File.Exists(modsListFile)) {
-                ModList.Add(new ModInfo() {
+            if (!File.Exists(modsListFile))
+            {
+                ModList.Add(new ModInfo()
+                {
                     Name = _localizationService.TranslateSource("ModsPageViewModelErrorNoModsFound")
                 });
                 return;
@@ -96,33 +104,39 @@ namespace SIT.Manager.Avalonia.ViewModels
             List<ModInfo> masterList = JsonSerializer.Deserialize<List<ModInfo>>(masterListFile) ?? [];
             masterList = [.. masterList.OrderBy(x => x.Name)];
 
-            foreach (ModInfo mod in masterList) {
+            foreach (ModInfo mod in masterList)
+            {
                 ModList.Add(mod);
 
                 var keyValuePair = _managerConfigService.Config.InstalledMods.Where(x => x.Key == mod.Name).FirstOrDefault();
 
-                if (!keyValuePair.Equals(default(KeyValuePair<string, string>))) {
+                if (!keyValuePair.Equals(default(KeyValuePair<string, string>)))
+                {
                     Version installedVersion = new(keyValuePair.Value);
                     Version currentVersion = new(mod.PortVersion);
 
                     int result = installedVersion.CompareTo(currentVersion);
-                    if (result < 0) {
+                    if (result < 0)
+                    {
                         outdatedMods.Add(mod);
                     }
                 }
             }
 
-            if (ModList.Count > 0) {
+            if (ModList.Count > 0)
+            {
                 SelectedMod = ModList[0];
             }
 
-            if (outdatedMods.Count > 0) {
+            if (outdatedMods.Count > 0)
+            {
                 await _modService.AutoUpdate(outdatedMods);
             }
         }
 
         [RelayCommand]
-        private void AcceptModsDisclaimer() {
+        private void AcceptModsDisclaimer()
+        {
             ShowModsDisclaimer = false;
 
             ManagerConfig config = _managerConfigService.Config;
@@ -130,25 +144,31 @@ namespace SIT.Manager.Avalonia.ViewModels
             _managerConfigService.UpdateConfig(config);
         }
 
-        private async Task DownloadModPackage() {
-            if (string.IsNullOrEmpty(_managerConfigService.Config.InstallPath)) {
+        private async Task DownloadModPackage()
+        {
+            if (string.IsNullOrEmpty(_managerConfigService.Config.InstallPath))
+            {
                 _barNotificationService.ShowError(_localizationService.TranslateSource("ModsPageViewModelErrorTitle"), _localizationService.TranslateSource("ModsPageViewModelErrorInstallPathDescription"));
                 return;
             }
             _logger.LogInformation("DownloadModPack: Starting download of mod package.");
 
-            try {
+            try
+            {
                 await _modService.DownloadModsCollection();
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 _logger.LogError(ex, $"DownloadModPack");
             }
 
             await LoadMasterList();
         }
 
-        partial void OnSelectedModChanged(ModInfo? value) {
-            if (value == null) {
+        partial void OnSelectedModChanged(ModInfo? value)
+        {
+            if (value == null)
+            {
                 return;
             }
 
@@ -156,8 +176,10 @@ namespace SIT.Manager.Avalonia.ViewModels
             EnableInstall = !isInstalled;
         }
 
-        private async Task InstallMod() {
-            if (SelectedMod == null) {
+        private async Task InstallMod()
+        {
+            if (SelectedMod == null)
+            {
                 return;
             }
 
@@ -165,8 +187,10 @@ namespace SIT.Manager.Avalonia.ViewModels
             EnableInstall = !installSuccessful;
         }
 
-        private async Task UninstallMod() {
-            if (SelectedMod == null) {
+        private async Task UninstallMod()
+        {
+            if (SelectedMod == null)
+            {
                 return;
             }
 

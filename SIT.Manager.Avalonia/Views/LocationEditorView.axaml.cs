@@ -6,7 +6,8 @@ namespace SIT.Manager.Avalonia.Views
 {
     public partial class LocationEditorView : UserControl
     {
-        public LocationEditorView() {
+        public LocationEditorView()
+        {
             this.DataContext = App.Current.Services.GetService<LocationEditorViewModel>();
             InitializeComponent();
         }

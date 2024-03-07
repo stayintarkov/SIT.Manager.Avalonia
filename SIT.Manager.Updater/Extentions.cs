@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SIT.Manager.Updater
+﻿namespace SIT.Manager.Updater
 {
     public static class Extentions
     {
@@ -14,13 +7,13 @@ namespace SIT.Manager.Updater
             using HttpResponseMessage response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
             using Stream contentStream = await response.Content.ReadAsStreamAsync(cancellationToken);
             long? contentLength = response.Content.Headers.ContentLength;
-            if(!contentLength.HasValue)
+            if (!contentLength.HasValue)
             {
                 await contentStream.CopyToAsync(destination, cancellationToken);
             }
             else
             {
-                Progress<long> reportWrapper = new(br => progressReporter.Report((double)br / contentLength.Value));
+                Progress<long> reportWrapper = new(br => progressReporter.Report((double) br / contentLength.Value));
                 await contentStream.CopyToAsync(destination, 65535, reportWrapper, cancellationToken);
             }
         }
@@ -37,7 +30,7 @@ namespace SIT.Manager.Updater
             byte[] dataBuffer = new byte[bufferSize];
             long totalReadBytes = 0;
             int bytesRead;
-            while((bytesRead = await source.ReadAsync(dataBuffer, cancellationToken).ConfigureAwait(false)) > 0)
+            while ((bytesRead = await source.ReadAsync(dataBuffer, cancellationToken).ConfigureAwait(false)) > 0)
             {
                 await destination.WriteAsync(dataBuffer.AsMemory(0, bytesRead), cancellationToken).ConfigureAwait(false);
                 totalReadBytes += bytesRead;
@@ -54,7 +47,7 @@ namespace SIT.Manager.Updater
             IEnumerable<FileInfo> files = source.EnumerateFiles();
             destination.Create();
 
-            foreach(DirectoryInfo directory in directories)
+            foreach (DirectoryInfo directory in directories)
             {
                 if (directory.Name.Equals("backup", StringComparison.InvariantCultureIgnoreCase))
                     continue;

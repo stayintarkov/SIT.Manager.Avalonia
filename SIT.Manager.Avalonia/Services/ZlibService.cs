@@ -13,23 +13,28 @@ namespace SIT.Manager.Avalonia.Services
         private Assembly? _zlibAssembly;
         private MethodInfo? compressToBytesMethodInfo;
         private MethodInfo? decompressMethodInfo;
-        public ZlibService(IManagerConfigService configService) {
+        public ZlibService(IManagerConfigService configService)
+        {
             if (string.IsNullOrEmpty(configService.Config.InstallPath))
                 configService.ConfigChanged += LoadZlibFromConfig;
             else
                 LoadZlibFromConfig(null, configService.Config);
         }
 
-        public byte[] CompressToBytes(string data, ZlibCompression compressionProfile, Encoding? encoding = null) {
+        public byte[] CompressToBytes(string data, ZlibCompression compressionProfile, Encoding? encoding = null)
+        {
             return (byte[]?) compressToBytesMethodInfo?.Invoke(null, new object[] { data, compressionProfile, encoding ?? Encoding.UTF8 }) ?? [];
         }
 
-        public string Decompress(byte[] data, Encoding? encoding = null) {
+        public string Decompress(byte[] data, Encoding? encoding = null)
+        {
             return (string?) decompressMethodInfo?.Invoke(null, new object[] { data, encoding ?? Encoding.UTF8 }) ?? string.Empty;
         }
 
-        private void LoadZlibFromConfig(object? sender, ManagerConfig e) {
-            if (!string.IsNullOrEmpty(e.InstallPath)) {
+        private void LoadZlibFromConfig(object? sender, ManagerConfig e)
+        {
+            if (!string.IsNullOrEmpty(e.InstallPath))
+            {
                 string assemblyPath = Path.Combine(e.InstallPath, "EscapeFromTarkov_Data", "Managed", "bsg.componentace.compression.libs.zlib.dll");
                 _zlibAssembly = Assembly.LoadFrom(assemblyPath);
                 Type? SimpleZlib = _zlibAssembly?.GetType("ComponentAce.Compression.Libs.zlib.SimpleZlib");

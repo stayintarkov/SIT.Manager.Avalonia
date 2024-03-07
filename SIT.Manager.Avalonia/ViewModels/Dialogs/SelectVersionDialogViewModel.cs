@@ -14,9 +14,11 @@ namespace SIT.Manager.Avalonia.ViewModels.Dialogs
         public ObservableCollection<GithubRelease> GithubReleases { get; }
 
 
-        public SelectVersionDialogViewModel(List<GithubRelease> releases) {
+        public SelectVersionDialogViewModel(List<GithubRelease> releases)
+        {
             GithubReleases = new ObservableCollection<GithubRelease>(releases);
-            if (GithubReleases.Any()) {
+            if (GithubReleases.Any())
+            {
                 SelectedVersion = GithubReleases[0];
             }
         }

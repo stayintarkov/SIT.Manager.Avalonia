@@ -29,17 +29,22 @@ namespace SIT.Manager.Avalonia.Services
         private readonly ILogger<FileService> _logger = logger;
         private readonly ILocalizationService _localizationService = localizationService;
 
-        private static async Task OpenAtLocation(string path) {
-            using (Process opener = new()) {
-                if (OperatingSystem.IsWindows()) {
+        private static async Task OpenAtLocation(string path)
+        {
+            using (Process opener = new())
+            {
+                if (OperatingSystem.IsWindows())
+                {
                     opener.StartInfo.FileName = "explorer.exe";
                     opener.StartInfo.Arguments = path;
                 }
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
                     opener.StartInfo.FileName = "explorer";
                     opener.StartInfo.Arguments = $"-R {path}";
                 }
-                else {
+                else
+                {
                     opener.StartInfo.FileName = path;
                     opener.StartInfo.UseShellExecute = true;
                 }
@@ -48,20 +53,24 @@ namespace SIT.Manager.Avalonia.Services
             }
         }
 
-        private async Task<bool> DownloadMegaFile(string fileName, string fileUrl, bool showProgress) {
+        private async Task<bool> DownloadMegaFile(string fileName, string fileUrl, bool showProgress)
+        {
             _logger.LogInformation("Attempting to use Mega API.");
-            try {
+            try
+            {
                 MegaApiClient megaApiClient = new();
                 await megaApiClient.LoginAnonymousAsync();
 
                 // Todo: Add proper error handling below
-                if (!megaApiClient.IsLoggedIn) {
+                if (!megaApiClient.IsLoggedIn)
+                {
                     return false;
                 }
 
                 _logger.LogInformation($"Starting download of '{fileName}' from '{fileUrl}'");
 
-                Progress<double> progress = new((prog) => {
+                Progress<double> progress = new((prog) =>
+                {
                     _actionNotificationService.UpdateActionNotification(new ActionNotification(_localizationService.TranslateSource("FileServiceProgressDownloading", fileName), prog, showProgress));
                 });
 
@@ -73,7 +82,8 @@ namespace SIT.Manager.Avalonia.Services
 
                 return true;
             }
-            catch {
+            catch
+            {
                 return false;
             }
         }
@@ -86,31 +96,39 @@ namespace SIT.Manager.Avalonia.Services
         /// <param name="fileUrl">The URL to download from.</param>
         /// <param name="showProgress">If a progress bar should show the status.</param>
         /// <returns></returns>
-        public async Task<bool> DownloadFile(string fileName, string filePath, string fileUrl, bool showProgress = false) {
+        public async Task<bool> DownloadFile(string fileName, string filePath, string fileUrl, bool showProgress = false)
+        {
             _actionNotificationService.StartActionNotification();
 
             bool result = false;
-            if (fileUrl.Contains("mega.nz")) {
+            if (fileUrl.Contains("mega.nz"))
+            {
                 result = await DownloadMegaFile(fileName, fileUrl, showProgress);
             }
-            else {
+            else
+            {
                 _logger.LogInformation($"Starting download of '{fileName}' from '{fileUrl}'");
                 filePath = Path.Combine(filePath, fileName);
-                if (File.Exists(filePath)) {
+                if (File.Exists(filePath))
+                {
                     File.Delete(filePath);
                 }
 
-                Progress<double> progress = new((prog) => {
+                Progress<double> progress = new((prog) =>
+                {
                     _actionNotificationService.UpdateActionNotification(new ActionNotification(_localizationService.TranslateSource("FileServiceProgressDownloading", fileName), Math.Floor(prog), showProgress));
                 });
 
-                try {
-                    using (FileStream file = new(filePath, FileMode.Create, FileAccess.Write, FileShare.None)) {
+                try
+                {
+                    using (FileStream file = new(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
+                    {
                         await _httpClient.DownloadAsync(file, fileUrl, progress);
                     }
                     result = true;
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     _logger.LogError(ex, "DownloadFile");
                 }
             }
@@ -125,7 +143,8 @@ namespace SIT.Manager.Avalonia.Services
 
             // Ensures that the last character on the extraction path is the directory separator char.
             // Without this, a malicious zip file could try to traverse outside of the expected extraction path.
-            if (!destination.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal)) {
+            if (!destination.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
+            {
                 destination += Path.DirectorySeparatorChar;
             }
 
@@ -133,22 +152,28 @@ namespace SIT.Manager.Avalonia.Services
             destinationInfo.Create();
 
             ActionNotification actionNotification = new(string.Empty, 0, true);
-            try {
+            try
+            {
                 using ZipArchive archive = await Task.Run(() => ZipArchive.Open(filePath));
                 int totalFiles = archive.Entries.Where(file => !file.IsDirectory).Count();
                 int completed = 0;
 
-                Progress<float> progress = new((prog) => {
+                Progress<float> progress = new((prog) =>
+                {
                     actionNotification.ProgressPercentage = prog;
                     _actionNotificationService.UpdateActionNotification(actionNotification);
                 });
 
-                foreach (ZipArchiveEntry entry in archive.Entries) {
-                    if (entry.IsDirectory) {
+                foreach (ZipArchiveEntry entry in archive.Entries)
+                {
+                    if (entry.IsDirectory)
+                    {
                         continue;
                     }
-                    else {
-                        entry.WriteToDirectory(destination, new ExtractionOptions() {
+                    else
+                    {
+                        entry.WriteToDirectory(destination, new ExtractionOptions()
+                        {
                             ExtractFullPath = true,
                             Overwrite = true
                         });
@@ -158,15 +183,18 @@ namespace SIT.Manager.Avalonia.Services
                     ((IProgress<float>) progress).Report((float) completed / totalFiles * 100);
                 }
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 _logger.LogError(ex, "ExtractFile: Error when opening Archive");
             }
 
             _actionNotificationService.StopActionNotification();
         }
 
-        public async Task OpenDirectoryAsync(string path) {
-            if (!Directory.Exists(path)) {
+        public async Task OpenDirectoryAsync(string path)
+        {
+            if (!Directory.Exists(path))
+            {
                 // Directory doesn't exist so return early.
                 return;
             }
@@ -174,8 +202,10 @@ namespace SIT.Manager.Avalonia.Services
             await OpenAtLocation(path);
         }
 
-        public async Task OpenFileAsync(string path) {
-            if (!File.Exists(path)) {
+        public async Task OpenFileAsync(string path)
+        {
+            if (!File.Exists(path))
+            {
                 // File doesn't exist so return early.
                 return;
             }

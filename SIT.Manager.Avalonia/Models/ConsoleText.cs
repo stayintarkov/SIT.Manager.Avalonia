@@ -1,6 +1,5 @@
 ﻿using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
-using ReactiveUI;
 
 namespace SIT.Manager.Avalonia.Models
 {

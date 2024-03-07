@@ -12,13 +12,15 @@ namespace SIT.Manager.Avalonia.Views.Dialogs
 
         protected override Type StyleKeyOverride => typeof(ContentDialog);
 
-        public SelectEditionDialog(TarkovEdition[] editions) {
+        public SelectEditionDialog(TarkovEdition[] editions)
+        {
             dc = new SelectEditionDialogViewModel(editions);
             this.DataContext = dc;
             InitializeComponent();
         }
 
-        public new Task<TarkovEdition> ShowAsync() {
+        public new Task<TarkovEdition> ShowAsync()
+        {
             return this.ShowAsync(null).ContinueWith(t => dc.SelectedEdition ?? new TarkovEdition("Edge Of Darkness"));
         }
     }

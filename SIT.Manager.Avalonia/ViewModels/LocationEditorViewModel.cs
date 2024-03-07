@@ -98,7 +98,8 @@ namespace SIT.Manager.Avalonia.ViewModels
         public IAsyncRelayCommand LoadCommand { get; }
         public IAsyncRelayCommand SaveCommand { get; }
 
-        public LocationEditorViewModel(IBarNotificationService barNotificationService, ILocalizationService localizationService, IPickerDialogService pickerDialogService) {
+        public LocationEditorViewModel(IBarNotificationService barNotificationService, ILocalizationService localizationService, IPickerDialogService pickerDialogService)
+        {
             _barNotificationService = barNotificationService;
             _pickerDialogService = pickerDialogService;
             _localizationService = localizationService;
@@ -107,25 +108,31 @@ namespace SIT.Manager.Avalonia.ViewModels
             SaveCommand = new AsyncRelayCommand(Save);
         }
 
-        private async Task Load() {
+        private async Task Load()
+        {
             IStorageFile? file = await _pickerDialogService.GetFileFromPickerAsync();
-            if (file == null) {
+            if (file == null)
+            {
                 return;
             }
 
-            if (File.Exists(file.Path.LocalPath)) {
+            if (File.Exists(file.Path.LocalPath))
+            {
                 string jsonString = await File.ReadAllTextAsync(file.Path.LocalPath);
                 BaseLocation? location = JsonSerializer.Deserialize<BaseLocation>(jsonString);
-                if (location == null) {
+                if (location == null)
+                {
                     _barNotificationService.ShowError(_localizationService.TranslateSource("LocationEditorViewModelLoadErrorTitle"), _localizationService.TranslateSource("LocationEditorViewModelLoadErrorDescription"));
                     return;
                 }
 
-                for (int i = 0; i < location.waves.Count; i++) {
+                for (int i = 0; i < location.waves.Count; i++)
+                {
                     location.waves[i].Name = i + 1;
                 }
 
-                for (int i = 0; i < location.BossLocationSpawn.Count; i++) {
+                for (int i = 0; i < location.BossLocationSpawn.Count; i++)
+                {
                     location.BossLocationSpawn[i].Name = i + 1;
                 }
 
@@ -134,11 +141,13 @@ namespace SIT.Manager.Avalonia.ViewModels
 
                 Location = location;
 
-                if (location.waves.Count > 0) {
+                if (location.waves.Count > 0)
+                {
                     SelectedWave = location.waves[0];
                 }
 
-                if (location.BossLocationSpawn.Count > 0) {
+                if (location.BossLocationSpawn.Count > 0)
+                {
                     SelectedBossLocationSpawn = location.BossLocationSpawn[0];
                 }
 
@@ -146,18 +155,22 @@ namespace SIT.Manager.Avalonia.ViewModels
             }
         }
 
-        private async Task Save() {
+        private async Task Save()
+        {
             IStorageFile? file = await _pickerDialogService.GetFileSaveFromPickerAsync(".json", "base.json");
-            if (file == null) {
+            if (file == null)
+            {
                 return;
             }
 
-            if (File.Exists(file.Path.LocalPath)) {
+            if (File.Exists(file.Path.LocalPath))
+            {
                 string backupFilePath = Path.Combine(file.Path.LocalPath, ".BAK");
                 File.Copy(file.Path.LocalPath, backupFilePath, true);
             }
 
-            if (Location == null) {
+            if (Location == null)
+            {
                 _barNotificationService.ShowError(_localizationService.TranslateSource("LocationEditorViewModelSaveErrorTitle"), _localizationService.TranslateSource("LocationEditorViewModelSaveErrorDescription"));
                 return;
             }
@@ -168,7 +181,8 @@ namespace SIT.Manager.Avalonia.ViewModels
         }
 
         [RelayCommand]
-        private void AddWave() {
+        private void AddWave()
+        {
             /* TODO not really any point implementing this the funciton isn't enabled anyway            
             BaseLocation location = (BaseLocation)DataContext;
 
@@ -190,7 +204,8 @@ namespace SIT.Manager.Avalonia.ViewModels
         }
 
         [RelayCommand]
-        private void RemoveWave() {
+        private void RemoveWave()
+        {
             /* TODO not really any point implementing this the funciton isn't enabled anyway
             if (WaveList.SelectedIndex == -1)
                 return;
@@ -215,7 +230,8 @@ namespace SIT.Manager.Avalonia.ViewModels
         }
 
         [RelayCommand]
-        private void AddBoss() {
+        private void AddBoss()
+        {
             /* TODO not really any point implementing this the funciton isn't enabled anyway
             BaseLocation location = (BaseLocation) DataContext;
 
@@ -234,7 +250,8 @@ namespace SIT.Manager.Avalonia.ViewModels
         }
 
         [RelayCommand]
-        private void RemoveBossCommand() {
+        private void RemoveBossCommand()
+        {
             /* TODO not really any point implementing this the funciton isn't enabled anyway
             if (BossList.SelectedIndex == -1)
                 return;
