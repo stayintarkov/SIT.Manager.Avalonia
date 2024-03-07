@@ -310,7 +310,6 @@ namespace SIT.Manager.Avalonia.ViewModels
                 return;
 
             Version SITVersion = new(_configService.Config.SitVersion);
-            SITVersion = new(SITVersion.Major, 9, SITVersion.MinorRevision);
             string backendUrl = serverAddress.AbsoluteUri[..^(SITVersion >= standardUriFormatSupportedVersion ? 0 : 1)];
 
             // Launch game
