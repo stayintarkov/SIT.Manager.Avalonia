@@ -48,8 +48,6 @@ namespace SIT.Manager.Avalonia.ViewModels
 
         [ObservableProperty]
         private string _quickPlayText = "Start Server and Connect";
-        [ObservableProperty]
-        private ManagerConfig _managerConfig;
 
         private readonly HttpClient _httpClient;
         private readonly HttpClientHandler _httpClientHandler;
