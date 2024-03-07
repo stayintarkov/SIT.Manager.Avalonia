@@ -43,7 +43,8 @@ public sealed partial class App : Application
             .AddJsonFile("appsettings.json", true, true)
             .Build();
 
-        services.AddLogging(builder => {
+        services.AddLogging(builder =>
+        {
             builder.AddConfiguration(configuration.GetSection("Logging"));
             builder.AddJsonFile(o => o.RootPath = AppContext.BaseDirectory);
         });
@@ -57,19 +58,23 @@ public sealed partial class App : Application
         services.AddTransient<IInstallerService, InstallerService>();
         services.AddSingleton<IManagerConfigService, ManagerConfigService>();
         services.AddTransient<IModService, ModService>();
-        services.AddTransient<IPickerDialogService>(x => {
-            if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop || desktop.MainWindow?.StorageProvider is not { } provider) {
+        services.AddTransient<IPickerDialogService>(x =>
+        {
+            if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop || desktop.MainWindow?.StorageProvider is not { } provider)
+            {
                 return new PickerDialogService(new MainWindow());
             }
             return new PickerDialogService(desktop.MainWindow);
         });
         services.AddSingleton<ITarkovClientService, TarkovClientService>();
         services.AddSingleton<IVersionService, VersionService>();
-        services.AddSingleton(new HttpClientHandler {
+        services.AddSingleton(new HttpClientHandler
+        {
             SslProtocols = System.Security.Authentication.SslProtocols.Tls12,
             ServerCertificateCustomValidationCallback = delegate { return true; }
         });
-        services.AddSingleton(provider => new HttpClient(provider.GetService<HttpClientHandler>() ?? throw new ArgumentNullException()) {
+        services.AddSingleton(provider => new HttpClient(provider.GetService<HttpClientHandler>() ?? throw new ArgumentNullException())
+        {
             DefaultRequestHeaders = {
                 { "X-GitHub-Api-Version", "2022-11-28" },
                 { "User-Agent", "request" }
@@ -89,6 +94,11 @@ public sealed partial class App : Application
         services.AddTransient<ToolsPageViewModel>();
 
         // Installation View Models
+        services.AddTransient<CompleteViewModel>();
+        services.AddTransient<ConfigureViewModel>();
+        services.AddTransient<DownloadViewModel>();
+        services.AddTransient<InstallViewModel>();
+        services.AddTransient<PatchViewModel>();
         services.AddTransient<SelectViewModel>();
 
         return services.BuildServiceProvider();
@@ -101,13 +111,17 @@ public sealed partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
-            desktop.MainWindow = new MainWindow {
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            desktop.MainWindow = new MainWindow
+            {
                 DataContext = Current.Services.GetService<MainViewModel>()
             };
         }
-        else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform) {
-            singleViewPlatform.MainView = new MainView {
+        else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
+        {
+            singleViewPlatform.MainView = new MainView
+            {
                 DataContext = Current.Services.GetService<MainViewModel>()
             };
         }

@@ -4,7 +4,7 @@ using SIT.Manager.Avalonia.Models.Messages;
 
 namespace SIT.Manager.Avalonia.ViewModels.Installation
 {
-    public partial class SelectViewModel : ViewModelBase
+    public partial class DownloadViewModel : ViewModelBase
     {
         [RelayCommand]
         private void Progress()
