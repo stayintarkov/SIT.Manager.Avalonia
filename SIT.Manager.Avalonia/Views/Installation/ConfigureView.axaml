@@ -6,8 +6,57 @@
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SIT.Manager.Avalonia.Views.Installation.ConfigureView"
 			 x:DataType="vm:ConfigureViewModel">
-	<StackPanel>
-		<TextBlock Text="Welcome to configure!"/>
-		<Button Content="Progress" Command="{Binding ProgressCommand}"/>
-	</StackPanel>
+	<Grid RowDefinitions="*, *, *, Auto">
+		<StackPanel Grid.Row="0">
+			<Border Classes="StandardFrame">
+				<StackPanel>
+					<TextBlock Text="{DynamicResource SelectVersionDialogToInstallTitle}" Margin="5"/>
+					<ComboBox Width="500"
+							  Name="VersionSelectionBox"
+							  VerticalAlignment="Center"
+							  HorizontalAlignment="Center">
+					</ComboBox>
+				</StackPanel>
+			</Border>
+		</StackPanel>
+
+		<StackPanel Grid.Row="1">
+			<Border Classes="StandardFrame">
+				<StackPanel>
+					<TextBlock Text="Select the mirror to download from" Margin="5"/>
+					<ComboBox Width="500"
+							  Name="MirrorSelectionBox"
+							  VerticalAlignment="Center"
+							  HorizontalAlignment="Center">
+					</ComboBox>
+				</StackPanel>
+			</Border>
+		</StackPanel>
+
+		<StackPanel Grid.Row="2">
+			<Border Classes="StandardFrame">
+				<StackPanel>
+					<TextBlock Text="Detected BSG EFT install location would you like to install EFT to a different location to avoid possible issues with SIT"
+							   Margin="5"
+							   TextWrapping="Wrap"/>
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Text="{DynamicResource SettingsSPTAKIPathTitle}"  VerticalAlignment="Center"/>
+						<TextBox Watermark="{DynamicResource SettingsSPTAKIInstallPathPlaceholder}"
+								 Margin="5"
+								 MinWidth="397"
+								 MaxWidth="425"
+								 IsReadOnly="True"/>
+						<Button Name="ChangeAkiServerPath"
+								Content="{DynamicResource SettingsEFTSettingsButtonChangeTitle}"
+								Margin="5"
+								ToolTip.Tip="{DynamicResource SettingsSPTAKIInstallPathToolTip}"/>
+					</StackPanel>
+				</StackPanel>
+			</Border>
+		</StackPanel>
+
+		<Button Grid.Row="3" 
+				Content="Progress" 
+				Command="{Binding ProgressCommand}"/>
+	</Grid>
 </UserControl>

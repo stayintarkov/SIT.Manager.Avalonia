@@ -8,14 +8,6 @@
              x:Class="SIT.Manager.Avalonia.Views.Installation.SelectView"
 			 x:DataType="vm:SelectViewModel">
 	<UserControl.Styles>
-		<Style Selector="Border">
-			<Setter Property="CornerRadius" Value="8"/>
-			<Setter Property="BorderBrush" Value="Gray"/>
-			<Setter Property="BorderThickness" Value="1"/>
-			<Setter Property="Margin" Value="4"/>
-			<Setter Property="Padding" Value="10"/>
-		</Style>
-		
 		<Style Selector="Button.InstallButton">
 			<Setter Property="Height" Value="50"/>
 			<Setter Property="HorizontalAlignment" Value="Center"/>
@@ -28,7 +20,7 @@
 		<!-- EFT Game -->
 		<StackPanel Grid.Row="0" VerticalAlignment="Center">
 			<TextBlock Text="Escape From Tarkov" Margin="4" VerticalAlignment="Center"/>
-			<Border>
+			<Border Classes="StandardFrame">
 				<StackPanel>
 					<StackPanel Orientation="Horizontal">
 						<TextBlock Text="{DynamicResource SettingsEFTInstallPathTitle}" Margin="0,0,10,0" VerticalAlignment="Center"/>
@@ -72,7 +64,7 @@
 		<!-- Server -->
 		<StackPanel Grid.Row="1" VerticalAlignment="Center">
 			<TextBlock Text="{DynamicResource SettingsSPTAKITitle}" Margin="4" VerticalAlignment="Center"/>
-			<Border>
+			<Border Classes="StandardFrame">
 				<StackPanel>
 					<StackPanel Orientation="Horizontal">
 						<TextBlock Text="{DynamicResource SettingsSPTAKIPathTitle}"  VerticalAlignment="Center"/>

@@ -33,12 +33,11 @@
 		</labs:StepBar>
 
 		<TransitioningContentControl Grid.Column="1" 
+									 Content="{Binding InstallStepControl}"
 									 Margin="4">
 			<TransitioningContentControl.PageTransition>
 				<PageSlide Orientation="Vertical" Duration="0:00:00.500" />
 			</TransitioningContentControl.PageTransition>
-
-			<ContentControl Content="{Binding InstallStepControl}"/>
 		</TransitioningContentControl>
 	</Grid>
 </UserControl>
