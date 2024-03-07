@@ -96,21 +96,7 @@ DirectoryInfo releasePath = new(Path.Combine(tempPath, "Release"));
 releasePath.Create();
 using (ZipArchive archive = ZipArchive.Open(zipPath))
 {
-    foreach (ZipArchiveEntry entry in archive.Entries)
-    {
-        if (entry.IsDirectory)
-        {
-            continue;
-        }
-        else
-        {
-            entry.WriteToDirectory(releasePath.FullName, new ExtractionOptions()
-            {
-                ExtractFullPath = true,
-                Overwrite = true
-            });
-        }
-    }
+    archive.ExtractToDirectory(releasePath.FullName);
 }
 
 string backupPath = Path.Combine(workingDir, "Backup");
