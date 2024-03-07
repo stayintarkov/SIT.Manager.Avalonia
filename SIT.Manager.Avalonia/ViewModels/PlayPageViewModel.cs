@@ -48,6 +48,8 @@ namespace SIT.Manager.Avalonia.ViewModels
 
         [ObservableProperty]
         private string _quickPlayText = "Start Server and Connect";
+        [ObservableProperty]
+        private ManagerConfig _managerConfig;
 
         private readonly HttpClient _httpClient;
         private readonly HttpClientHandler _httpClientHandler;
@@ -70,6 +72,7 @@ namespace SIT.Manager.Avalonia.ViewModels
             IServiceProvider serviceProvider)
         {
             _configService = configService;
+            _managerConfig = _configService.Config;
             //TODO: Check that this is the best way to implement DI for the TarkovRequesting. Prettysure service provider would be better
             _httpClient = httpClient;
             _httpClientHandler = httpClientHandler;
