@@ -23,16 +23,20 @@ namespace SIT.Manager.Avalonia.Views
             this.WhenActivated(disposables => { /* Handle view activation etc. */ });
         }
 
-        private void ConsoleLogScroller_ScrollChanged(object? sender, ScrollChangedEventArgs e) {
+        private void ConsoleLogScroller_ScrollChanged(object? sender, ScrollChangedEventArgs e)
+        {
             // User scroll event : set or unset auto-scroll mode
-            if (e.ExtentDelta == Vector.Zero) {
+            if (e.ExtentDelta == Vector.Zero)
+            {
                 // Content unchanged : user scroll event
-                if (_consoleLogScroller?.Offset.Y == _consoleLogScroller?.ScrollBarMaximum.Y) {
+                if (_consoleLogScroller?.Offset.Y == _consoleLogScroller?.ScrollBarMaximum.Y)
+                {
                     // Scroll bar is in bottom
                     // Set auto-scroll mode
                     _autoScroll = true;
                 }
-                else {
+                else
+                {
                     // Scroll bar isn't in bottom
                     // Unset auto-scroll mode
                     _autoScroll = false;
@@ -40,7 +44,8 @@ namespace SIT.Manager.Avalonia.Views
             }
 
             // Content scroll event : auto-scroll eventually
-            if (_autoScroll && e.ExtentDelta != Vector.Zero) {
+            if (_autoScroll && e.ExtentDelta != Vector.Zero)
+            {
                 // Content changed and auto-scroll mode set
                 // Autoscroll
                 _consoleLogScroller?.ScrollToEnd();

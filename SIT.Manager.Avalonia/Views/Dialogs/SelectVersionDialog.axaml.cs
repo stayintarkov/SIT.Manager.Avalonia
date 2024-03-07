@@ -13,15 +13,18 @@ namespace SIT.Manager.Avalonia.Views.Dialogs
 
         protected override Type StyleKeyOverride => typeof(ContentDialog);
 
-        public SelectVersionDialog(List<GithubRelease> releases) {
+        public SelectVersionDialog(List<GithubRelease> releases)
+        {
             dc = new SelectVersionDialogViewModel(releases);
             DataContext = dc;
             InitializeComponent();
         }
 
-        public new async Task<GithubRelease?> ShowAsync() {
+        public new async Task<GithubRelease?> ShowAsync()
+        {
             ContentDialogResult result = await ShowAsync(null);
-            if (result == ContentDialogResult.Primary) {
+            if (result == ContentDialogResult.Primary)
+            {
                 return dc.SelectedVersion;
             }
             return null;

@@ -23,7 +23,7 @@ namespace SIT.Manager.Avalonia.Extentions
             }
             else
             {
-                Progress<long> reportWrapper = new(br => progressReporter.Report((double)br / contentLength.Value));
+                Progress<long> reportWrapper = new(br => progressReporter.Report((double) br / contentLength.Value));
                 await contentStream.CopyToAsync(destination, 65535, reportWrapper, cancellationToken);
             }
         }
