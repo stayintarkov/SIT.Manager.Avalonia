@@ -12,7 +12,14 @@
 		<StackPanel>
 			<!--Address box-->
 			<Label Content="{DynamicResource AddressBoxTitle}" Margin="10 10 10 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
-			<TextBox Name="AddressBox" Text="{Binding LastServer, Mode=TwoWay}" MinWidth="300" Margin="10 5 10 10" HorizontalAlignment="Left" Watermark="{DynamicResource EnterServerAddressPlaceholder}" PasswordChar="*" RevealPassword="{Binding $self.IsFocused}"/>
+			<TextBox Name="AddressBox" Text="{Binding LastServer, Mode=TwoWay}" MinWidth="300" Margin="10 5 10 10" HorizontalAlignment="Left" Watermark="{DynamicResource EnterServerAddressPlaceholder}" PasswordChar="*">
+				<TextBox.RevealPassword>
+					<MultiBinding Converter="{x:Static BoolConverters.Or}">
+						<Binding Path="#AddressBox.IsFocused"/>
+						<Binding Path="!ManagerConfig.HideIpAddress"/>
+					</MultiBinding>
+				</TextBox.RevealPassword>
+			</TextBox>
 			<!--Username box-->
 			<Label Content="{DynamicResource UsernameBoxTitle}" Margin="10 10 10 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
 			<TextBox Name="UsernameBox" Text="{Binding Username, Mode=TwoWay}" MinWidth="150" Margin="10 5 10 10" HorizontalAlignment="Left" Watermark="{DynamicResource EnterUserNamePlaceholder}"/>

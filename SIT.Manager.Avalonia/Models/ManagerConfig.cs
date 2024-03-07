@@ -34,6 +34,8 @@ namespace SIT.Manager.Avalonia.Models
         [ObservableProperty]
         public string _currentLanguageSelected = CultureInfo.CurrentCulture.Name;
         [ObservableProperty]
+        public bool _hideIpAddress = true;
+        [ObservableProperty]
         public bool _acceptedModsDisclaimer = false;
         public string ModCollectionVersion { get; set; } = string.Empty;
         public Dictionary<string, string> InstalledMods { get; set; } = [];

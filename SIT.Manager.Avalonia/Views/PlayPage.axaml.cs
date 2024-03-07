@@ -9,7 +9,8 @@ namespace SIT.Manager.Avalonia.Views
         public PlayPage()
         {
             InitializeComponent();
-            this.DataContext = App.Current.Services.GetService<PlayPageViewModel>();
+            DataContext = App.Current.Services.GetService<PlayPageViewModel>();
+            if (DataContext is PlayPageViewModel dataContext) AddressBox.LostFocus += (o, e) => { if (!dataContext.ManagerConfig.HideIpAddress) AddressBox.RevealPassword = true; };
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls.ApplicationLifetimes;
+﻿using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -27,8 +28,8 @@ namespace SIT.Manager.Avalonia.ViewModels
         //TODO: Merge these constants into one play. Pretty sure we delcare at least one of these somewhere else already
         private const string SIT_DLL_FILENAME = "StayInTarkov.dll";
         private const string EFT_EXE_FILENAME = "EscapeFromTarkov.exe";
-        private readonly IManagerConfigService _configService;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IManagerConfigService _configService;
         private static readonly Version standardUriFormatSupportedVersion = new Version("1.10.8827.30098");
 
         [ObservableProperty]
@@ -42,6 +43,9 @@ namespace SIT.Manager.Avalonia.ViewModels
 
         [ObservableProperty]
         private bool _rememberMe;
+
+        [ObservableProperty]
+        private ManagerConfig _managerConfig;
 
         [ObservableProperty]
         private string _quickPlayText = "Start Server and Connect";
@@ -67,6 +71,7 @@ namespace SIT.Manager.Avalonia.ViewModels
             IServiceProvider serviceProvider)
         {
             _configService = configService;
+            _managerConfig = _configService.Config;
             //TODO: Check that this is the best way to implement DI for the TarkovRequesting. Prettysure service provider would be better
             _httpClient = httpClient;
             _httpClientHandler = httpClientHandler;
@@ -74,6 +79,7 @@ namespace SIT.Manager.Avalonia.ViewModels
             _akiServerService = akiServerService;
             _serviceProvider = serviceProvider;
             _localizationService = localizationService;
+            _managerConfig = configService.Config;
             _logger = logger;
 
             QuickPlayText = _localizationService.TranslateSource("PlayPageViewModelQuickPlayText");
