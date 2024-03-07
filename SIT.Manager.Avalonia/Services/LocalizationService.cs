@@ -26,7 +26,8 @@ namespace SIT.Manager.Avalonia.Services
         {
             string currentLanguage = _configService.Config.CurrentLanguageSelected;
             List<CultureInfo> availableLanguages = GetAvailableLocalizations();
-            if (!availableLanguages.Any(x => x.Name == _configService.Config.CurrentLanguageSelected)) {
+            if (!availableLanguages.Any(x => x.Name == _configService.Config.CurrentLanguageSelected))
+            {
                 _configService.Config.CurrentLanguageSelected = DEFAULT_LANGUAGE;
             }
         }
@@ -84,7 +85,7 @@ namespace SIT.Manager.Avalonia.Services
             {
                 if (translation != null)
                 {
-                    result = (string)translation;
+                    result = (string) translation;
                     for (int i = 0; i < replaces.Length; i++)
                     {
                         result = result.Replace($"%{i + 1}", replaces[i]);
@@ -135,7 +136,8 @@ namespace SIT.Manager.Avalonia.Services
         {
             string url = $"avares://SIT.Manager.Avalonia/Localization/{locale}.axaml";
             Uri self = new("resm:Styles?assembly=SIT.Manager.Avalonia");
-            return new ResourceInclude(self) {
+            return new ResourceInclude(self)
+            {
                 Source = new Uri(url)
             };
         }

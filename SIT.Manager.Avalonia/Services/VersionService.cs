@@ -19,8 +19,10 @@ namespace SIT.Manager.Avalonia.Services
         [GeneratedRegex("[1]{1,}\\.[0-9]{1,2}\\.[0-9]{1,5}\\.[0-9]{1,5}")]
         private static partial Regex SITVersionRegex();
 
-        private static string GetFileProductVersionString(string filePath) {
-            if (!File.Exists(filePath)) {
+        private static string GetFileProductVersionString(string filePath)
+        {
+            if (!File.Exists(filePath))
+            {
                 return string.Empty;
             }
 
@@ -28,10 +30,12 @@ namespace SIT.Manager.Avalonia.Services
             string fileVersion = FileVersionInfo.GetVersionInfo(filePath).ProductVersion ?? string.Empty;
 
             // If the above doesn't return anything attempt to read the executable itself
-            if (string.IsNullOrEmpty(fileVersion)) {
+            if (string.IsNullOrEmpty(fileVersion))
+            {
                 PeFile peHeader = new(filePath);
                 StringFileInfo? stringFileInfo = peHeader.Resources?.VsVersionInfo?.StringFileInfo;
-                if (stringFileInfo != null) {
+                if (stringFileInfo != null)
+                {
                     StringTable? fileinfoTable = stringFileInfo.StringTable.Any() ? stringFileInfo.StringTable[0] : null;
                     fileVersion = fileinfoTable?.ProductVersion ?? string.Empty;
                 }
@@ -40,26 +44,32 @@ namespace SIT.Manager.Avalonia.Services
             return fileVersion;
         }
 
-        public string GetEFTVersion(string path) {
+        public string GetEFTVersion(string path)
+        {
             string filePath = Path.Combine(path, "EscapeFromTarkov.exe");
             string fileVersion = GetFileProductVersionString(filePath);
-            if (string.IsNullOrEmpty(fileVersion)) {
+            if (string.IsNullOrEmpty(fileVersion))
+            {
                 _logger.LogWarning("CheckEFTVersion: File did not exist at " + filePath);
             }
-            else {
+            else
+            {
                 fileVersion = EFTVersionRegex().Match(fileVersion).Value.Replace("-", ".");
                 _logger.LogInformation("EFT Version is now: " + fileVersion);
             }
             return fileVersion;
         }
 
-        public string GetSITVersion(string path) {
+        public string GetSITVersion(string path)
+        {
             string filePath = Path.Combine(path, "BepInEx", "plugins", "StayInTarkov.dll");
             string fileVersion = GetFileProductVersionString(filePath);
-            if (string.IsNullOrEmpty(fileVersion)) {
+            if (string.IsNullOrEmpty(fileVersion))
+            {
                 _logger.LogWarning("CheckSITVersion: File did not exist at " + filePath);
             }
-            else {
+            else
+            {
                 fileVersion = SITVersionRegex().Match(fileVersion).Value.ToString();
                 _logger.LogInformation("SIT Version is now: " + fileVersion);
             }

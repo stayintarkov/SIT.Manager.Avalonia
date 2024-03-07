@@ -64,7 +64,7 @@ namespace SIT.Manager.Avalonia.ViewModels
             IAkiServerService akiServerService,
             ILocalizationService localizationService,
             ILogger<PlayPageViewModel> logger,
-            IServiceProvider serviceProvider) 
+            IServiceProvider serviceProvider)
         {
             _configService = configService;
             //TODO: Check that this is the best way to implement DI for the TarkovRequesting. Prettysure service provider would be better
@@ -106,7 +106,8 @@ namespace SIT.Manager.Avalonia.ViewModels
             };
 
             string launchArguments = string.Join(' ', argumentList.Select(argument => $"{argument.Key}={argument.Value}"));
-            if (OperatingSystem.IsLinux()) {
+            if (OperatingSystem.IsLinux())
+            {
                 // We need to make sure that the json is contained in quotes on Linux otherwise you won't be able to connect to the server.
                 launchArguments = string.Join(' ', argumentList.Select(argument => $"{argument.Key}=\"{argument.Value}\""));
             }
@@ -117,27 +118,32 @@ namespace SIT.Manager.Avalonia.ViewModels
         private async Task<string> LoginToServerAsync(Uri address)
         {
             TarkovRequesting requesting = ActivatorUtilities.CreateInstance<TarkovRequesting>(_serviceProvider, address);
-            TarkovLoginInfo loginInfo = new() {
+            TarkovLoginInfo loginInfo = new()
+            {
                 Username = Username,
                 Password = Password,
                 BackendUrl = address.AbsoluteUri.Trim(['/', '\\'])
             };
 
-            try {
+            try
+            {
                 string SessionID = await requesting.LoginAsync(loginInfo);
                 return SessionID;
             }
-            catch (AccountNotFoundException) {
+            catch (AccountNotFoundException)
+            {
                 AkiServerConnectionResponse serverResponse = await requesting.QueryServer();
 
                 TarkovEdition[] editions = new TarkovEdition[serverResponse.Editions.Length];
-                for (int i = 0; i < editions.Length; i++) {
+                for (int i = 0; i < editions.Length; i++)
+                {
                     string editionStr = serverResponse.Editions[i];
                     string descriptionStr = serverResponse.Descriptions[editionStr];
                     editions[i] = new TarkovEdition(editionStr, descriptionStr);
                 }
 
-                ContentDialogResult createAccountResponse = await new ContentDialog() {
+                ContentDialogResult createAccountResponse = await new ContentDialog()
+                {
                     Title = _localizationService.TranslateSource("PlayPageViewModelAccountNotFound"),
                     Content = _localizationService.TranslateSource("PlayPageViewModelAccountNotFoundDescription"),
                     IsPrimaryButtonEnabled = true,
@@ -145,7 +151,8 @@ namespace SIT.Manager.Avalonia.ViewModels
                     CloseButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonNo")
                 }.ShowAsync();
 
-                if (createAccountResponse == ContentDialogResult.Primary) {
+                if (createAccountResponse == ContentDialogResult.Primary)
+                {
                     SelectEditionDialog selectEditionDialog = new SelectEditionDialog(editions);
                     loginInfo.Edition = (await selectEditionDialog.ShowAsync()).Edition;
 
@@ -158,12 +165,15 @@ namespace SIT.Manager.Avalonia.ViewModels
                 else
                     return string.Empty;
             }
-            catch (IncorrectServerPasswordException) {
+            catch (IncorrectServerPasswordException)
+            {
                 Debug.WriteLine("DEBUG: Incorrect password");
                 //TODO: Utils.ShowInfoBar("Connect", $"Invalid password!", InfoBarSeverity.Error);
             }
-            catch (Exception ex) {
-                await new ContentDialog() {
+            catch (Exception ex)
+            {
+                await new ContentDialog()
+                {
                     Title = _localizationService.TranslateSource("PlayPageViewModelLoginErrorTitle"),
                     Content = _localizationService.TranslateSource("PlayPageViewModelLoginErrorDescription", ex.Message),
                     CloseButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonOk")
@@ -174,15 +184,18 @@ namespace SIT.Manager.Avalonia.ViewModels
 
         private static Uri? GetUriFromAddress(string addressString)
         {
-            try {
+            try
+            {
                 UriBuilder addressBuilder = new(addressString);
                 addressBuilder.Port = addressBuilder.Port == 80 ? 6969 : addressBuilder.Port;
                 return addressBuilder.Uri;
             }
-            catch (UriFormatException) {
+            catch (UriFormatException)
+            {
                 return null;
             }
-            catch (Exception) {
+            catch (Exception)
+            {
                 //Something BAAAAD has happened here
                 //TODO: Loggy & content dialog
                 return null;
@@ -239,7 +252,8 @@ namespace SIT.Manager.Avalonia.ViewModels
                 }
             ];
 
-            if (launchServer) {
+            if (launchServer)
+            {
                 validationRules.AddRange(
                     [
                     //Unhandled Instance
@@ -259,9 +273,12 @@ namespace SIT.Manager.Avalonia.ViewModels
                     ]);
             }
 
-            foreach (ValidationRule rule in validationRules) {
-                if (rule?.Check != null && !rule.Check()) {
-                    await new ContentDialog() {
+            foreach (ValidationRule rule in validationRules)
+            {
+                if (rule?.Check != null && !rule.Check())
+                {
+                    await new ContentDialog()
+                    {
                         Title = rule?.Name,
                         Content = rule?.ErrorMessage,
                         CloseButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonOk")
@@ -270,22 +287,28 @@ namespace SIT.Manager.Avalonia.ViewModels
                 }
             }
 
-            if (launchServer) {
+            if (launchServer)
+            {
                 _akiServerService.Start();
 
                 bool aborted = false;
                 RunningState serverState;
-                while ((serverState = _akiServerService.State) == RunningState.Starting) {
+                while ((serverState = _akiServerService.State) == RunningState.Starting)
+                {
                     QuickPlayText = _localizationService.TranslateSource("PlayPageViewModelWaitingForServerTitle");
 
-                    if (serverState == RunningState.Running) {
+                    if (serverState == RunningState.Running)
+                    {
                         // We're done the server is running now
                         break;
                     }
-                    else if (serverState != RunningState.Starting) {
+                    else if (serverState != RunningState.Starting)
+                    {
                         // We have a state that is not right so need to alert the user and abort
-                        await Dispatcher.UIThread.InvokeAsync(() => {
-                            new ContentDialog() {
+                        await Dispatcher.UIThread.InvokeAsync(() =>
+                        {
+                            new ContentDialog()
+                            {
                                 Title = _localizationService.TranslateSource("PlayPageViewModelServerErrorTitle"),
                                 Content = _localizationService.TranslateSource("PlayPageViewModelServerErrorDescription"),
                                 CloseButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonOk")
@@ -299,7 +322,8 @@ namespace SIT.Manager.Avalonia.ViewModels
                 }
 
                 QuickPlayText = _localizationService.TranslateSource("PlayPageViewModelQuickPlayText");
-                if (aborted) {
+                if (aborted)
+                {
                     return;
                 }
             }
@@ -318,7 +342,7 @@ namespace SIT.Manager.Avalonia.ViewModels
             {
                 _tarkovClientService.Start(launchArguments);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError("An exception occured while launching Tarkov: {exMessage}", ex.Message);
                 await new ContentDialog()
@@ -329,12 +353,15 @@ namespace SIT.Manager.Avalonia.ViewModels
                 return;
             }
 
-            if (_configService.Config.CloseAfterLaunch) {
+            if (_configService.Config.CloseAfterLaunch)
+            {
                 IApplicationLifetime? lifetime = App.Current.ApplicationLifetime;
-                if (lifetime != null && lifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime) {
+                if (lifetime != null && lifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
+                {
                     desktopLifetime.Shutdown();
                 }
-                else {
+                else
+                {
                     Environment.Exit(0);
                 }
             }

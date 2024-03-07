@@ -1,6 +1,5 @@
 ﻿using SharpCompress.Archives;
 using SharpCompress.Archives.Zip;
-using SharpCompress.Common;
 using SIT.Manager.Updater;
 using System.Diagnostics;
 

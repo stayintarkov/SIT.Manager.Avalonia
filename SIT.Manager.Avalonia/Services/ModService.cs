@@ -27,14 +27,17 @@ namespace SIT.Manager.Avalonia.Services
         private readonly ILogger<ModService> _logger = logger;
         private readonly ILocalizationService _localizationService = localizationService;
 
-        public async Task DownloadModsCollection() {
+        public async Task DownloadModsCollection()
+        {
             string modsDirectory = Path.Combine(_configService.Config.InstallPath, "SITLauncher", "Mods");
-            if (!Directory.Exists(modsDirectory)) {
+            if (!Directory.Exists(modsDirectory))
+            {
                 Directory.CreateDirectory(modsDirectory);
             }
 
             string[] subDirs = Directory.GetDirectories(modsDirectory);
-            foreach (string subDir in subDirs) {
+            foreach (string subDir in subDirs)
+            {
                 Directory.Delete(subDir, true);
             }
             Directory.CreateDirectory(Path.Combine(modsDirectory, "Extracted"));
@@ -43,17 +46,21 @@ namespace SIT.Manager.Avalonia.Services
             await _filesService.ExtractArchive(Path.Combine(modsDirectory, "SIT.Mod.Ports.Collection.zip"), Path.Combine(modsDirectory, "Extracted"));
         }
 
-        public async Task AutoUpdate(List<ModInfo> outdatedMods) {
+        public async Task AutoUpdate(List<ModInfo> outdatedMods)
+        {
             List<string> outdatedNames = [.. outdatedMods.Select(x => x.Name)];
             string outdatedString = string.Join("\n", outdatedNames);
 
-            ScrollViewer scrollView = new() {
-                Content = new TextBlock() {
+            ScrollViewer scrollView = new()
+            {
+                Content = new TextBlock()
+                {
                     Text = _localizationService.TranslateSource("ModServiceOutdatedDescription", $"{outdatedMods.Count}", outdatedString)
                 }
             };
 
-            ContentDialog contentDialog = new() {
+            ContentDialog contentDialog = new()
+            {
                 Title = _localizationService.TranslateSource("ModServiceOutdatedModsFoundTitle"),
                 Content = scrollView,
                 CloseButtonText = _localizationService.TranslateSource("ModServiceButtonNo"),
@@ -62,8 +69,10 @@ namespace SIT.Manager.Avalonia.Services
             };
 
             ContentDialogResult result = await contentDialog.ShowAsync();
-            if (result == ContentDialogResult.Primary) {
-                foreach (ModInfo mod in outdatedMods) {
+            if (result == ContentDialogResult.Primary)
+            {
+                foreach (ModInfo mod in outdatedMods)
+                {
                     ManagerConfig config = _configService.Config;
                     config.InstalledMods.Remove(mod.Name);
                     _configService.UpdateConfig(config);
@@ -71,22 +80,28 @@ namespace SIT.Manager.Avalonia.Services
                     await InstallMod(mod, true);
                 }
             }
-            else {
+            else
+            {
                 return;
             }
 
             _barNotificationService.ShowSuccess(_localizationService.TranslateSource("ModServiceUpdatedModsTitle"), _localizationService.TranslateSource("ModServiceUpdatedModsDescription", $"{outdatedMods.Count}"));
         }
 
-        public async Task<bool> InstallMod(ModInfo mod, bool suppressNotification = false) {
-            if (string.IsNullOrEmpty(_configService.Config.InstallPath)) {
+        public async Task<bool> InstallMod(ModInfo mod, bool suppressNotification = false)
+        {
+            if (string.IsNullOrEmpty(_configService.Config.InstallPath))
+            {
                 _barNotificationService.ShowError(_localizationService.TranslateSource("ModServiceInstallModTitle"), _localizationService.TranslateSource("ModServiceInstallErrorModDescription"));
                 return false;
             }
 
-            try {
-                if (mod.SupportedVersion != _configService.Config.SitVersion) {
-                    ContentDialog contentDialog = new() {
+            try
+            {
+                if (mod.SupportedVersion != _configService.Config.SitVersion)
+                {
+                    ContentDialog contentDialog = new()
+                    {
                         Title = _localizationService.TranslateSource("ModServiceWarningTitle"),
                         Content = _localizationService.TranslateSource("ModServiceWarningDescription", mod.SupportedVersion, $"{(string.IsNullOrEmpty(_configService.Config.SitVersion) ? _localizationService.TranslateSource("ModServiceUnknownTitle") : _configService.Config.SitVersion)}"),
                         HorizontalContentAlignment = HorizontalAlignment.Center,
@@ -95,12 +110,14 @@ namespace SIT.Manager.Avalonia.Services
                         CloseButtonText = _localizationService.TranslateSource("ModServiceButtonNo")
                     };
                     ContentDialogResult response = await contentDialog.ShowAsync();
-                    if (response != ContentDialogResult.Primary) {
+                    if (response != ContentDialogResult.Primary)
+                    {
                         return false;
                     }
                 }
 
-                if (mod == null) {
+                if (mod == null)
+                {
                     return false;
                 }
 
@@ -108,13 +125,15 @@ namespace SIT.Manager.Avalonia.Services
                 string gamePluginsPath = Path.Combine(installPath, "BepInEx", "plugins");
                 string gameConfigPath = Path.Combine(installPath, "BepInEx", "config");
 
-                foreach (string pluginFile in mod.PluginFiles) {
+                foreach (string pluginFile in mod.PluginFiles)
+                {
                     string sourcePath = Path.Combine(installPath, "SITLauncher", "Mods", "Extracted", "plugins", pluginFile);
                     string targetPath = Path.Combine(gamePluginsPath, pluginFile);
                     File.Copy(sourcePath, targetPath, true);
                 }
 
-                foreach (string? configFile in mod.ConfigFiles) {
+                foreach (string? configFile in mod.ConfigFiles)
+                {
                     string sourcePath = Path.Combine(installPath, "SITLauncher", "Mods", "Extracted", "config", configFile);
                     string targetPath = Path.Combine(gameConfigPath + configFile);
                     File.Copy(sourcePath, targetPath, true);
@@ -124,11 +143,13 @@ namespace SIT.Manager.Avalonia.Services
                 config.InstalledMods.Add(mod.Name, mod.PortVersion);
                 _configService.UpdateConfig(config);
 
-                if (!suppressNotification) {
+                if (!suppressNotification)
+                {
                     _barNotificationService.ShowSuccess(_localizationService.TranslateSource("ModServiceInstallModTitle"), _localizationService.TranslateSource("ModServiceInstallModDescription", mod.Name));
                 }
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 _logger.LogError(ex, "InstallMod");
                 _barNotificationService.ShowError(_localizationService.TranslateSource("ModServiceInstallModTitle"), _localizationService.TranslateSource("ModServiceErrorInstallModDescription", mod.Name));
                 return false;
@@ -137,9 +158,12 @@ namespace SIT.Manager.Avalonia.Services
             return true;
         }
 
-        public async Task<bool> UninstallMod(ModInfo mod) {
-            try {
-                if (mod == null || string.IsNullOrEmpty(_configService.Config.InstallPath)) {
+        public async Task<bool> UninstallMod(ModInfo mod)
+        {
+            try
+            {
+                if (mod == null || string.IsNullOrEmpty(_configService.Config.InstallPath))
+                {
                     return false;
                 }
 
@@ -147,13 +171,17 @@ namespace SIT.Manager.Avalonia.Services
                 string gamePluginsPath = Path.Combine(installPath, "BepInEx", "plugins");
                 string gameConfigPath = Path.Combine(installPath, "BepInEx", "config");
 
-                foreach (string pluginFile in mod.PluginFiles) {
+                foreach (string pluginFile in mod.PluginFiles)
+                {
                     string targetPath = Path.Combine(gamePluginsPath, pluginFile);
-                    if (File.Exists(targetPath)) {
+                    if (File.Exists(targetPath))
+                    {
                         File.Delete(targetPath);
                     }
-                    else {
-                        ContentDialog dialog = new() {
+                    else
+                    {
+                        ContentDialog dialog = new()
+                        {
                             Title = _localizationService.TranslateSource("ModServiceErrorUninstallModTitle"),
                             Content = _localizationService.TranslateSource("ModServiceErrorUninstallModDescription", mod.Name, pluginFile),
                             CloseButtonText = _localizationService.TranslateSource("ModServiceButtonNo"),
@@ -162,19 +190,24 @@ namespace SIT.Manager.Avalonia.Services
                         };
 
                         ContentDialogResult result = await dialog.ShowAsync();
-                        if (result != ContentDialogResult.Primary) {
+                        if (result != ContentDialogResult.Primary)
+                        {
                             throw new FileNotFoundException(_localizationService.TranslateSource("ModServiceErrorExceptionUninstallModDescription", mod.Name, pluginFile));
                         }
                     }
                 }
 
-                foreach (var configFile in mod.ConfigFiles) {
+                foreach (var configFile in mod.ConfigFiles)
+                {
                     string targetPath = Path.Combine(gamePluginsPath, configFile);
-                    if (File.Exists(targetPath)) {
+                    if (File.Exists(targetPath))
+                    {
                         File.Delete(targetPath);
                     }
-                    else {
-                        ContentDialog dialog = new() {
+                    else
+                    {
+                        ContentDialog dialog = new()
+                        {
                             Title = _localizationService.TranslateSource("ModServiceErrorUninstallModTitle"),
                             Content = _localizationService.TranslateSource("ModServiceErrorExceptionUninstallModDescription", mod.Name, configFile),
                             CloseButtonText = _localizationService.TranslateSource("ModServiceButtonNo"),
@@ -184,7 +217,8 @@ namespace SIT.Manager.Avalonia.Services
 
                         ContentDialogResult result = await dialog.ShowAsync();
 
-                        if (result != ContentDialogResult.Primary) {
+                        if (result != ContentDialogResult.Primary)
+                        {
                             throw new FileNotFoundException(_localizationService.TranslateSource("ModServiceErrorExceptionFileUninstallModDescription", mod.Name, configFile));
                         }
                     }
@@ -196,7 +230,8 @@ namespace SIT.Manager.Avalonia.Services
 
                 _barNotificationService.ShowSuccess(_localizationService.TranslateSource("ModServiceFileUninstallModTitle"), _localizationService.TranslateSource("ModServiceFileUninstallModDescription", mod.Name));
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 _logger.LogError(ex, "UninstallMod");
                 _barNotificationService.ShowError(_localizationService.TranslateSource("ModServiceFileUninstallModTitle"), _localizationService.TranslateSource("ModServiceErrorInstallModDescription", mod.Name));
                 return false;

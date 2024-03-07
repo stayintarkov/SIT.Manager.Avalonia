@@ -8,7 +8,8 @@ namespace SIT.Manager.Avalonia.Controls
         public static new readonly StyledProperty<int> HeightProperty =
             AvaloniaProperty.Register<LoadingSpinner, int>(nameof(Height), defaultValue: 150);
 
-        public new int Height {
+        public new int Height
+        {
             get { return GetValue(HeightProperty); }
             set { SetValue(HeightProperty, value); }
         }
@@ -16,7 +17,8 @@ namespace SIT.Manager.Avalonia.Controls
         public static new readonly StyledProperty<int> WidthProperty =
             AvaloniaProperty.Register<LoadingSpinner, int>(nameof(Width), defaultValue: 150);
 
-        public new int Width {
+        public new int Width
+        {
             get { return GetValue(WidthProperty); }
             set { SetValue(WidthProperty, value); }
         }
@@ -24,12 +26,14 @@ namespace SIT.Manager.Avalonia.Controls
         public static readonly StyledProperty<int> StrokeWidthProperty =
             AvaloniaProperty.Register<LoadingSpinner, int>(nameof(StrokeWidth), defaultValue: 16);
 
-        public int StrokeWidth {
+        public int StrokeWidth
+        {
             get { return GetValue(StrokeWidthProperty); }
             set { SetValue(StrokeWidthProperty, value); }
         }
 
-        public LoadingSpinner() {
+        public LoadingSpinner()
+        {
             InitializeComponent();
         }
     }

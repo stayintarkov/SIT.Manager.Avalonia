@@ -12,7 +12,8 @@ namespace SIT.Manager.Avalonia.ViewModels.Dialogs
         private TarkovEdition? _selectedEdition = null;
 
         public ObservableCollection<TarkovEdition> Editions { get; } = [];
-        public SelectEditionDialogViewModel(TarkovEdition[] editions) {
+        public SelectEditionDialogViewModel(TarkovEdition[] editions)
+        {
             Editions.AddRange(editions);
             SelectedEdition = Editions.FirstOrDefault();
         }

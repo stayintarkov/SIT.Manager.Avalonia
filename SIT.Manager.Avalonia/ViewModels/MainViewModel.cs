@@ -79,7 +79,7 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
         {
             await CheckForUpdate();
         });
-        _managerConfigService.ConfigChanged += async (o, c) =>  await CheckForUpdate();
+        _managerConfigService.ConfigChanged += async (o, c) => await CheckForUpdate();
     }
 
     private async Task CheckForUpdate()
@@ -110,7 +110,7 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
             CloseButtonText = _localizationService.TranslateSource("MainPageViewModelButtonNo")
         }.ShowAsync();
 
-        if(updateResult == ContentDialogResult.Primary)
+        if (updateResult == ContentDialogResult.Primary)
         {
             //TODO: Add a way to update for linux users
             if (OperatingSystem.IsWindows())
@@ -143,31 +143,38 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
         }
     }
 
-    private void ActionNotificationService_ActionNotificationReceived(object? sender, ActionNotification e) {
+    private void ActionNotificationService_ActionNotificationReceived(object? sender, ActionNotification e)
+    {
         ActionPanelNotification = e;
     }
 
-    private async void BarNotificationService_BarNotificationReceived(object? sender, BarNotification e) {
+    private async void BarNotificationService_BarNotificationReceived(object? sender, BarNotification e)
+    {
         BarNotifications.Add(e);
-        if (e.Delay > 0) {
+        if (e.Delay > 0)
+        {
             await Task.Delay(TimeSpan.FromSeconds(e.Delay));
             BarNotifications.Remove(e);
         }
     }
 
-    private bool NavigateToPage(Type page, bool suppressTransition = false) {
+    private bool NavigateToPage(Type page, bool suppressTransition = false)
+    {
         object? currentPage = contentFrame?.Content;
-        if (page == currentPage?.GetType()) {
+        if (page == currentPage?.GetType())
+        {
             return false;
         }
         return contentFrame?.Navigate(page, null, suppressTransition ? new SuppressNavigationTransitionInfo() : null) ?? false;
     }
 
-    public void RegisterContentFrame(Frame frame) {
+    public void RegisterContentFrame(Frame frame)
+    {
         contentFrame = frame;
     }
 
-    public void Receive(PageNavigationMessage message) {
+    public void Receive(PageNavigationMessage message)
+    {
         NavigateToPage(message.Value.TargetPage, message.Value.SuppressTransition);
     }
 }
