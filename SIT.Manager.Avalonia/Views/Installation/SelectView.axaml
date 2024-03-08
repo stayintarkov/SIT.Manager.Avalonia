@@ -22,6 +22,10 @@
 			<TextBlock Text="Escape From Tarkov" Margin="4" VerticalAlignment="Center"/>
 			<Border Classes="StandardFrame">
 				<StackPanel>
+					<TextBlock Text="Detected BSG Escape From Tarkov install, if you have already installed SIT please go to the Settings page and change the EFT install path to this folder. Otherwise you will be asked to provide a folder to install SIT"
+							   IsVisible="{Binding DetectedBSGInstallPath}"
+							   Margin="0,0,10,0" 
+							   VerticalAlignment="Center"/>
 					<StackPanel Orientation="Horizontal">
 						<TextBlock Text="{DynamicResource SettingsEFTInstallPathTitle}" Margin="0,0,10,0" VerticalAlignment="Center"/>
 						<TextBlock Margin="0,0,10,0" Text="{Binding Config.InstallPath}"/>

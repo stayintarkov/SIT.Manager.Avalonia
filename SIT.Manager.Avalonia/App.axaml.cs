@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Services;
+using SIT.Manager.Avalonia.Services.Install;
 using SIT.Manager.Avalonia.ViewModels;
 using SIT.Manager.Avalonia.ViewModels.Installation;
 using SIT.Manager.Avalonia.Views;
