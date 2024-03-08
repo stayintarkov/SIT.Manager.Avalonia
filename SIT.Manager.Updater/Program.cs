@@ -4,7 +4,7 @@ using SIT.Manager.Updater;
 using System.Diagnostics;
 
 const string SITMANAGER_PROC_NAME = "SIT.Manager.Avalonia.Desktop.exe";
-const string SITMANAGER_RELEASE_URL = @"https://github.com/stayintarkov/SIT.Manager.Avalonia/releases/download/beta/win-x64.zip";
+const string SITMANAGER_RELEASE_URL = @"https://github.com/stayintarkov/SIT.Manager.Avalonia/releases/latest/download/win-x64.zip";
 
 bool skipInteractivity = false;
 bool killProcNoPrompt = false;
