@@ -13,10 +13,9 @@ public partial class InstallPageViewModel : ViewModelBase, IRecipient<Installati
     private readonly Dictionary<int, Type> InstallPageContentViews = new() {
         { 0, typeof(SelectView) },
         { 1, typeof(ConfigureView) },
-        { 2, typeof(DownloadView) },
-        { 3, typeof(PatchView) },
-        { 4, typeof(InstallView) },
-        { 5, typeof(CompleteView) }
+        { 2, typeof(PatchView) },
+        { 3, typeof(InstallView) },
+        { 4, typeof(CompleteView) }
     };
 
     [ObservableProperty]

@@ -26,7 +26,6 @@
 					  Dock="Left">
 			<labs:StepBarItem>Select</labs:StepBarItem>
 			<labs:StepBarItem>Configure</labs:StepBarItem>
-			<labs:StepBarItem>Dowload</labs:StepBarItem>
 			<labs:StepBarItem>Patch</labs:StepBarItem>
 			<labs:StepBarItem>Install</labs:StepBarItem>
 			<labs:StepBarItem>Complete</labs:StepBarItem>

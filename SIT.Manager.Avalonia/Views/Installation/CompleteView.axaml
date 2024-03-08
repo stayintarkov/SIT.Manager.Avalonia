@@ -2,13 +2,21 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:SIT.Manager.Avalonia.ViewModels.Installation"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:vm="clr-namespace:SIT.Manager.Avalonia.ViewModels.Installation"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SIT.Manager.Avalonia.Views.Installation.CompleteView"
 			 x:DataType="vm:CompleteViewModel">
-	<StackPanel>
-		<TextBlock Text="Welcome to complete!"/>
-		<Button Content="Progress" Command="{Binding ProgressCommand}"/>
-		<Button Content="Reset" Command="{Binding ResetCommand}"/>
-	</StackPanel>
+
+	<Border Classes="StandardFrame" Grid.Row="0">
+		<StackPanel HorizontalAlignment="Center"
+					VerticalAlignment="Center">
+			<ui:SymbolIcon Symbol="Accept" Margin="0,0,10,0"/>
+			<TextBlock Foreground="White"
+					   VerticalAlignment="Center"
+					   Text="Install Completed"
+					   FontSize="12"/>
+			<Button Content="Start Playing" Command="{Binding ProgressCommand}"/>
+		</StackPanel>
+	</Border>
 </UserControl>

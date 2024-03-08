@@ -6,8 +6,82 @@
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SIT.Manager.Avalonia.Views.Installation.PatchView"
 			 x:DataType="vm:PatchViewModel">
-	<StackPanel>
-		<TextBlock Text="Welcome to patch!"/>
-		<Button Content="Progress" Command="{Binding ProgressCommand}"/>
-	</StackPanel>
+	<Grid RowDefinitions="*, *">
+		<Border Classes="StandardFrame" Grid.Row="0">
+			<StackPanel HorizontalAlignment="Center"
+						VerticalAlignment="Center">
+				<StackPanel Name="MoveEFTPanel"
+						Orientation="Horizontal"
+						HorizontalAlignment="Center"
+						MinHeight="24">
+					<TextBlock Foreground="White"
+							   VerticalAlignment="Center"
+							   Text="Copying EFT"
+							   FontSize="12"/>
+					<ProgressBar Margin="15 0 0 0"
+								 VerticalAlignment="Center"
+								 Width="150"
+								 MinWidth="100"
+								 MaxWidth="150"
+								 Minimum="0"
+								 Maximum="100"/>
+					<TextBlock Margin="15 0 0 0"
+							   Text="0%"
+							   VerticalAlignment="Center"/>
+				</StackPanel>
+
+				<StackPanel Name="DownloadPatcherPanel"
+						Orientation="Horizontal"
+						HorizontalAlignment="Center"
+						MinHeight="24">
+					<TextBlock Foreground="White"
+							   VerticalAlignment="Center"
+							   Text="Downloading"
+							   FontSize="12"/>
+					<ProgressBar Margin="15 0 0 0"
+								 VerticalAlignment="Center"
+								 Width="150"
+								 MinWidth="100"
+								 MaxWidth="150"
+								 Minimum="0"
+								 Maximum="100"/>
+					<TextBlock Margin="15 0 0 0"
+							   Text="0%"
+							   VerticalAlignment="Center"/>
+				</StackPanel>
+
+				<StackPanel Name="ExtractPatcherPanel"
+						Orientation="Horizontal"
+						HorizontalAlignment="Center"
+						MinHeight="24">
+					<TextBlock Name="ActionPanelText"
+							   Foreground="White"
+							   VerticalAlignment="Center"
+							   Text="Extracting"
+							   FontSize="12"/>
+					<ProgressBar Name="ActionPanelBar"
+								 Margin="15 0 0 0"
+								 VerticalAlignment="Center"
+								 Width="150"
+								 MinWidth="100"
+								 MaxWidth="150"
+								 Minimum="0"
+								 Maximum="100"/>
+					<TextBlock Name="ActionPanelPercentageText"
+							   Margin="15 0 0 0"
+							   Text="0%"
+							   VerticalAlignment="Center"/>
+				</StackPanel>
+			</StackPanel>
+		</Border>
+
+		<Border Classes="StandardFrame"
+				Grid.Row="1">
+			<StackPanel HorizontalAlignment="Center"
+						VerticalAlignment="Center">
+				<TextBlock Text="Embedded Patcher Window goes here!"/>
+				<Button Content="Progress" Command="{Binding ProgressCommand}"/>
+			</StackPanel>
+		</Border>
+	</Grid>
 </UserControl>
