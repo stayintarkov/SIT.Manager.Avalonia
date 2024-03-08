@@ -1,15 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using SIT.Manager.Avalonia.Models.Messages;
+using SIT.Manager.Avalonia.Models.Installation;
 
-namespace SIT.Manager.Avalonia.ViewModels.Installation
+namespace SIT.Manager.Avalonia.ViewModels.Installation;
+
+public partial class PatchViewModel : ViewModelBase
 {
-    public partial class PatchViewModel : ViewModelBase
+    [RelayCommand]
+    private void Progress()
     {
-        [RelayCommand]
-        private void Progress()
-        {
-            WeakReferenceMessenger.Default.Send(new InstallationProgressMessage(true));
-        }
+        WeakReferenceMessenger.Default.Send(new ProgressInstallMessage(true));
     }
 }

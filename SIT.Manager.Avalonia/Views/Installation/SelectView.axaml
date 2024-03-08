@@ -3,111 +3,133 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:im="clr-namespace:SIT.Manager.Avalonia.Models.Installation"
 			 xmlns:vm="clr-namespace:SIT.Manager.Avalonia.ViewModels.Installation"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SIT.Manager.Avalonia.Views.Installation.SelectView"
 			 x:DataType="vm:SelectViewModel">
 	<UserControl.Styles>
-		<Style Selector="Button.InstallButton">
+		<Style Selector="ui|SymbolIcon">
+			<Setter Property="Margin" Value="0,0,8,0"/>
+		</Style>
+
+		<Style Selector="TextBlock.FrameHeading">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="Margin" Value="8,0,0,0"/>
+		</Style>
+		
+		<Style Selector="TextBlock.WarningMessage">
+			<Setter Property="Foreground" Value="Yellow"/>
+			<Setter Property="TextWrapping" Value="Wrap"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
+		
+		<Style Selector="Button">
 			<Setter Property="Height" Value="50"/>
 			<Setter Property="HorizontalAlignment" Value="Center"/>
 			<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-			<Setter Property="Margin" Value="7"/>
+			<Setter Property="Margin" Value="4"/>
 		</Style>
 	</UserControl.Styles>
-	
-	<Grid RowDefinitions="*,*">
-		<!-- EFT Game -->
-		<StackPanel Grid.Row="0" VerticalAlignment="Center">
-			<TextBlock Text="Escape From Tarkov" Margin="4" VerticalAlignment="Center"/>
-			<Border Classes="StandardFrame">
-				<StackPanel>
-					<TextBlock Text="Detected BSG Escape From Tarkov install, if you have already installed SIT please go to the Settings page and change the EFT install path to this folder. Otherwise you will be asked to provide a folder to install SIT"
-							   IsVisible="{Binding DetectedBSGInstallPath}"
-							   Margin="0,0,10,0" 
-							   VerticalAlignment="Center"/>
-					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="{DynamicResource SettingsEFTInstallPathTitle}" Margin="0,0,10,0" VerticalAlignment="Center"/>
-						<TextBlock Margin="0,0,10,0" Text="{Binding Config.InstallPath}"/>
-					</StackPanel>
-					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="{DynamicResource SettingsEFTVersionTitle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
-						<SelectableTextBlock Text="{Binding Config.TarkovVersion, Mode=TwoWay}" Margin="0,10,10,0" VerticalAlignment="Center"/>
-					</StackPanel>
-					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="{DynamicResource SettingsSITVersionTitle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
-						<SelectableTextBlock Text="{Binding Config.SitVersion, Mode=TwoWay}" Margin="0,10,10,0" VerticalAlignment="Center"/>
-					</StackPanel>
-					<Grid ColumnDefinitions="*,*">
-						<Button Grid.Column="0"
-								Classes="InstallButton"
-								Content="Install"
-								ToolTip.Tip="{DynamicResource ToolsSITToolTip}"
-								Command="{Binding ProgressCommand}">
-							<StackPanel Orientation="Horizontal">
-								<ui:SymbolIcon Symbol="Add" Margin="0,0,10,0"/>
-								<TextBlock Text="{DynamicResource ToolsSITTitle}"/>
-							</StackPanel>
-						</Button>
 
-						<Button Grid.Column="1"
-								Classes="InstallButton"
-								Content=""
-								ToolTip.Tip="{DynamicResource ToolsInstallServerButtonToolTip}"
-								Command="{Binding ProgressCommand}">
-							<StackPanel Orientation="Horizontal">
-								<ui:SymbolIcon Symbol="Upload" Margin="0,0,10,0"/>
-								<TextBlock Text="Update SIT"/>
-							</StackPanel>
-						</Button>
-					</Grid>
-				</StackPanel>
-			</Border>
-		</StackPanel>
+	<ScrollViewer>
+		<Grid RowDefinitions="*,*">
+			<!-- EFT Game -->
+			<StackPanel Grid.Row="0" VerticalAlignment="Center">
+				<TextBlock Text="Escape From Tarkov" Classes="FrameHeading"/>
+				<Border Classes="StandardFrame">
+					<StackPanel>
+						<TextBlock Text="Detected BSG Escape From Tarkov install, if you have already installed SIT please go to the Settings page and change the EFT install path to this folder. Otherwise you will be asked to provide an empty folder to copy BSG EFT installation and install SIT to"
+								   IsVisible="{Binding CurrentInstallProcessState.UsingBsgInstallPath}"
+								   Classes="WarningMessage"/>
+						<TextBlock Text="Unable to find EFT install please go and set this manually in the Settings page"
+								   IsVisible="{Binding NoEftInstallPathSet}"
+								   Classes="WarningMessage"/>
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Text="{DynamicResource SettingsEFTInstallPathTitle}"/>
+							<TextBlock Text="{Binding CurrentInstallProcessState.EftInstallPath}"/>
+						</StackPanel>
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Text="{DynamicResource SettingsEFTVersionTitle}"/>
+							<SelectableTextBlock Text="{Binding CurrentInstallProcessState.EftVersion}"/>
+						</StackPanel>
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Text="{DynamicResource SettingsSITVersionTitle}"/>
+							<SelectableTextBlock Text="{Binding CurrentInstallProcessState.SitVersion}"/>
+						</StackPanel>
+						<Grid ColumnDefinitions="*,*">
+							<Button Grid.Column="0"
+									ToolTip.Tip="{DynamicResource ToolsSITToolTip}"
+									IsEnabled="{Binding !NoEftInstallPathSet}"
+									Command="{Binding ProgressInstallCommand}"
+									CommandParameter="{x:Static im:RequestedInstallOperation.InstallSit}">
+								<StackPanel Orientation="Horizontal">
+									<ui:SymbolIcon Symbol="Add"/>
+									<TextBlock Text="{DynamicResource ToolsSITTitle}"/>
+								</StackPanel>
+							</Button>
 
-		<!-- Server -->
-		<StackPanel Grid.Row="1" VerticalAlignment="Center">
-			<TextBlock Text="{DynamicResource SettingsSPTAKITitle}" Margin="4" VerticalAlignment="Center"/>
-			<Border Classes="StandardFrame">
-				<StackPanel>
-					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="{DynamicResource SettingsSPTAKIPathTitle}"  VerticalAlignment="Center"/>
-						<TextBlock Margin="5" Text="{Binding Config.AkiServerPath}"/>
+							<Button Grid.Column="1"
+									IsEnabled="{Binding !NoEftInstallPathSet}"
+									ToolTip.Tip="{DynamicResource ToolsInstallServerButtonToolTip}"
+									Command="{Binding ProgressInstallCommand}"
+									CommandParameter="{x:Static im:RequestedInstallOperation.UpdateSit}">
+								<StackPanel Orientation="Horizontal">
+									<ui:SymbolIcon Symbol="Upload"/>
+									<TextBlock Text="Update SIT"/>
+								</StackPanel>
+							</Button>
+						</Grid>
 					</StackPanel>
-					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="Server Version:" Margin="0,10,10,0" VerticalAlignment="Center"/>
-						<SelectableTextBlock Text="{Binding Config.TarkovVersion, Mode=TwoWay}" Margin="0,10,10,0" VerticalAlignment="Center"/>
-					</StackPanel>
-					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="SIT Mod Version:" Margin="0,10,10,0" VerticalAlignment="Center"/>
-						<SelectableTextBlock Text="{Binding Config.SitVersion, Mode=TwoWay}" Margin="0,10,10,0" VerticalAlignment="Center"/>
-					</StackPanel>
+				</Border>
+			</StackPanel>
 
-					<Grid ColumnDefinitions="*,*">
-						<Button Grid.Column="0"
-								Classes="InstallButton"
-								Content="Install"
-								ToolTip.Tip="{DynamicResource ToolsSITToolTip}"
-								Command="{Binding ProgressCommand}">
-							<StackPanel Orientation="Horizontal">
-								<ui:SymbolIcon Symbol="Download" Margin="0,0,10,0"/>
-								<TextBlock Text="{DynamicResource ToolsInstallServerButtonTitle}"/>
-							</StackPanel>
-						</Button>
+			<!-- Server -->
+			<StackPanel Grid.Row="1" VerticalAlignment="Center">
+				<TextBlock Text="{DynamicResource SettingsSPTAKITitle}" Classes="FrameHeading"/>
+				<Border Classes="StandardFrame">
+					<StackPanel>
+						<TextBlock Text="Unable to find SPT-AKI install if you have already installed AKI-SPT please go to the Settings page and set the SPT-AKI install path. Otherwise you will be asked to provide an empty folder to install SPT-AKI to"
+								   IsVisible="{Binding NoAkiInstallPathSet}"
+								   Classes="WarningMessage"/>
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Text="{DynamicResource SettingsSPTAKIPathTitle}"/>
+							<TextBlock Text="{Binding CurrentInstallProcessState.SptAkiInstallPath}"/>
+						</StackPanel>
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Text="SPT-AKI Version:"/>
+							<SelectableTextBlock Text="{Binding CurrentInstallProcessState.SptAkiVersion}"/>
+						</StackPanel>
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Text="SIT Mod Version:"/>
+							<SelectableTextBlock Text="{Binding CurrentInstallProcessState.SitModVersion}"/>
+						</StackPanel>
 
-						<Button Grid.Column="1"
-								Classes="InstallButton"
-								Content=""
-								ToolTip.Tip="{DynamicResource ToolsInstallServerButtonToolTip}"
-								Command="{Binding ProgressCommand}">
-							<StackPanel Orientation="Horizontal">
-								<ui:SymbolIcon Symbol="Upload" Margin="0,0,10,0"/>
-								<TextBlock Text="Update Server + SIT Mod"/>
-							</StackPanel>
-						</Button>
-					</Grid>
-				</StackPanel>
-			</Border>
-		</StackPanel>
-	</Grid>
+						<Grid ColumnDefinitions="*,*">
+							<Button Grid.Column="0"
+									ToolTip.Tip="{DynamicResource ToolsSITToolTip}"
+									Command="{Binding ProgressInstallCommand}"
+									CommandParameter="{x:Static im:RequestedInstallOperation.InstallServer}">
+								<StackPanel Orientation="Horizontal">
+									<ui:SymbolIcon Symbol="Download"/>
+									<TextBlock Text="{DynamicResource ToolsInstallServerButtonTitle}"/>
+								</StackPanel>
+							</Button>
+
+							<Button Grid.Column="1"
+									IsEnabled="{Binding !NoAkiInstallPathSet}"
+									ToolTip.Tip="{DynamicResource ToolsInstallServerButtonToolTip}"
+									Command="{Binding ProgressInstallCommand}"
+									CommandParameter="{x:Static im:RequestedInstallOperation.UpdateServer}">
+								<StackPanel Orientation="Horizontal">
+									<ui:SymbolIcon Symbol="Upload"/>
+									<TextBlock Text="Update Server + SIT Mod"/>
+								</StackPanel>
+							</Button>
+						</Grid>
+					</StackPanel>
+				</Border>
+			</StackPanel>
+		</Grid>
+	</ScrollViewer>
 </UserControl>

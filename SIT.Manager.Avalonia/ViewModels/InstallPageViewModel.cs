@@ -2,14 +2,16 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using SIT.Manager.Avalonia.Models.Installation;
-using SIT.Manager.Avalonia.Models.Messages;
 using SIT.Manager.Avalonia.Views.Installation;
 using System;
 using System.Collections.Generic;
 
 namespace SIT.Manager.Avalonia.ViewModels;
 
-public partial class InstallPageViewModel : ViewModelBase, IRecipient<InstallationProgressMessage>
+public partial class InstallPageViewModel : ViewModelBase,
+                                            IRecipient<ProgressInstallMessage>,
+                                            IRecipient<InstallProcessStateChangedMessage>,
+                                            IRecipient<InstallProcessStateRequestMessage>
 {
     private readonly Dictionary<int, Type> InstallPageContentViews = new() {
         { 0, typeof(SelectView) },
@@ -19,17 +21,17 @@ public partial class InstallPageViewModel : ViewModelBase, IRecipient<Installati
         { 4, typeof(CompleteView) }
     };
 
-    private InstallProcessState _install = new InstallProcessState();
+    private InstallProcessState _installProcessState = new();
 
     [ObservableProperty]
     private int _currentInstallStep = 0;
 
     [ObservableProperty]
-    private Control _installStepControl = new SelectView();
+    private Control? _installStepControl;
 
     public InstallPageViewModel()
     {
-        WeakReferenceMessenger.Default.Register(this);
+        WeakReferenceMessenger.Default.RegisterAll(this);
         ResetInstallState();
     }
 
@@ -37,10 +39,10 @@ public partial class InstallPageViewModel : ViewModelBase, IRecipient<Installati
     {
         CurrentInstallStep = 0;
         InstallStepControl = new SelectView();
-        _install = new InstallProcessState();
+        _installProcessState = new InstallProcessState();
     }
 
-    public void Receive(InstallationProgressMessage message)
+    public void Receive(ProgressInstallMessage message)
     {
         if (message.Value)
         {
@@ -59,5 +61,15 @@ public partial class InstallPageViewModel : ViewModelBase, IRecipient<Installati
         {
             ResetInstallState();
         }
+    }
+
+    public void Receive(InstallProcessStateChangedMessage message)
+    {
+        _installProcessState = message.Value;
+    }
+
+    public void Receive(InstallProcessStateRequestMessage message)
+    {
+        message.Reply(_installProcessState);
     }
 }
