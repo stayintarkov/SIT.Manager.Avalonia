@@ -96,7 +96,6 @@ public sealed partial class App : Application
         // Installation View Models
         services.AddTransient<CompleteViewModel>();
         services.AddTransient<ConfigureViewModel>();
-        services.AddTransient<DownloadViewModel>();
         services.AddTransient<InstallViewModel>();
         services.AddTransient<PatchViewModel>();
         services.AddTransient<SelectViewModel>();

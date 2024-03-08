@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using SIT.Manager.Avalonia.Models.Installation;
 using SIT.Manager.Avalonia.Models.Messages;
 using SIT.Manager.Avalonia.Views.Installation;
 using System;
@@ -18,17 +19,25 @@ public partial class InstallPageViewModel : ViewModelBase, IRecipient<Installati
         { 4, typeof(CompleteView) }
     };
 
+    private InstallProcessState _install = new InstallProcessState();
+
     [ObservableProperty]
     private int _currentInstallStep = 0;
 
     [ObservableProperty]
-    private Control _installStepControl;
+    private Control _installStepControl = new SelectView();
 
     public InstallPageViewModel()
     {
         WeakReferenceMessenger.Default.Register(this);
+        ResetInstallState();
+    }
 
+    private void ResetInstallState()
+    {
+        CurrentInstallStep = 0;
         InstallStepControl = new SelectView();
+        _install = new InstallProcessState();
     }
 
     public void Receive(InstallationProgressMessage message)
@@ -48,8 +57,7 @@ public partial class InstallPageViewModel : ViewModelBase, IRecipient<Installati
         }
         else
         {
-            CurrentInstallStep = 0;
-            InstallStepControl = new SelectView();
+            ResetInstallState();
         }
     }
 }
