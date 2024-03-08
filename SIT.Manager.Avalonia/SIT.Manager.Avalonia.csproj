@@ -5,6 +5,9 @@
 	  <Nullable>enable</Nullable>
 	  <LangVersion>latest</LangVersion>
 	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	  <Deterministic>false</Deterministic>
+	  <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	  <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
   </PropertyGroup>
   
 	<ItemGroup>
