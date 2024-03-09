@@ -67,8 +67,22 @@ public partial class SelectViewModel : ViewModelBase
 
         if (!NoEftInstallPathSet)
         {
-            CurrentInstallProcessState.EftVersion = Version.Parse(_versionService.GetEFTVersion(CurrentInstallProcessState.EftInstallPath));
-            CurrentInstallProcessState.SitVersion = Version.Parse(_versionService.GetSITVersion(CurrentInstallProcessState.EftInstallPath));
+            if (Version.TryParse(_versionService.GetEFTVersion(CurrentInstallProcessState.EftInstallPath), out Version? eftVersion))
+            {
+                CurrentInstallProcessState.EftVersion = eftVersion;
+            }
+            else
+            {
+                CurrentInstallProcessState.EftVersion = new();
+            }
+            if (Version.TryParse(_versionService.GetSITVersion(CurrentInstallProcessState.EftInstallPath), out Version? sitVersion))
+            {
+                CurrentInstallProcessState.SitVersion = sitVersion;
+            }
+            else
+            {
+                CurrentInstallProcessState.SitVersion = new();
+            }
         }
     }
 
@@ -77,8 +91,24 @@ public partial class SelectViewModel : ViewModelBase
         if (!string.IsNullOrEmpty(_configService.Config.AkiServerPath))
         {
             CurrentInstallProcessState.SptAkiInstallPath = _configService.Config.AkiServerPath;
-            CurrentInstallProcessState.SptAkiVersion = Version.Parse(_versionService.GetSptAkiVersion(CurrentInstallProcessState.SptAkiInstallPath));
-            CurrentInstallProcessState.SitModVersion = Version.Parse(_versionService.GetSitModVersion(CurrentInstallProcessState.SptAkiInstallPath));
+
+            if (Version.TryParse(_versionService.GetSptAkiVersion(CurrentInstallProcessState.SptAkiInstallPath), out Version? sptAkiVersion))
+            {
+                CurrentInstallProcessState.SptAkiVersion = sptAkiVersion;
+            }
+            else
+            {
+                CurrentInstallProcessState.SptAkiVersion = new();
+            }
+            if (Version.TryParse(_versionService.GetSitModVersion(CurrentInstallProcessState.SptAkiInstallPath), out Version? sitModVersion))
+            {
+                CurrentInstallProcessState.SitModVersion = sitModVersion;
+            }
+            else
+            {
+                CurrentInstallProcessState.SitModVersion = new();
+            }
+
             NoAkiInstallPathSet = false;
         }
     }

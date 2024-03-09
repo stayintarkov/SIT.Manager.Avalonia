@@ -5,6 +5,7 @@ using SIT.Manager.Avalonia.Models.Installation;
 using SIT.Manager.Avalonia.Views.Installation;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace SIT.Manager.Avalonia.ViewModels;
 
@@ -13,13 +14,13 @@ public partial class InstallPageViewModel : ViewModelBase,
                                             IRecipient<InstallProcessStateChangedMessage>,
                                             IRecipient<InstallProcessStateRequestMessage>
 {
-    private readonly Dictionary<int, Type> InstallPageContentViews = new() {
-        { 0, typeof(SelectView) },
-        { 1, typeof(ConfigureView) },
-        { 2, typeof(PatchView) },
-        { 3, typeof(InstallView) },
-        { 4, typeof(CompleteView) }
-    };
+    private readonly List<InstallStep> _installSteps = [
+        new (0, typeof(SelectView), "Select"),
+        new(1, typeof(ConfigureView), "Configure"),
+        new(2, typeof(PatchView), "Patch"),
+        new(3, typeof(InstallView), "Install"),
+        new(4, typeof(CompleteView), "Complete")
+    ];
 
     private InstallProcessState _installProcessState = new();
 
@@ -28,6 +29,8 @@ public partial class InstallPageViewModel : ViewModelBase,
 
     [ObservableProperty]
     private Control? _installStepControl;
+
+    public ReadOnlyCollection<InstallStep> InstallationSteps => _installSteps.AsReadOnly();
 
     public InstallPageViewModel()
     {
@@ -53,8 +56,9 @@ public partial class InstallPageViewModel : ViewModelBase,
             CurrentInstallStep--;
         }
 
-        if (InstallPageContentViews.TryGetValue(CurrentInstallStep, out Type? value))
+        if (InstallationSteps.Count <= CurrentInstallStep)
         {
+            Type value = InstallationSteps[CurrentInstallStep].InstallationView;
             InstallStepControl = (Control) (System.Activator.CreateInstance(value) ?? new TextBlock() { Text = "No Control Selected" });
         }
         else

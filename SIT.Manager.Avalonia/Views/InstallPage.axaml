@@ -17,18 +17,23 @@
 		</Style>
 	</UserControl.Styles>
 					
-	<Grid ColumnDefinitions="Auto, *">		
-        <labs:StepBar Grid.Column="0" 
-					  IsMouseSelectable="False" 
+	<Grid ColumnDefinitions="Auto, *">
+		<labs:StepBar Grid.Column="0"
+					  IsMouseSelectable="False"
 					  Grid.Row="0"
 					  Margin="8,0,8,0"
 					  SelectedIndex="{Binding CurrentInstallStep}"
+					  ItemsSource="{Binding InstallationSteps}"
 					  Dock="Left">
-			<labs:StepBarItem>Select</labs:StepBarItem>
-			<labs:StepBarItem>Configure</labs:StepBarItem>
-			<labs:StepBarItem>Patch</labs:StepBarItem>
-			<labs:StepBarItem>Install</labs:StepBarItem>
-			<labs:StepBarItem>Complete</labs:StepBarItem>
+			<labs:StepBar.ItemTemplate>
+				<DataTemplate>
+					<TextBlock FontSize="14"
+							   Margin="0,0,0,3"
+							   VerticalAlignment="Center"
+							   HorizontalAlignment="Left"
+							   Text="{Binding Header}"/>
+				</DataTemplate>
+			</labs:StepBar.ItemTemplate>
 		</labs:StepBar>
 
 		<TransitioningContentControl Grid.Column="1" 
