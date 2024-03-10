@@ -49,11 +49,7 @@ public partial class SelectViewModel : ViewModelBase
         string detectedBSGInstallPath = _installerService.GetEFTInstallPath();
         if (string.IsNullOrEmpty(_configService.Config.InstallPath))
         {
-            if (string.IsNullOrEmpty(detectedBSGInstallPath))
-            {
-                NoEftInstallPathSet = true;
-            }
-            else
+            if (!string.IsNullOrEmpty(detectedBSGInstallPath))
             {
                 CurrentInstallProcessState.EftInstallPath = detectedBSGInstallPath;
                 CurrentInstallProcessState.UsingBsgInstallPath = true;
@@ -65,7 +61,7 @@ public partial class SelectViewModel : ViewModelBase
             CurrentInstallProcessState.UsingBsgInstallPath = false;
         }
 
-        if (!NoEftInstallPathSet)
+        if (!string.IsNullOrEmpty(CurrentInstallProcessState.EftInstallPath))
         {
             if (Version.TryParse(_versionService.GetEFTVersion(CurrentInstallProcessState.EftInstallPath), out Version? eftVersion))
             {
@@ -83,6 +79,8 @@ public partial class SelectViewModel : ViewModelBase
             {
                 CurrentInstallProcessState.SitVersion = new();
             }
+
+            NoEftInstallPathSet = false;
         }
     }
 

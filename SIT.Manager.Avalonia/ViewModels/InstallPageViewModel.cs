@@ -56,7 +56,7 @@ public partial class InstallPageViewModel : ViewModelBase,
             CurrentInstallStep--;
         }
 
-        if (InstallationSteps.Count <= CurrentInstallStep)
+        if (InstallationSteps.Count > CurrentInstallStep)
         {
             Type value = InstallationSteps[CurrentInstallStep].InstallationView;
             InstallStepControl = (Control) (System.Activator.CreateInstance(value) ?? new TextBlock() { Text = "No Control Selected" });
