@@ -2,61 +2,101 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:vm="clr-namespace:SIT.Manager.Avalonia.ViewModels.Installation"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SIT.Manager.Avalonia.Views.Installation.ConfigureView"
 			 x:DataType="vm:ConfigureViewModel">
-	<Grid RowDefinitions="*, *, *, Auto">
+	<UserControl.Styles>
+		<Style Selector="ui|SymbolIcon">
+			<Setter Property="Margin" Value="0,0,8,0"/>
+		</Style>
+	</UserControl.Styles>
+	
+	<Grid RowDefinitions="*, Auto">
 		<StackPanel Grid.Row="0">
-			<Border Classes="StandardFrame">
-				<StackPanel>
-					<TextBlock Text="{DynamicResource SelectVersionDialogToInstallTitle}" Margin="5"/>
-					<ComboBox Width="500"
-							  Name="VersionSelectionBox"
-							  VerticalAlignment="Center"
-							  HorizontalAlignment="Center">
-					</ComboBox>
-				</StackPanel>
-			</Border>
-		</StackPanel>
+			<StackPanel>
+				<TextBlock Text="Version Selection" Classes="FrameHeading"/>
+				<Border Classes="StandardFrame">
+					<StackPanel>
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Text="Version to install:"
+									   VerticalAlignment="Center"
+									   Margin="0,0,8,0"/>
+							<ComboBox Name="VersionSelectionBox"
+									  VerticalAlignment="Center"
+									  Margin="0,0,8,0"
+									  SelectedItem="{Binding SelectedVersion}"
+									  ItemsSource="{Binding AvailableVersions}">
+								<ComboBox.ItemTemplate>
+									<DataTemplate>
+										<TextBlock Text="{Binding tag_name}"/>
+									</DataTemplate>
+								</ComboBox.ItemTemplate>
+							</ComboBox>
+						</StackPanel>
 
-		<StackPanel Grid.Row="1">
-			<Border Classes="StandardFrame">
-				<StackPanel>
-					<TextBlock Text="Select the mirror to download from" Margin="5"/>
-					<ComboBox Width="500"
-							  Name="MirrorSelectionBox"
-							  VerticalAlignment="Center"
-							  HorizontalAlignment="Center">
-					</ComboBox>
-				</StackPanel>
-			</Border>
-		</StackPanel>
+						<StackPanel Orientation="Horizontal"
+									Margin="0,4,0,0">
+							<TextBlock Text="Select the mirror to use: "
+									   VerticalAlignment="Center"
+									   Margin="0,0,8,0"/>
+							<ComboBox Name="MirrorSelectionBox"
+									  Margin="0,0,8,0"
+									  VerticalAlignment="Center"
+									  SelectedItem="{Binding CurrentInstallProcessState.DownloadMirror}"
+									  ItemsSource="{Binding AvailableMirrors}">
+								<ComboBox.ItemTemplate>
+									<DataTemplate>
+										<TextBlock Text="{Binding Key}"/>
+									</DataTemplate>
+								</ComboBox.ItemTemplate>
+							</ComboBox>
+						</StackPanel>
 
-		<StackPanel Grid.Row="2">
-			<Border Classes="StandardFrame">
-				<StackPanel>
-					<TextBlock Text="Detected BSG EFT install location would you like to install EFT to a different location to avoid possible issues with SIT"
-							   Margin="5"
-							   TextWrapping="Wrap"/>
-					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="{DynamicResource SettingsSPTAKIPathTitle}"  VerticalAlignment="Center"/>
-						<TextBox Watermark="{DynamicResource SettingsSPTAKIInstallPathPlaceholder}"
-								 Margin="5"
-								 MinWidth="397"
-								 MaxWidth="425"
-								 IsReadOnly="True"/>
-						<Button Name="ChangeAkiServerPath"
-								Content="{DynamicResource SettingsEFTSettingsButtonChangeTitle}"
-								Margin="5"
-								ToolTip.Tip="{DynamicResource SettingsSPTAKIInstallPathToolTip}"/>
+
+						<StackPanel Margin="0,4,0,0">
+							<TextBlock Text="Currently using the BSG EFT install location please install EFT to a different location to avoid any possible issues with SIT"
+									   Classes="WarningMessage"/>
+							<StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+								<StackPanel Orientation="Horizontal" >
+									<TextBlock Text="{DynamicResource SettingsEFTInstallPathTitle}" Margin="0,0,8,0" VerticalAlignment="Center"/>
+									<TextBox Watermark="{DynamicResource SettingsEFTInstallPathPlaceholder}"
+											 Margin="0,0,8,0"
+											 MinWidth="425"
+											 MaxWidth="425"
+											 IsReadOnly="True"/>
+									<Button Name="ChangeInstallButton"
+											Content="{DynamicResource SettingsEFTSettingsButtonChangeTitle}"
+											ToolTip.Tip="{DynamicResource SettingsEFTChangeInstallPathToolTip}"/>
+								</StackPanel>
+							</StackPanel>
+						</StackPanel>
 					</StackPanel>
-				</StackPanel>
-			</Border>
+				</Border>
+			</StackPanel>
+
+			<StackPanel>
+				<TextBlock Text="Advanced Options" Classes="FrameHeading"/>
+				<Border Classes="StandardFrame">
+					<StackPanel>
+						<TextBlock Text="Ram Setup Goes here"/>
+						<TextBlock Text="Mods Selection Goes Here"/>
+					</StackPanel>
+				</Border>
+			</StackPanel>
 		</StackPanel>
 
-		<Button Grid.Row="3" 
-				Content="Progress" 
-				Command="{Binding ProgressCommand}"/>
+		<Button Grid.Row="1" 
+				Margin="4,4,4,8"
+				Height="50"
+				HorizontalAlignment="Center"
+				HorizontalContentAlignment="Stretch"
+				Command="{Binding StartCommand}">
+			<StackPanel Orientation="Horizontal">
+				<ui:SymbolIcon Symbol="PlayFilled"/>
+				<TextBlock Text="Start Install"/>
+			</StackPanel>
+		</Button>
 	</Grid>
 </UserControl>

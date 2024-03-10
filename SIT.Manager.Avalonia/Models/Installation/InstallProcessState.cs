@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System;
+using System.Collections.Generic;
 
 namespace SIT.Manager.Avalonia.Models.Installation;
 
@@ -18,6 +19,8 @@ public partial class InstallProcessState : ObservableObject
     private Version _eftVersion = new();
     [ObservableProperty]
     private Version _sitVersion = new();
+    [ObservableProperty]
+    private KeyValuePair<string, string> _downloadMirror = new();
 
     // SPT-AKI Install Settings
     [ObservableProperty]
