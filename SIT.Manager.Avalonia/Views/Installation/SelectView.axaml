@@ -12,17 +12,6 @@
 		<Style Selector="ui|SymbolIcon">
 			<Setter Property="Margin" Value="0,0,8,0"/>
 		</Style>
-
-		<Style Selector="TextBlock.FrameHeading">
-			<Setter Property="VerticalAlignment" Value="Center"/>
-			<Setter Property="Margin" Value="8,0,0,0"/>
-		</Style>
-		
-		<Style Selector="TextBlock.WarningMessage">
-			<Setter Property="Foreground" Value="Yellow"/>
-			<Setter Property="TextWrapping" Value="Wrap"/>
-			<Setter Property="VerticalAlignment" Value="Center"/>
-		</Style>
 		
 		<Style Selector="Button">
 			<Setter Property="Height" Value="50"/>
@@ -45,18 +34,25 @@
 						<TextBlock Text="Unable to find EFT install please go and set this manually in the Settings page"
 								   IsVisible="{Binding NoEftInstallPathSet}"
 								   Classes="WarningMessage"/>
-						<StackPanel Orientation="Horizontal">
-							<TextBlock Text="{DynamicResource SettingsEFTInstallPathTitle}"/>
-							<TextBlock Text="{Binding CurrentInstallProcessState.EftInstallPath}"/>
-						</StackPanel>
-						<StackPanel Orientation="Horizontal">
-							<TextBlock Text="{DynamicResource SettingsEFTVersionTitle}"/>
-							<SelectableTextBlock Text="{Binding CurrentInstallProcessState.EftVersion}"/>
-						</StackPanel>
-						<StackPanel Orientation="Horizontal">
-							<TextBlock Text="{DynamicResource SettingsSITVersionTitle}"/>
-							<SelectableTextBlock Text="{Binding CurrentInstallProcessState.SitVersion}"/>
-						</StackPanel>
+						
+						<TextBlock>
+							<Run Text="{DynamicResource SettingsEFTInstallPathTitle}"/>
+							<Run Text=" "/>
+							<Run Text="{Binding CurrentInstallProcessState.EftInstallPath}"/>
+						</TextBlock>
+
+						<TextBlock>
+							<Run Text="{DynamicResource SettingsEFTVersionTitle}"/>
+							<Run Text=" "/>
+							<Run Text="{Binding CurrentInstallProcessState.EftVersion}"/>
+						</TextBlock>
+
+						<TextBlock>
+							<Run Text="{DynamicResource SettingsSITVersionTitle}"/>
+							<Run Text=" "/>
+							<Run Text="{Binding CurrentInstallProcessState.SitVersion}"/>
+						</TextBlock>
+
 						<Grid ColumnDefinitions="*,*">
 							<Button Grid.Column="0"
 									ToolTip.Tip="{DynamicResource ToolsSITToolTip}"
@@ -92,19 +88,25 @@
 						<TextBlock Text="Unable to find SPT-AKI install if you have already installed AKI-SPT please go to the Settings page and set the SPT-AKI install path. Otherwise you will be asked to provide an empty folder to install SPT-AKI to"
 								   IsVisible="{Binding NoAkiInstallPathSet}"
 								   Classes="WarningMessage"/>
-						<StackPanel Orientation="Horizontal">
-							<TextBlock Text="{DynamicResource SettingsSPTAKIPathTitle}"/>
-							<TextBlock Text="{Binding CurrentInstallProcessState.SptAkiInstallPath}"/>
-						</StackPanel>
-						<StackPanel Orientation="Horizontal">
-							<TextBlock Text="SPT-AKI Version:"/>
-							<SelectableTextBlock Text="{Binding CurrentInstallProcessState.SptAkiVersion}"/>
-						</StackPanel>
-						<StackPanel Orientation="Horizontal">
-							<TextBlock Text="SIT Mod Version:"/>
-							<SelectableTextBlock Text="{Binding CurrentInstallProcessState.SitModVersion}"/>
-						</StackPanel>
 
+						<TextBlock>
+							<Run Text="{DynamicResource SettingsSPTAKIPathTitle}"/>
+							<Run Text=" "/>
+							<Run Text="{Binding CurrentInstallProcessState.SptAkiInstallPath}"/>
+						</TextBlock>
+						
+						<TextBlock>
+							<Run Text="SPT-AKI Version:"/>
+							<Run Text=" "/>
+							<Run Text="{Binding CurrentInstallProcessState.SptAkiVersion}"/>
+						</TextBlock>
+
+						<TextBlock>
+							<Run Text="SIT Mod Version:"/>
+							<Run Text=" "/>
+							<Run Text="{Binding CurrentInstallProcessState.SitModVersion}"/>
+						</TextBlock>
+						
 						<Grid ColumnDefinitions="*,*">
 							<Button Grid.Column="0"
 									ToolTip.Tip="{DynamicResource ToolsSITToolTip}"

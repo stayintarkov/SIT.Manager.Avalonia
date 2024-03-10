@@ -4,40 +4,17 @@
 			 xmlns:sty="using:FluentAvalonia.Styling"
              x:Class="SIT.Manager.Avalonia.App"
              RequestedThemeVariant="Dark">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
-	
 	<Application.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary>
-					<FontFamily x:Key="BenderFont">/Assets/Fonts/Bender.otf#Bender</FontFamily>
-
-					<Color x:Key="AppAccentColor">#FF7F7F7F</Color>
-					<Color x:Key="AppBlueColor">#3399FFFF</Color>
-					<Color x:Key="AppWhiteColor">#FFFFFFFF</Color>
-
-					<StaticResource x:Key="TextControlForeground" ResourceKey="AppWhiteColor"/>
-					<StaticResource x:Key="TextControlSelection" ResourceKey="AppBlueColor"/>
-				</ResourceDictionary>
 				<ResourceInclude Source="avares://SIT.Manager.Avalonia/Localization/en-US.axaml"/>
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Application.Resources>
 	
     <Application.Styles>
-		<sty:FluentAvaloniaTheme CustomAccentColor="{StaticResource AppAccentColor}" />
+		<sty:FluentAvaloniaTheme CustomAccentColor="#FF7F7F7F"/>
 		<labs:ControlThemes/>
-
-		<Style Selector="Border.StandardFrame">
-			<Setter Property="CornerRadius" Value="8"/>
-			<Setter Property="BorderBrush" Value="Gray"/>
-			<Setter Property="BorderThickness" Value="1"/>
-			<Setter Property="Margin" Value="4"/>
-			<Setter Property="Padding" Value="10"/>
-		</Style>
-		
-		<Style Selector="SelectableTextBlock">
-			<Setter Property="SelectionBrush" Value="{StaticResource TextControlSelection}"/>
-		</Style>
+		<StyleInclude Source="avares://SIT.Manager.Avalonia/Assets/Styles/Theme.axaml"/>
     </Application.Styles>
 </Application>
