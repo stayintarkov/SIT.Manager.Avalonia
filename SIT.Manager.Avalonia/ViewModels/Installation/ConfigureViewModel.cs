@@ -2,12 +2,14 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using DynamicData;
+using ReactiveUI;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.Models;
 using SIT.Manager.Avalonia.Models.Installation;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive.Disposables;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.ViewModels.Installation;
@@ -28,8 +30,22 @@ public partial class ConfigureViewModel : ViewModelBase
     [ObservableProperty]
     private GithubRelease? _selectedVersion;
 
+    [ObservableProperty]
+    private KeyValuePair<string, string> _selectedMirror = new();
+
+    [ObservableProperty]
+    private bool _isSitInstall = true;
+
+    [ObservableProperty]
+    private bool _isServerInstall = true;
+
+    [ObservableProperty]
+    public bool _isConfigurationValid = false;
+
     public ObservableCollection<GithubRelease> AvailableVersions { get; } = [];
     public ObservableCollection<KeyValuePair<string, string>> AvailableMirrors { get; } = [];
+
+    public IAsyncRelayCommand ChangeEftInstallLocationCommand { get; }
 
     public ConfigureViewModel(IInstallerService installerService)
     {
@@ -44,21 +60,40 @@ public partial class ConfigureViewModel : ViewModelBase
             CurrentInstallProcessState = new();
         }
 
-        Task.Run(LoadAvailableVersionData);
+        IsSitInstall = CurrentInstallProcessState.RequestedInstallOperation == RequestedInstallOperation.InstallSit || CurrentInstallProcessState.RequestedInstallOperation == RequestedInstallOperation.UpdateSit;
+        IsServerInstall = CurrentInstallProcessState.RequestedInstallOperation == RequestedInstallOperation.InstallServer || CurrentInstallProcessState.RequestedInstallOperation == RequestedInstallOperation.UpdateServer;
+
+        ChangeEftInstallLocationCommand = new AsyncRelayCommand(ChangeEftInstallLocation);
+
+        this.WhenActivated(async (CompositeDisposable disposables) => await LoadAvailableVersionData());
+    }
+
+    private async Task ChangeEftInstallLocation()
+    {
+        // TODO set this to change install location properly.
     }
 
     private async Task LoadAvailableVersionData()
     {
+        IsLoading = true;
         AvailableVersions.Clear();
 
         List<GithubRelease> releases;
-        if (CurrentInstallProcessState.RequestedInstallOperation == RequestedInstallOperation.InstallSit || CurrentInstallProcessState.RequestedInstallOperation == RequestedInstallOperation.UpdateSit)
+        if (IsSitInstall)
         {
             releases = await _installerService.GetSITReleases();
+            if (CurrentInstallProcessState.RequestedInstallOperation == RequestedInstallOperation.UpdateSit)
+            {
+                // TODO filter results for updating SIT to versions higher than currently
+            }
         }
-        else if (CurrentInstallProcessState.RequestedInstallOperation == RequestedInstallOperation.InstallServer || CurrentInstallProcessState.RequestedInstallOperation == RequestedInstallOperation.UpdateServer)
+        else if (IsServerInstall)
         {
             releases = await _installerService.GetServerReleases();
+            if (CurrentInstallProcessState.RequestedInstallOperation == RequestedInstallOperation.UpdateServer)
+            {
+                // TODO filter results for updating server to versions higher than currently
+            }
         }
         else
         {
@@ -71,11 +106,22 @@ public partial class ConfigureViewModel : ViewModelBase
             SelectedVersion = AvailableVersions[0];
         }
 
+        IsLoading = false;
+
         // TODO add some logging here and an alert somehow in case it fails to load any versions
     }
 
     private async Task LoadAvailableMirrorsForVersion()
     {
+        // Don't run this for server installs or updates
+        if (CurrentInstallProcessState.RequestedInstallOperation == RequestedInstallOperation.InstallServer || CurrentInstallProcessState.RequestedInstallOperation == RequestedInstallOperation.UpdateServer)
+        {
+            return;
+        }
+
+        IsLoading = true;
+        AvailableMirrors.Clear();
+
         if (SelectedVersion == null)
         {
             return;
@@ -91,18 +137,36 @@ public partial class ConfigureViewModel : ViewModelBase
             }
         }
 
+        IsLoading = false;
+
         // TODO add some logging here and an alert somehow in case it fails to load any mirrors for this version
     }
 
     [RelayCommand]
     private void Start()
     {
+        // TODO make sure this is disabled until we have selections for all the necessary items
         WeakReferenceMessenger.Default.Send(new InstallProcessStateChangedMessage(CurrentInstallProcessState));
         WeakReferenceMessenger.Default.Send(new ProgressInstallMessage(true));
     }
 
+    private void ValidateConfiguration()
+    {
+        // TODO
+    }
+
     partial void OnSelectedVersionChanged(GithubRelease? value)
     {
-        Task.Run(LoadAvailableMirrorsForVersion);
+        if (IsSitInstall)
+        {
+            Task.Run(LoadAvailableMirrorsForVersion);
+        }
+        ValidateConfiguration();
+    }
+
+    partial void OnSelectedMirrorChanged(KeyValuePair<string, string> value)
+    {
+        CurrentInstallProcessState.DownloadMirror = value;
+        ValidateConfiguration();
     }
 }

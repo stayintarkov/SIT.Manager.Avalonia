@@ -3,7 +3,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
-             xmlns:vm="clr-namespace:SIT.Manager.Avalonia.ViewModels.Installation"
+			 xmlns:controls="clr-namespace:SIT.Manager.Avalonia.Controls"
+			 xmlns:vm="clr-namespace:SIT.Manager.Avalonia.ViewModels.Installation"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SIT.Manager.Avalonia.Views.Installation.ConfigureView"
 			 x:DataType="vm:ConfigureViewModel">
@@ -19,7 +20,8 @@
 				<TextBlock Text="Version Selection" Classes="FrameHeading"/>
 				<Border Classes="StandardFrame">
 					<StackPanel>
-						<StackPanel Orientation="Horizontal">
+						<StackPanel Orientation="Horizontal"
+									IsVisible="{Binding !IsLoading}">
 							<TextBlock Text="Version to install:"
 									   VerticalAlignment="Center"
 									   Margin="0,0,8,0"/>
@@ -38,13 +40,20 @@
 
 						<StackPanel Orientation="Horizontal"
 									Margin="0,4,0,0">
+							<StackPanel.IsVisible>
+								<MultiBinding Converter="{x:Static BoolConverters.And}">
+									<Binding Path="IsSitInstall"/>
+									<Binding Path="!IsLoading"/>
+								</MultiBinding>
+							</StackPanel.IsVisible>
+
 							<TextBlock Text="Select the mirror to use: "
 									   VerticalAlignment="Center"
 									   Margin="0,0,8,0"/>
 							<ComboBox Name="MirrorSelectionBox"
 									  Margin="0,0,8,0"
 									  VerticalAlignment="Center"
-									  SelectedItem="{Binding CurrentInstallProcessState.DownloadMirror}"
+									  SelectedItem="{Binding SelectedMirror}"
 									  ItemsSource="{Binding AvailableMirrors}">
 								<ComboBox.ItemTemplate>
 									<DataTemplate>
@@ -54,8 +63,15 @@
 							</ComboBox>
 						</StackPanel>
 
-
 						<StackPanel Margin="0,4,0,0">
+							<StackPanel.IsVisible>
+								<MultiBinding Converter="{x:Static BoolConverters.And}">
+									<Binding Path="IsSitInstall"/>
+									<Binding Path="CurrentInstallProcessState.UsingBsgInstallPath"/>
+									<Binding Path="!IsLoading"/>
+								</MultiBinding>
+							</StackPanel.IsVisible>
+							
 							<TextBlock Text="Currently using the BSG EFT install location please install EFT to a different location to avoid any possible issues with SIT"
 									   Classes="WarningMessage"/>
 							<StackPanel Orientation="Horizontal" Margin="0,8,0,0">
@@ -63,20 +79,28 @@
 									<TextBlock Text="{DynamicResource SettingsEFTInstallPathTitle}" Margin="0,0,8,0" VerticalAlignment="Center"/>
 									<TextBox Watermark="{DynamicResource SettingsEFTInstallPathPlaceholder}"
 											 Margin="0,0,8,0"
-											 MinWidth="425"
-											 MaxWidth="425"
 											 IsReadOnly="True"/>
 									<Button Name="ChangeInstallButton"
 											Content="{DynamicResource SettingsEFTSettingsButtonChangeTitle}"
-											ToolTip.Tip="{DynamicResource SettingsEFTChangeInstallPathToolTip}"/>
+											ToolTip.Tip="{DynamicResource SettingsEFTChangeInstallPathToolTip}"
+											Command="{Binding ChangeEftInstallLocationCommand}"/>
 								</StackPanel>
 							</StackPanel>
 						</StackPanel>
+
+						<controls:LoadingSpinner Width="64"
+												 Height="{Binding $self.Width}"
+												 Margin="0"
+												 HorizontalAlignment="Center"
+												 VerticalAlignment="Center"
+												 IsVisible="{Binding IsLoading}"
+												 Foreground="{DynamicResource TextControlForeground}"
+												 StrokeWidth="8"/>
 					</StackPanel>
 				</Border>
 			</StackPanel>
 
-			<StackPanel>
+			<StackPanel IsVisible="{Binding IsSitInstall}">
 				<TextBlock Text="Advanced Options" Classes="FrameHeading"/>
 				<Border Classes="StandardFrame">
 					<StackPanel>
@@ -92,6 +116,7 @@
 				Height="50"
 				HorizontalAlignment="Center"
 				HorizontalContentAlignment="Stretch"
+				IsEnabled="{Binding IsConfigurationValid}"
 				Command="{Binding StartCommand}">
 			<StackPanel Orientation="Horizontal">
 				<ui:SymbolIcon Symbol="PlayFilled"/>
