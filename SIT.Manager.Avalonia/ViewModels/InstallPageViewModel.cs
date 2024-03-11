@@ -14,12 +14,19 @@ public partial class InstallPageViewModel : ViewModelBase,
                                             IRecipient<InstallProcessStateChangedMessage>,
                                             IRecipient<InstallProcessStateRequestMessage>
 {
-    private readonly List<InstallStep> _installSteps = [
-        new (0, typeof(SelectView), "Select"),
-        new(1, typeof(ConfigureView), "Configure"),
-        new(2, typeof(PatchView), "Patch"),
-        new(3, typeof(InstallView), "Install"),
-        new(4, typeof(CompleteView), "Complete")
+    private readonly List<InstallStep> _sitInstallSteps = [
+        new(typeof(SelectView), "Select"),
+        new(typeof(ConfigureView), "Configure"),
+        new(typeof(PatchView), "Patch"),
+        new(typeof(InstallView), "Install"),
+        new(typeof(CompleteView), "Complete")
+    ];
+
+    private readonly List<InstallStep> _serverInstallSteps = [
+        new (typeof(SelectView), "Select"),
+        new(typeof(ConfigureView), "Configure"),
+        new(typeof(InstallView), "Install"),
+        new(typeof(CompleteView), "Complete")
     ];
 
     private InstallProcessState _installProcessState = new();
@@ -30,7 +37,7 @@ public partial class InstallPageViewModel : ViewModelBase,
     [ObservableProperty]
     private Control? _installStepControl;
 
-    public ReadOnlyCollection<InstallStep> InstallationSteps => _installSteps.AsReadOnly();
+    public ReadOnlyCollection<InstallStep> InstallationSteps => _sitInstallSteps.AsReadOnly();
 
     public InstallPageViewModel()
     {
@@ -55,6 +62,10 @@ public partial class InstallPageViewModel : ViewModelBase,
         {
             CurrentInstallStep--;
         }
+
+        // Depending on what kind of install we are doing
+        // we may have to adjust the steps we are taking.
+        AdjustInstallSteps();
 
         if (InstallationSteps.Count > CurrentInstallStep)
         {
