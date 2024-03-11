@@ -41,13 +41,16 @@
 						<StackPanel Margin="0,4,0,0"
 									IsVisible="{Binding !IsLoading}">
 							<TextBlock Text="No SPT-AKI install path specified"
+									   IsVisible="{Binding CurrentInstallProcessState.SptAkiInstallPath, Converter={x:Static StringConverters.IsNullOrEmpty}}"
 									   Classes="WarningMessage"/>
 							<StackPanel Orientation="Horizontal" Margin="0,8,0,0">
 								<StackPanel Orientation="Horizontal" >
-									<TextBlock Text="{DynamicResource SettingsSPTAKIPathTitle}"  VerticalAlignment="Center"/>
+									<TextBlock Text="{DynamicResource SettingsSPTAKIPathTitle}"
+											   VerticalAlignment="Center"/>
 									<TextBox Watermark="{DynamicResource SettingsSPTAKIInstallPathPlaceholder}"
 											 Margin="5"
-											 IsReadOnly="True"/>
+											 IsReadOnly="True"
+											 Text="{Binding CurrentInstallProcessState.SptAkiInstallPath, Mode=TwoWay}"/>
 									<Button Name="ChangeInstallButton"
 											Content="{DynamicResource SettingsEFTSettingsButtonChangeTitle}"
 											ToolTip.Tip="{DynamicResource SettingsEFTChangeInstallPathToolTip}"

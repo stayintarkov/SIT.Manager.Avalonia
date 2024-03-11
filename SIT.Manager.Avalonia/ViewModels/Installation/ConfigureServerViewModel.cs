@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Platform.Storage;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using DynamicData;
@@ -17,6 +18,7 @@ namespace SIT.Manager.Avalonia.ViewModels.Installation;
 public partial class ConfigureServerViewModel : ViewModelBase
 {
     private readonly IInstallerService _installerService;
+    private readonly IPickerDialogService _pickerDialogService;
 
     [ObservableProperty]
     private InstallProcessState _currentInstallProcessState;
@@ -30,16 +32,14 @@ public partial class ConfigureServerViewModel : ViewModelBase
     [ObservableProperty]
     private bool _isConfigurationValid = false;
 
-    [ObservableProperty]
-    private string _serverInstallPath = string.Empty;
-
     public ObservableCollection<GithubRelease> AvailableVersions { get; } = [];
 
     public IAsyncRelayCommand ChangeServerInstallLocationCommand { get; }
 
-    public ConfigureServerViewModel(IInstallerService installerService)
+    public ConfigureServerViewModel(IInstallerService installerService, IPickerDialogService pickerDialogService)
     {
         _installerService = installerService;
+        _pickerDialogService = pickerDialogService;
 
         try
         {
@@ -50,8 +50,6 @@ public partial class ConfigureServerViewModel : ViewModelBase
             CurrentInstallProcessState = new();
         }
 
-        ServerInstallPath = CurrentInstallProcessState.SptAkiInstallPath;
-
         ChangeServerInstallLocationCommand = new AsyncRelayCommand(ChangeServerInstallLocation);
 
         this.WhenActivated(async (CompositeDisposable disposables) => await LoadAvailableVersionData());
@@ -59,7 +57,12 @@ public partial class ConfigureServerViewModel : ViewModelBase
 
     private async Task ChangeServerInstallLocation()
     {
-        // TODO set this to change install location properly.
+        IStorageFolder? directorySelected = await _pickerDialogService.GetDirectoryFromPickerAsync();
+        if (directorySelected != null)
+        {
+            CurrentInstallProcessState.SptAkiInstallPath = directorySelected.Path.LocalPath;
+            ValidateConfiguration();
+        }
     }
 
     private async Task LoadAvailableVersionData()
@@ -78,10 +81,13 @@ public partial class ConfigureServerViewModel : ViewModelBase
         {
             SelectedVersion = AvailableVersions[0];
         }
+        else
+        {
+            // TODO add some logging here and an alert somehow in case it fails to load any versions
+        }
 
         IsLoading = false;
-
-        // TODO add some logging here and an alert somehow in case it fails to load any versions
+        ValidateConfiguration();
     }
 
     [RelayCommand]
@@ -93,22 +99,30 @@ public partial class ConfigureServerViewModel : ViewModelBase
     [RelayCommand]
     private void Start()
     {
-        // TODO make sure this is disabled until we have selections for all the necessary items
         WeakReferenceMessenger.Default.Send(new InstallProcessStateChangedMessage(CurrentInstallProcessState));
         WeakReferenceMessenger.Default.Send(new ProgressInstallMessage(true));
     }
 
     private void ValidateConfiguration()
     {
-        if (string.IsNullOrEmpty(ServerInstallPath))
+        if (string.IsNullOrEmpty(CurrentInstallProcessState.SptAkiInstallPath))
         {
             IsConfigurationValid = false;
             return;
         }
+        if (SelectedVersion == null)
+        {
+            IsConfigurationValid = false;
+        }
+        IsConfigurationValid = true;
     }
 
     partial void OnSelectedVersionChanged(GithubRelease? value)
     {
-        ValidateConfiguration();
+        if (value != null)
+        {
+            CurrentInstallProcessState.RequestedVersion = value;
+            ValidateConfiguration();
+        }
     }
 }

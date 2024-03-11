@@ -6,9 +6,11 @@ namespace SIT.Manager.Avalonia.Models.Installation;
 
 public partial class InstallProcessState : ObservableObject
 {
-    // General Settings
+    // General / Shared Settings
     [ObservableProperty]
     private RequestedInstallOperation _requestedInstallOperation = RequestedInstallOperation.None;
+    [ObservableProperty]
+    private GithubRelease _requestedVersion = new();
 
     // EFT Install Settings
     [ObservableProperty]
