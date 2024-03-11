@@ -16,7 +16,7 @@ public partial class InstallPageViewModel : ViewModelBase,
 {
     private readonly List<InstallStep> _sitInstallSteps = [
         new(typeof(SelectView), "Select"),
-        new(typeof(ConfigureView), "Configure"),
+        new(typeof(ConfigureSitView), "Configure"),
         new(typeof(PatchView), "Patch"),
         new(typeof(InstallView), "Install"),
         new(typeof(CompleteView), "Complete")
@@ -24,7 +24,7 @@ public partial class InstallPageViewModel : ViewModelBase,
 
     private readonly List<InstallStep> _serverInstallSteps = [
         new (typeof(SelectView), "Select"),
-        new(typeof(ConfigureView), "Configure"),
+        new(typeof(ConfigureServerView), "Configure"),
         new(typeof(InstallView), "Install"),
         new(typeof(CompleteView), "Complete")
     ];
@@ -37,12 +37,35 @@ public partial class InstallPageViewModel : ViewModelBase,
     [ObservableProperty]
     private Control? _installStepControl;
 
-    public ReadOnlyCollection<InstallStep> InstallationSteps => _sitInstallSteps.AsReadOnly();
+    [ObservableProperty]
+    private ReadOnlyCollection<InstallStep> _installationSteps;
 
     public InstallPageViewModel()
     {
         WeakReferenceMessenger.Default.RegisterAll(this);
+        InstallationSteps = _sitInstallSteps.AsReadOnly();
         ResetInstallState();
+    }
+
+    private void AdjustInstallSteps()
+    {
+        // Cache the current install steps just in case we update the steps we want to go back to what we displayed before
+        int currentInstallStep = CurrentInstallStep;
+        if (_installProcessState.RequestedInstallOperation == RequestedInstallOperation.InstallSit || _installProcessState.RequestedInstallOperation == RequestedInstallOperation.UpdateSit)
+        {
+            if (!InstallationSteps.Equals(_sitInstallSteps))
+            {
+                InstallationSteps = _sitInstallSteps.AsReadOnly();
+            }
+        }
+        else if (_installProcessState.RequestedInstallOperation == RequestedInstallOperation.InstallServer || _installProcessState.RequestedInstallOperation == RequestedInstallOperation.UpdateServer)
+        {
+            if (!InstallationSteps.Equals(_serverInstallSteps))
+            {
+                InstallationSteps = _serverInstallSteps.AsReadOnly();
+            }
+        }
+        CurrentInstallStep = currentInstallStep;
     }
 
     private void ResetInstallState()
