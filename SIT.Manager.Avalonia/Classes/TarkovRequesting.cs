@@ -2,6 +2,7 @@
 using SIT.Manager.Avalonia.Interfaces;
 using System;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -13,6 +14,11 @@ namespace SIT.Manager.Avalonia.Classes
 {
     public partial class TarkovRequesting(Uri remoteEndPont, HttpClient httpClient, IZlibService compressionService)
     {
+        /// <summary>
+        /// BSG ZLIB compressed form of "\"pong!\"" expressed as bytes
+        /// </summary>
+        private static readonly byte[] _pingResonse = [120, 156, 83, 42, 200, 207, 75, 87, 84, 2, 0, 9, 17, 2, 26];
+
         private static readonly MediaTypeHeaderValue _contentHeaderType = new("application/json");
 
         private readonly HttpClient _httpClient = httpClient;
@@ -116,17 +122,24 @@ namespace SIT.Manager.Avalonia.Classes
         /// <returns>Return true if the server responded correctly otherwise false</returns>
         public async Task<bool> PingServer(CancellationToken cancellationToken = default)
         {
-            using Stream postStream = await Send("/launcher/ping", cancellationToken: cancellationToken);
-            if (postStream == null)
+            using (Stream postStream = await Send("/launcher/ping", cancellationToken: cancellationToken))
             {
-                return false;
+                if (postStream == null)
+                {
+                    return false;
+                }
+
+                using (MemoryStream ms = new())
+                {
+                    await postStream.CopyToAsync(ms, cancellationToken);
+
+                    // Compare the two arrays of bytes rather than use the compression service to get the actual string response
+                    // This is because it is possible to start the server without having the EFT Install path set so we won't know
+                    // where the ZLib DLLs actually are to decompress the response
+                    byte[] responseBytes = ms.ToArray();
+                    return responseBytes.SequenceEqual(_pingResonse);
+                }
             }
-
-            using MemoryStream ms = new();
-            await postStream.CopyToAsync(ms, cancellationToken);
-
-            string pingResponse = _compressionService.Decompress(ms.ToArray());
-            return pingResponse.Equals("\"pong!\"");
         }
     }
 
