@@ -74,7 +74,9 @@
 			</ui:NavigationView.MenuItems>
 
 			<Grid RowDefinitions="*,Auto">
-				<ui:Frame Name="ContentFrame" Margin="2" CornerRadius="8">
+				<ui:Frame Name="ContentFrame" 
+						  Margin="2" 
+						  CornerRadius="8">
 					<ui:Frame.Background>
 						<ImageBrush Source="/Assets/bg3.png" Stretch="Fill"/>
 					</ui:Frame.Background>
