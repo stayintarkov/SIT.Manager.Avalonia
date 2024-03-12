@@ -12,8 +12,9 @@ public interface IInstallerService
     /// Gets a dictionary of all available download mirrors for a sit version
     /// </summary>
     /// <param name="sitVersionTarget">The version to look for mirrors of</param>
+    /// <param name="tarkovVersion">The optional provided tarkov version, if none is provided then will try and use the version provided in ManagerConfig</param>
     /// <returns></returns>
-    Task<Dictionary<string, string>?> GetAvaiableMirrorsForVerison(string sitVersionTarget);
+    Task<Dictionary<string, string>?> GetAvaiableMirrorsForVerison(string sitVersionTarget, string? tarkovVersion = null);
     /// <summary>
     /// Gets the file path for the BSG Install of EFT if it is able to be detected
     /// </summary>

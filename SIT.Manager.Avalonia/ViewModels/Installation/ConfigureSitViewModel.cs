@@ -72,12 +72,6 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
 
     private async Task LoadAvailableMirrorsForVersion()
     {
-        // Don't run this for server installs or updates
-        if (CurrentInstallProcessState.RequestedInstallOperation == RequestedInstallOperation.InstallServer || CurrentInstallProcessState.RequestedInstallOperation == RequestedInstallOperation.UpdateServer)
-        {
-            return;
-        }
-
         IsLoading = true;
         AvailableMirrors.Clear();
 
@@ -86,7 +80,7 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
             return;
         }
 
-        Dictionary<string, string>? availableMirrors = await _installerService.GetAvaiableMirrorsForVerison(SelectedVersion.body);
+        Dictionary<string, string>? availableMirrors = await _installerService.GetAvaiableMirrorsForVerison(SelectedVersion.body, CurrentInstallProcessState.EftVersion);
         if (availableMirrors != null)
         {
             AvailableMirrors.AddRange(availableMirrors);

@@ -1,5 +1,4 @@
-﻿using FluentAvalonia.UI.Controls;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
@@ -288,9 +287,9 @@ public partial class InstallerService(IActionNotificationService actionNotificat
     }
 
 
-    public async Task<Dictionary<string, string>?> GetAvaiableMirrorsForVerison(string sitVersionTarget)
+    public async Task<Dictionary<string, string>?> GetAvaiableMirrorsForVerison(string sitVersionTarget, string? tarkovVersion = null)
     {
-        Dictionary<string, string> providerLinks = new Dictionary<string, string>();
+        Dictionary<string, string> providerLinks = [];
         if (_configService.Config.TarkovVersion == null)
         {
             _logger.LogError("DownloadPatcher: TarkovVersion is 'null'");
@@ -298,14 +297,15 @@ public partial class InstallerService(IActionNotificationService actionNotificat
         }
 
         string releasesString = await _httpClient.GetStringAsync(@"https://sitcoop.publicvm.com/api/v1/repos/SIT/Downgrade-Patches/releases");
-        List<GiteaRelease> giteaReleases = JsonSerializer.Deserialize<List<GiteaRelease>>(releasesString);
-        if (giteaReleases == null)
+        List<GiteaRelease> giteaReleases = JsonSerializer.Deserialize<List<GiteaRelease>>(releasesString) ?? [];
+        if (giteaReleases.Count == 0)
         {
-            _logger.LogError("DownloadPatcher: giteaReleases is 'null'");
+            _logger.LogError("DownloadPatcher: giteaReleases is null");
             return null;
         }
 
-        string tarkovBuild = _configService.Config.TarkovVersion.Split(".").Last();
+        string tarkovBuild = tarkovVersion ?? _configService.Config.TarkovVersion;
+        tarkovBuild = tarkovBuild.Split(".").Last();
         string sitVersionTargetBuild = sitVersionTarget.Split(".").Last();
 
         GiteaRelease? compatibleDowngradePatcher = null;
@@ -330,6 +330,7 @@ public partial class InstallerService(IActionNotificationService actionNotificat
         if (compatibleDowngradePatcher == null)
         {
             _logger.LogError("No applicable patcher found for the specified SIT version.");
+            /* TODO Rework this
             await new ContentDialog()
             {
                 Title = _localizationService.TranslateSource("InstallServiceErrorTitle"),
@@ -337,6 +338,7 @@ public partial class InstallerService(IActionNotificationService actionNotificat
                 PrimaryButtonText = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigButtonOk"),
                 IsPrimaryButtonEnabled = true
             }.ShowAsync();
+            */
             return null;
         }
 

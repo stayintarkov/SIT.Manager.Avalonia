@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System;
 using System.Collections.Generic;
 
 namespace SIT.Manager.Avalonia.Models.Installation;
@@ -18,9 +17,9 @@ public partial class InstallProcessState : ObservableObject
     [ObservableProperty]
     private string _eftInstallPath = string.Empty;
     [ObservableProperty]
-    private Version _eftVersion = new();
+    private string _eftVersion = string.Empty;
     [ObservableProperty]
-    private Version _sitVersion = new();
+    private string _sitVersion = string.Empty;
     [ObservableProperty]
     private KeyValuePair<string, string> _downloadMirror = new();
 
@@ -28,7 +27,7 @@ public partial class InstallProcessState : ObservableObject
     [ObservableProperty]
     private string _sptAkiInstallPath = string.Empty;
     [ObservableProperty]
-    private Version _sptAkiVersion = new();
+    private string _sptAkiVersion = string.Empty;
     [ObservableProperty]
-    private Version _sitModVersion = new();
+    private string _sitModVersion = string.Empty;
 }
