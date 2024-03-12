@@ -4,29 +4,28 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SIT.Manager.Avalonia.Views.Dialogs
+namespace SIT.Manager.Avalonia.Views.Dialogs;
+
+public partial class SelectDowngradePatcherMirrorDialog : ContentDialog
 {
-    public partial class SelectDowngradePatcherMirrorDialog : ContentDialog
+    private readonly SelectDowngradePatcherMirrorDialogViewModel dc;
+
+    protected override Type StyleKeyOverride => typeof(ContentDialog);
+
+    public SelectDowngradePatcherMirrorDialog(Dictionary<string, string> mirrors)
     {
-        private readonly SelectDowngradePatcherMirrorDialogViewModel dc;
+        dc = new SelectDowngradePatcherMirrorDialogViewModel(mirrors);
+        DataContext = dc;
+        InitializeComponent();
+    }
 
-        protected override Type StyleKeyOverride => typeof(ContentDialog);
-
-        public SelectDowngradePatcherMirrorDialog(Dictionary<string, string> mirrors)
+    public new async Task<string?> ShowAsync()
+    {
+        ContentDialogResult result = await ShowAsync(null);
+        if (result == ContentDialogResult.Primary)
         {
-            dc = new SelectDowngradePatcherMirrorDialogViewModel(mirrors);
-            DataContext = dc;
-            InitializeComponent();
+            return dc.SelectedMirror?.Value;
         }
-
-        public new async Task<string?> ShowAsync()
-        {
-            ContentDialogResult result = await ShowAsync(null);
-            if (result == ContentDialogResult.Primary)
-            {
-                return dc.SelectedMirror?.Value;
-            }
-            return null;
-        }
+        return null;
     }
 }
