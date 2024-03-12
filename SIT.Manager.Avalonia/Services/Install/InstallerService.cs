@@ -474,13 +474,15 @@ public partial class InstallerService(IActionNotificationService actionNotificat
         File.Delete(downloadLocation);
 
         ManagerConfig config = _configService.Config;
-        config.SitVersion = _versionService.GetSITVersion(config.InstallPath);
 
         // Attempt to automatically set the AKI Server Path after successful installation and save it to config
         if (!string.IsNullOrEmpty(targetInstallDir))
         {
             config.AkiServerPath = targetInstallDir;
         }
+
+        // TODO update the manager config aki-server versions.
+
         _configService.UpdateConfig(config);
     }
 
