@@ -1,6 +1,5 @@
-﻿namespace SIT.Manager.Avalonia.Exceptions
+﻿namespace SIT.Manager.Avalonia.Exceptions;
+
+public class AccountNotFoundException : TarkovException
 {
-    public class AccountNotFoundException : TarkovException
-    {
-    }
 }

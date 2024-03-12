@@ -1,14 +1,13 @@
 ﻿using SIT.Manager.Avalonia.Models;
 using System;
 
-namespace SIT.Manager.Avalonia.Interfaces
-{
-    public interface IActionNotificationService
-    {
-        event EventHandler<ActionNotification>? ActionNotificationReceived;
+namespace SIT.Manager.Avalonia.Interfaces;
 
-        void StartActionNotification();
-        void StopActionNotification();
-        void UpdateActionNotification(ActionNotification notification);
-    }
+public interface IActionNotificationService
+{
+    event EventHandler<ActionNotification>? ActionNotificationReceived;
+
+    void StartActionNotification();
+    void StopActionNotification();
+    void UpdateActionNotification(ActionNotification notification);
 }

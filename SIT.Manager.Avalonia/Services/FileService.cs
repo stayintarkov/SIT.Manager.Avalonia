@@ -15,43 +15,43 @@ using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-namespace SIT.Manager.Avalonia.Services
-{
-    public class FileService(IActionNotificationService actionNotificationService,
-                             IManagerConfigService configService,
-                             ILocalizationService localizationService,
-                             HttpClient httpClient,
-                             ILogger<FileService> logger) : IFileService
-    {
-        private readonly IActionNotificationService _actionNotificationService = actionNotificationService;
-        private readonly IManagerConfigService _configService = configService;
-        private readonly HttpClient _httpClient = httpClient;
-        private readonly ILogger<FileService> _logger = logger;
-        private readonly ILocalizationService _localizationService = localizationService;
+namespace SIT.Manager.Avalonia.Services;
 
-        private static async Task OpenAtLocation(string path)
+public class FileService(IActionNotificationService actionNotificationService,
+                         IManagerConfigService configService,
+                         ILocalizationService localizationService,
+                         HttpClient httpClient,
+                         ILogger<FileService> logger) : IFileService
+{
+    private readonly IActionNotificationService _actionNotificationService = actionNotificationService;
+    private readonly IManagerConfigService _configService = configService;
+    private readonly HttpClient _httpClient = httpClient;
+    private readonly ILogger<FileService> _logger = logger;
+    private readonly ILocalizationService _localizationService = localizationService;
+
+    private static async Task OpenAtLocation(string path)
+    {
+        using (Process opener = new())
         {
-            using (Process opener = new())
+            if (OperatingSystem.IsWindows())
             {
-                if (OperatingSystem.IsWindows())
-                {
-                    opener.StartInfo.FileName = "explorer.exe";
-                    opener.StartInfo.Arguments = path;
-                }
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                {
-                    opener.StartInfo.FileName = "explorer";
-                    opener.StartInfo.Arguments = $"-R {path}";
-                }
-                else
-                {
-                    opener.StartInfo.FileName = path;
-                    opener.StartInfo.UseShellExecute = true;
-                }
-                opener.Start();
-                await opener.WaitForExitAsync();
+                opener.StartInfo.FileName = "explorer.exe";
+                opener.StartInfo.Arguments = path;
             }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                opener.StartInfo.FileName = "explorer";
+                opener.StartInfo.Arguments = $"-R {path}";
+            }
+            else
+            {
+                opener.StartInfo.FileName = path;
+                opener.StartInfo.UseShellExecute = true;
+            }
+            opener.Start();
+            await opener.WaitForExitAsync();
         }
+    }
 
         private async Task<bool> DownloadMegaFile(string fileName, string fileUrl, IProgress<double> progress)
         {
@@ -98,18 +98,18 @@ namespace SIT.Manager.Avalonia.Services
                     return false;
                 }
 
-                _logger.LogInformation($"Starting download of '{fileName}' from '{fileUrl}'");
+            _logger.LogInformation($"Starting download of '{fileName}' from '{fileUrl}'");
 
-                Progress<double> progress = new((prog) =>
-                {
-                    _actionNotificationService.UpdateActionNotification(new ActionNotification(_localizationService.TranslateSource("FileServiceProgressDownloading", fileName), prog, showProgress));
-                });
+            Progress<double> progress = new((prog) =>
+            {
+                _actionNotificationService.UpdateActionNotification(new ActionNotification(_localizationService.TranslateSource("FileServiceProgressDownloading", fileName), prog, showProgress));
+            });
 
-                Uri fileLink = new(fileUrl);
-                INode fileNode = await megaApiClient.GetNodeFromLinkAsync(fileLink);
+            Uri fileLink = new(fileUrl);
+            INode fileNode = await megaApiClient.GetNodeFromLinkAsync(fileLink);
 
-                string targetPath = Path.Combine(_configService.Config.InstallPath, fileName);
-                await megaApiClient.DownloadFileAsync(fileNode, targetPath, progress);
+            string targetPath = Path.Combine(_configService.Config.InstallPath, fileName);
+            await megaApiClient.DownloadFileAsync(fileNode, targetPath, progress);
 
                 return true;
             }
@@ -156,42 +156,42 @@ namespace SIT.Manager.Avalonia.Services
         {
             _actionNotificationService.StartActionNotification();
 
-            bool result = false;
-            if (fileUrl.Contains("mega.nz"))
-            {
-                result = await DownloadMegaFile(fileName, fileUrl, showProgress);
-            }
-            else
-            {
-                _logger.LogInformation($"Starting download of '{fileName}' from '{fileUrl}'");
-                filePath = Path.Combine(filePath, fileName);
-                if (File.Exists(filePath))
-                {
-                    File.Delete(filePath);
-                }
-
-                Progress<double> progress = new((prog) =>
-                {
-                    _actionNotificationService.UpdateActionNotification(new ActionNotification(_localizationService.TranslateSource("FileServiceProgressDownloading", fileName), Math.Floor(prog), showProgress));
-                });
-
-                try
-                {
-                    using (FileStream file = new(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
-                    {
-                        await _httpClient.DownloadAsync(file, fileUrl, progress);
-                    }
-                    result = true;
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "DownloadFile");
-                }
-            }
-
-            _actionNotificationService.StopActionNotification();
-            return result;
+        bool result = false;
+        if (fileUrl.Contains("mega.nz"))
+        {
+            result = await DownloadMegaFile(fileName, fileUrl, showProgress);
         }
+        else
+        {
+            _logger.LogInformation($"Starting download of '{fileName}' from '{fileUrl}'");
+            filePath = Path.Combine(filePath, fileName);
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+
+            Progress<double> progress = new((prog) =>
+            {
+                _actionNotificationService.UpdateActionNotification(new ActionNotification(_localizationService.TranslateSource("FileServiceProgressDownloading", fileName), Math.Floor(prog), showProgress));
+            });
+
+            try
+            {
+                using (FileStream file = new(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
+                {
+                    await _httpClient.DownloadAsync(file, fileUrl, progress);
+                }
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "DownloadFile");
+            }
+        }
+
+        _actionNotificationService.StopActionNotification();
+        return result;
+    }
 
         // TODO unify this with the other ExtractArchive function
         public async Task ExtractArchive(string filePath, string destination, IProgress<double> progress)
@@ -244,76 +244,75 @@ namespace SIT.Manager.Avalonia.Services
         {
             _actionNotificationService.StartActionNotification();
 
-            // Ensures that the last character on the extraction path is the directory separator char.
-            // Without this, a malicious zip file could try to traverse outside of the expected extraction path.
-            if (!destination.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
+        // Ensures that the last character on the extraction path is the directory separator char.
+        // Without this, a malicious zip file could try to traverse outside of the expected extraction path.
+        if (!destination.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
+        {
+            destination += Path.DirectorySeparatorChar;
+        }
+
+        DirectoryInfo destinationInfo = new(destination);
+        destinationInfo.Create();
+
+        ActionNotification actionNotification = new(string.Empty, 0, true);
+        try
+        {
+            using ZipArchive archive = await Task.Run(() => ZipArchive.Open(filePath));
+            int totalFiles = archive.Entries.Where(file => !file.IsDirectory).Count();
+            int completed = 0;
+
+            Progress<float> progress = new((prog) =>
             {
-                destination += Path.DirectorySeparatorChar;
-            }
+                actionNotification.ProgressPercentage = prog;
+                _actionNotificationService.UpdateActionNotification(actionNotification);
+            });
 
-            DirectoryInfo destinationInfo = new(destination);
-            destinationInfo.Create();
-
-            ActionNotification actionNotification = new(string.Empty, 0, true);
-            try
+            foreach (ZipArchiveEntry entry in archive.Entries)
             {
-                using ZipArchive archive = await Task.Run(() => ZipArchive.Open(filePath));
-                int totalFiles = archive.Entries.Where(file => !file.IsDirectory).Count();
-                int completed = 0;
-
-                Progress<float> progress = new((prog) =>
+                if (entry.IsDirectory)
                 {
-                    actionNotification.ProgressPercentage = prog;
-                    _actionNotificationService.UpdateActionNotification(actionNotification);
-                });
-
-                foreach (ZipArchiveEntry entry in archive.Entries)
-                {
-                    if (entry.IsDirectory)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        entry.WriteToDirectory(destination, new ExtractionOptions()
-                        {
-                            ExtractFullPath = true,
-                            Overwrite = true
-                        });
-                    }
-
-                    actionNotification.ActionText = _localizationService.TranslateSource("FileServiceProgressExtracting", $"{Path.GetFileName(entry.Key)}", $"{++completed}/{totalFiles}");
-                    ((IProgress<float>) progress).Report((float) completed / totalFiles * 100);
+                    continue;
                 }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "ExtractFile: Error when opening Archive");
-            }
+                else
+                {
+                    entry.WriteToDirectory(destination, new ExtractionOptions()
+                    {
+                        ExtractFullPath = true,
+                        Overwrite = true
+                    });
+                }
 
-            _actionNotificationService.StopActionNotification();
+                actionNotification.ActionText = _localizationService.TranslateSource("FileServiceProgressExtracting", $"{Path.GetFileName(entry.Key)}", $"{++completed}/{totalFiles}");
+                ((IProgress<float>) progress).Report((float) completed / totalFiles * 100);
+            }
         }
-
-        public async Task OpenDirectoryAsync(string path)
+        catch (Exception ex)
         {
-            if (!Directory.Exists(path))
-            {
-                // Directory doesn't exist so return early.
-                return;
-            }
-            path = Path.GetFullPath(path);
-            await OpenAtLocation(path);
+            _logger.LogError(ex, "ExtractFile: Error when opening Archive");
         }
 
-        public async Task OpenFileAsync(string path)
+        _actionNotificationService.StopActionNotification();
+    }
+
+    public async Task OpenDirectoryAsync(string path)
+    {
+        if (!Directory.Exists(path))
         {
-            if (!File.Exists(path))
-            {
-                // File doesn't exist so return early.
-                return;
-            }
-            path = Path.GetFullPath(path);
-            await OpenAtLocation(path);
+            // Directory doesn't exist so return early.
+            return;
         }
+        path = Path.GetFullPath(path);
+        await OpenAtLocation(path);
+    }
+
+    public async Task OpenFileAsync(string path)
+    {
+        if (!File.Exists(path))
+        {
+            // File doesn't exist so return early.
+            return;
+        }
+        path = Path.GetFullPath(path);
+        await OpenAtLocation(path);
     }
 }
