@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 using PeNet;
 using PeNet.Header.Resource;
 using SIT.Manager.Avalonia.Interfaces;
@@ -44,6 +45,21 @@ public partial class VersionService(ILogger<VersionService> logger) : IVersionSe
         return fileVersion;
     }
 
+    public string GetSptAkiVersion(string path)
+    {
+        string filePath = Path.Combine(path, "Aki.Server.exe");
+        string fileVersion = GetFileProductVersionString(filePath);
+        if (string.IsNullOrEmpty(fileVersion))
+        {
+            _logger.LogWarning("Check SPT AKI Version: File did not exist at " + filePath);
+        }
+        else
+        {
+            _logger.LogInformation("SPT AKI Version is now: " + fileVersion);
+        }
+        return fileVersion;
+    }
+
     public string GetEFTVersion(string path)
     {
         string filePath = Path.Combine(path, "EscapeFromTarkov.exe");
@@ -72,6 +88,26 @@ public partial class VersionService(ILogger<VersionService> logger) : IVersionSe
         {
             fileVersion = SITVersionRegex().Match(fileVersion).Value.ToString();
             _logger.LogInformation("SIT Version is now: " + fileVersion);
+        }
+        return fileVersion;
+    }
+
+    public string GetSitModVersion(string path)
+    {
+        string filePath = Path.Combine(path, "user", "mods", "SITCoop", "package.json");
+        string fileVersion = string.Empty;
+        if (File.Exists(filePath))
+        {
+            string json = File.ReadAllText(filePath);
+            dynamic data = JObject.Parse(json);
+            try
+            {
+                fileVersion = data.version;
+            }
+            catch
+            {
+                fileVersion = string.Empty;
+            }
         }
         return fileVersion;
     }

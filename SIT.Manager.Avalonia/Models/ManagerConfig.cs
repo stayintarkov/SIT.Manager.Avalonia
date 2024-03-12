@@ -30,6 +30,10 @@ public partial class ManagerConfig : ObservableObject
     [ObservableProperty]
     public string _sitVersion = string.Empty;
     [ObservableProperty]
+    public string _sptAkiVersion = string.Empty;
+    [ObservableProperty]
+    public string _sitModVersion = string.Empty;
+    [ObservableProperty]
     public bool _lookForUpdates = true;
     [ObservableProperty]
     public string _currentLanguageSelected = CultureInfo.CurrentCulture.Name;
