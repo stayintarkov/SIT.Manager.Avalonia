@@ -1,8 +1,7 @@
-﻿namespace SIT.Manager.Avalonia.Models
+﻿namespace SIT.Manager.Avalonia.Models;
+
+public class Mirrors
 {
-    public class Mirrors
-    {
-        public string Link { get; set; }
-        public string Hash { get; set; }
-    }
+    public string Link { get; set; }
+    public string Hash { get; set; }
 }

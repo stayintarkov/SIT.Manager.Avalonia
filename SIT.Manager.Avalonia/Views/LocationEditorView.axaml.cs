@@ -2,14 +2,13 @@ using Avalonia.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using SIT.Manager.Avalonia.ViewModels;
 
-namespace SIT.Manager.Avalonia.Views
+namespace SIT.Manager.Avalonia.Views;
+
+public partial class LocationEditorView : UserControl
 {
-    public partial class LocationEditorView : UserControl
+    public LocationEditorView()
     {
-        public LocationEditorView()
-        {
-            this.DataContext = App.Current.Services.GetService<LocationEditorViewModel>();
-            InitializeComponent();
-        }
+        this.DataContext = App.Current.Services.GetService<LocationEditorViewModel>();
+        InitializeComponent();
     }
 }

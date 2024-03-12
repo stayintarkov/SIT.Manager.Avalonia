@@ -5,29 +5,28 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SIT.Manager.Avalonia.Views.Dialogs
+namespace SIT.Manager.Avalonia.Views.Dialogs;
+
+public partial class SelectVersionDialog : ContentDialog
 {
-    public partial class SelectVersionDialog : ContentDialog
+    private readonly SelectVersionDialogViewModel dc;
+
+    protected override Type StyleKeyOverride => typeof(ContentDialog);
+
+    public SelectVersionDialog(List<GithubRelease> releases)
     {
-        private readonly SelectVersionDialogViewModel dc;
+        dc = new SelectVersionDialogViewModel(releases);
+        DataContext = dc;
+        InitializeComponent();
+    }
 
-        protected override Type StyleKeyOverride => typeof(ContentDialog);
-
-        public SelectVersionDialog(List<GithubRelease> releases)
+    public new async Task<GithubRelease?> ShowAsync()
+    {
+        ContentDialogResult result = await ShowAsync(null);
+        if (result == ContentDialogResult.Primary)
         {
-            dc = new SelectVersionDialogViewModel(releases);
-            DataContext = dc;
-            InitializeComponent();
+            return dc.SelectedVersion;
         }
-
-        public new async Task<GithubRelease?> ShowAsync()
-        {
-            ContentDialogResult result = await ShowAsync(null);
-            if (result == ContentDialogResult.Primary)
-            {
-                return dc.SelectedVersion;
-            }
-            return null;
-        }
+        return null;
     }
 }
