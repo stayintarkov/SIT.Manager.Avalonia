@@ -9,6 +9,9 @@ public partial class InstallationViewModelBase : ViewModelBase
     [ObservableProperty]
     private InstallProcessState _currentInstallProcessState;
 
+    protected bool IsServerInstall => CurrentInstallProcessState.RequestedInstallOperation == RequestedInstallOperation.InstallServer || CurrentInstallProcessState.RequestedInstallOperation == RequestedInstallOperation.UpdateServer;
+    protected bool IsSitInstall => CurrentInstallProcessState.RequestedInstallOperation == RequestedInstallOperation.InstallSit || CurrentInstallProcessState.RequestedInstallOperation == RequestedInstallOperation.UpdateSit;
+
     public InstallationViewModelBase()
     {
         try

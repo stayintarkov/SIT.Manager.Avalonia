@@ -1,4 +1,5 @@
 ﻿using SIT.Manager.Avalonia.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -28,6 +29,12 @@ public interface IInstallerService
     /// </summary>
     /// <returns>A list of the available GitHub releases</returns>
     Task<List<GithubRelease>> GetSITReleases();
+    /// <summary>
+    /// Installs the selected SPT Server version reporting all progress on the way
+    /// </summary>
+    /// <param name="selectedVersion">The <see cref="GithubRelease"/> to install</param>
+    /// <returns></returns>
+    Task InstallServer(GithubRelease selectedVersion, string targetInstallDir, IProgress<double> downloadProgress, IProgress<double> extractionProgress);
     /// <summary>
     /// Installs the selected SPT Server version
     /// </summary>

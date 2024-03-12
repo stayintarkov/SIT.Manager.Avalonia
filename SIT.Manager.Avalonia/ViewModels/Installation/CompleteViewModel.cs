@@ -9,10 +9,7 @@ namespace SIT.Manager.Avalonia.ViewModels.Installation;
 
 public partial class CompleteViewModel : InstallationViewModelBase
 {
-    public CompleteViewModel() : base()
-    {
-
-    }
+    public CompleteViewModel() : base() { }
 
     [RelayCommand]
     private void Reset()

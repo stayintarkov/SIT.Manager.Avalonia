@@ -53,6 +53,37 @@ namespace SIT.Manager.Avalonia.Services
             }
         }
 
+        private async Task<bool> DownloadMegaFile(string fileName, string fileUrl, IProgress<double> progress)
+        {
+            _logger.LogInformation("Attempting to use Mega API.");
+            try
+            {
+                MegaApiClient megaApiClient = new();
+                await megaApiClient.LoginAnonymousAsync();
+
+                // TODO: Add proper error handling below
+                if (!megaApiClient.IsLoggedIn)
+                {
+                    return false;
+                }
+
+                _logger.LogInformation($"Starting download of '{fileName}' from '{fileUrl}'");
+
+                Uri fileLink = new(fileUrl);
+                INode fileNode = await megaApiClient.GetNodeFromLinkAsync(fileLink);
+
+                string targetPath = Path.Combine(_configService.Config.InstallPath, fileName);
+                await megaApiClient.DownloadFileAsync(fileNode, targetPath, progress);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        // TODO unify this and the other DownloadMegaFile function nicely
         private async Task<bool> DownloadMegaFile(string fileName, string fileUrl, bool showProgress)
         {
             _logger.LogInformation("Attempting to use Mega API.");
@@ -61,7 +92,7 @@ namespace SIT.Manager.Avalonia.Services
                 MegaApiClient megaApiClient = new();
                 await megaApiClient.LoginAnonymousAsync();
 
-                // Todo: Add proper error handling below
+                // TODO: Add proper error handling below
                 if (!megaApiClient.IsLoggedIn)
                 {
                     return false;
@@ -88,14 +119,39 @@ namespace SIT.Manager.Avalonia.Services
             }
         }
 
-        /// <summary>
-        /// Downloads a file and shows a progress bar if enabled
-        /// </summary>
-        /// <param name="fileName">The name of the file to be downloaded.</param>
-        /// <param name="filePath">The path (not including the filename) to download to.</param>
-        /// <param name="fileUrl">The URL to download from.</param>
-        /// <param name="showProgress">If a progress bar should show the status.</param>
-        /// <returns></returns>
+        // TODO unify this and the other DownloadFile function nicely
+        public async Task<bool> DownloadFile(string fileName, string filePath, string fileUrl, IProgress<double> progress)
+        {
+            bool result = false;
+            if (fileUrl.Contains("mega.nz"))
+            {
+                result = await DownloadMegaFile(fileName, fileUrl, progress);
+            }
+            else
+            {
+                _logger.LogInformation($"Starting download of '{fileName}' from '{fileUrl}'");
+                filePath = Path.Combine(filePath, fileName);
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+
+                try
+                {
+                    using (FileStream file = new(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
+                    {
+                        await _httpClient.DownloadAsync(file, fileUrl, progress);
+                    }
+                    result = true;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "DownloadFile");
+                }
+            }
+            return result;
+        }
+
         public async Task<bool> DownloadFile(string fileName, string filePath, string fileUrl, bool showProgress = false)
         {
             _actionNotificationService.StartActionNotification();
@@ -135,6 +191,53 @@ namespace SIT.Manager.Avalonia.Services
 
             _actionNotificationService.StopActionNotification();
             return result;
+        }
+
+        // TODO unify this with the other ExtractArchive function
+        public async Task ExtractArchive(string filePath, string destination, IProgress<double> progress)
+        {
+            // Ensures that the last character on the extraction path is the directory separator char.
+            // Without this, a malicious zip file could try to traverse outside of the expected extraction path.
+            if (!destination.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
+            {
+                destination += Path.DirectorySeparatorChar;
+            }
+
+            DirectoryInfo destinationInfo = new(destination);
+            destinationInfo.Create();
+
+            try
+            {
+                using ZipArchive archive = await Task.Run(() => ZipArchive.Open(filePath));
+                double totalFiles = archive.Entries.Where(file => !file.IsDirectory).Count();
+                double completed = 0;
+
+                foreach (ZipArchiveEntry entry in archive.Entries)
+                {
+                    if (entry.IsDirectory)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        await Task.Run(() => entry.WriteToDirectory(destination, new ExtractionOptions()
+                        {
+                            ExtractFullPath = true,
+                            Overwrite = true
+                        }));
+                    }
+
+                    double progressPercentage = ++completed / totalFiles * 100;
+                    progress.Report(progressPercentage);
+                }
+
+                progress.Report(100);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "ExtractFile: Error when opening Archive");
+                throw;
+            }
         }
 
         public async Task ExtractArchive(string filePath, string destination)

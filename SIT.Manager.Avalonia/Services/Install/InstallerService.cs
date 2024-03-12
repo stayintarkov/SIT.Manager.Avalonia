@@ -196,12 +196,19 @@ public partial class InstallerService(IActionNotificationService actionNotificat
         }
 
         List<GithubRelease> result = [];
-        if (githubReleases.Any())
+        if (githubReleases.Count != 0)
         {
             foreach (GithubRelease release in githubReleases)
             {
-                var zipAsset = release.assets.Find(asset => asset.name.EndsWith(".zip"));
-                if (zipAsset != null)
+                // Check there is an asset available for this OS
+                string fileExtention = ".zip";
+                if (OperatingSystem.IsLinux())
+                {
+                    fileExtention = ".tar.gz";
+                }
+
+                GithubRelease.Asset? releaseAsset = release.assets.Find(asset => asset.name.EndsWith(fileExtention));
+                if (releaseAsset != null)
                 {
                     Match match = ServerReleaseVersionRegex().Match(release.body);
                     if (match.Success)
@@ -406,6 +413,75 @@ public partial class InstallerService(IActionNotificationService actionNotificat
             return string.Empty;
         }
         return EFTGameFinder.FindOfficialGamePath();
+    }
+
+    public async Task InstallServer(GithubRelease selectedVersion, string targetInstallDir, IProgress<double> downloadProgress, IProgress<double> extractionProgress)
+    {
+        if (selectedVersion == null)
+        {
+            // TODO maybe transfer these _barNotificationErrors to only display in the install ui rather than as a disappearing bar notification?
+            _barNotificationService.ShowError("Error", "No server version selected to install");
+            _logger.LogWarning("Install Server: selectVersion is 'null'");
+            return;
+        }
+
+        // Dynamically find the asset that starts with "SITCoop" and ends with ".zip"
+        string fileExtention = ".zip";
+        if (OperatingSystem.IsLinux())
+        {
+            fileExtention = ".tar.gz";
+        }
+
+        GithubRelease.Asset? releaseAsset = selectedVersion.assets.FirstOrDefault(a => a.name.StartsWith("SITCoop") && a.name.EndsWith(fileExtention));
+        if (releaseAsset == null)
+        {
+            _barNotificationService.ShowError("Error", "No server release found to download");
+            _logger.LogError("No matching release asset found.");
+            return;
+        }
+        string releaseZipUrl = releaseAsset.browser_download_url;
+
+        if (string.IsNullOrEmpty(targetInstallDir))
+        {
+            _barNotificationService.ShowError("Error", "Unable to use provided installation directory");
+            _logger.LogError("Unable to use provided installation directory was null or empty");
+            return;
+        }
+
+        // Create SPT-AKI directory (default: Server)
+        if (!Directory.Exists(targetInstallDir))
+        {
+            Directory.CreateDirectory(targetInstallDir);
+        }
+
+        // Define the paths for download target directory
+        string downloadLocation = Path.Combine(targetInstallDir, releaseAsset.name);
+
+        try
+        {
+            // Download and extract the file into the target directory
+            await _fileService.DownloadFile(releaseAsset.name, targetInstallDir, releaseZipUrl, downloadProgress);
+            await _fileService.ExtractArchive(downloadLocation, targetInstallDir, extractionProgress);
+        }
+        catch (Exception ex)
+        {
+            _barNotificationService.ShowError("Install Error", "Encountered an error during server installation.", 10);
+            _logger.LogError(ex, "Install Server");
+            throw;
+        }
+
+        // Remove the downloaded Server after extraction
+        File.Delete(downloadLocation);
+
+        ManagerConfig config = _configService.Config;
+        config.SitVersion = _versionService.GetSITVersion(config.InstallPath);
+
+        // Attempt to automatically set the AKI Server Path after successful installation and save it to config
+        if (!string.IsNullOrEmpty(targetInstallDir))
+        {
+            config.AkiServerPath = targetInstallDir;
+        }
+        _configService.UpdateConfig(config);
     }
 
     public async Task InstallServer(GithubRelease selectedVersion)
