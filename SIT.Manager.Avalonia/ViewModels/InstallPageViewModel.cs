@@ -31,6 +31,8 @@ public partial class InstallPageViewModel : ViewModelBase,
 
     private InstallProcessState _installProcessState = new();
 
+    private bool _usingSitInstallSteps = true;
+
     [ObservableProperty]
     private int _currentInstallStep = 0;
 
@@ -53,19 +55,25 @@ public partial class InstallPageViewModel : ViewModelBase,
         int currentInstallStep = CurrentInstallStep;
         if (_installProcessState.RequestedInstallOperation == RequestedInstallOperation.InstallSit || _installProcessState.RequestedInstallOperation == RequestedInstallOperation.UpdateSit)
         {
-            if (!InstallationSteps.Equals(_sitInstallSteps))
+            if (!_usingSitInstallSteps)
             {
                 InstallationSteps = _sitInstallSteps.AsReadOnly();
+                _usingSitInstallSteps = true;
             }
         }
         else if (_installProcessState.RequestedInstallOperation == RequestedInstallOperation.InstallServer || _installProcessState.RequestedInstallOperation == RequestedInstallOperation.UpdateServer)
         {
-            if (!InstallationSteps.Equals(_serverInstallSteps))
+            if (_usingSitInstallSteps)
             {
                 InstallationSteps = _serverInstallSteps.AsReadOnly();
+                _usingSitInstallSteps = false;
             }
         }
-        CurrentInstallStep = currentInstallStep;
+
+        if (CurrentInstallStep < 0)
+        {
+            CurrentInstallStep = currentInstallStep;
+        }
     }
 
     private void ResetInstallState()
@@ -90,7 +98,7 @@ public partial class InstallPageViewModel : ViewModelBase,
         // we may have to adjust the steps we are taking.
         AdjustInstallSteps();
 
-        if (InstallationSteps.Count > CurrentInstallStep)
+        if (InstallationSteps.Count >= CurrentInstallStep && CurrentInstallStep >= 0)
         {
             Type value = InstallationSteps[CurrentInstallStep].InstallationView;
             InstallStepControl = (Control) (System.Activator.CreateInstance(value) ?? new TextBlock() { Text = "No Control Selected" });

@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models.Installation;
@@ -8,14 +7,11 @@ using System;
 
 namespace SIT.Manager.Avalonia.ViewModels.Installation;
 
-public partial class SelectViewModel : ViewModelBase
+public partial class SelectViewModel : InstallationViewModelBase
 {
     private readonly IManagerConfigService _configService;
     private readonly IInstallerService _installerService;
     private readonly IVersionService _versionService;
-
-    [ObservableProperty]
-    private InstallProcessState _currentInstallProcessState;
 
     [ObservableProperty]
     private bool _noEftInstallPathSet = true;
@@ -25,20 +21,11 @@ public partial class SelectViewModel : ViewModelBase
 
     public SelectViewModel(IManagerConfigService configsService,
                            IInstallerService installerService,
-                           IVersionService versionService)
+                           IVersionService versionService) : base()
     {
         _configService = configsService;
         _installerService = installerService;
         _versionService = versionService;
-
-        try
-        {
-            CurrentInstallProcessState = WeakReferenceMessenger.Default.Send<InstallProcessStateRequestMessage>();
-        }
-        catch
-        {
-            CurrentInstallProcessState = new();
-        }
 
         EstablishEFTInstallStatus();
         EstablishSptAkiInstallStatus();
@@ -117,8 +104,7 @@ public partial class SelectViewModel : ViewModelBase
         if (requestedOperation != null)
         {
             CurrentInstallProcessState.RequestedInstallOperation = (RequestedInstallOperation) requestedOperation;
-            WeakReferenceMessenger.Default.Send(new InstallProcessStateChangedMessage(CurrentInstallProcessState));
-            WeakReferenceMessenger.Default.Send(new ProgressInstallMessage(true));
+            ProgressInstall();
         }
     }
 }

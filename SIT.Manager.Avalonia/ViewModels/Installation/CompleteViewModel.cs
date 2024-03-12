@@ -1,20 +1,35 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using SIT.Manager.Avalonia.Models;
 using SIT.Manager.Avalonia.Models.Installation;
+using SIT.Manager.Avalonia.Models.Messages;
+using SIT.Manager.Avalonia.Views;
 
 namespace SIT.Manager.Avalonia.ViewModels.Installation;
 
-public partial class CompleteViewModel : ViewModelBase
+public partial class CompleteViewModel : InstallationViewModelBase
 {
-    [RelayCommand]
-    private void Progress()
+    public CompleteViewModel() : base()
     {
-        WeakReferenceMessenger.Default.Send(new ProgressInstallMessage(true));
+
     }
 
     [RelayCommand]
     private void Reset()
     {
-        WeakReferenceMessenger.Default.Send(new ProgressInstallMessage(true));
+        PageNavigation pageNavigation;
+        if (CurrentInstallProcessState.RequestedInstallOperation == RequestedInstallOperation.InstallServer || CurrentInstallProcessState.RequestedInstallOperation == RequestedInstallOperation.UpdateServer)
+        {
+            pageNavigation = new(typeof(ServerPage), false);
+        }
+        else
+        {
+            pageNavigation = new(typeof(PlayPage), false);
+        }
+
+        CurrentInstallProcessState = new();
+        ProgressInstall();
+
+        WeakReferenceMessenger.Default.Send(new PageNavigationMessage(pageNavigation));
     }
 }

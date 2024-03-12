@@ -1,7 +1,6 @@
 ﻿using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using DynamicData;
 using ReactiveUI;
 using SIT.Manager.Avalonia.Interfaces;
@@ -15,13 +14,10 @@ using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.ViewModels.Installation;
 
-public partial class ConfigureServerViewModel : ViewModelBase
+public partial class ConfigureServerViewModel : InstallationViewModelBase
 {
     private readonly IInstallerService _installerService;
     private readonly IPickerDialogService _pickerDialogService;
-
-    [ObservableProperty]
-    private InstallProcessState _currentInstallProcessState;
 
     [ObservableProperty]
     private bool _isLoading = false;
@@ -40,15 +36,6 @@ public partial class ConfigureServerViewModel : ViewModelBase
     {
         _installerService = installerService;
         _pickerDialogService = pickerDialogService;
-
-        try
-        {
-            CurrentInstallProcessState = WeakReferenceMessenger.Default.Send<InstallProcessStateRequestMessage>();
-        }
-        catch
-        {
-            CurrentInstallProcessState = new();
-        }
 
         ChangeServerInstallLocationCommand = new AsyncRelayCommand(ChangeServerInstallLocation);
 
@@ -93,14 +80,13 @@ public partial class ConfigureServerViewModel : ViewModelBase
     [RelayCommand]
     private void Back()
     {
-        WeakReferenceMessenger.Default.Send(new ProgressInstallMessage(false));
+        RegressInstall();
     }
 
     [RelayCommand]
     private void Start()
     {
-        WeakReferenceMessenger.Default.Send(new InstallProcessStateChangedMessage(CurrentInstallProcessState));
-        WeakReferenceMessenger.Default.Send(new ProgressInstallMessage(true));
+        ProgressInstall();
     }
 
     private void ValidateConfiguration()

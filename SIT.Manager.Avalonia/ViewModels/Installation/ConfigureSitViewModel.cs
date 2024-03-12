@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using DynamicData;
 using ReactiveUI;
 using SIT.Manager.Avalonia.Interfaces;
@@ -14,15 +13,12 @@ using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.ViewModels.Installation;
 
-public partial class ConfigureSitViewModel : ViewModelBase
+public partial class ConfigureSitViewModel : InstallationViewModelBase
 {
     private readonly IInstallerService _installerService;
 
     [ObservableProperty]
     private bool _isLoading = false;
-
-    [ObservableProperty]
-    private InstallProcessState _currentInstallProcessState;
 
     [ObservableProperty]
     private GithubRelease? _selectedVersion;
@@ -38,18 +34,9 @@ public partial class ConfigureSitViewModel : ViewModelBase
 
     public IAsyncRelayCommand ChangeEftInstallLocationCommand { get; }
 
-    public ConfigureSitViewModel(IInstallerService installerService)
+    public ConfigureSitViewModel(IInstallerService installerService) : base()
     {
         _installerService = installerService;
-
-        try
-        {
-            CurrentInstallProcessState = WeakReferenceMessenger.Default.Send<InstallProcessStateRequestMessage>();
-        }
-        catch
-        {
-            CurrentInstallProcessState = new();
-        }
 
         ChangeEftInstallLocationCommand = new AsyncRelayCommand(ChangeEftInstallLocation);
 
@@ -117,15 +104,14 @@ public partial class ConfigureSitViewModel : ViewModelBase
     [RelayCommand]
     private void Back()
     {
-        WeakReferenceMessenger.Default.Send(new ProgressInstallMessage(false));
+        RegressInstall();
     }
 
+    // TODO make sure this is disabled until we have selections for all the necessary items
     [RelayCommand]
     private void Start()
     {
-        // TODO make sure this is disabled until we have selections for all the necessary items
-        WeakReferenceMessenger.Default.Send(new InstallProcessStateChangedMessage(CurrentInstallProcessState));
-        WeakReferenceMessenger.Default.Send(new ProgressInstallMessage(true));
+        ProgressInstall();
     }
 
     private void ValidateConfiguration()
