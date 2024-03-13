@@ -1,15 +1,16 @@
-using Avalonia.Controls;
+using Avalonia.ReactiveUI;
 using Microsoft.Extensions.DependencyInjection;
+using ReactiveUI;
 using SIT.Manager.Avalonia.ViewModels.Installation;
 
-namespace SIT.Manager.Avalonia.Views.Installation
+namespace SIT.Manager.Avalonia.Views.Installation;
+
+public partial class PatchView : ReactiveUserControl<PatchViewModel>
 {
-    public partial class PatchView : UserControl
+    public PatchView()
     {
-        public PatchView()
-        {
-            InitializeComponent();
-            this.DataContext = App.Current.Services.GetService<PatchViewModel>();
-        }
+        InitializeComponent();
+        this.DataContext = App.Current.Services.GetService<PatchViewModel>();
+        this.WhenActivated(disposables => { /* Handle view activation etc. */ });
     }
 }

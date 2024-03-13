@@ -5,6 +5,7 @@ namespace SIT.Manager.Avalonia.Services;
 
 public interface IFileService
 {
+    Task CopyDirectory(string source, string destination, IProgress<double>? progress = null);
     /// <summary>
     /// Downloads a file and report progress if enabled
     /// </summary>
