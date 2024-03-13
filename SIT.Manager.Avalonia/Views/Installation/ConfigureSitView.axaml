@@ -93,7 +93,7 @@
 				</Border>
 			</StackPanel>
 
-			<StackPanel>
+			<StackPanel IsVisible="False">
 				<TextBlock Text="Advanced Options" Classes="FrameHeading"/>
 				<Border Classes="StandardFrame">
 					<StackPanel>

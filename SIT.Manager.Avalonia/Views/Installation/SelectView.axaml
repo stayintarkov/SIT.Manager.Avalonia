@@ -66,6 +66,7 @@
 							</Button>
 
 							<Button Grid.Column="1"
+									IsVisible="False"
 									IsEnabled="{Binding !NoEftInstallPathSet}"
 									ToolTip.Tip="{DynamicResource ToolsInstallServerButtonToolTip}"
 									Command="{Binding ProgressInstallCommand}"
@@ -119,6 +120,7 @@
 							</Button>
 
 							<Button Grid.Column="1"
+									IsVisible="False"
 									IsEnabled="{Binding !NoAkiInstallPathSet}"
 									ToolTip.Tip="{DynamicResource ToolsInstallServerButtonToolTip}"
 									Command="{Binding ProgressInstallCommand}"
