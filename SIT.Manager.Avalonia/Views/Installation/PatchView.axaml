@@ -8,71 +8,79 @@
 			 x:DataType="vm:PatchViewModel">
 	<Grid RowDefinitions="*, *">
 		<Border Classes="StandardFrame" Grid.Row="0">
-			<StackPanel HorizontalAlignment="Center"
-						VerticalAlignment="Center">
-				<StackPanel Name="MoveEFTPanel"
-						Orientation="Horizontal"
-						HorizontalAlignment="Center"
-						MinHeight="24">
-					<TextBlock Foreground="White"
-							   VerticalAlignment="Center"
-							   Text="Copying EFT"
-							   FontSize="12"/>
-					<ProgressBar Margin="15 0 0 0"
-								 VerticalAlignment="Center"
-								 Width="150"
-								 MinWidth="100"
-								 MaxWidth="150"
-								 Minimum="0"
-								 Maximum="100"/>
-					<TextBlock Margin="15 0 0 0"
-							   Text="0%"
-							   VerticalAlignment="Center"/>
-				</StackPanel>
+			<Grid RowDefinitions="*, *, *, *"
+				  ColumnDefinitions="*, 2*, *">
+				<TextBlock Grid.Row="0"
+						   Grid.Column="0"
+						   Grid.ColumnSpan="3"
+						   Margin="4"
+						   VerticalAlignment="Center"
+						   HorizontalAlignment="Left"
+						   Text="Setting up your EFT instance and patching it to the version of EFT required by the requested SIT version"/>
 
-				<StackPanel Name="DownloadPatcherPanel"
-						Orientation="Horizontal"
-						HorizontalAlignment="Center"
-						MinHeight="24">
-					<TextBlock Foreground="White"
-							   VerticalAlignment="Center"
-							   Text="Downloading"
-							   FontSize="12"/>
-					<ProgressBar Margin="15 0 0 0"
-								 VerticalAlignment="Center"
-								 Width="150"
-								 MinWidth="100"
-								 MaxWidth="150"
-								 Minimum="0"
-								 Maximum="100"/>
-					<TextBlock Margin="15 0 0 0"
-							   Text="0%"
-							   VerticalAlignment="Center"/>
-				</StackPanel>
+				<!-- Copy BSG EFT Install Row -->
+				<TextBlock Grid.Row="1"
+						   Grid.Column="0"
+						   VerticalAlignment="Center"
+						   HorizontalAlignment="Center"
+						   Text="Copying EFT Install"/>
+				<ProgressBar Grid.Row="1"
+							 Grid.Column="1"
+							 Margin="16 0 0 0"
+							 VerticalAlignment="Center"
+							 HorizontalAlignment="Stretch"
+							 Minimum="0"
+							 Maximum="100"
+							 Value="{Binding CopyProgressPercentage}"/>
+				<TextBlock Grid.Row="1"
+						   Grid.Column="2"
+						   Margin="16 0 0 0"
+						   HorizontalAlignment="Left"
+						   Text="{Binding CopyProgressPercentage, StringFormat={}{0:N2}%}"
+						   VerticalAlignment="Center"/>
 
-				<StackPanel Name="ExtractPatcherPanel"
-						Orientation="Horizontal"
-						HorizontalAlignment="Center"
-						MinHeight="24">
-					<TextBlock Name="ActionPanelText"
-							   Foreground="White"
-							   VerticalAlignment="Center"
-							   Text="Extracting"
-							   FontSize="12"/>
-					<ProgressBar Name="ActionPanelBar"
-								 Margin="15 0 0 0"
-								 VerticalAlignment="Center"
-								 Width="150"
-								 MinWidth="100"
-								 MaxWidth="150"
-								 Minimum="0"
-								 Maximum="100"/>
-					<TextBlock Name="ActionPanelPercentageText"
-							   Margin="15 0 0 0"
-							   Text="0%"
-							   VerticalAlignment="Center"/>
-				</StackPanel>
-			</StackPanel>
+				<!-- Download Row -->
+				<TextBlock Grid.Row="2"
+						   Grid.Column="0"
+						   VerticalAlignment="Center"
+						   HorizontalAlignment="Center"
+						   Text="Downloading Patcher"/>
+				<ProgressBar Grid.Row="2"
+							 Grid.Column="1"
+							 Margin="16 0 0 0"
+							 VerticalAlignment="Center"
+							 HorizontalAlignment="Stretch"
+							 Minimum="0"
+							 Maximum="100"
+							 Value="{Binding DownloadProgressPercentage}"/>
+				<TextBlock Grid.Row="2"
+						   Grid.Column="2"
+						   Margin="16 0 0 0"
+						   HorizontalAlignment="Left"
+						   Text="{Binding DownloadProgressPercentage, StringFormat={}{0:N2}%}"
+						   VerticalAlignment="Center"/>
+
+				<!-- Extraction Row -->
+				<TextBlock Grid.Row="3"
+						   Grid.Column="0"
+						   HorizontalAlignment="Center"
+						   VerticalAlignment="Center"
+						   Text="Extracting Patcher"/>
+				<ProgressBar Grid.Row="3"
+							 Grid.Column="1"
+							 Margin="15 0 0 0"
+							 VerticalAlignment="Center"
+							 HorizontalAlignment="Stretch"
+							 Minimum="0"
+							 Maximum="100"
+							 Value="{Binding ExtractionProgressPercentage}"/>
+				<TextBlock Grid.Row="3"
+						   Grid.Column="2"
+						   Margin="15 0 0 0"
+						   HorizontalAlignment="Left"
+						   Text="{Binding ExtractionProgressPercentage, StringFormat={}{0:N2}%}"
+						   VerticalAlignment="Center"/>
+			</Grid>
 		</Border>
 
 		<Border Classes="StandardFrame"
@@ -80,7 +88,10 @@
 			<StackPanel HorizontalAlignment="Center"
 						VerticalAlignment="Center">
 				<TextBlock Text="Embedded Patcher Window goes here!"/>
-				<Button Content="Progress" Command="{Binding ProgressCommand}"/>
+				<Button Content="Progress"
+						HorizontalAlignment="Center"
+						Margin="0,12,0,0"
+						Command="{Binding ProgressCommand}"/>
 			</StackPanel>
 		</Border>
 	</Grid>

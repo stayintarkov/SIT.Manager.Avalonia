@@ -308,6 +308,11 @@ public partial class InstallerService(IActionNotificationService actionNotificat
         tarkovBuild = tarkovBuild.Split(".").Last();
         string sitVersionTargetBuild = sitVersionTarget.Split(".").Last();
 
+        if (tarkovBuild == sitVersionTargetBuild)
+        {
+            return [];
+        }
+
         GiteaRelease? compatibleDowngradePatcher = null;
         foreach (var release in giteaReleases)
         {
@@ -330,7 +335,7 @@ public partial class InstallerService(IActionNotificationService actionNotificat
         if (compatibleDowngradePatcher == null)
         {
             _logger.LogError("No applicable patcher found for the specified SIT version.");
-            /* TODO Rework this
+            /* TODO Rework this as it causes things to hang.
             await new ContentDialog()
             {
                 Title = _localizationService.TranslateSource("InstallServiceErrorTitle"),
@@ -352,7 +357,7 @@ public partial class InstallerService(IActionNotificationService actionNotificat
             return null;
         }
 
-        foreach (var mirror in mirrors)
+        foreach (Mirrors mirror in mirrors)
         {
             Uri uri = new(mirror.Link);
             string host = uri.Host.Replace("www.", "").Split('.')[0];

@@ -41,6 +41,13 @@
 						<StackPanel Orientation="Horizontal"
 									Margin="0,4,0,0"
 									IsVisible="{Binding !IsLoading}">
+							<StackPanel.IsVisible>
+								<MultiBinding Converter="{x:Static BoolConverters.And}">
+									<Binding Path="!IsLoading"/>
+									<Binding Path="HasMirrorsAvailable"/>
+								</MultiBinding>
+							</StackPanel.IsVisible>
+							
 							<TextBlock Text="Select the mirror to use: "
 									   VerticalAlignment="Center"
 									   Margin="0,0,8,0"/>
@@ -72,6 +79,7 @@
 									<TextBlock Text="{DynamicResource SettingsEFTInstallPathTitle}" Margin="0,0,8,0" VerticalAlignment="Center"/>
 									<TextBox Watermark="{DynamicResource SettingsEFTInstallPathPlaceholder}"
 											 Margin="0,0,8,0"
+											 Text="{Binding CurrentInstallProcessState.EftInstallPath}"
 											 IsReadOnly="True"/>
 									<Button Name="ChangeInstallButton"
 											Content="{DynamicResource SettingsEFTSettingsButtonChangeTitle}"

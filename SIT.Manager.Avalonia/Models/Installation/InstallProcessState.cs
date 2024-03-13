@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System.Collections.Generic;
 
 namespace SIT.Manager.Avalonia.Models.Installation;
 
@@ -15,13 +14,15 @@ public partial class InstallProcessState : ObservableObject
     [ObservableProperty]
     private bool _usingBsgInstallPath = false;
     [ObservableProperty]
+    private string _bsgInstallPath = string.Empty;
+    [ObservableProperty]
     private string _eftInstallPath = string.Empty;
     [ObservableProperty]
     private string _eftVersion = string.Empty;
     [ObservableProperty]
     private string _sitVersion = string.Empty;
     [ObservableProperty]
-    private KeyValuePair<string, string> _downloadMirror = new();
+    private string _downloadMirrorUrl = string.Empty;
 
     // SPT-AKI Install Settings
     [ObservableProperty]

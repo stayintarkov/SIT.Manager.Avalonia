@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models.Installation;
+using System.IO;
 
 namespace SIT.Manager.Avalonia.ViewModels.Installation;
 
@@ -32,11 +33,12 @@ public partial class SelectViewModel : InstallationViewModelBase
 
     private void EstablishEFTInstallStatus()
     {
-        string detectedBSGInstallPath = _installerService.GetEFTInstallPath();
+        string detectedBSGInstallPath = Path.GetDirectoryName(_installerService.GetEFTInstallPath()) ?? string.Empty;
         if (string.IsNullOrEmpty(_configService.Config.InstallPath))
         {
             if (!string.IsNullOrEmpty(detectedBSGInstallPath))
             {
+                CurrentInstallProcessState.BsgInstallPath = detectedBSGInstallPath;
                 CurrentInstallProcessState.EftInstallPath = detectedBSGInstallPath;
                 CurrentInstallProcessState.UsingBsgInstallPath = true;
             }

@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Platform.Storage;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DynamicData;
 using ReactiveUI;
@@ -16,6 +17,7 @@ namespace SIT.Manager.Avalonia.ViewModels.Installation;
 public partial class ConfigureSitViewModel : InstallationViewModelBase
 {
     private readonly IInstallerService _installerService;
+    private readonly IPickerDialogService _pickerDialogService;
 
     [ObservableProperty]
     private bool _isLoading = false;
@@ -29,14 +31,18 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
     [ObservableProperty]
     public bool _isConfigurationValid = false;
 
+    [ObservableProperty]
+    private bool _hasMirrorsAvailable = false;
+
     public ObservableCollection<GithubRelease> AvailableVersions { get; } = [];
     public ObservableCollection<KeyValuePair<string, string>> AvailableMirrors { get; } = [];
 
     public IAsyncRelayCommand ChangeEftInstallLocationCommand { get; }
 
-    public ConfigureSitViewModel(IInstallerService installerService) : base()
+    public ConfigureSitViewModel(IInstallerService installerService, IPickerDialogService pickerDialogService) : base()
     {
         _installerService = installerService;
+        _pickerDialogService = pickerDialogService;
 
         ChangeEftInstallLocationCommand = new AsyncRelayCommand(ChangeEftInstallLocation);
 
@@ -45,7 +51,19 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
 
     private async Task ChangeEftInstallLocation()
     {
-        // TODO set this to change install location properly.
+        IStorageFolder? directorySelected = await _pickerDialogService.GetDirectoryFromPickerAsync();
+        if (directorySelected != null)
+        {
+            if (directorySelected.Path.LocalPath == CurrentInstallProcessState.BsgInstallPath)
+            {
+                // TODO show an error of some kind as we don't want the legit install to be the same as the SIT install.
+            }
+            else
+            {
+                CurrentInstallProcessState.EftInstallPath = directorySelected.Path.LocalPath;
+                ValidateConfiguration();
+            }
+        }
     }
 
     private async Task LoadAvailableVersionData()
@@ -83,11 +101,26 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
         Dictionary<string, string>? availableMirrors = await _installerService.GetAvaiableMirrorsForVerison(SelectedVersion.body, CurrentInstallProcessState.EftVersion);
         if (availableMirrors != null)
         {
-            AvailableMirrors.AddRange(availableMirrors);
-            if (AvailableMirrors.Any())
+            if (availableMirrors.Count != 0)
             {
-                CurrentInstallProcessState.DownloadMirror = AvailableMirrors[0];
+                // We got mirrors successfully so we can show them here
+                AvailableMirrors.AddRange(availableMirrors);
+                if (AvailableMirrors.Any())
+                {
+                    SelectedMirror = AvailableMirrors[0];
+                }
+                HasMirrorsAvailable = true;
             }
+            else
+            {
+                HasMirrorsAvailable = false;
+            }
+        }
+        else
+        {
+            HasMirrorsAvailable = false;
+
+            // TODO there was an error of some kind getting the available mirrors so we need to do something for this
         }
 
         IsLoading = false;
@@ -101,7 +134,6 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
         RegressInstall();
     }
 
-    // TODO make sure this is disabled until we have selections for all the necessary items
     [RelayCommand]
     private void Start()
     {
@@ -110,7 +142,34 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
 
     private void ValidateConfiguration()
     {
-        // TODO
+        IsConfigurationValid = true;
+
+        if (CurrentInstallProcessState.UsingBsgInstallPath)
+        {
+            if (CurrentInstallProcessState.BsgInstallPath == CurrentInstallProcessState.EftInstallPath)
+            {
+                IsConfigurationValid = false;
+                return;
+            }
+        }
+
+        if (string.IsNullOrEmpty(CurrentInstallProcessState.EftInstallPath))
+        {
+            IsConfigurationValid = false;
+            return;
+        }
+
+        if (AvailableMirrors.Count != 0 && string.IsNullOrEmpty(CurrentInstallProcessState.DownloadMirrorUrl))
+        {
+            IsConfigurationValid = false;
+            return;
+        }
+
+        if (IsLoading)
+        {
+            IsConfigurationValid = false;
+            return;
+        }
     }
 
     partial void OnSelectedVersionChanged(GithubRelease? value)
@@ -121,7 +180,12 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
 
     partial void OnSelectedMirrorChanged(KeyValuePair<string, string> value)
     {
-        CurrentInstallProcessState.DownloadMirror = value;
+        CurrentInstallProcessState.DownloadMirrorUrl = value.Value;
+        ValidateConfiguration();
+    }
+
+    partial void OnIsLoadingChanged(bool value)
+    {
         ValidateConfiguration();
     }
 }
