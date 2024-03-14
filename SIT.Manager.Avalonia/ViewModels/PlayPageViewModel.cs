@@ -1,16 +1,19 @@
-﻿using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
+﻿using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using ReactiveUI;
 using SIT.Manager.Avalonia.Classes;
 using SIT.Manager.Avalonia.Exceptions;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
+using SIT.Manager.Avalonia.Models.Messages;
+using SIT.Manager.Avalonia.Views;
 using SIT.Manager.Avalonia.Views.Dialogs;
 using System;
 using System.Collections.Generic;
@@ -18,6 +21,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Reactive.Disposables;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -95,6 +99,15 @@ public partial class PlayPageViewModel : ViewModelBase
 
         ConnectToServerCommand = new AsyncRelayCommand(async () => await ConnectToServer());
         QuickPlayCommand = new AsyncRelayCommand(async () => await ConnectToServer(true));
+
+        this.WhenActivated((CompositeDisposable disposables) =>
+        {
+            if (string.IsNullOrEmpty(_configService.Config.InstallPath))
+            {
+                PageNavigation pageNavigation = new(typeof(InstallPage), false);
+                WeakReferenceMessenger.Default.Send(new PageNavigationMessage(pageNavigation));
+            }
+        });
     }
 
     private string CreateLaunchArugments(TarkovLaunchConfig launchConfig, string token)
