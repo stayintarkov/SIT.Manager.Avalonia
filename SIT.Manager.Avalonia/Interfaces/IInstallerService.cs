@@ -7,6 +7,15 @@ namespace SIT.Manager.Avalonia.Interfaces;
 
 public interface IInstallerService
 {
+    /// <summary>
+    /// Downloads and extract the patcher from the requested url providing progress as it goes
+    /// </summary>
+    /// <param name="url">The download mirror containing the required patcher</param>
+    /// <param name="targetPath">The directory to download and extract the patcher into</param>
+    /// <param name="downloadProgress"></param>
+    /// <param name="extractionProgress"></param>
+    /// <returns></returns>
+    Task<bool> DownloadAndExtractPatcher(string url, string targetPath, IProgress<double> downloadProgress, IProgress<double> extractionProgress);
     Task<bool> DownloadAndRunPatcher(string url);
     /// <summary>
     /// Gets a dictionary of all available download mirrors for a sit version
@@ -34,6 +43,9 @@ public interface IInstallerService
     /// Installs the selected SPT Server version reporting all progress on the way
     /// </summary>
     /// <param name="selectedVersion">The <see cref="GithubRelease"/> to install</param>
+    /// <param name="targetInstallDir"></param>
+    /// <param name="downloadProgress"></param>
+    /// <param name="extractionProgress"></param>
     /// <returns></returns>
     Task InstallServer(GithubRelease selectedVersion, string targetInstallDir, IProgress<double> downloadProgress, IProgress<double> extractionProgress);
     /// <summary>

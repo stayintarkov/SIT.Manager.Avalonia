@@ -232,6 +232,46 @@ public partial class InstallerService(IActionNotificationService actionNotificat
 
     }
 
+    /// <inheritdoc/>
+    public async Task<bool> DownloadAndExtractPatcher(string url, string targetPath, IProgress<double> downloadProgress, IProgress<double> extractionProgress)
+    {
+        _logger.LogInformation("Downloading Patcher");
+
+        if (string.IsNullOrEmpty(targetPath))
+        {
+            _logger.LogError("DownloadPatcher: targetPath is null or empty");
+            return false;
+        }
+
+        string patcherPath = Path.Combine(targetPath, "Patcher.zip");
+        if (File.Exists(patcherPath))
+        {
+            File.Delete(patcherPath);
+        }
+
+        bool downloadSuccess = await _fileService.DownloadFile("Patcher.zip", targetPath, url, downloadProgress);
+        if (!downloadSuccess)
+        {
+            _logger.LogError("Failed to download the patcher from the selected mirror.");
+            return false;
+        }
+
+        if (File.Exists(patcherPath))
+        {
+            await _fileService.ExtractArchive(patcherPath, targetPath, extractionProgress);
+            File.Delete(patcherPath);
+        }
+
+        var patcherDir = Directory.GetDirectories(targetPath, "Patcher*").FirstOrDefault();
+        if (!string.IsNullOrEmpty(patcherDir))
+        {
+            CloneDirectory(patcherDir, _configService.Config.InstallPath);
+            Directory.Delete(patcherDir, true);
+        }
+
+        return true;
+    }
+
     /// <summary>
     /// Downloads the patcher
     /// </summary>
@@ -259,7 +299,6 @@ public partial class InstallerService(IActionNotificationService actionNotificat
             _logger.LogError("Failed to download the patcher from the selected mirror.");
             return false;
         }
-
 
         if (File.Exists(patcherPath))
         {

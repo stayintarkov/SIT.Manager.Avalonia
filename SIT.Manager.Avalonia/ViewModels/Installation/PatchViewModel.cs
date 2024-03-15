@@ -17,6 +17,8 @@ public partial class PatchViewModel : InstallationViewModelBase
     private readonly IInstallerService _installerService;
 
     private Progress<double> _copyProgress = new();
+    private Progress<double> _downloadProgress = new();
+    private Progress<double> _extractionProgress = new();
 
     [ObservableProperty]
     private double _copyProgressPercentage = 0;
@@ -33,6 +35,8 @@ public partial class PatchViewModel : InstallationViewModelBase
         _installerService = installerService;
 
         _copyProgress.ProgressChanged += CopyProgress_ProgressChanged;
+        _downloadProgress.ProgressChanged += DownloadProgress_ProgressChanged;
+        _extractionProgress.ProgressChanged += ExtractionProgress_ProgressChanged;
 
         this.WhenActivated(async (CompositeDisposable disposables) => await DownloadAndRunPatcher());
     }
@@ -42,6 +46,16 @@ public partial class PatchViewModel : InstallationViewModelBase
         CopyProgressPercentage = e;
     }
 
+    private void DownloadProgress_ProgressChanged(object? sender, double e)
+    {
+        DownloadProgressPercentage = e;
+    }
+
+    private void ExtractionProgress_ProgressChanged(object? sender, double e)
+    {
+        ExtractionProgressPercentage = e;
+    }
+
     public async Task DownloadAndRunPatcher()
     {
         if (CurrentInstallProcessState.UsingBsgInstallPath)
@@ -49,11 +63,11 @@ public partial class PatchViewModel : InstallationViewModelBase
             await _fileService.CopyDirectory(CurrentInstallProcessState.BsgInstallPath, CurrentInstallProcessState.EftInstallPath, _copyProgress);
         }
 
-        // TODO Download Patcher
-
-        // TODO Extract Patcher
+        await _installerService.DownloadAndExtractPatcher(CurrentInstallProcessState.DownloadMirrorUrl, CurrentInstallProcessState.EftInstallPath, _downloadProgress, _extractionProgress);
 
         // TODO Run Patcher
+        // TODO progress on success
+        // TODO show error message on failure
     }
 
     [RelayCommand]
