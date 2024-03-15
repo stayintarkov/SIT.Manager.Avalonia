@@ -20,8 +20,14 @@
 				<TextBlock Text="Version Selection" Classes="FrameHeading"/>
 				<Border Classes="StandardFrame">
 					<StackPanel>
-						<StackPanel Orientation="Horizontal"
-									IsVisible="{Binding !IsLoading}">
+						<StackPanel Orientation="Horizontal">
+							<StackPanel.IsVisible>
+								<MultiBinding Converter="{x:Static BoolConverters.And}">
+									<Binding Path="!IsLoading"/>
+									<Binding Path="HasVersionsAvailable"/>
+								</MultiBinding>
+							</StackPanel.IsVisible>
+							
 							<TextBlock Text="Version to install:"
 									   VerticalAlignment="Center"
 									   Margin="0,0,8,0"/>
@@ -32,7 +38,13 @@
 									  ItemsSource="{Binding AvailableVersions}">
 								<ComboBox.ItemTemplate>
 									<DataTemplate>
-										<TextBlock Text="{Binding tag_name}"/>
+										<StackPanel>
+											<TextBlock Text="{Binding SitVersion}"/>
+											<TextBlock>
+												<Run Text="EFT Version: "/>
+												<Run Text="{Binding EftVersion}"/>
+											</TextBlock>
+										</StackPanel>
 									</DataTemplate>
 								</ComboBox.ItemTemplate>
 							</ComboBox>
@@ -89,15 +101,18 @@
 							</StackPanel>
 						</StackPanel>
 
-						<controls:LoadingSpinner Width="64"
+						<StackPanel IsVisible="{Binding IsLoading}">
+							<TextBlock HorizontalAlignment="Center"
+									   Text="Working out available SIT versions please wait..."/>
+							<controls:LoadingSpinner Width="64"
 												 Height="{Binding $self.Width}"
-												 Margin="0"
+												 Margin="0,8,0,0"
 												 HorizontalAlignment="Center"
 												 VerticalAlignment="Center"
-												 IsVisible="{Binding IsLoading}"
 												 Foreground="{DynamicResource TextControlForeground}"
 												 StrokeWidth="8"/>
-					</StackPanel>
+						</StackPanel>
+						</StackPanel>
 				</Border>
 			</StackPanel>
 

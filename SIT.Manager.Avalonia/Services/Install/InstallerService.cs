@@ -2,6 +2,7 @@
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
+using SIT.Manager.Avalonia.Models.Installation;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -53,7 +54,7 @@ public partial class InstallerService(IActionNotificationService actionNotificat
     /// Cleans up the EFT directory
     /// </summary>
     /// <returns></returns>
-    public void CleanUpEFTDirectory()
+    private void CleanUpEFTDirectory()
     {
         _logger.LogInformation("Cleaning up EFT directory...");
         try
@@ -87,12 +88,171 @@ public partial class InstallerService(IActionNotificationService actionNotificat
     }
 
     /// <summary>
+    /// Gets all available download mirrors for downgrade patchers required to run the given SIT version
+    /// </summary>
+    /// <param name="sitVersions">The available versions of SIT to check for mirrors of</param>
+    /// <param name="tarkovVersion">The provided tarkov version to check agains</param>
+    /// <returns></returns>
+    private async Task<List<SitInstallVersion>> GetAvaiableMirrorsForVerison(List<SitInstallVersion> sitVersions, string tarkovVersion)
+    {
+        if (string.IsNullOrEmpty(tarkovVersion))
+        {
+            _logger.LogError("Available mirrors has no tarkov version to use");
+            return sitVersions;
+        }
+
+        string releasesJsonString = await GetHttpStringWithRetryAsync(() => _httpClient.GetStringAsync(@"https://sitcoop.publicvm.com/api/v1/repos/SIT/Downgrade-Patches/releases"), TimeSpan.FromSeconds(1), 3);
+        List<GiteaRelease> giteaReleases = JsonSerializer.Deserialize<List<GiteaRelease>>(releasesJsonString) ?? [];
+        if (giteaReleases.Count == 0)
+        {
+            _logger.LogError("Found no available mirrors to use as a downgrade patcher");
+            return sitVersions;
+        }
+
+        string tarkovBuild = tarkovVersion ?? _configService.Config.TarkovVersion;
+        tarkovBuild = tarkovBuild.Split(".").Last();
+
+        for (int i = 0; i < sitVersions.Count; i++)
+        {
+            string sitVersionTargetBuild = sitVersions[i].Release.body.Split(".").Last();
+            if (tarkovBuild == sitVersionTargetBuild)
+            {
+                sitVersions[i].DownloadMirrors = [];
+                continue;
+            }
+
+            GiteaRelease? compatibleDowngradePatcher = null;
+            foreach (GiteaRelease? release in giteaReleases)
+            {
+                string[] splitRelease = release.name.Split("to");
+                if (splitRelease.Length != 2)
+                {
+                    continue;
+                }
+
+                string patcherFrom = splitRelease[0].Trim();
+                string patcherTo = splitRelease[1].Trim();
+
+                if (patcherFrom == tarkovBuild && patcherTo == sitVersionTargetBuild)
+                {
+                    compatibleDowngradePatcher = release;
+                    break;
+                }
+            }
+
+            if (compatibleDowngradePatcher != null)
+            {
+                string mirrorsUrl = compatibleDowngradePatcher.assets.Find(q => q.name == "mirrors.json")?.browser_download_url ?? string.Empty;
+                string mirrorsJsonString = await GetHttpStringWithRetryAsync(() => _httpClient.GetStringAsync(mirrorsUrl), TimeSpan.FromSeconds(1), 3);
+                List<Mirrors> mirrors = JsonSerializer.Deserialize<List<Mirrors>>(mirrorsJsonString) ?? [];
+                if (mirrors.Count == 0)
+                {
+                    _logger.LogError("No download mirrors found for patcher.");
+                    continue;
+                }
+
+                Dictionary<string, string> providerLinks = [];
+                foreach (Mirrors mirror in mirrors)
+                {
+                    Uri uri = new(mirror.Link);
+                    string host = uri.Host.Replace("www.", "").Split('.')[0];
+                    providerLinks.TryAdd(host, mirror.Link);
+                }
+
+                if (providerLinks.Count > 0)
+                {
+                    sitVersions[i].DownloadMirrors = providerLinks;
+                }
+            }
+            else
+            {
+                _logger.LogWarning($"No applicable patcher found for the specified SIT version ({sitVersions[i].SitVersion} and Tarkov version {tarkovVersion}.");
+            }
+        }
+
+        return sitVersions;
+    }
+
+    private static async Task<string> GetHttpStringWithRetryAsync(Func<Task<string>> action, TimeSpan sleepPeriod, int tryCount = 3)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(tryCount);
+
+        List<Exception> exceptions = [];
+        for (int attempted = 0; attempted < tryCount; attempted++)
+        {
+            try
+            {
+                if (attempted > 0)
+                {
+                    await Task.Delay(sleepPeriod);
+                }
+                return await action();
+            }
+            catch (Exception ex)
+            {
+                exceptions.Add(ex);
+            }
+        }
+        throw new AggregateException(exceptions);
+    }
+
+    private async Task<List<SitInstallVersion>> GetSitReleases()
+    {
+        List<GithubRelease> githubReleases;
+        try
+        {
+            string releasesJsonString = await _httpClient.GetStringAsync(@"https://api.github.com/repos/stayintarkov/StayInTarkov.Client/releases");
+            githubReleases = JsonSerializer.Deserialize<List<GithubRelease>>(releasesJsonString) ?? [];
+
+        }
+        catch (Exception ex)
+        {
+            githubReleases = [];
+            _logger.LogError(ex, "Failed to get SIT releases");
+        }
+
+        List<SitInstallVersion> result = [];
+        if (githubReleases.Count != 0)
+        {
+            foreach (GithubRelease release in githubReleases)
+            {
+                Match match = SITReleaseVersionRegex().Match(release.body);
+                if (match.Success)
+                {
+                    string releasePatch = match.Value.Replace("This version works with version ", "");
+                    release.tag_name = $"{release.name} - Tarkov Version: {releasePatch}";
+                    release.body = releasePatch;
+
+                    SitInstallVersion sitVersion = new()
+                    {
+                        Release = release,
+                        EftVersion = releasePatch,
+                        SitVersion = release.name,
+                    };
+
+                    result.Add(sitVersion);
+                }
+                else
+                {
+                    _logger.LogWarning($"FetchReleases: There was a SIT release without a version defined: {release.html_url}");
+                }
+            }
+        }
+        else
+        {
+            _logger.LogWarning("Getting SIT releases: githubReleases was 0 for official branch");
+        }
+
+        return result;
+    }
+
+    /// <summary>
     /// Clones a directory
     /// </summary>
     /// <param name="root">Root path to clone</param>
     /// <param name="dest">Destination path to clone to</param>
     /// <returns></returns>
-    private void CloneDirectory(string root, string dest)
+    private static void CloneDirectory(string root, string dest)
     {
         foreach (var directory in Directory.GetDirectories(root))
         {
@@ -118,7 +278,7 @@ public partial class InstallerService(IActionNotificationService actionNotificat
         _actionNotificationService.UpdateActionNotification(new ActionNotification("Running Patcher...", 100));
 
         string[] files = Directory.GetFiles(_configService.Config.InstallPath, "Patcher.exe", new EnumerationOptions() { MatchCasing = MatchCasing.CaseInsensitive, MaxRecursionDepth = 0 });
-        if (!files.Any())
+        if (files.Length == 0)
         {
             return $"Patcher.exe not found in {_configService.Config.InstallPath}";
         }
@@ -325,131 +485,27 @@ public partial class InstallerService(IActionNotificationService actionNotificat
         return true;
     }
 
-
-    public async Task<Dictionary<string, string>?> GetAvaiableMirrorsForVerison(string sitVersionTarget, string? tarkovVersion = null)
+    /// <inheritdoc/>
+    public async Task<List<SitInstallVersion>> GetAvailableSitReleases(string tarkovVersion)
     {
-        Dictionary<string, string> providerLinks = [];
-        if (_configService.Config.TarkovVersion == null)
-        {
-            _logger.LogError("DownloadPatcher: TarkovVersion is 'null'");
-            return null;
-        }
+        List<SitInstallVersion> availableVersions = await GetSitReleases();
+        availableVersions = await GetAvaiableMirrorsForVerison(availableVersions, tarkovVersion);
 
-        string releasesString = await _httpClient.GetStringAsync(@"https://sitcoop.publicvm.com/api/v1/repos/SIT/Downgrade-Patches/releases");
-        List<GiteaRelease> giteaReleases = JsonSerializer.Deserialize<List<GiteaRelease>>(releasesString) ?? [];
-        if (giteaReleases.Count == 0)
+        // Evaluate the availability of the SIT versions based on the current tarkov version
+        for (int i = 0; i < availableVersions.Count; i++)
         {
-            _logger.LogError("DownloadPatcher: giteaReleases is null");
-            return null;
-        }
-
-        string tarkovBuild = tarkovVersion ?? _configService.Config.TarkovVersion;
-        tarkovBuild = tarkovBuild.Split(".").Last();
-        string sitVersionTargetBuild = sitVersionTarget.Split(".").Last();
-
-        if (tarkovBuild == sitVersionTargetBuild)
-        {
-            return [];
-        }
-
-        GiteaRelease? compatibleDowngradePatcher = null;
-        foreach (var release in giteaReleases)
-        {
-            string[] splitRelease = release.name.Split("to");
-            if (splitRelease.Length != 2)
+            if (availableVersions[i].EftVersion == tarkovVersion)
             {
-                continue;
+                availableVersions[i].DowngradeRequired = false;
+                availableVersions[i].IsAvailable = true;
             }
-
-            string patcherFrom = splitRelease[0].Trim();
-            string patcherTo = splitRelease[1].Trim();
-
-            if (patcherFrom == tarkovBuild && patcherTo == sitVersionTargetBuild)
+            else if (availableVersions[i].DownloadMirrors.Count != 0)
             {
-                compatibleDowngradePatcher = release;
-                break;
+                availableVersions[i].DowngradeRequired = true;
+                availableVersions[i].IsAvailable = true;
             }
         }
-
-        if (compatibleDowngradePatcher == null)
-        {
-            _logger.LogError("No applicable patcher found for the specified SIT version.");
-            /* TODO Rework this as it causes things to hang.
-            await new ContentDialog()
-            {
-                Title = _localizationService.TranslateSource("InstallServiceErrorTitle"),
-                Content = _localizationService.TranslateSource("InstallerServiceNoDowngradePatcher"),
-                PrimaryButtonText = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigButtonOk"),
-                IsPrimaryButtonEnabled = true
-            }.ShowAsync();
-            */
-            return null;
-        }
-
-        string mirrorsUrl = compatibleDowngradePatcher.assets.Find(q => q.name == "mirrors.json")?.browser_download_url ?? string.Empty;
-        string mirrorsString = await _httpClient.GetStringAsync(mirrorsUrl);
-        List<Mirrors> mirrors = JsonSerializer.Deserialize<List<Mirrors>>(mirrorsString) ?? [];
-
-        if (mirrors == null || mirrors.Count == 0)
-        {
-            _logger.LogError("No download mirrors found for patcher.");
-            return null;
-        }
-
-        foreach (Mirrors mirror in mirrors)
-        {
-            Uri uri = new(mirror.Link);
-            string host = uri.Host.Replace("www.", "").Split('.')[0];
-            providerLinks.TryAdd(host, mirror.Link);
-        }
-
-        if (providerLinks.Keys.Count > 0)
-        {
-            return providerLinks;
-        }
-        return null;
-    }
-
-    public async Task<List<GithubRelease>> GetSITReleases()
-    {
-        List<GithubRelease> githubReleases;
-        try
-        {
-            string releasesJsonString = await _httpClient.GetStringAsync(@"https://api.github.com/repos/stayintarkov/StayInTarkov.Client/releases");
-            githubReleases = JsonSerializer.Deserialize<List<GithubRelease>>(releasesJsonString) ?? [];
-
-        }
-        catch (Exception ex)
-        {
-            githubReleases = [];
-            _logger.LogError(ex, "Failed to get SIT releases");
-        }
-
-        List<GithubRelease> result = [];
-        if (githubReleases.Any())
-        {
-            foreach (GithubRelease release in githubReleases)
-            {
-                Match match = SITReleaseVersionRegex().Match(release.body);
-                if (match.Success)
-                {
-                    string releasePatch = match.Value.Replace("This version works with version ", "");
-                    release.tag_name = $"{release.name} - Tarkov Version: {releasePatch}";
-                    release.body = releasePatch;
-                    result.Add(release);
-                }
-                else
-                {
-                    _logger.LogWarning($"FetchReleases: There was a SIT release without a version defined: {release.html_url}");
-                }
-            }
-        }
-        else
-        {
-            _logger.LogWarning("Getting SIT releases: githubReleases was 0 for official branch");
-        }
-
-        return result;
+        return availableVersions;
     }
 
     public string GetEFTInstallPath()
@@ -639,10 +695,14 @@ public partial class InstallerService(IActionNotificationService actionNotificat
             }
 
             if (!Directory.Exists(coreFilesPath))
+            {
                 Directory.CreateDirectory(coreFilesPath);
+            }
 
             if (!Directory.Exists(backupCoreFilesPath))
+            {
                 Directory.CreateDirectory(backupCoreFilesPath);
+            }
 
             if (!Directory.Exists(pluginsPath))
             {
@@ -653,12 +713,16 @@ public partial class InstallerService(IActionNotificationService actionNotificat
 
             // We don't use index as they might be different from version to version
             string? releaseZipUrl = selectedVersion.assets.Find(q => q.name == "StayInTarkov-Release.zip")?.browser_download_url;
-
-            await _fileService.DownloadFile("StayInTarkov-Release.zip", coreFilesPath, releaseZipUrl, true);
-            await _fileService.ExtractArchive(Path.Combine(coreFilesPath, "StayInTarkov-Release.zip"), coreFilesPath);
+            if (!string.IsNullOrEmpty(releaseZipUrl))
+            {
+                await _fileService.DownloadFile("StayInTarkov-Release.zip", coreFilesPath, releaseZipUrl, true);
+                await _fileService.ExtractArchive(Path.Combine(coreFilesPath, "StayInTarkov-Release.zip"), coreFilesPath);
+            }
 
             if (File.Exists(Path.Combine(eftDataManagedPath, "Assembly-CSharp.dll")))
+            {
                 File.Copy(Path.Combine(eftDataManagedPath, "Assembly-CSharp.dll"), Path.Combine(backupCoreFilesPath, "Assembly-CSharp.dll"), true);
+            }
             File.Copy(Path.Combine(coreFilesPath, "StayInTarkov-Release", "Assembly-CSharp.dll"), Path.Combine(eftDataManagedPath, "Assembly-CSharp.dll"), true);
 
             File.Copy(Path.Combine(coreFilesPath, "StayInTarkov-Release", "StayInTarkov.dll"), Path.Combine(pluginsPath, "StayInTarkov.dll"), true);
@@ -676,7 +740,7 @@ public partial class InstallerService(IActionNotificationService actionNotificat
 
             using (Stream? resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("SIT.Manager.Avalonia.Resources.Aki.Reflection.dll"))
             {
-                using (FileStream file = new FileStream(Path.Combine(eftDataManagedPath, "Aki.Reflection.dll"), FileMode.Create, FileAccess.Write))
+                using (FileStream file = new(Path.Combine(eftDataManagedPath, "Aki.Reflection.dll"), FileMode.Create, FileAccess.Write))
                 {
                     if (resource != null)
                     {

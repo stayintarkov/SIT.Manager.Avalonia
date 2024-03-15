@@ -4,7 +4,6 @@ using CommunityToolkit.Mvvm.Input;
 using DynamicData;
 using ReactiveUI;
 using SIT.Manager.Avalonia.Interfaces;
-using SIT.Manager.Avalonia.Models;
 using SIT.Manager.Avalonia.Models.Installation;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -23,18 +22,21 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
     private bool _isLoading = false;
 
     [ObservableProperty]
-    private GithubRelease? _selectedVersion;
+    private SitInstallVersion? _selectedVersion;
 
     [ObservableProperty]
-    private KeyValuePair<string, string> _selectedMirror = new();
+    private KeyValuePair<string, string>? _selectedMirror;
 
     [ObservableProperty]
     public bool _isConfigurationValid = false;
 
     [ObservableProperty]
+    private bool _hasVersionsAvailable = false;
+
+    [ObservableProperty]
     private bool _hasMirrorsAvailable = false;
 
-    public ObservableCollection<GithubRelease> AvailableVersions { get; } = [];
+    public ObservableCollection<SitInstallVersion> AvailableVersions { get; } = [];
     public ObservableCollection<KeyValuePair<string, string>> AvailableMirrors { get; } = [];
 
     public IAsyncRelayCommand ChangeEftInstallLocationCommand { get; }
@@ -46,7 +48,7 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
 
         ChangeEftInstallLocationCommand = new AsyncRelayCommand(ChangeEftInstallLocation);
 
-        this.WhenActivated(async (CompositeDisposable disposables) => await LoadAvailableVersionData());
+        this.WhenActivated(async (CompositeDisposable disposables) => await FetchVersionAndMirrorMatrix());
     }
 
     private async Task ChangeEftInstallLocation()
@@ -66,66 +68,39 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
         }
     }
 
-    private async Task LoadAvailableVersionData()
+    /// <summary>
+    /// Fetch the available versions and the download mirrors for these versions so we can populate the necesarry selections
+    /// and save loading time later
+    /// </summary>
+    /// <returns></returns>
+    private async Task FetchVersionAndMirrorMatrix()
     {
         IsLoading = true;
-        AvailableVersions.Clear();
 
-        List<GithubRelease> releases = await _installerService.GetSITReleases();
+        // Clear the collections
+        HasVersionsAvailable = false;
+        HasMirrorsAvailable = false;
+
+        AvailableVersions.Clear();
+        AvailableMirrors.Clear();
+
+        List<SitInstallVersion> availableVersions = await _installerService.GetAvailableSitReleases(CurrentInstallProcessState.EftVersion);
         if (CurrentInstallProcessState.RequestedInstallOperation == RequestedInstallOperation.UpdateSit)
         {
             // TODO filter results for updating SIT to versions higher than currently
         }
 
-        AvailableVersions.AddRange(releases);
+        // Make sure we only offer versions which are actually available to use to maximize the chances the install will work
+        AvailableVersions.AddRange(availableVersions.Where(x => x.IsAvailable));
         if (AvailableVersions.Any())
         {
             SelectedVersion = AvailableVersions[0];
+            HasVersionsAvailable = true;
         }
+
+        // TODO add some logging here and an alert somehow in case it fails to load any versions or something
 
         IsLoading = false;
-
-        // TODO add some logging here and an alert somehow in case it fails to load any versions
-    }
-
-    private async Task LoadAvailableMirrorsForVersion()
-    {
-        IsLoading = true;
-        AvailableMirrors.Clear();
-
-        if (SelectedVersion == null)
-        {
-            return;
-        }
-
-        Dictionary<string, string>? availableMirrors = await _installerService.GetAvaiableMirrorsForVerison(SelectedVersion.body, CurrentInstallProcessState.EftVersion);
-        if (availableMirrors != null)
-        {
-            if (availableMirrors.Count != 0)
-            {
-                // We got mirrors successfully so we can show them here
-                AvailableMirrors.AddRange(availableMirrors);
-                if (AvailableMirrors.Any())
-                {
-                    SelectedMirror = AvailableMirrors[0];
-                }
-                HasMirrorsAvailable = true;
-            }
-            else
-            {
-                HasMirrorsAvailable = false;
-            }
-        }
-        else
-        {
-            HasMirrorsAvailable = false;
-
-            // TODO there was an error of some kind getting the available mirrors so we need to do something for this
-        }
-
-        IsLoading = false;
-
-        // TODO add some logging here and an alert somehow in case it fails to load any mirrors for this version
     }
 
     [RelayCommand]
@@ -172,20 +147,31 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
         }
     }
 
-    partial void OnSelectedVersionChanged(GithubRelease? value)
+    partial void OnSelectedVersionChanged(SitInstallVersion? value)
     {
-        Task.Run(LoadAvailableMirrorsForVersion);
+        if (value != null)
+        {
+            CurrentInstallProcessState.RequestedVersion = value.Release;
+
+            AvailableMirrors.Clear();
+            if (value.DownloadMirrors.Count > 0)
+            {
+                AvailableMirrors.AddRange(value.DownloadMirrors);
+                SelectedMirror = AvailableMirrors[0];
+                HasMirrorsAvailable = true;
+            }
+            else
+            {
+                SelectedMirror = null;
+                HasMirrorsAvailable = false;
+            }
+        }
         ValidateConfiguration();
     }
 
-    partial void OnSelectedMirrorChanged(KeyValuePair<string, string> value)
+    partial void OnSelectedMirrorChanged(KeyValuePair<string, string>? value)
     {
-        CurrentInstallProcessState.DownloadMirrorUrl = value.Value;
-        ValidateConfiguration();
-    }
-
-    partial void OnIsLoadingChanged(bool value)
-    {
+        CurrentInstallProcessState.DownloadMirrorUrl = value?.Value ?? string.Empty;
         ValidateConfiguration();
     }
 }

@@ -17,7 +17,7 @@
 						   VerticalAlignment="Center"
 						   HorizontalAlignment="Left"
 						   TextWrapping="Wrap"
-						   Text="Setting up your EFT instance for patching it to the version of EFT required by the requested SIT version"/>
+						   Text="Setting up your EFT instance so it's ready to install the requested SIT version"/>
 
 				<!-- Copy BSG EFT Install Row -->
 				<TextBlock Grid.Row="1"
@@ -48,12 +48,14 @@
 						   Grid.Column="0"
 						   VerticalAlignment="Center"
 						   HorizontalAlignment="Center"
+						   IsVisible="{Binding RequiresPatching}"
 						   Text="Downloading Patcher"/>
 				<ProgressBar Grid.Row="2"
 							 Grid.Column="1"
 							 Margin="16 0 0 0"
 							 VerticalAlignment="Center"
 							 HorizontalAlignment="Stretch"
+							 IsVisible="{Binding RequiresPatching}"
 							 Minimum="0"
 							 Maximum="100"
 							 Value="{Binding DownloadProgressPercentage}"/>
@@ -61,6 +63,7 @@
 						   Grid.Column="2"
 						   Margin="16 0 0 0"
 						   HorizontalAlignment="Left"
+						   IsVisible="{Binding RequiresPatching}"
 						   Text="{Binding DownloadProgressPercentage, StringFormat={}{0:N2}%}"
 						   VerticalAlignment="Center"/>
 
@@ -69,6 +72,7 @@
 						   Grid.Column="0"
 						   HorizontalAlignment="Center"
 						   VerticalAlignment="Center"
+						   IsVisible="{Binding RequiresPatching}"
 						   Text="Extracting Patcher"/>
 				<ProgressBar Grid.Row="3"
 							 Grid.Column="1"
@@ -77,25 +81,24 @@
 							 HorizontalAlignment="Stretch"
 							 Minimum="0"
 							 Maximum="100"
+							 IsVisible="{Binding RequiresPatching}"
 							 Value="{Binding ExtractionProgressPercentage}"/>
 				<TextBlock Grid.Row="3"
 						   Grid.Column="2"
 						   Margin="15 0 0 0"
 						   HorizontalAlignment="Left"
+						   IsVisible="{Binding RequiresPatching}"
 						   Text="{Binding ExtractionProgressPercentage, StringFormat={}{0:N2}%}"
 						   VerticalAlignment="Center"/>
 			</Grid>
 		</Border>
 
 		<Border Classes="StandardFrame"
+				IsVisible="{Binding RequiresPatching}"
 				Grid.Row="1">
 			<StackPanel HorizontalAlignment="Center"
 						VerticalAlignment="Center">
 				<TextBlock Text="Embedded Patcher Window goes here!"/>
-				<Button Content="Progress"
-						HorizontalAlignment="Center"
-						Margin="0,12,0,0"
-						Command="{Binding ProgressCommand}"/>
 			</StackPanel>
 		</Border>
 	</Grid>

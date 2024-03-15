@@ -1,9 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using ReactiveUI;
 using SIT.Manager.Avalonia.Interfaces;
-using SIT.Manager.Avalonia.Models.Installation;
 using SIT.Manager.Avalonia.Services;
 using System;
 using System.Reactive.Disposables;
@@ -16,9 +13,9 @@ public partial class PatchViewModel : InstallationViewModelBase
     private readonly IFileService _fileService;
     private readonly IInstallerService _installerService;
 
-    private Progress<double> _copyProgress = new();
-    private Progress<double> _downloadProgress = new();
-    private Progress<double> _extractionProgress = new();
+    private readonly Progress<double> _copyProgress = new();
+    private readonly Progress<double> _downloadProgress = new();
+    private readonly Progress<double> _extractionProgress = new();
 
     [ObservableProperty]
     private double _copyProgressPercentage = 0;
@@ -29,10 +26,15 @@ public partial class PatchViewModel : InstallationViewModelBase
     [ObservableProperty]
     private double _extractionProgressPercentage = 0;
 
+    [ObservableProperty]
+    private bool _requiresPatching = false;
+
     public PatchViewModel(IFileService fileService, IInstallerService installerService) : base()
     {
         _fileService = fileService;
         _installerService = installerService;
+
+        RequiresPatching = !string.IsNullOrEmpty(CurrentInstallProcessState.DownloadMirrorUrl);
 
         _copyProgress.ProgressChanged += CopyProgress_ProgressChanged;
         _downloadProgress.ProgressChanged += DownloadProgress_ProgressChanged;
@@ -63,16 +65,16 @@ public partial class PatchViewModel : InstallationViewModelBase
             await _fileService.CopyDirectory(CurrentInstallProcessState.BsgInstallPath, CurrentInstallProcessState.EftInstallPath, _copyProgress);
         }
 
-        await _installerService.DownloadAndExtractPatcher(CurrentInstallProcessState.DownloadMirrorUrl, CurrentInstallProcessState.EftInstallPath, _downloadProgress, _extractionProgress);
-
-        // TODO Run Patcher
-        // TODO progress on success
-        // TODO show error message on failure
-    }
-
-    [RelayCommand]
-    private void Progress()
-    {
-        WeakReferenceMessenger.Default.Send(new ProgressInstallMessage(true));
+        if (RequiresPatching)
+        {
+            await _installerService.DownloadAndExtractPatcher(CurrentInstallProcessState.DownloadMirrorUrl, CurrentInstallProcessState.EftInstallPath, _downloadProgress, _extractionProgress);
+            // TODO Run Patcher
+            // TODO show error message on failure
+            // TODO progress on success
+        }
+        else
+        {
+            ProgressInstall();
+        }
     }
 }
