@@ -74,6 +74,16 @@ public partial class InstallerService(IActionNotificationService actionNotificat
             {
                 Directory.Delete(cacheDir, true);
             }
+            string consistencyPath = Path.Combine(_configService.Config.InstallPath, "ConsistencyInfo");
+            if (File.Exists(consistencyPath))
+            {
+                File.Delete(consistencyPath);
+            }
+            string uninstallPath = Path.Combine(_configService.Config.InstallPath, "Uninstall.exe");
+            if (File.Exists(uninstallPath))
+            {
+                File.Delete(uninstallPath);
+            }
             string logsDirPath = Path.Combine(_configService.Config.InstallPath, "Logs");
             if (Directory.Exists(logsDirPath))
             {
@@ -588,82 +598,13 @@ public partial class InstallerService(IActionNotificationService actionNotificat
         _configService.UpdateConfig(config);
     }
 
-    public async Task InstallServer(GithubRelease selectedVersion)
+    public async Task InstallSit(GithubRelease selectedVersion, string targetInstallDir, IProgress<double> downloadProgress, IProgress<double> extractionProgress)
     {
-        if (string.IsNullOrEmpty(_configService.Config.InstallPath))
-        {
-            _barNotificationService.ShowError(_localizationService.TranslateSource("InstallServiceErrorTitle"), _localizationService.TranslateSource("InstallServiceErrorInstallServerDescription"));
-            return;
-        }
+        const int downloadAndExtractionSteps = 2;
+        double internalDownloadProgressPercentage = 0;
+        double internalExtractionProgressPercentage = 0;
 
-        if (selectedVersion == null)
-        {
-            _logger.LogWarning("Install Server: selectVersion is 'null'");
-            return;
-        }
-
-        try
-        {
-            // Dynamically find the asset that starts with "SITCoop" and ends with ".zip"
-            var releaseAsset = selectedVersion.assets.FirstOrDefault(a => a.name.StartsWith("SITCoop") && a.name.EndsWith(".zip"));
-            if (releaseAsset == null)
-            {
-                _logger.LogError("No matching release asset found.");
-                return;
-            }
-            string releaseZipUrl = releaseAsset.browser_download_url;
-
-            // Create the "Server" folder if SPT-Path is not configured.
-            string sitServerDirectory = _configService.Config.AkiServerPath;
-            if (string.IsNullOrEmpty(sitServerDirectory))
-            {
-                // Navigate one level up from InstallPath
-                string baseDirectory = Directory.GetParent(_configService.Config.InstallPath)?.FullName ?? string.Empty;
-
-                // Define the target directory for Server within the parent directory
-                sitServerDirectory = Path.Combine(baseDirectory, "Server");
-            }
-
-            // Create SPT-AKI directory (default: Server)
-            if (!Directory.Exists(sitServerDirectory))
-            {
-                Directory.CreateDirectory(sitServerDirectory);
-            }
-
-            // Define the paths for download and extraction based on the SIT-Server directory
-            string downloadLocation = Path.Combine(sitServerDirectory, releaseAsset.name);
-            string extractionPath = sitServerDirectory;
-
-            // Download and extract the file in Server directory
-            await _fileService.DownloadFile(releaseAsset.name, sitServerDirectory, releaseZipUrl, true);
-            await _fileService.ExtractArchive(downloadLocation, extractionPath);
-
-            // Remove the downloaded Server after extraction
-            File.Delete(downloadLocation);
-
-            ManagerConfig config = _configService.Config;
-            config.SitVersion = _versionService.GetSITVersion(config.InstallPath);
-
-            // Attempt to automatically set the AKI Server Path after successful installation and save it to config
-            if (!string.IsNullOrEmpty(sitServerDirectory) && string.IsNullOrEmpty(_configService.Config.AkiServerPath))
-            {
-                config.AkiServerPath = sitServerDirectory;
-                _barNotificationService.ShowSuccess(_localizationService.TranslateSource("InstallServiceConfigTitle"), _localizationService.TranslateSource("InstallServiceConfigDescription", sitServerDirectory));
-            }
-            _configService.UpdateConfig(config);
-
-            _barNotificationService.ShowSuccess(_localizationService.TranslateSource("InstallServiceInstallSuccessfulTitle"), _localizationService.TranslateSource("InstallServiceInstallSuccessfulDescription"));
-        }
-        catch (Exception ex)
-        {
-            // TODO ShowInfoBarWithLogButton("Install Error", "Encountered an error during installation.", InfoBarSeverity.Error, 10);
-            _logger.LogError(ex, "Install Server");
-        }
-    }
-
-    public async Task InstallSIT(GithubRelease selectedVersion)
-    {
-        if (string.IsNullOrEmpty(_configService.Config.InstallPath))
+        if (string.IsNullOrEmpty(targetInstallDir))
         {
             _barNotificationService.ShowError(_localizationService.TranslateSource("InstallServiceErrorTitle"), _localizationService.TranslateSource("InstallServiceErrorInstallSITDescription"));
             return;
@@ -675,39 +616,46 @@ public partial class InstallerService(IActionNotificationService actionNotificat
             return;
         }
 
-        // Load all the file paths up front to save my sanity of writing Path.Combine a million times
-        string sitReleaseZipPath = Path.Combine(_configService.Config.InstallPath, "SITLauncher", "CoreFiles", "StayInTarkov-Release.zip");
-        string coreFilesPath = Path.Combine(_configService.Config.InstallPath, "SITLauncher", "CoreFiles");
-        string backupCoreFilesPath = Path.Combine(_configService.Config.InstallPath, "SITLauncher", "Backup", "CoreFiles");
-        string pluginsPath = Path.Combine(_configService.Config.InstallPath, "BepInEx", "plugins");
-        string eftDataManagedPath = Path.Combine(_configService.Config.InstallPath, "EscapeFromTarkov_Data", "Managed");
-
         try
         {
-            if (File.Exists(Path.Combine(_configService.Config.InstallPath, "EscapeFromTarkov_BE.exe")))
+            if (File.Exists(Path.Combine(targetInstallDir, "EscapeFromTarkov_BE.exe")))
             {
                 CleanUpEFTDirectory();
             }
 
+            string sitReleaseZipPath = Path.Combine(targetInstallDir, "SITLauncher", "CoreFiles", "StayInTarkov-Release.zip");
             if (File.Exists(sitReleaseZipPath))
             {
                 File.Delete(sitReleaseZipPath);
             }
 
+            string coreFilesPath = Path.Combine(targetInstallDir, "SITLauncher", "CoreFiles");
             if (!Directory.Exists(coreFilesPath))
             {
                 Directory.CreateDirectory(coreFilesPath);
             }
 
+            string backupCoreFilesPath = Path.Combine(targetInstallDir, "SITLauncher", "Backup", "CoreFiles");
             if (!Directory.Exists(backupCoreFilesPath))
             {
                 Directory.CreateDirectory(backupCoreFilesPath);
             }
 
+            string pluginsPath = Path.Combine(targetInstallDir, "BepInEx", "plugins");
             if (!Directory.Exists(pluginsPath))
             {
-                await _fileService.DownloadFile("BepInEx5.zip", Path.Combine(_configService.Config.InstallPath, "SITLauncher"), "https://github.com/BepInEx/BepInEx/releases/download/v5.4.22/BepInEx_x64_5.4.22.0.zip", true);
-                await _fileService.ExtractArchive(Path.Combine(_configService.Config.InstallPath, "SITLauncher", "BepInEx5.zip"), _configService.Config.InstallPath);
+                Progress<double> internalDownloadProgress = new(progress =>
+                {
+                    internalDownloadProgressPercentage = progress / downloadAndExtractionSteps;
+                });
+                Progress<double> internalExtractionProgress = new(progress =>
+                {
+                    internalExtractionProgressPercentage = progress / downloadAndExtractionSteps;
+                });
+
+                string bepinexPath = Path.Combine(targetInstallDir, "SITLauncher");
+                await _fileService.DownloadFile("BepInEx5.zip", bepinexPath, "https://github.com/BepInEx/BepInEx/releases/download/v5.4.22/BepInEx_x64_5.4.22.0.zip", internalDownloadProgress);
+                await _fileService.ExtractArchive(Path.Combine(bepinexPath, "BepInEx5.zip"), targetInstallDir, internalExtractionProgress);
                 Directory.CreateDirectory(pluginsPath);
             }
 
@@ -715,16 +663,27 @@ public partial class InstallerService(IActionNotificationService actionNotificat
             string? releaseZipUrl = selectedVersion.assets.Find(q => q.name == "StayInTarkov-Release.zip")?.browser_download_url;
             if (!string.IsNullOrEmpty(releaseZipUrl))
             {
-                await _fileService.DownloadFile("StayInTarkov-Release.zip", coreFilesPath, releaseZipUrl, true);
-                await _fileService.ExtractArchive(Path.Combine(coreFilesPath, "StayInTarkov-Release.zip"), coreFilesPath);
+                Progress<double> internalDownloadProgress = new(progress =>
+                {
+                    internalDownloadProgressPercentage += progress / downloadAndExtractionSteps;
+                    downloadProgress.Report(internalDownloadProgressPercentage);
+                });
+                Progress<double> internalExtractionProgress = new(progress =>
+                {
+                    internalExtractionProgressPercentage += progress / downloadAndExtractionSteps;
+                    extractionProgress.Report(internalExtractionProgressPercentage);
+                });
+
+                await _fileService.DownloadFile("StayInTarkov-Release.zip", coreFilesPath, releaseZipUrl, internalDownloadProgress);
+                await _fileService.ExtractArchive(Path.Combine(coreFilesPath, "StayInTarkov-Release.zip"), coreFilesPath, internalExtractionProgress);
             }
 
+            string eftDataManagedPath = Path.Combine(targetInstallDir, "EscapeFromTarkov_Data", "Managed");
             if (File.Exists(Path.Combine(eftDataManagedPath, "Assembly-CSharp.dll")))
             {
                 File.Copy(Path.Combine(eftDataManagedPath, "Assembly-CSharp.dll"), Path.Combine(backupCoreFilesPath, "Assembly-CSharp.dll"), true);
             }
             File.Copy(Path.Combine(coreFilesPath, "StayInTarkov-Release", "Assembly-CSharp.dll"), Path.Combine(eftDataManagedPath, "Assembly-CSharp.dll"), true);
-
             File.Copy(Path.Combine(coreFilesPath, "StayInTarkov-Release", "StayInTarkov.dll"), Path.Combine(pluginsPath, "StayInTarkov.dll"), true);
 
             using (Stream? resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("SIT.Manager.Avalonia.Resources.Aki.Common.dll"))
@@ -750,15 +709,15 @@ public partial class InstallerService(IActionNotificationService actionNotificat
             }
 
             ManagerConfig config = _configService.Config;
-            config.SitVersion = _versionService.GetSITVersion(config.InstallPath);
+            config.InstallPath = targetInstallDir;
+            config.TarkovVersion = _versionService.GetEFTVersion(targetInstallDir);
+            config.SitVersion = _versionService.GetSITVersion(targetInstallDir);
             _configService.UpdateConfig(config);
-
-            _barNotificationService.ShowSuccess(_localizationService.TranslateSource("InstallServiceInstallSuccessfulTitle"), _localizationService.TranslateSource("InstallServiceInstallSITSuccessfulDescription"));
         }
         catch (Exception ex)
         {
-            // TODO ShowInfoBarWithLogButton("Install Error", "Encountered an error during installation.", InfoBarSeverity.Error, 10);
             _logger.LogError(ex, "Install SIT");
+            throw;
         }
     }
 }

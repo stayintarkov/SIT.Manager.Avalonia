@@ -11,8 +11,8 @@ public partial class InstallViewModel : InstallationViewModelBase
 {
     private readonly IInstallerService _installerService;
 
-    private Progress<double> _downloadProgress = new Progress<double>();
-    private Progress<double> _extractionProgress = new Progress<double>();
+    private readonly Progress<double> _downloadProgress = new();
+    private readonly Progress<double> _extractionProgress = new();
 
     [ObservableProperty]
     private double _downloadProgressPercentage = 0;
@@ -48,10 +48,7 @@ public partial class InstallViewModel : InstallationViewModelBase
 
     private void UpdateInstallProgress()
     {
-        if (IsServerInstall)
-        {
-            InstallProgressPercentage = (DownloadProgressPercentage + ExtractionProgressPercentage) / 2;
-        }
+        InstallProgressPercentage = (DownloadProgressPercentage + ExtractionProgressPercentage) / 2;
     }
 
     private async Task RunInstaller()
@@ -65,10 +62,14 @@ public partial class InstallViewModel : InstallationViewModelBase
             {
                 await _installerService.InstallServer(CurrentInstallProcessState.RequestedVersion, CurrentInstallProcessState.SptAkiInstallPath, _downloadProgress, _extractionProgress);
             }
+            else if (IsSitInstall)
+            {
+                await _installerService.InstallSit(CurrentInstallProcessState.RequestedVersion, CurrentInstallProcessState.EftInstallPath, _downloadProgress, _extractionProgress);
+            }
         }
         catch
         {
-            // TODO show the information that we need out of this and enable an option to go back
+            // TODO show the information that we need out of this
             return;
         }
 

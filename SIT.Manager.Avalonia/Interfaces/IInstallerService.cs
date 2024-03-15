@@ -46,6 +46,9 @@ public interface IInstallerService
     /// Installs the selected SIT version
     /// </summary>
     /// <param name="selectedVersion">The <see cref="GithubRelease"/> to install</param>
+    /// <param name="targetInstallDir"></param>
+    /// <param name="downloadProgress"></param>
+    /// <param name="extractionProgress"></param>
     /// <returns></returns>
-    Task InstallSIT(GithubRelease selectedVersion);
+    Task InstallSit(GithubRelease selectedVersion, string targetInstallDir, IProgress<double> downloadProgress, IProgress<double> extractionProgress);
 }
