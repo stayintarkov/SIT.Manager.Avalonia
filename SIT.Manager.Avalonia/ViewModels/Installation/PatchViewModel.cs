@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using ReactiveUI;
+using SIT.Manager.Avalonia.Controls;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.Services;
 using System;
@@ -28,6 +29,9 @@ public partial class PatchViewModel : InstallationViewModelBase
 
     [ObservableProperty]
     private bool _requiresPatching = false;
+
+    [ObservableProperty]
+    private EmbeddedProcessWindow? _embeddedPatcherWindow;
 
     public PatchViewModel(IFileService fileService, IInstallerService installerService) : base()
     {
@@ -68,6 +72,10 @@ public partial class PatchViewModel : InstallationViewModelBase
         if (RequiresPatching)
         {
             await _installerService.DownloadAndExtractPatcher(CurrentInstallProcessState.DownloadMirrorUrl, CurrentInstallProcessState.EftInstallPath, _downloadProgress, _extractionProgress);
+
+            EmbeddedPatcherWindow = new(@"C:\Program Files\Notepad++\notepad++.exe");
+            await EmbeddedPatcherWindow.StartProcess();
+
             // TODO Run Patcher
             // TODO show error message on failure
             // TODO progress on success

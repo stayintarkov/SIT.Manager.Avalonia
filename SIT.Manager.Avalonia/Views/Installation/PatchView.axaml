@@ -96,10 +96,9 @@
 		<Border Classes="StandardFrame"
 				IsVisible="{Binding RequiresPatching}"
 				Grid.Row="1">
-			<StackPanel HorizontalAlignment="Center"
-						VerticalAlignment="Center">
-				<TextBlock Text="Embedded Patcher Window goes here!"/>
-			</StackPanel>
+			<ContentControl HorizontalAlignment="Center"
+							VerticalAlignment="Center"
+							Content="{Binding EmbeddedPatcherWindow}"/>
 		</Border>
 	</Grid>
 </UserControl>
