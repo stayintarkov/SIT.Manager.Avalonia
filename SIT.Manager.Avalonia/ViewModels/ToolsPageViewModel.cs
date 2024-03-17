@@ -181,30 +181,45 @@ public partial class ToolsPageViewModel : ViewModelBase
         }
     }
 
+    // Different versions of SIT has different names
+    private readonly HashSet<string> _configPaths =
+    [
+        "SIT.Core",
+        "com.sit.core",
+        "com.stayintarkov"
+    ];
+
     private async Task OpenSITConfig()
     {
         string path = Path.Combine(_configService.Config.InstallPath, "BepInEx", "config");
-        string sitCfg = @"SIT.Core.cfg";
-
-        // Different versions of SIT has different names
-        if (!File.Exists(Path.Combine(path, sitCfg)))
-        {
-            sitCfg = "com.sit.core.cfg";
-        }
-
-        if (!File.Exists(Path.Combine(path, sitCfg)))
+        if (!Directory.Exists(path))
         {
             ContentDialog contentDialog = new()
             {
                 Title = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigTitle"),
-                Content = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigSITDescription", sitCfg),
+                Content = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigSITDescription", path),
                 CloseButtonText = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigButtonOk")
             };
             await contentDialog.ShowAsync();
+            return;
+        }
+        string[] files = Directory.GetFiles(path, "*.cfg");
+
+        string? cfgFile = files.Where(x => _configPaths.Contains(Path.GetFileNameWithoutExtension(x))).FirstOrDefault();
+
+        if (cfgFile != null && File.Exists(cfgFile))
+        {
+            await _fileService.OpenFileAsync(cfgFile);
         }
         else
         {
-            await _fileService.OpenFileAsync(Path.Combine(path, sitCfg));
+            ContentDialog contentDialog = new()
+            {
+                Title = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigTitle"),
+                Content = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigSITDescription", Path.GetFileName(cfgFile) ?? "\"\""),
+                CloseButtonText = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigButtonOk")
+            };
+            await contentDialog.ShowAsync();
         }
     }
 
