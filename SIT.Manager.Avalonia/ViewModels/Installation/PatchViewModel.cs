@@ -1,9 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Extensions.Logging;
 using ReactiveUI;
 using SIT.Manager.Avalonia.Controls;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.Services;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Reactive.Disposables;
 using System.Threading.Tasks;
 
@@ -13,6 +16,17 @@ public partial class PatchViewModel : InstallationViewModelBase
 {
     private readonly IFileService _fileService;
     private readonly IInstallerService _installerService;
+    private readonly ILogger<PatchViewModel> _logger;
+
+    private static readonly Dictionary<int, string> _patcherResultMessages = new() {
+        { 0, "Patcher was closed." },
+        { 10, "Patcher was successful." },
+        { 11, "Could not find 'EscapeFromTarkov.exe'." },
+        { 12, "'Aki_Patches' is missing." },
+        { 13, "Install folder is missing a file." },
+        { 14, "Install folder is missing a folder." },
+        { 15, "Patcher failed." }
+    };
 
     private readonly Progress<double> _copyProgress = new();
     private readonly Progress<double> _downloadProgress = new();
@@ -33,10 +47,11 @@ public partial class PatchViewModel : InstallationViewModelBase
     [ObservableProperty]
     private EmbeddedProcessWindow? _embeddedPatcherWindow;
 
-    public PatchViewModel(IFileService fileService, IInstallerService installerService) : base()
+    public PatchViewModel(IFileService fileService, IInstallerService installerService, ILogger<PatchViewModel> logger) : base()
     {
         _fileService = fileService;
         _installerService = installerService;
+        _logger = logger;
 
         RequiresPatching = !string.IsNullOrEmpty(CurrentInstallProcessState.DownloadMirrorUrl);
 
@@ -62,6 +77,55 @@ public partial class PatchViewModel : InstallationViewModelBase
         ExtractionProgressPercentage = e;
     }
 
+    private async Task RunPatcher()
+    {
+        string[] files = Directory.GetFiles(CurrentInstallProcessState.EftInstallPath, "Patcher.exe", new EnumerationOptions() { MatchCasing = MatchCasing.CaseInsensitive, MaxRecursionDepth = 0 });
+        if (files.Length == 0)
+        {
+            // TODO handle this: return $"Patcher.exe not found in {CurrentInstallProcessState.EftInstallPath}";
+        }
+        string patcherPath = files[0];
+
+        EmbeddedProcessWindow embeddedProcessWindow = new(_installerService.CreatePatcherProcess(patcherPath));
+        await embeddedProcessWindow.StartProcess();
+
+        EmbeddedPatcherWindow = embeddedProcessWindow;
+        await EmbeddedPatcherWindow.WaitForExit();
+
+        _patcherResultMessages.TryGetValue(EmbeddedPatcherWindow.ExitCode, out string? patcherResult);
+        _logger.LogInformation($"RunPatcher: {patcherResult}");
+
+        int exitCode = EmbeddedPatcherWindow.ExitCode;
+        EmbeddedPatcherWindow = null;
+
+        // Success exit code
+        if (exitCode == 10)
+        {
+            if (File.Exists(patcherPath))
+            {
+                File.Delete(patcherPath);
+            }
+
+            string patcherLog = Path.Combine(CurrentInstallProcessState.EftInstallPath, "Patcher.log");
+            if (File.Exists(patcherLog))
+            {
+                File.Delete(patcherLog);
+            }
+
+            string akiPatchesDir = Path.Combine(CurrentInstallProcessState.EftInstallPath, "Aki_Patches");
+            if (Directory.Exists(akiPatchesDir))
+            {
+                Directory.Delete(akiPatchesDir, true);
+            }
+
+            ProgressInstall();
+        }
+        else
+        {
+            // TODO report error here somehow
+        }
+    }
+
     public async Task DownloadAndRunPatcher()
     {
         if (CurrentInstallProcessState.UsingBsgInstallPath)
@@ -72,13 +136,7 @@ public partial class PatchViewModel : InstallationViewModelBase
         if (RequiresPatching)
         {
             await _installerService.DownloadAndExtractPatcher(CurrentInstallProcessState.DownloadMirrorUrl, CurrentInstallProcessState.EftInstallPath, _downloadProgress, _extractionProgress);
-
-            EmbeddedPatcherWindow = new(@"C:\Program Files\Notepad++\notepad++.exe");
-            await EmbeddedPatcherWindow.StartProcess();
-
-            // TODO Run Patcher
-            // TODO show error message on failure
-            // TODO progress on success
+            await RunPatcher();
         }
         else
         {

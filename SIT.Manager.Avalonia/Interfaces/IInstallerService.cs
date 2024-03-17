@@ -2,12 +2,18 @@
 using SIT.Manager.Avalonia.Models.Installation;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.Interfaces;
 
 public interface IInstallerService
 {
+    /// <summary>
+    /// Creates the process which runs the downgrade patcher
+    /// </summary>
+    /// <returns>Process for the downpatcher</returns>
+    Process CreatePatcherProcess(string patcherPath);
     /// <summary>
     /// Downloads and extract the patcher from the requested url providing progress as it goes
     /// </summary>

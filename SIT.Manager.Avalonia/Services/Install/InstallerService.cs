@@ -277,22 +277,10 @@ public partial class InstallerService(IActionNotificationService actionNotificat
         }
     }
 
-    /// <summary>
-    /// Runs the downgrade patcher
-    /// </summary>
-    /// <returns>string with result</returns>
-    private async Task<string> RunPatcher()
+    /// <inheritdoc/>
+    public Process CreatePatcherProcess(string patcherPath)
     {
         _logger.LogInformation("Starting Patcher");
-        _actionNotificationService.StartActionNotification();
-        _actionNotificationService.UpdateActionNotification(new ActionNotification("Running Patcher...", 100));
-
-        string[] files = Directory.GetFiles(_configService.Config.InstallPath, "Patcher.exe", new EnumerationOptions() { MatchCasing = MatchCasing.CaseInsensitive, MaxRecursionDepth = 0 });
-        if (files.Length == 0)
-        {
-            return $"Patcher.exe not found in {_configService.Config.InstallPath}";
-        }
-        string patcherPath = files[0];
 
         Process patcherProcess = new()
         {
@@ -318,36 +306,10 @@ public partial class InstallerService(IActionNotificationService actionNotificat
         }
         else
         {
-            patcherProcess.StartInfo.WorkingDirectory = _configService.Config.InstallPath;
+            patcherProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(patcherPath);
         }
 
-        patcherProcess.Start();
-        await patcherProcess.WaitForExitAsync();
-
-        // Success exit code
-        if (patcherProcess.ExitCode == 10)
-        {
-            if (File.Exists(patcherPath))
-            {
-                File.Delete(patcherPath);
-            }
-
-            if (File.Exists(Path.Combine(_configService.Config.InstallPath, "Patcher.log")))
-            {
-                File.Delete(Path.Combine(_configService.Config.InstallPath, "Patcher.log"));
-            }
-
-            if (Directory.Exists(Path.Combine(_configService.Config.InstallPath, "Aki_Patches")))
-            {
-                Directory.Delete(Path.Combine(_configService.Config.InstallPath, "Aki_Patches"), true);
-            }
-        }
-
-        _actionNotificationService.StopActionNotification();
-
-        _patcherResultMessages.TryGetValue(patcherProcess.ExitCode, out string? patcherResult);
-        _logger.LogInformation($"RunPatcher: {patcherResult}");
-        return patcherResult ?? "Unknown error.";
+        return patcherProcess;
     }
 
     public async Task<List<GithubRelease>> GetServerReleases()
@@ -439,59 +401,6 @@ public partial class InstallerService(IActionNotificationService actionNotificat
             Directory.Delete(patcherDir, true);
         }
 
-        return true;
-    }
-
-    /// <summary>
-    /// Downloads the patcher
-    /// </summary>
-    /// <param name="sitVersionTarget"></param>
-    /// <returns></returns>
-    public async Task<bool> DownloadAndRunPatcher(string url)
-    {
-        _logger.LogInformation("Downloading Patcher");
-
-        if (string.IsNullOrEmpty(_configService.Config.TarkovVersion))
-        {
-            _logger.LogError("DownloadPatcher: TarkovVersion is 'null'");
-            return false;
-        }
-
-        string patcherPath = Path.Combine(_configService.Config.InstallPath, @"Patcher.zip");
-        if (File.Exists(patcherPath))
-        {
-            File.Delete(patcherPath);
-        }
-
-        bool downloadSuccess = await _fileService.DownloadFile("Patcher.zip", _configService.Config.InstallPath, url, true);
-        if (!downloadSuccess)
-        {
-            _logger.LogError("Failed to download the patcher from the selected mirror.");
-            return false;
-        }
-
-        if (File.Exists(patcherPath))
-        {
-            await _fileService.ExtractArchive(patcherPath, _configService.Config.InstallPath);
-            File.Delete(patcherPath);
-        }
-
-        var patcherDir = Directory.GetDirectories(_configService.Config.InstallPath, "Patcher*").FirstOrDefault();
-        if (!string.IsNullOrEmpty(patcherDir))
-        {
-            CloneDirectory(patcherDir, _configService.Config.InstallPath);
-            Directory.Delete(patcherDir, true);
-        }
-
-        string patcherResult = await RunPatcher();
-        if (patcherResult != "Patcher was successful.")
-        {
-            _logger.LogError($"Patcher failed: {patcherResult}");
-            return false;
-        }
-
-        // If execution reaches this point, it means all necessary patchers succeeded
-        _logger.LogInformation("Patcher completed successfully.");
         return true;
     }
 

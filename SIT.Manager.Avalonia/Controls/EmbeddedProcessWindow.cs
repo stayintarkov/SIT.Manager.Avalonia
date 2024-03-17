@@ -5,22 +5,27 @@ using SIT.Manager.Avalonia.Native;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.Controls;
 
-public class EmbeddedProcessWindow(string processPath) : NativeControlHost
+public class EmbeddedProcessWindow : NativeControlHost
 {
-    private Process? _p;
+    private readonly Process _p;
 
-    public string ProcessPath { get; } = processPath;
+    public int ExitCode => _p.ExitCode;
 
     public IntPtr ProcessWindowHandle { get; private set; }
 
+    public EmbeddedProcessWindow(Process p)
+    {
+        _p = p;
+        _p.Exited += Process_Exited;
+    }
+
     private void Process_Exited(object? sender, EventArgs e)
     {
-        // TODO
+
     }
 
     protected override IPlatformHandle CreateNativeControlCore(IPlatformHandle parent)
@@ -38,54 +43,53 @@ public class EmbeddedProcessWindow(string processPath) : NativeControlHost
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        // Set the parent of the ProcessWindowHandle to be the main window's handle
-        IntPtr parentHandle = ((Window) e.Root).TryGetPlatformHandle()?.Handle ?? 0;
-        if (parentHandle != IntPtr.Zero)
+        if (OperatingSystem.IsWindows())
         {
-            while (ProcessWindowHandle == IntPtr.Zero)
+            // modify the style of the child window
+
+            // get the old style of the child window
+            long style = WindowsApi.GetWindowLongPtr(ProcessWindowHandle, -16);
+
+            // modify the style of the ChildWindow - remove the embedded window's frame and other attributes of
+            // a stand alone window. Add child flag
+            style &= ~0x00010000;
+            style &= ~0x00800000;
+            style &= ~0x80000000;
+            style &= ~0x00400000;
+            style &= ~0x00080000;
+            style &= ~0x00020000;
+            style &= ~0x00040000;
+            style |= 0x40000000; // child
+
+            HandleRef handleRef = new(null, ProcessWindowHandle);
+
+            // set the new style of the schild window
+            WindowsApi.SetWindowLongPtr(handleRef, -16, (IntPtr) style);
+
+            // set the parent of the ProcessWindowHandle to be the main window's handle
+            IntPtr parentHandle = ((Window) e.Root).TryGetPlatformHandle()?.Handle ?? 0;
+            if (parentHandle != IntPtr.Zero)
             {
-                Thread.Sleep(200);
+                WindowsApi.SetParent(ProcessWindowHandle, parentHandle);
             }
-            IntPtr result = WindowsApi.SetParent(ProcessWindowHandle, parentHandle);
         }
-
-        // Get the old style of the child window
-        long style = WindowsApi.GetWindowLongPtr(ProcessWindowHandle, -16);
-
-        // Modify the style of the ChildWindow - remove the embedded window's frame and other attributes of
-        // a stand alone window. Add child flag
-        style &= ~0x00010000;
-        style &= ~0x00800000;
-        style &= ~0x80000000;
-        style &= ~0x00400000;
-        style &= ~0x00080000;
-        style &= ~0x00020000;
-        style &= ~0x00040000;
-        style |= 0x40000000; // child
-
-        HandleRef handleRef = new(null, ProcessWindowHandle);
-
-        // Set the new style of the schild window
-        WindowsApi.SetWindowLongPtr(handleRef, -16, new IntPtr(style));
-
         base.OnAttachedToVisualTree(e);
+    }
+
+    public async Task WaitForExit()
+    {
+        await _p.WaitForExitAsync();
     }
 
     public async Task StartProcess()
     {
         // Start the process
-        _p = Process.Start(ProcessPath);
-
-        _p.Exited += Process_Exited;
+        _p.Start();
 
         // Wait until p.MainWindowHandle is non-zero
-        while (true)
+        while (_p.MainWindowHandle == IntPtr.Zero)
         {
-            await Task.Delay(200);
-            if (_p.MainWindowHandle != IntPtr.Zero)
-            {
-                break;
-            }
+            await Task.Delay(250);
         }
 
         // Set ProcessWindowHandle to the MainWindowHandle of the process

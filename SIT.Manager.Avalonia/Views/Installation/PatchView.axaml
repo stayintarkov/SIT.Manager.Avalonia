@@ -96,9 +96,9 @@
 		<Border Classes="StandardFrame"
 				IsVisible="{Binding RequiresPatching}"
 				Grid.Row="1">
-			<ContentControl HorizontalAlignment="Center"
-							VerticalAlignment="Center"
-							Content="{Binding EmbeddedPatcherWindow}"/>
+			<Grid ColumnDefinitions="*" RowDefinitions="*">
+				<ContentControl Content="{Binding EmbeddedPatcherWindow}"/>
+			</Grid>
 		</Border>
 	</Grid>
 </UserControl>

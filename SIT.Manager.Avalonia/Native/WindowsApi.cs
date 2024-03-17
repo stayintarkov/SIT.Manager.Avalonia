@@ -3,13 +3,19 @@ using System.Runtime.InteropServices;
 
 namespace SIT.Manager.Avalonia.Native;
 
-internal partial class WindowsApi
+public static class WindowsApi
 {
-    [LibraryImport("user32.dll", SetLastError = true)]
-    public static partial IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
+    [DllImport("user32.dll", SetLastError = true)]
+    public static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
 
-    [LibraryImport("user32.dll", SetLastError = true)]
-    public static partial uint GetWindowLongPtr(IntPtr hWnd, int nIndex);
+    [DllImport("user32.dll", SetLastError = true)]
+    public static extern uint GetWindowLongPtr(IntPtr hWnd, int nIndex);
+
+    [DllImport("user32.dll", SetLastError = true, EntryPoint = "SetWindowLong")]
+    private static extern uint SetWindowLong32b(IntPtr hWnd, int nIndex, uint value);
+
+    [DllImport("user32.dll", SetLastError = true, EntryPoint = "SetWindowLongPtr")]
+    private static extern IntPtr SetWindowLong64b(IntPtr hWnd, int nIndex, IntPtr value);
 
     [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr")]
     private static extern IntPtr SetWindowLongPtr64(HandleRef hWnd, int nIndex, IntPtr dwNewLong);
