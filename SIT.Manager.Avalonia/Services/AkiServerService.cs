@@ -156,7 +156,7 @@ public class AkiServerService(IBarNotificationService barNotificationService,
 
         Task.Run(async () =>
         {
-            Uri serverUri = new("http://127.0.0.1");
+            Uri serverUri = new("http://127.0.0.1:6969");
 
             string httpConfigPath = Path.Combine(_configService.Config.AkiServerPath, "Aki_Data", "Server", "configs", "http.json");
             if (File.Exists(httpConfigPath))
@@ -164,7 +164,15 @@ public class AkiServerService(IBarNotificationService barNotificationService,
                 JObject httpConfig = JObject.Parse(File.ReadAllText(httpConfigPath));
                 if (httpConfig.TryGetValue("ip", out JToken IPToken) && httpConfig.TryGetValue("port", out JToken PortToken))
                 {
-                    serverUri = new Uri($"http://{IPToken}:{PortToken}");
+                    string ipAddress = IPToken.ToString();
+                    if (ipAddress == "0.0.0.0")
+                    {
+                        serverUri = new Uri($"{serverUri}:{PortToken}");
+                    }
+                    else
+                    {
+                        serverUri = new Uri($"http://{IPToken}:{PortToken}");
+                    }
                 }
             }
 
