@@ -28,6 +28,14 @@ public class EmbeddedProcessWindow : NativeControlHost
 
     }
 
+    protected override void DestroyNativeControlCore(IPlatformHandle control)
+    {
+        if (!OperatingSystem.IsWindows())
+        {
+            base.DestroyNativeControlCore(control);
+        }
+    }
+
     protected override IPlatformHandle CreateNativeControlCore(IPlatformHandle parent)
     {
         if (OperatingSystem.IsWindows())

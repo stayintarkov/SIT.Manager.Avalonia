@@ -128,6 +128,9 @@ public partial class PatchViewModel : InstallationViewModelBase
 
     public async Task DownloadAndRunPatcher()
     {
+        // TODO remove line below
+        await Task.Delay(1000);
+
         if (CurrentInstallProcessState.UsingBsgInstallPath)
         {
             await _fileService.CopyDirectory(CurrentInstallProcessState.BsgInstallPath, CurrentInstallProcessState.EftInstallPath, _copyProgress);
@@ -135,7 +138,11 @@ public partial class PatchViewModel : InstallationViewModelBase
 
         if (RequiresPatching)
         {
-            await _installerService.DownloadAndExtractPatcher(CurrentInstallProcessState.DownloadMirrorUrl, CurrentInstallProcessState.EftInstallPath, _downloadProgress, _extractionProgress);
+            // TODO uncomment await _installerService.DownloadAndExtractPatcher(CurrentInstallProcessState.DownloadMirrorUrl, CurrentInstallProcessState.EftInstallPath, _downloadProgress, _extractionProgress);
+
+            // TODO remove line below
+            await Task.Delay(2000);
+
             await RunPatcher();
         }
         else
