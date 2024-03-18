@@ -16,8 +16,7 @@ using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.Services.Install;
 
-public partial class InstallerService(IActionNotificationService actionNotificationService,
-                                      IBarNotificationService barNotificationService,
+public partial class InstallerService(IBarNotificationService barNotificationService,
                                       IManagerConfigService configService,
                                       ILocalizationService localizationService,
                                       IFileService fileService,
@@ -25,7 +24,6 @@ public partial class InstallerService(IActionNotificationService actionNotificat
                                       ILogger<InstallerService> logger,
                                       IVersionService versionService) : IInstallerService
 {
-    private readonly IActionNotificationService _actionNotificationService = actionNotificationService;
     private readonly IBarNotificationService _barNotificationService = barNotificationService;
     private readonly IManagerConfigService _configService = configService;
     private readonly IFileService _fileService = fileService;
@@ -501,8 +499,8 @@ public partial class InstallerService(IActionNotificationService actionNotificat
         {
             config.AkiServerPath = targetInstallDir;
         }
-
-        // TODO update the manager config aki-server versions.
+        config.SptAkiVersion = _versionService.GetSptAkiVersion(targetInstallDir);
+        config.SitModVersion = _versionService.GetSitModVersion(targetInstallDir);
 
         _configService.UpdateConfig(config);
     }
