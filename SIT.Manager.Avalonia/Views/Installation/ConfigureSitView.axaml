@@ -17,7 +17,7 @@
 	<Grid RowDefinitions="*, Auto">
 		<StackPanel Grid.Row="0">
 			<StackPanel>
-				<TextBlock Text="Version Selection" Classes="FrameHeading"/>
+				<TextBlock Text="{DynamicResource ConfigureViewVersionSelectionGroupTitle}" Classes="FrameHeading"/>
 				<Border Classes="StandardFrame">
 					<StackPanel>
 						<StackPanel Orientation="Horizontal">
@@ -28,7 +28,7 @@
 								</MultiBinding>
 							</StackPanel.IsVisible>
 							
-							<TextBlock Text="Version to install:"
+							<TextBlock Text="{DynamicResource ConfigureSitViewVersionSelectionTitle}"
 									   VerticalAlignment="Center"
 									   Margin="0,0,8,0"/>
 							<ComboBox Name="VersionSelectionBox"
@@ -60,7 +60,7 @@
 								</MultiBinding>
 							</StackPanel.IsVisible>
 							
-							<TextBlock Text="Select the mirror to use: "
+							<TextBlock Text="{DynamicResource ConfigureSitViewMirrorSelectionTitle}"
 									   VerticalAlignment="Center"
 									   Margin="0,0,8,0"/>
 							<ComboBox Name="MirrorSelectionBox"
@@ -84,18 +84,18 @@
 								</MultiBinding>
 							</StackPanel.IsVisible>
 
-							<TextBlock Text="Currently using the BSG EFT install location please install EFT to a different location to avoid any possible issues with SIT"
+							<TextBlock Text="{DynamicResource ConfigureSitViewEFTPathWarningNoPath}"
 									   Classes="WarningMessage"/>
 							<StackPanel Orientation="Horizontal" Margin="0,8,0,0">
 								<StackPanel Orientation="Horizontal" >
-									<TextBlock Text="{DynamicResource SettingsEFTInstallPathTitle}" Margin="0,0,8,0" VerticalAlignment="Center"/>
-									<TextBox Watermark="{DynamicResource SettingsEFTInstallPathPlaceholder}"
+									<TextBlock Text="{DynamicResource ConfigureSitViewEFTInstallPathTitle}" Margin="0,0,8,0" VerticalAlignment="Center"/>
+									<TextBox Watermark="{DynamicResource ConfigureSitViewEFTInstallPathPlaceholder}"
 											 Margin="0,0,8,0"
 											 Text="{Binding CurrentInstallProcessState.EftInstallPath}"
 											 IsReadOnly="True"/>
 									<Button Name="ChangeInstallButton"
-											Content="{DynamicResource SettingsEFTSettingsButtonChangeTitle}"
-											ToolTip.Tip="{DynamicResource SettingsEFTChangeInstallPathToolTip}"
+											Content="{DynamicResource ConfigureSitViewEFTSettingsButtonChangeTitle}"
+											ToolTip.Tip="{DynamicResource ConfigureSitViewEFTChangeInstallPathToolTip}"
 											Command="{Binding ChangeEftInstallLocationCommand}"/>
 								</StackPanel>
 							</StackPanel>
@@ -103,7 +103,7 @@
 
 						<StackPanel IsVisible="{Binding IsLoading}">
 							<TextBlock HorizontalAlignment="Center"
-									   Text="Working out available SIT versions please wait..."/>
+									   Text="{DynamicResource ConfigureSitViewLoadingVersionSelectionText}"/>
 							<controls:LoadingSpinner Width="64"
 												 Height="{Binding $self.Width}"
 												 Margin="0,8,0,0"
@@ -113,16 +113,6 @@
 												 StrokeWidth="8"/>
 						</StackPanel>
 						</StackPanel>
-				</Border>
-			</StackPanel>
-
-			<StackPanel IsVisible="False">
-				<TextBlock Text="Advanced Options" Classes="FrameHeading"/>
-				<Border Classes="StandardFrame">
-					<StackPanel>
-						<TextBlock Text="Ram Setup Goes here"/>
-						<TextBlock Text="Mods Selection Goes Here"/>
-					</StackPanel>
 				</Border>
 			</StackPanel>
 		</StackPanel>
@@ -137,7 +127,7 @@
 					Command="{Binding BackCommand}">
 				<StackPanel Orientation="Horizontal">
 					<ui:SymbolIcon Symbol="Back"/>
-					<TextBlock Text="Back"/>
+					<TextBlock Text="{DynamicResource ConfigureViewBackButtonTitle}"/>
 				</StackPanel>
 			</Button>
 
@@ -149,7 +139,7 @@
 					Command="{Binding StartCommand}">
 				<StackPanel Orientation="Horizontal">
 					<ui:SymbolIcon Symbol="PlayFilled"/>
-					<TextBlock Text="Start Install"/>
+					<TextBlock Text="{DynamicResource ConfigureViewStartInstallButtonTitle}"/>
 				</StackPanel>
 			</Button>
 		</Grid>

@@ -20,12 +20,12 @@
 					<TextBlock Foreground="White"
 							   VerticalAlignment="Center"
 							   HorizontalAlignment="Center"
-							   Text="Install Completed"
+							   Text="{DynamicResource CompleteViewInstallComplete}"
 							   FontSize="12"/>
 				</StackPanel>
 			</Viewbox>		
 
-			<Button Content="Happy Playing" 
+			<Button Content="{DynamicResource CompleteViewResetButtonTitle}" 
 					HorizontalAlignment="Center"
 					VerticalAlignment="Bottom"
 					Command="{Binding ResetCommand}"/>

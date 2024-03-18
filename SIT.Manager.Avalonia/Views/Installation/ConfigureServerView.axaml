@@ -17,12 +17,12 @@
 	<Grid RowDefinitions="*, Auto">
 		<StackPanel Grid.Row="0">
 			<StackPanel>
-				<TextBlock Text="Version Selection" Classes="FrameHeading"/>
+				<TextBlock Text="{DynamicResource ConfigureViewVersionSelectionGroupTitle}" Classes="FrameHeading"/>
 				<Border Classes="StandardFrame">
 					<StackPanel>
 						<StackPanel Orientation="Horizontal"
 									IsVisible="{Binding !IsLoading}">
-							<TextBlock Text="Version to install:"
+							<TextBlock Text="{DynamicResource ConfigureServerViewVersionSelectionTitle}"
 									   VerticalAlignment="Center"
 									   Margin="0,0,8,0"/>
 							<ComboBox Name="VersionSelectionBox"
@@ -40,20 +40,20 @@
 
 						<StackPanel Margin="0,4,0,0"
 									IsVisible="{Binding !IsLoading}">
-							<TextBlock Text="No SPT-AKI install path specified"
+							<TextBlock Text="{DynamicResource ConfigureServerViewSPTAKIPathWarningNoPath}"
 									   IsVisible="{Binding CurrentInstallProcessState.SptAkiInstallPath, Converter={x:Static StringConverters.IsNullOrEmpty}}"
 									   Classes="WarningMessage"/>
 							<StackPanel Orientation="Horizontal" Margin="0,8,0,0">
 								<StackPanel Orientation="Horizontal" >
-									<TextBlock Text="{DynamicResource SettingsSPTAKIPathTitle}"
+									<TextBlock Text="{DynamicResource ConfigureServerViewSPTAKIPathTitle}"
 											   VerticalAlignment="Center"/>
-									<TextBox Watermark="{DynamicResource SettingsSPTAKIInstallPathPlaceholder}"
+									<TextBox Watermark="{DynamicResource ConfigureServerViewSPTAKIInstallPathPlaceholder}"
 											 Margin="5"
 											 IsReadOnly="True"
 											 Text="{Binding CurrentInstallProcessState.SptAkiInstallPath, Mode=TwoWay}"/>
 									<Button Name="ChangeInstallButton"
-											Content="{DynamicResource SettingsEFTSettingsButtonChangeTitle}"
-											ToolTip.Tip="{DynamicResource SettingsEFTChangeInstallPathToolTip}"
+											Content="{DynamicResource ConfigureServerViewSPTAKIInstallPathTitle}"
+											ToolTip.Tip="{DynamicResource ConfigureServerViewSPTAKIInstallPathToolTip}"
 											Command="{Binding ChangeServerInstallLocationCommand}"/>
 								</StackPanel>
 							</StackPanel>
@@ -82,7 +82,7 @@
 					Command="{Binding BackCommand}">
 				<StackPanel Orientation="Horizontal">
 					<ui:SymbolIcon Symbol="Back"/>
-					<TextBlock Text="Back"/>
+					<TextBlock Text="{DynamicResource ConfigureViewBackButtonTitle}"/>
 				</StackPanel>
 			</Button>
 
@@ -94,7 +94,7 @@
 					Command="{Binding StartCommand}">
 				<StackPanel Orientation="Horizontal">
 					<ui:SymbolIcon Symbol="PlayFilled"/>
-					<TextBlock Text="Start Install"/>
+					<TextBlock Text="{DynamicResource ConfigureViewStartInstallButtonTitle}"/>
 				</StackPanel>
 			</Button>
 		</Grid>

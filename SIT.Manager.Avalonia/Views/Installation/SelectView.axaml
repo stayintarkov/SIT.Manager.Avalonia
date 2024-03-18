@@ -25,55 +25,43 @@
 		<Grid RowDefinitions="*,*">
 			<!-- EFT Game -->
 			<StackPanel Grid.Row="0" VerticalAlignment="Center">
-				<TextBlock Text="Escape From Tarkov" Classes="FrameHeading"/>
+				<TextBlock Text="{DynamicResource SelectViewEFTSectionHeading}" Classes="FrameHeading"/>
 				<Border Classes="StandardFrame">
 					<StackPanel>
-						<TextBlock Text="Detected BSG Escape From Tarkov install, if you have already installed SIT please go to the Settings page and change the EFT install path to this folder. Otherwise you will be asked to provide an empty folder to copy BSG EFT installation and install SIT to"
+						<TextBlock Text="{DynamicResource SelectViewEFTUsingBSGInstallWarningMessage}"
 								   IsVisible="{Binding CurrentInstallProcessState.UsingBsgInstallPath}"
 								   Classes="WarningMessage"/>
-						<TextBlock Text="Unable to find EFT install please go and set this manually in the Settings page"
+						<TextBlock Text="{DynamicResource SelectViewEFTNoPathWarningMessage}"
 								   IsVisible="{Binding NoEftInstallPathSet}"
 								   Classes="WarningMessage"/>
 						
 						<TextBlock>
-							<Run Text="{DynamicResource SettingsEFTInstallPathTitle}"/>
+							<Run Text="{DynamicResource SelectViewEFTPathTitle}"/>
 							<Run Text=" "/>
 							<Run Text="{Binding CurrentInstallProcessState.EftInstallPath}"/>
 						</TextBlock>
 
 						<TextBlock>
-							<Run Text="{DynamicResource SettingsEFTVersionTitle}"/>
+							<Run Text="{DynamicResource SelectViewEFTVersionTitle}"/>
 							<Run Text=" "/>
 							<Run Text="{Binding CurrentInstallProcessState.EftVersion}"/>
 						</TextBlock>
 
 						<TextBlock>
-							<Run Text="{DynamicResource SettingsSITVersionTitle}"/>
+							<Run Text="{DynamicResource SelectViewSITVersionTitle}"/>
 							<Run Text=" "/>
 							<Run Text="{Binding CurrentInstallProcessState.SitVersion}"/>
 						</TextBlock>
 
 						<Grid ColumnDefinitions="*,*">
 							<Button Grid.Column="0"
-									ToolTip.Tip="{DynamicResource ToolsSITToolTip}"
+									ToolTip.Tip="{DynamicResource SelectViewInstallSITButtonToolTip}"
 									IsEnabled="{Binding !NoEftInstallPathSet}"
 									Command="{Binding ProgressInstallCommand}"
 									CommandParameter="{x:Static im:RequestedInstallOperation.InstallSit}">
 								<StackPanel Orientation="Horizontal">
 									<ui:SymbolIcon Symbol="Add"/>
-									<TextBlock Text="{DynamicResource ToolsSITTitle}"/>
-								</StackPanel>
-							</Button>
-
-							<Button Grid.Column="1"
-									IsVisible="False"
-									IsEnabled="{Binding !NoEftInstallPathSet}"
-									ToolTip.Tip="{DynamicResource ToolsInstallServerButtonToolTip}"
-									Command="{Binding ProgressInstallCommand}"
-									CommandParameter="{x:Static im:RequestedInstallOperation.UpdateSit}">
-								<StackPanel Orientation="Horizontal">
-									<ui:SymbolIcon Symbol="Upload"/>
-									<TextBlock Text="Update SIT"/>
+									<TextBlock Text="{DynamicResource SelectViewInstallSITButtonTitle}"/>
 								</StackPanel>
 							</Button>
 						</Grid>
@@ -83,51 +71,39 @@
 
 			<!-- Server -->
 			<StackPanel Grid.Row="1" VerticalAlignment="Center">
-				<TextBlock Text="{DynamicResource SettingsSPTAKITitle}" Classes="FrameHeading"/>
+				<TextBlock Text="{DynamicResource SelectViewServerSectionHeading}" Classes="FrameHeading"/>
 				<Border Classes="StandardFrame">
 					<StackPanel>
-						<TextBlock Text="Unable to find SPT-AKI install if you have already installed AKI-SPT please go to the Settings page and set the SPT-AKI install path. Otherwise you will be asked to provide an empty folder to install SPT-AKI to"
+						<TextBlock Text="{DynamicResource SelectViewSPTAKINoPathWarningMessage}"
 								   IsVisible="{Binding NoAkiInstallPathSet}"
 								   Classes="WarningMessage"/>
 
 						<TextBlock>
-							<Run Text="{DynamicResource SettingsSPTAKIPathTitle}"/>
+							<Run Text="{DynamicResource SelectViewSPTAKIPathTitle}"/>
 							<Run Text=" "/>
 							<Run Text="{Binding CurrentInstallProcessState.SptAkiInstallPath}"/>
 						</TextBlock>
 						
 						<TextBlock>
-							<Run Text="SPT-AKI Version:"/>
+							<Run Text="{DynamicResource SelectViewServerVersionTitle}"/>
 							<Run Text=" "/>
 							<Run Text="{Binding CurrentInstallProcessState.SptAkiVersion}"/>
 						</TextBlock>
 
 						<TextBlock>
-							<Run Text="SIT Mod Version:"/>
+							<Run Text="{DynamicResource SelectViewServerModVersionTitle}"/>
 							<Run Text=" "/>
 							<Run Text="{Binding CurrentInstallProcessState.SitModVersion}"/>
 						</TextBlock>
 						
 						<Grid ColumnDefinitions="*,*">
 							<Button Grid.Column="0"
-									ToolTip.Tip="{DynamicResource ToolsSITToolTip}"
+									ToolTip.Tip="{DynamicResource SelectViewInstallServerButtonToolTip}"
 									Command="{Binding ProgressInstallCommand}"
 									CommandParameter="{x:Static im:RequestedInstallOperation.InstallServer}">
 								<StackPanel Orientation="Horizontal">
 									<ui:SymbolIcon Symbol="Download"/>
-									<TextBlock Text="{DynamicResource ToolsInstallServerButtonTitle}"/>
-								</StackPanel>
-							</Button>
-
-							<Button Grid.Column="1"
-									IsVisible="False"
-									IsEnabled="{Binding !NoAkiInstallPathSet}"
-									ToolTip.Tip="{DynamicResource ToolsInstallServerButtonToolTip}"
-									Command="{Binding ProgressInstallCommand}"
-									CommandParameter="{x:Static im:RequestedInstallOperation.UpdateServer}">
-								<StackPanel Orientation="Horizontal">
-									<ui:SymbolIcon Symbol="Upload"/>
-									<TextBlock Text="Update Server + SIT Mod"/>
+									<TextBlock Text="{DynamicResource SelectViewInstallServerButtonTitle}"/>
 								</StackPanel>
 							</Button>
 						</Grid>
