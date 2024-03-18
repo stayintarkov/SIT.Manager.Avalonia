@@ -129,6 +129,8 @@ public partial class SettingsPageViewModel : ViewModelBase
         if (!string.IsNullOrEmpty(targetPath))
         {
             Config.AkiServerPath = targetPath;
+            Config.SptAkiVersion = _versionService.GetSptAkiVersion(targetPath);
+            Config.SitModVersion = _versionService.GetSitModVersion(targetPath);
             _barNotificationService.ShowInformational(_localizationService.TranslateSource("SettingsPageViewModelConfigTitle"), _localizationService.TranslateSource("SettingsPageViewModelConfigInformationSPTAKIDescription", targetPath));
         }
         else
