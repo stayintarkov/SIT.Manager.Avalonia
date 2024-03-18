@@ -20,7 +20,6 @@ public partial class ToolsPageViewModel : ViewModelBase
     private readonly IManagerConfigService _configService;
     private readonly IFileService _fileService;
     private readonly ITarkovClientService _tarkovClientService;
-    private readonly IVersionService _versionService;
     private readonly ILocalizationService _localizationService;
 
     public IAsyncRelayCommand OpenEFTFolderCommand { get; }
@@ -38,15 +37,13 @@ public partial class ToolsPageViewModel : ViewModelBase
                               IManagerConfigService configService,
                               IFileService fileService,
                               ILocalizationService localizationService,
-                              ITarkovClientService tarkovClientService,
-                              IVersionService versionService)
+                              ITarkovClientService tarkovClientService)
     {
         _akiServerService = akiServerService;
         _barNotificationService = barNotificationService;
         _configService = configService;
         _fileService = fileService;
         _tarkovClientService = tarkovClientService;
-        _versionService = versionService;
         _localizationService = localizationService;
 
         OpenEFTFolderCommand = new AsyncRelayCommand(OpenEFTFolder);
@@ -54,20 +51,6 @@ public partial class ToolsPageViewModel : ViewModelBase
         OpenSITConfigCommand = new AsyncRelayCommand(OpenSITConfig);
         OpenEFTLogCommand = new AsyncRelayCommand(OpenEFTLog);
         ClearCacheCommand = new AsyncRelayCommand(ClearCache);
-    }
-
-    /// <summary>
-    /// Check the current version of EFT and update the version in the config if it's different
-    /// </summary>
-    private void CheckTarkovVersion()
-    {
-        ManagerConfig config = _configService.Config;
-        string tarkovVersion = _versionService.GetEFTVersion(config.InstallPath);
-        if (tarkovVersion != config.TarkovVersion)
-        {
-            config.TarkovVersion = tarkovVersion;
-            _configService.UpdateConfig(config);
-        }
     }
 
     private async Task OpenEFTFolder()
