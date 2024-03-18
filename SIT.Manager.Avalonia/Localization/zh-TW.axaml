@@ -91,16 +91,12 @@
 	<system:String x:Key="ModsPageViewModelErrorNoModsFound">未找到任何模組</system:String>
 
 	<!-- Tools Page -->
-	<system:String x:Key="ToolsSITTitle">安裝客戶端 SIT 模組</system:String>
-	<system:String x:Key="ToolsSITToolTip">如果需要，降級 EFT，安裝客戶端 SIT 和模組支持</system:String>
 	<system:String x:Key="ToolsOpenEFTFolderButtonToolTip">打開 EFT 安裝資料夾</system:String>
 	<system:String x:Key="ToolsOpenEFTFolderButtonTitle">打開 EFT 資料夾</system:String>
 	<system:String x:Key="ToolsOpenBepInExFolderButtonToolTip">打開 BepInEx 外掛資料夾</system:String>
 	<system:String x:Key="ToolsOpenBepInExFolderButtonTitle">打開外掛資料夾</system:String>
 	<system:String x:Key="ToolsOpenSITConfigButtonToolTip">使用預設文字編輯器打開 SIT 設定檔</system:String>
 	<system:String x:Key="ToolsOpenSITConfigButtonTitle">打開 SIT 設定檔</system:String>
-	<system:String x:Key="ToolsInstallServerButtonToolTip">下載 SPT 本地伺服器 + SIT 伺服器模組</system:String>
-	<system:String x:Key="ToolsInstallServerButtonTitle">安裝伺服器 + SIT 伺服器模組</system:String>
 	<system:String x:Key="ToolsOpenEFTLogButtonToolTip">使用預設文字編輯器打開 EFT 的 'Player.log' 檔案</system:String>
 	<system:String x:Key="ToolsOpenEFTLogButtonTitle">打開 EFT 日誌</system:String>
 	<system:String x:Key="ToolsOpenLocationEditorButtonToolTip">打開地圖設定編輯器</system:String>
@@ -216,22 +212,10 @@
 	<system:String x:Key="LocationEditorViewModelSaveSuccessTitle">儲存</system:String>
 	<system:String x:Key="LocationEditorViewModelSaveSuccessDescription">已成功儲存檔案至：%1</system:String>
 
-	<!-- Select Version Dialog -->
-	<system:String x:Key="SelectVersionDialogTitle">選擇版本</system:String>
-	<system:String x:Key="SelectVersionDialogToInstallTitle">選擇要安裝的版本：</system:String>
-	<system:String x:Key="SelectVersionButtonInstallTitle">安裝</system:String>
-	<system:String x:Key="SelectVersionButtonCloseTitle">關閉</system:String>
-
 	<!-- Select Edition Dialog -->
 	<system:String x:Key="SelectEditionDialogTitle">選擇版本</system:String>
 	<system:String x:Key="SelectEditionDialogTextBlockTitle">為您的 SIT 帳戶選擇版本：</system:String>
 	<system:String x:Key="SelectEditionDialogButtonCreateTitle">創建</system:String>
-
-	<!-- Select Downgrade Dialog -->
-	<system:String x:Key="SelectDowngradeRequiredTitle">需要降級 EFT</system:String>
-	<system:String x:Key="SelectDowngradeRequiredButtonDownload">下載</system:String>
-	<system:String x:Key="SelectDowngradeRequiredButtonCancel">取消</system:String>
-	<system:String x:Key="SelectDowngradeRequiredTextBlock">選擇要安裝的版本：</system:String>
 
 	<!-- Tools Page ViewModel -->
 	<system:String x:Key="ToolsPageViewModelErrorMessageTitle">錯誤</system:String>
