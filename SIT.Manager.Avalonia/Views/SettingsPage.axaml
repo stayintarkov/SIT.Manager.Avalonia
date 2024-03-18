@@ -57,12 +57,12 @@
 				<TextBlock Text="{DynamicResource SettingsLinuxSettingsTitle}"
 						   Margin="5"
 						   VerticalAlignment="Center"
-						   IsVisible="{Binding ShowLinuxSettings}"/>
+						   IsVisible="{OnPlatform Default=False, Linux=True}"/>
 				<Border CornerRadius="8"
 						BorderBrush="Gray"
 						BorderThickness="1"
 						Padding="10"
-						IsVisible="{Binding ShowLinuxSettings}">
+						IsVisible="{OnPlatform Default=False, Linux=True}">
 					<StackPanel>
 						<StackPanel Orientation="Horizontal">
 							<TextBlock Text="{DynamicResource SettingsLinuxWinePrefixTitle}" Margin="0,0,10,0" VerticalAlignment="Center"/>
