@@ -140,6 +140,8 @@
 	<system:String x:Key="SettingsSITVersionTitle">SIT Version:</system:String>
 	<system:String x:Key="SettingsSPTAKITitle">SPT-AKI Settings</system:String>
 	<system:String x:Key="SettingsSPTAKIPathTitle">SPT-AKI Path:</system:String>
+	<system:String x:Key="SettingsSPTAKIVersionTitle">SPT-AKI Version:</system:String>
+	<system:String x:Key="SettingsSITModVersionTitle">SIT Mod Version:</system:String>
 	<system:String x:Key="SettingsSPTAKIInstallPathPlaceholder">SPT-AKI Install Path...</system:String>
 	<system:String x:Key="SettingsSPTAKIInstallPathToolTip">Change the SPT-AKI Install Path.</system:String>
 	<system:String x:Key="SettingsServerConsoleTitle">Server Console</system:String>

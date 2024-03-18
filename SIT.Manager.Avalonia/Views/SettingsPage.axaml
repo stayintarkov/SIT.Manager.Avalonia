@@ -131,6 +131,18 @@
 									ToolTip.Tip="{DynamicResource SettingsSPTAKIInstallPathToolTip}"
 									Command="{Binding ChangeAkiServerLocationCommand}"/>
 						</StackPanel>
+
+						<TextBlock Margin="0,10,0,0">
+							<Run Text="{DynamicResource SettingsSPTAKIVersionTitle}"/>
+							<Run Text=" "/>
+							<Run Text="{Binding Config.SptAkiVersion}"/>
+						</TextBlock>
+
+						<TextBlock Margin="0,10,0,0">
+							<Run Text="{DynamicResource SettingsSITModVersionTitle}"/>
+							<Run Text=" "/>
+							<Run Text="{Binding Config.SitModVersion}"/>
+						</TextBlock>
 					</StackPanel>
 				</Border>
 				
