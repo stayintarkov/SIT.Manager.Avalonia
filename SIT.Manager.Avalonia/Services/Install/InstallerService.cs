@@ -511,6 +511,17 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         double internalDownloadProgressPercentage = 0;
         double internalExtractionProgressPercentage = 0;
 
+        Progress<double> internalDownloadProgress = new(progress =>
+        {
+            internalDownloadProgressPercentage = progress / downloadAndExtractionSteps;
+            downloadProgress.Report(internalDownloadProgressPercentage);
+        });
+        Progress<double> internalExtractionProgress = new(progress =>
+        {
+            internalExtractionProgressPercentage = progress / downloadAndExtractionSteps;
+            extractionProgress.Report(internalExtractionProgressPercentage);
+        });
+
         if (string.IsNullOrEmpty(targetInstallDir))
         {
             _barNotificationService.ShowError(_localizationService.TranslateSource("InstallServiceErrorTitle"), _localizationService.TranslateSource("InstallServiceErrorInstallSITDescription"));
@@ -549,40 +560,35 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             }
 
             string pluginsPath = Path.Combine(targetInstallDir, "BepInEx", "plugins");
-            if (!Directory.Exists(pluginsPath))
-            {
-                Progress<double> internalDownloadProgress = new(progress =>
-                {
-                    internalDownloadProgressPercentage = progress / downloadAndExtractionSteps;
-                });
-                Progress<double> internalExtractionProgress = new(progress =>
-                {
-                    internalExtractionProgressPercentage = progress / downloadAndExtractionSteps;
-                });
+            Directory.CreateDirectory(pluginsPath);
 
-                string bepinexPath = Path.Combine(targetInstallDir, "SITLauncher");
-                await _fileService.DownloadFile("BepInEx5.zip", bepinexPath, "https://github.com/BepInEx/BepInEx/releases/download/v5.4.22/BepInEx_x64_5.4.22.0.zip", internalDownloadProgress);
-                await _fileService.ExtractArchive(Path.Combine(bepinexPath, "BepInEx5.zip"), targetInstallDir, internalExtractionProgress);
-                Directory.CreateDirectory(pluginsPath);
-            }
+            string bepinexPath = Path.Combine(targetInstallDir, "SITLauncher");
+            await _fileService.DownloadFile("BepInEx5.zip", bepinexPath, "https://github.com/BepInEx/BepInEx/releases/download/v5.4.22/BepInEx_x64_5.4.22.0.zip", internalDownloadProgress);
+            await _fileService.ExtractArchive(Path.Combine(bepinexPath, "BepInEx5.zip"), targetInstallDir, internalExtractionProgress);
+
+            internalDownloadProgressPercentage = 100 / downloadAndExtractionSteps;
+            internalExtractionProgressPercentage = 100 / downloadAndExtractionSteps;
 
             // We don't use index as they might be different from version to version
             string? releaseZipUrl = selectedVersion.assets.Find(q => q.name == "StayInTarkov-Release.zip")?.browser_download_url;
             if (!string.IsNullOrEmpty(releaseZipUrl))
             {
-                Progress<double> internalDownloadProgress = new(progress =>
+                internalDownloadProgress = new(progress =>
                 {
-                    internalDownloadProgressPercentage += progress / downloadAndExtractionSteps;
-                    downloadProgress.Report(internalDownloadProgressPercentage);
+                    double tempProgress = internalDownloadProgressPercentage + (progress / downloadAndExtractionSteps);
+                    downloadProgress.Report(tempProgress);
                 });
-                Progress<double> internalExtractionProgress = new(progress =>
+                internalExtractionProgress = new(progress =>
                 {
-                    internalExtractionProgressPercentage += progress / downloadAndExtractionSteps;
-                    extractionProgress.Report(internalExtractionProgressPercentage);
+                    double tempProgress = internalExtractionProgressPercentage + (progress / downloadAndExtractionSteps);
+                    extractionProgress.Report(tempProgress);
                 });
 
                 await _fileService.DownloadFile("StayInTarkov-Release.zip", coreFilesPath, releaseZipUrl, internalDownloadProgress);
                 await _fileService.ExtractArchive(Path.Combine(coreFilesPath, "StayInTarkov-Release.zip"), coreFilesPath, internalExtractionProgress);
+
+                internalDownloadProgressPercentage = 100 / (downloadAndExtractionSteps - 1);
+                internalExtractionProgressPercentage = 100 / (downloadAndExtractionSteps - 1);
             }
 
             string eftDataManagedPath = Path.Combine(targetInstallDir, "EscapeFromTarkov_Data", "Managed");
