@@ -254,24 +254,35 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         return result;
     }
 
+    private static async Task CloneFileAsync(string sourceFile, string destinationFile)
+    {
+        using (var sourceStream = new FileStream(sourceFile, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan))
+        {
+            using (var destinationStream = new FileStream(destinationFile, FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan))
+            {
+                await sourceStream.CopyToAsync(destinationStream);
+            }
+        }
+    }
+
     /// <summary>
     /// Clones a directory
     /// </summary>
     /// <param name="root">Root path to clone</param>
     /// <param name="dest">Destination path to clone to</param>
     /// <returns></returns>
-    private static void CloneDirectory(string root, string dest)
+    private static async Task CloneDirectoryAsync(string root, string dest)
     {
         foreach (var directory in Directory.GetDirectories(root))
         {
             var newDirectory = Path.Combine(dest, Path.GetFileName(directory));
             Directory.CreateDirectory(newDirectory);
-            CloneDirectory(directory, newDirectory);
+            await CloneDirectoryAsync(directory, newDirectory);
         }
 
         foreach (var file in Directory.GetFiles(root))
         {
-            File.Copy(file, Path.Combine(dest, Path.GetFileName(file)), true);
+            await CloneFileAsync(file, Path.Combine(dest, Path.GetFileName(file)));
         }
     }
 
@@ -395,7 +406,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         var patcherDir = Directory.GetDirectories(targetPath, "Patcher*").FirstOrDefault();
         if (!string.IsNullOrEmpty(patcherDir))
         {
-            CloneDirectory(patcherDir, _configService.Config.InstallPath);
+            await CloneDirectoryAsync(patcherDir, _configService.Config.InstallPath);
             Directory.Delete(patcherDir, true);
         }
 
@@ -566,29 +577,23 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             await _fileService.DownloadFile("BepInEx5.zip", bepinexPath, "https://github.com/BepInEx/BepInEx/releases/download/v5.4.22/BepInEx_x64_5.4.22.0.zip", internalDownloadProgress);
             await _fileService.ExtractArchive(Path.Combine(bepinexPath, "BepInEx5.zip"), targetInstallDir, internalExtractionProgress);
 
-            internalDownloadProgressPercentage = 100 / downloadAndExtractionSteps;
-            internalExtractionProgressPercentage = 100 / downloadAndExtractionSteps;
-
             // We don't use index as they might be different from version to version
             string? releaseZipUrl = selectedVersion.assets.Find(q => q.name == "StayInTarkov-Release.zip")?.browser_download_url;
             if (!string.IsNullOrEmpty(releaseZipUrl))
             {
                 internalDownloadProgress = new(progress =>
                 {
-                    double tempProgress = internalDownloadProgressPercentage + (progress / downloadAndExtractionSteps);
-                    downloadProgress.Report(tempProgress);
+                    internalDownloadProgressPercentage = 0.5 + (progress / downloadAndExtractionSteps);
+                    downloadProgress.Report(internalDownloadProgressPercentage);
                 });
                 internalExtractionProgress = new(progress =>
                 {
-                    double tempProgress = internalExtractionProgressPercentage + (progress / downloadAndExtractionSteps);
-                    extractionProgress.Report(tempProgress);
+                    internalExtractionProgressPercentage = 50 + (progress / downloadAndExtractionSteps);
+                    extractionProgress.Report(internalExtractionProgressPercentage);
                 });
 
                 await _fileService.DownloadFile("StayInTarkov-Release.zip", coreFilesPath, releaseZipUrl, internalDownloadProgress);
                 await _fileService.ExtractArchive(Path.Combine(coreFilesPath, "StayInTarkov-Release.zip"), coreFilesPath, internalExtractionProgress);
-
-                internalDownloadProgressPercentage = 100 / (downloadAndExtractionSteps - 1);
-                internalExtractionProgressPercentage = 100 / (downloadAndExtractionSteps - 1);
             }
 
             string eftDataManagedPath = Path.Combine(targetInstallDir, "EscapeFromTarkov_Data", "Managed");
@@ -620,6 +625,9 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                     }
                 }
             }
+
+            downloadProgress.Report(1);
+            extractionProgress.Report(100);
 
             ManagerConfig config = _configService.Config;
             config.InstallPath = targetInstallDir;

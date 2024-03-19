@@ -4,7 +4,9 @@ using CommunityToolkit.Mvvm.Input;
 using DynamicData;
 using ReactiveUI;
 using SIT.Manager.Avalonia.Interfaces;
+using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models.Installation;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -15,6 +17,7 @@ namespace SIT.Manager.Avalonia.ViewModels.Installation;
 
 public partial class ConfigureSitViewModel : InstallationViewModelBase
 {
+    private readonly IManagerConfigService _configService;
     private readonly IInstallerService _installerService;
     private readonly IPickerDialogService _pickerDialogService;
 
@@ -41,8 +44,9 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
 
     public IAsyncRelayCommand ChangeEftInstallLocationCommand { get; }
 
-    public ConfigureSitViewModel(IInstallerService installerService, IPickerDialogService pickerDialogService) : base()
+    public ConfigureSitViewModel(IManagerConfigService configService, IInstallerService installerService, IPickerDialogService pickerDialogService) : base()
     {
+        _configService = configService;
         _installerService = installerService;
         _pickerDialogService = pickerDialogService;
 
@@ -85,9 +89,21 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
         AvailableMirrors.Clear();
 
         List<SitInstallVersion> availableVersions = await _installerService.GetAvailableSitReleases(CurrentInstallProcessState.EftVersion);
-        if (CurrentInstallProcessState.RequestedInstallOperation == RequestedInstallOperation.UpdateSit)
+        if (!string.IsNullOrEmpty(_configService.Config.SitVersion))
         {
-            // TODO filter results for updating SIT to versions higher than currently
+            availableVersions = availableVersions.Where(x =>
+            {
+                bool parsedSitVersion = Version.TryParse(x.SitVersion.Replace("StayInTarkov.Client-", ""), out Version? sitVersion);
+                if (parsedSitVersion)
+                {
+                    Version installedSit = Version.Parse(_configService.Config.SitVersion);
+                    if (sitVersion >= installedSit)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }).ToList();
         }
 
         // Make sure we only offer versions which are actually available to use to maximize the chances the install will work
@@ -140,7 +156,7 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
             return;
         }
 
-        if (IsLoading)
+        if (SelectedVersion == null)
         {
             IsConfigurationValid = false;
             return;

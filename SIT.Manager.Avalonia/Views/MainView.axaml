@@ -58,6 +58,7 @@
 						   OpenPaneLength="166"
 						   Grid.Row="1"
 						   Name="NavView"
+						   IsEnabled="{Binding !IsInstallRunning}"
 						   ItemInvoked="NavView_ItemInvoked">
 			<ui:NavigationView.Styles>
 				<Style Selector="ui|NavigationViewItem">

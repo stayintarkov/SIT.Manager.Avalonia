@@ -1,8 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Logging;
 using ReactiveUI;
 using SIT.Manager.Avalonia.Controls;
 using SIT.Manager.Avalonia.Interfaces;
+using SIT.Manager.Avalonia.Models.Installation;
 using SIT.Manager.Avalonia.Services;
 using System;
 using System.Collections.Generic;
@@ -59,7 +61,18 @@ public partial class PatchViewModel : InstallationViewModelBase
         _downloadProgress.ProgressChanged += DownloadProgress_ProgressChanged;
         _extractionProgress.ProgressChanged += ExtractionProgress_ProgressChanged;
 
-        this.WhenActivated(async (CompositeDisposable disposables) => await DownloadAndRunPatcher());
+        this.WhenActivated(async (CompositeDisposable disposables) =>
+        {
+            WeakReferenceMessenger.Default.Send(new InstallationRunningMessage(true));
+
+            Disposable.Create(() =>
+            {
+                /* Handle deactivation */
+                WeakReferenceMessenger.Default.Send(new InstallationRunningMessage(false));
+            }).DisposeWith(disposables);
+
+            await DownloadAndRunPatcher();
+        });
     }
 
     private void CopyProgress_ProgressChanged(object? sender, double e)
@@ -69,7 +82,7 @@ public partial class PatchViewModel : InstallationViewModelBase
 
     private void DownloadProgress_ProgressChanged(object? sender, double e)
     {
-        DownloadProgressPercentage = e;
+        DownloadProgressPercentage = e * 100;
     }
 
     private void ExtractionProgress_ProgressChanged(object? sender, double e)

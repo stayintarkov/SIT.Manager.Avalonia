@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
 using ReactiveUI;
 using SIT.Manager.Avalonia.Interfaces;
+using SIT.Manager.Avalonia.Models.Installation;
 using System;
 using System.Reactive.Disposables;
 using System.Threading.Tasks;
@@ -30,7 +32,18 @@ public partial class InstallViewModel : InstallationViewModelBase
         _downloadProgress.ProgressChanged += DownloadProgress_ProgressChanged;
         _extractionProgress.ProgressChanged += ExtractionProgress_ProgressChanged;
 
-        this.WhenActivated(async (CompositeDisposable disposables) => await RunInstaller());
+        this.WhenActivated(async (CompositeDisposable disposables) =>
+        {
+            WeakReferenceMessenger.Default.Send(new InstallationRunningMessage(true));
+
+            Disposable.Create(() =>
+            {
+                /* Handle deactivation */
+                WeakReferenceMessenger.Default.Send(new InstallationRunningMessage(false));
+            }).DisposeWith(disposables);
+
+            await RunInstaller();
+        });
     }
 
     private void DownloadProgress_ProgressChanged(object? sender, double e)

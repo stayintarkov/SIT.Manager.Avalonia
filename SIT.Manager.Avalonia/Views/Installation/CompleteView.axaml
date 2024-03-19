@@ -9,9 +9,11 @@
 			 x:DataType="vm:CompleteViewModel">
 
 	<Border Classes="StandardFrame" Grid.Row="0">
-		<StackPanel HorizontalAlignment="Center"
-					VerticalAlignment="Center">
+		<Grid RowDefinitions="*, *"
+			  HorizontalAlignment="Center"
+			  VerticalAlignment="Center">
 			<Viewbox VerticalAlignment="Center"
+					 Grid.Row="0"
 					 MaxHeight="1024"
 					 MaxWidth="1024">
 				<StackPanel>
@@ -26,9 +28,11 @@
 			</Viewbox>		
 
 			<Button Content="{DynamicResource CompleteViewResetButtonTitle}" 
+					Grid.Row="1"
 					HorizontalAlignment="Center"
+					Margin="0,32,0,0"
 					VerticalAlignment="Bottom"
 					Command="{Binding ResetCommand}"/>
-		</StackPanel>
+		</Grid>
 	</Border>
 </UserControl>

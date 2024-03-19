@@ -11,6 +11,7 @@ using ReactiveUI;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
+using SIT.Manager.Avalonia.Models.Installation;
 using SIT.Manager.Avalonia.Models.Messages;
 using System;
 using System.Collections.ObjectModel;
@@ -25,7 +26,7 @@ using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.ViewModels;
 
-public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMessage>
+public partial class MainViewModel : ViewModelBase, IRecipient<InstallationRunningMessage>, IRecipient<PageNavigationMessage>
 {
     private const string MANAGER_VERSION_URL = @"https://raw.githubusercontent.com/stayintarkov/SIT.Manager.Avalonia/master/VERSION";
     private readonly IActionNotificationService _actionNotificationService;
@@ -42,6 +43,9 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
 
     [ObservableProperty]
     private bool _updateAvailable = false;
+
+    [ObservableProperty]
+    private bool _isInstallRunning = false;
 
     public ObservableCollection<BarNotification> BarNotifications { get; } = [];
 
@@ -70,7 +74,7 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
         _actionNotificationService.ActionNotificationReceived += ActionNotificationService_ActionNotificationReceived;
         _barNotificationService.BarNotificationReceived += BarNotificationService_BarNotificationReceived;
 
-        WeakReferenceMessenger.Default.Register(this);
+        WeakReferenceMessenger.Default.RegisterAll(this);
 
         UpdateButtonCommand = new AsyncRelayCommand(UpdateButton);
         CloseButtonCommand = new RelayCommand(() => { UpdateAvailable = false; });
@@ -176,5 +180,10 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
     public void Receive(PageNavigationMessage message)
     {
         NavigateToPage(message.Value.TargetPage, message.Value.SuppressTransition);
+    }
+
+    public void Receive(InstallationRunningMessage message)
+    {
+        IsInstallRunning = message.Value;
     }
 }
