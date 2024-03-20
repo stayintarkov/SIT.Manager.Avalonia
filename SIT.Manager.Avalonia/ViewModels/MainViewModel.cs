@@ -68,8 +68,6 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<PageNavigat
         _actionNotificationService.ActionNotificationReceived += ActionNotificationService_ActionNotificationReceived;
         _barNotificationService.BarNotificationReceived += BarNotificationService_BarNotificationReceived;
 
-        WeakReferenceMessenger.Default.Register(this);
-
         UpdateButtonCommand = new AsyncRelayCommand(UpdateButton);
         CloseButtonCommand = new RelayCommand(() => { UpdateAvailable = false; });
 
@@ -164,6 +162,7 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<PageNavigat
 
     protected override async void OnActivated()
     {
+        base.OnActivated();
         await CheckForUpdate();
     }
 
