@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace SIT.Manager.Avalonia.ViewModels.Dialogs;
 
-public partial class SelectVersionDialogViewModel : ViewModelBase
+public partial class SelectVersionDialogViewModel : ObservableObject
 {
     [ObservableProperty]
     private GithubRelease? _selectedVersion;

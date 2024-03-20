@@ -7,7 +7,6 @@ using FluentAvalonia.Styling;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Media.Animation;
 using Microsoft.Extensions.Logging;
-using ReactiveUI;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
@@ -19,13 +18,12 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Reactive.Disposables;
 using System.Reflection;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.ViewModels;
 
-public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMessage>
+public partial class MainViewModel : ObservableRecipient, IRecipient<PageNavigationMessage>
 {
     private const string MANAGER_VERSION_URL = @"https://raw.githubusercontent.com/stayintarkov/SIT.Manager.Avalonia/master/VERSION";
     private readonly IActionNotificationService _actionNotificationService;
@@ -75,10 +73,6 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
         UpdateButtonCommand = new AsyncRelayCommand(UpdateButton);
         CloseButtonCommand = new RelayCommand(() => { UpdateAvailable = false; });
 
-        this.WhenActivated(async (CompositeDisposable disposables) =>
-        {
-            await CheckForUpdate();
-        });
         _managerConfigService.ConfigChanged += async (o, c) => await CheckForUpdate();
     }
 
@@ -166,6 +160,11 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
             return false;
         }
         return contentFrame?.Navigate(page, null, suppressTransition ? new SuppressNavigationTransitionInfo() : null) ?? false;
+    }
+
+    protected override async void OnActivated()
+    {
+        await CheckForUpdate();
     }
 
     public void RegisterContentFrame(Frame frame)

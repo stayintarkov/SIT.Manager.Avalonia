@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.ViewModels;
 
-public partial class SettingsPageViewModel : ViewModelBase
+public partial class SettingsPageViewModel : ObservableObject
 {
     private readonly IManagerConfigService _configsService;
     private readonly ILocalizationService _localizationService;

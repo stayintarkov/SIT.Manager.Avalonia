@@ -1,13 +1,12 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.ReactiveUI;
 using Microsoft.Extensions.DependencyInjection;
-using ReactiveUI;
+using SIT.Manager.Avalonia.Controls;
 using SIT.Manager.Avalonia.ViewModels;
 
 namespace SIT.Manager.Avalonia.Views;
 
-public partial class ServerPage : ReactiveUserControl<ServerPageViewModel>
+public partial class ServerPage : ActivatableUserControl
 {
     private bool _autoScroll = true;
     private readonly ScrollViewer? _consoleLogScroller;
@@ -18,9 +17,6 @@ public partial class ServerPage : ReactiveUserControl<ServerPageViewModel>
 
         InitializeComponent();
         _consoleLogScroller = this.FindControl<ScrollViewer>("ConsoleLogScroller");
-
-        // ServerPageViewModel's WhenActivated block will also get called.
-        this.WhenActivated(disposables => { /* Handle view activation etc. */ });
     }
 
     private void ConsoleLogScroller_ScrollChanged(object? sender, ScrollChangedEventArgs e)
