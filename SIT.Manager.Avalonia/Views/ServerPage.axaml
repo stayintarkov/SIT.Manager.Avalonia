@@ -7,6 +7,7 @@
 			 xmlns:vm="clr-namespace:SIT.Manager.Avalonia.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SIT.Manager.Avalonia.Views.ServerPage"
+			 x:CompileBindings="True"
 			 x:DataType="vm:ServerPageViewModel">	
 	<Border CornerRadius="8" BorderBrush="Gray" BorderThickness="2">
 		<Grid>
@@ -20,7 +21,7 @@
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="*"/>
 				</Grid.RowDefinitions>
-				<TextBlock Margin="10 5 0 0" Grid.Row="0" Name="ConsoleOutput" Text="Console Output" FontSize="16" FontFamily="{StaticResource BenderFont}" FontWeight="Bold"/>
+				<TextBlock Margin="10 5 0 0" Grid.Row="0" Name="ConsoleOutput" Text="{DynamicResource ServerConsoleOutputTitle}" FontSize="16" FontFamily="{StaticResource BenderFont}" FontWeight="Bold"/>
 				
 				<ScrollViewer Name="ConsoleLogScroller" 
 							  Grid.Row="1"
@@ -42,7 +43,7 @@
 
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<TextBlock Text="{Binding Message}"
+								<SelectableTextBlock Text="{Binding Message}"
 										   Foreground="{Binding TextColor}"
 										   FontFamily="{Binding TextFont}"
 										   TextWrapping="WrapWithOverflow"/>
@@ -56,7 +57,7 @@
 				<Button Name="StartServerButton" 
 						HorizontalAlignment="Left" 
 						Margin="0 0 10 0" 
-						ToolTip.Tip="Start server."
+						ToolTip.Tip="{DynamicResource ServerButtonStartToolTip}"
 						Command="{Binding StartServerCommand}">
 					<StackPanel Orientation="Horizontal">
 						<ui:SymbolIcon Name="StartServerButtonSymbolIcon" Symbol="{Binding StartServerButtonSymbolIcon}" Margin="0 0 10 0"/>
@@ -66,11 +67,11 @@
 				<Button Name="EditServerConfigButton" 
 						HorizontalAlignment="Left" 
 						Margin="0 0 5 0" 
-						ToolTip.Tip="Edit Server"
+						ToolTip.Tip="{DynamicResource ServerEditServerConfigButtonToolTip}"
 						Command="{Binding EditServerConfigCommand}">
 					<StackPanel Orientation="Horizontal">
 						<ui:SymbolIcon Symbol="Edit" Margin="0 0 10 0"/>
-						<TextBlock Text="Edit Server Config"/>
+						<TextBlock Text="{DynamicResource ServerEditServerConfig}"/>
 					</StackPanel>
 				</Button>
 			</StackPanel>

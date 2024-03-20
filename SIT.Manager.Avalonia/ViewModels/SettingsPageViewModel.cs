@@ -1,13 +1,15 @@
-﻿using Avalonia.Media;
+﻿using Avalonia;
+using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FluentAvalonia.Styling;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -18,6 +20,7 @@ namespace SIT.Manager.Avalonia.ViewModels;
 public partial class SettingsPageViewModel : ViewModelBase
 {
     private readonly IManagerConfigService _configsService;
+    private readonly ILocalizationService _localizationService;
     private readonly IBarNotificationService _barNotificationService;
     private readonly IPickerDialogService _pickerDialogService;
     private readonly IVersionService _versionService;
@@ -32,22 +35,43 @@ public partial class SettingsPageViewModel : ViewModelBase
     private List<FontFamily> _installedFonts;
 
     [ObservableProperty]
+    private List<CultureInfo> _availableLocalization = [];
+
+    [ObservableProperty]
+    private CultureInfo _currentLocalization;
+
+    [ObservableProperty]
     private string _managerVersionString;
 
     public IAsyncRelayCommand ChangeInstallLocationCommand { get; }
 
     public IAsyncRelayCommand ChangeAkiServerLocationCommand { get; }
 
+    private readonly FluentAvaloniaTheme? faTheme = Application.Current?.Styles.OfType<FluentAvaloniaTheme>().FirstOrDefault();
+
     public SettingsPageViewModel(IManagerConfigService configService,
+                                 ILocalizationService localizationService,
                                  IBarNotificationService barNotificationService,
                                  IPickerDialogService pickerDialogService,
-                                 IVersionService versionService) {
+                                 IVersionService versionService)
+    {
         _configsService = configService;
         _pickerDialogService = pickerDialogService;
         _barNotificationService = barNotificationService;
         _versionService = versionService;
+        _localizationService = localizationService;
 
         _config = _configsService.Config;
+
+        _configsService.ConfigChanged += (o, e) =>
+        {
+            if (faTheme != null && faTheme.CustomAccentColor != e.AccentColor) faTheme.CustomAccentColor = e.AccentColor;
+        };
+
+        _currentLocalization = new CultureInfo(Config.CurrentLanguageSelected);
+        _availableLocalization = _localizationService.GetAvailableLocalizations();
+        _localizationService.Translate(_currentLocalization);
+
         _config.PropertyChanged += (o, e) => OnPropertyChanged(e);
 
         List<FontFamily> installedFonts = [.. FontManager.Current.SystemFonts];
@@ -67,47 +91,65 @@ public partial class SettingsPageViewModel : ViewModelBase
     /// </summary>
     /// <param name="filename">The filename to look for in the user specified directory</param>
     /// <returns>The path if the file exists, otherwise an empty string</returns>
-    private async Task<string> GetPathLocation(string filename) {
+    private async Task<string> GetPathLocation(string filename)
+    {
         IStorageFolder? directorySelected = await _pickerDialogService.GetDirectoryFromPickerAsync();
-        if (directorySelected != null) {
-            if (File.Exists(Path.Combine(directorySelected.Path.LocalPath, filename))) {
+        if (directorySelected != null)
+        {
+            if (File.Exists(Path.Combine(directorySelected.Path.LocalPath, filename)))
+            {
                 return directorySelected.Path.LocalPath;
             }
         }
         return string.Empty;
     }
 
-    private async Task ChangeInstallLocation() {
+    private async Task ChangeInstallLocation()
+    {
         string targetPath = await GetPathLocation("EscapeFromTarkov.exe");
-        if (!string.IsNullOrEmpty(targetPath)) {
+        if (!string.IsNullOrEmpty(targetPath))
+        {
             Config.InstallPath = targetPath;
             Config.TarkovVersion = _versionService.GetEFTVersion(targetPath);
             Config.SitVersion = _versionService.GetSITVersion(targetPath);
-            _barNotificationService.ShowInformational("Config", $"EFT installation path set to '{targetPath}'");
+            _barNotificationService.ShowInformational(_localizationService.TranslateSource("SettingsPageViewModelConfigTitle"), _localizationService.TranslateSource("SettingsPageViewModelConfigInformationEFTDescription", targetPath));
         }
-        else {
-            _barNotificationService.ShowError("Error", $"The selected folder was invalid. Make sure it's a proper EFT game folder.");
+        else
+        {
+            _barNotificationService.ShowError(_localizationService.TranslateSource("SettingsPageViewModelErrorTitle"), _localizationService.TranslateSource("SettingsPageViewModelConfigErrorEFTDescription"));
         }
     }
 
-    private async Task ChangeAkiServerLocation() {
+    private async Task ChangeAkiServerLocation()
+    {
         string targetPath = await GetPathLocation("Aki.Server.exe");
-        if (!string.IsNullOrEmpty(targetPath)) {
+        if (!string.IsNullOrEmpty(targetPath))
+        {
             Config.AkiServerPath = targetPath;
-            _barNotificationService.ShowInformational("Config", $"SPT-AKI installation path set to '{targetPath}'");
+            Config.SptAkiVersion = _versionService.GetSptAkiVersion(targetPath);
+            Config.SitModVersion = _versionService.GetSitModVersion(targetPath);
+            _barNotificationService.ShowInformational(_localizationService.TranslateSource("SettingsPageViewModelConfigTitle"), _localizationService.TranslateSource("SettingsPageViewModelConfigInformationSPTAKIDescription", targetPath));
         }
-        else {
-            _barNotificationService.ShowError("Error", "The selected folder was invalid. Make sure it's a proper SPT-AKI server folder.");
+        else
+        {
+            _barNotificationService.ShowError(_localizationService.TranslateSource("SettingsPageViewModelErrorTitle"), _localizationService.TranslateSource("SettingsPageViewModelConfigErrorSPTAKI"));
         }
     }
 
-    partial void OnSelectedConsoleFontFamilyChanged(FontFamily value) {
+    partial void OnSelectedConsoleFontFamilyChanged(FontFamily value)
+    {
         Config.ConsoleFontFamily = value.Name;
     }
 
-    protected override void OnPropertyChanged(PropertyChangedEventArgs e) {
+    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+    {
         base.OnPropertyChanged(e);
-
         _configsService.UpdateConfig(Config);
+    }
+
+    partial void OnCurrentLocalizationChanged(CultureInfo value)
+    {
+        _localizationService.Translate(value);
+        Config.CurrentLanguageSelected = value.Name;
     }
 }

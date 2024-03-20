@@ -1,9 +1,10 @@
-﻿using SIT.Manager.Updater;
+﻿using SharpCompress.Archives;
+using SharpCompress.Archives.Zip;
+using SIT.Manager.Updater;
 using System.Diagnostics;
-using System.IO.Compression;
 
-const string SITMANAGER_PROC_NAME = "SIT.Manager.exe";
-const string SITMANAGER_RELEASE_URL = @"https://github.com/stayintarkov/SIT.Manager.Avalonia/releases/latest/download/SIT.Manager.Avalonia.zip";
+const string SITMANAGER_PROC_NAME = "SIT.Manager.Avalonia.Desktop.exe";
+const string SITMANAGER_RELEASE_URL = @"https://github.com/stayintarkov/SIT.Manager.Avalonia/releases/latest/download/win-x64.zip";
 
 bool skipInteractivity = false;
 bool killProcNoPrompt = false;
@@ -23,13 +24,13 @@ if (!skipInteractivity)
 }
 
 Process[] managerProcesses = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(SITMANAGER_PROC_NAME));
-if(managerProcesses.Length > 0)
+if (managerProcesses.Length > 0)
 {
     if (killProcNoPrompt == false)
     {
-        if(skipInteractivity)
+        if (skipInteractivity)
             Environment.Exit(2);
-        Console.WriteLine("An instance of 'SIT.Manager' was found. Would you like to close all instances? Y/N");
+        Console.WriteLine("An instance of 'SIT.Manager.Avalonia' was found. Would you like to close all instances? Y/N");
         string? response = Console.ReadLine();
         if (response == null || !response.Equals("y", StringComparison.InvariantCultureIgnoreCase))
             Environment.Exit(1);
@@ -39,7 +40,7 @@ if(managerProcesses.Length > 0)
     {
         Console.WriteLine("Killing {0} with PID {1}\n", process.ProcessName, process.Id);
         bool clsMsgSent = process.CloseMainWindow();
-        if(!clsMsgSent || !process.WaitForExit(TimeSpan.FromSeconds(5)))
+        if (!clsMsgSent || !process.WaitForExit(TimeSpan.FromSeconds(5)))
         {
             process.Kill();
         }
@@ -48,7 +49,7 @@ if(managerProcesses.Length > 0)
 
 
 string workingDir = AppDomain.CurrentDomain.BaseDirectory;
-if(!File.Exists(Path.Combine(workingDir, SITMANAGER_PROC_NAME)))
+if (!File.Exists(Path.Combine(workingDir, SITMANAGER_PROC_NAME)))
 {
     Console.WriteLine("Unable to find '{0}' in root directory. Make sure the app is installed correctly.", SITMANAGER_PROC_NAME);
     if (!skipInteractivity)
@@ -65,7 +66,7 @@ string zipName = Path.GetFileName(SITMANAGER_RELEASE_URL);
 string zipPath = Path.Combine(tempPath, zipName);
 
 int progressBarUpdateRate = 30;
-using(CLIProgressBar progressBar = new(progressBarUpdateRate))
+using (CLIProgressBar progressBar = new(progressBarUpdateRate))
 {
     try
     {
@@ -78,7 +79,7 @@ using(CLIProgressBar progressBar = new(progressBarUpdateRate))
     catch (Exception ex)
     {
         Console.WriteLine("Error during download: {0}", ex.Message);
-        if(!skipInteractivity)
+        if (!skipInteractivity)
         {
             Console.WriteLine("Press any key to exit");
             Console.ReadKey();
@@ -90,8 +91,15 @@ using(CLIProgressBar progressBar = new(progressBarUpdateRate))
 Console.WriteLine("\nDownload complete.");
 Console.WriteLine("Creating backup of SIT.Manager");
 
+DirectoryInfo releasePath = new(Path.Combine(tempPath, "Release"));
+releasePath.Create();
+using (ZipArchive archive = ZipArchive.Open(zipPath))
+{
+    archive.ExtractToDirectory(releasePath.FullName);
+}
+
 string backupPath = Path.Combine(workingDir, "Backup");
-if(Directory.Exists(backupPath))
+if (Directory.Exists(backupPath))
     Directory.Delete(backupPath, true);
 
 DirectoryInfo workingFolderInfo = new(workingDir);
@@ -102,15 +110,12 @@ if (configFile.Exists)
 
 Console.WriteLine("\nBackup complete. Extracting new version..\n");
 
-ZipFile.ExtractToDirectory(zipPath, tempPath, false);
-
-DirectoryInfo releasePath = new(Path.Combine(tempPath, "Release"));
 await releasePath.MoveSIT(workingDir);
 
 Directory.Delete(tempPath, true);
 
 Console.WriteLine($"\nUpdate done. Backup can be found in the {Path.GetFileName(backupPath)} folder. Your settings have been saved.");
-if(!skipInteractivity)
+if (!skipInteractivity)
 {
     Console.WriteLine("Press any key to finish...");
     Console.ReadKey();

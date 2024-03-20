@@ -26,21 +26,24 @@ public sealed partial class App : Application
     /// </summary>
     public IServiceProvider Services { get; }
 
-    public App() {
+    public App()
+    {
         Services = ConfigureServices();
     }
 
     /// <summary>
     /// Configures the services for the application.
     /// </summary>
-    private static IServiceProvider ConfigureServices() {
+    private static IServiceProvider ConfigureServices()
+    {
         var services = new ServiceCollection();
 
         var configuration = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json", true, true)
             .Build();
 
-        services.AddLogging(builder => {
+        services.AddLogging(builder =>
+        {
             builder.AddConfiguration(configuration.GetSection("Logging"));
             builder.AddJsonFile(o => o.RootPath = AppContext.BaseDirectory);
         });
@@ -54,25 +57,30 @@ public sealed partial class App : Application
         services.AddTransient<IInstallerService, InstallerService>();
         services.AddSingleton<IManagerConfigService, ManagerConfigService>();
         services.AddTransient<IModService, ModService>();
-        services.AddTransient<IPickerDialogService>(x => {
-            if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop || desktop.MainWindow?.StorageProvider is not { } provider) {
+        services.AddTransient<IPickerDialogService>(x =>
+        {
+            if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop || desktop.MainWindow?.StorageProvider is not { } provider)
+            {
                 return new PickerDialogService(new MainWindow());
             }
             return new PickerDialogService(desktop.MainWindow);
         });
         services.AddSingleton<ITarkovClientService, TarkovClientService>();
         services.AddSingleton<IVersionService, VersionService>();
-        services.AddSingleton(new HttpClientHandler {
+        services.AddSingleton(new HttpClientHandler
+        {
             SslProtocols = System.Security.Authentication.SslProtocols.Tls12,
             ServerCertificateCustomValidationCallback = delegate { return true; }
         });
-        services.AddSingleton(provider => new HttpClient(provider.GetService<HttpClientHandler>() ?? throw new ArgumentNullException()) {
+        services.AddSingleton(provider => new HttpClient(provider.GetService<HttpClientHandler>() ?? throw new ArgumentNullException())
+        {
             DefaultRequestHeaders = {
                 { "X-GitHub-Api-Version", "2022-11-28" },
                 { "User-Agent", "request" }
             }
-        }); 
+        });
         services.AddSingleton<IZlibService, ZlibService>();
+        services.AddSingleton<ILocalizationService, LocalizationService>();
 
         // Viewmodels
         services.AddTransient<LocationEditorViewModel>();
@@ -86,18 +94,24 @@ public sealed partial class App : Application
         return services.BuildServiceProvider();
     }
 
-    public override void Initialize() {
+    public override void Initialize()
+    {
         AvaloniaXamlLoader.Load(this);
     }
 
-    public override void OnFrameworkInitializationCompleted() {
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) {
-            desktop.MainWindow = new MainWindow {
+    public override void OnFrameworkInitializationCompleted()
+    {
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            desktop.MainWindow = new MainWindow
+            {
                 DataContext = Current.Services.GetService<MainViewModel>()
             };
         }
-        else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform) {
-            singleViewPlatform.MainView = new MainView {
+        else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
+        {
+            singleViewPlatform.MainView = new MainView
+            {
                 DataContext = Current.Services.GetService<MainViewModel>()
             };
         }

@@ -6,6 +6,7 @@
 			 xmlns:vm="clr-namespace:SIT.Manager.Avalonia.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:DataType="vm:PlayPageViewModel"
+			 x:CompileBindings="True"
              x:Class="SIT.Manager.Avalonia.Views.PlayPage">
 	
 </UserControl>

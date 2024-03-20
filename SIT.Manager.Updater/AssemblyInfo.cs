@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
-using System.Text;
-using System.Threading.Tasks;
 
 [assembly: AssemblyTitle("SIT.Manager.Updater")]
 [assembly: AssemblyDescription("Updater for SIT.Manager")]

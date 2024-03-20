@@ -4,20 +4,27 @@
              x:Class="SIT.Manager.Avalonia.App"
              RequestedThemeVariant="Dark">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+	
 	<Application.Resources>
-		<FontFamily x:Key="BenderFont">/Assets/Fonts/Bender.otf#Bender</FontFamily>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary>
+					<FontFamily x:Key="BenderFont">/Assets/Fonts/Bender.otf#Bender</FontFamily>
 
-		<Color x:Key="AppWhiteColor">#FFFFFFFF</Color>
-		<Color x:Key="AppBlueColor">#3399FFFF</Color>
+					<Color x:Key="AppWhiteColor">#FFFFFFFF</Color>
+					<Color x:Key="AppBlueColor">#3399FFFF</Color>
 
-		<StaticResource x:Key="TextControlForeground" ResourceKey="AppWhiteColor"/>
-		<StaticResource x:Key="TextControlSelection" ResourceKey="AppBlueColor"/>
+					<StaticResource x:Key="TextControlForeground" ResourceKey="AppWhiteColor"/>
+					<StaticResource x:Key="TextControlSelection" ResourceKey="AppBlueColor"/>
+
+				</ResourceDictionary>
+				<ResourceInclude Source="avares://SIT.Manager.Avalonia/Localization/en-US.axaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
 	</Application.Resources>
 	
     <Application.Styles>
-		<sty:FluentAvaloniaTheme />
-		<StyleInclude Source="avares://ThemeEditor.Controls.ColorPicker/ColorPicker.axaml" />
-
+		<sty:FluentAvaloniaTheme/>
 		<Style Selector="SelectableTextBlock">
 			<Setter Property="SelectionBrush" Value="{StaticResource TextControlSelection}"/>
 		</Style>

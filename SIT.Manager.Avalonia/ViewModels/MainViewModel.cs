@@ -2,23 +2,26 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using SIT.Manager.Avalonia.Interfaces;
 using CommunityToolkit.Mvvm.Messaging;
+using FluentAvalonia.Styling;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Media.Animation;
+using Microsoft.Extensions.Logging;
+using ReactiveUI;
+using SIT.Manager.Avalonia.Interfaces;
+using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
 using SIT.Manager.Avalonia.Models.Messages;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
-using System.Threading.Tasks;
+using System.Linq;
 using System.Net.Http;
-using System.Reflection;
-using Microsoft.Extensions.Logging;
-using ReactiveUI;
 using System.Reactive.Disposables;
-using SIT.Manager.Avalonia.ManagedProcess;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.ViewModels;
 
@@ -28,6 +31,7 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
     private readonly IActionNotificationService _actionNotificationService;
     private readonly IBarNotificationService _barNotificationService;
     private readonly IManagerConfigService _managerConfigService;
+    private readonly ILocalizationService _localizationService;
     private readonly ILogger<MainViewModel> _logger;
     private readonly HttpClient _httpClient;
 
@@ -47,14 +51,21 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
     public MainViewModel(IActionNotificationService actionNotificationService,
         IBarNotificationService barNotificationService,
         IManagerConfigService managerConfigService,
+        ILocalizationService localizationService,
         ILogger<MainViewModel> logger,
         HttpClient httpClient)
     {
         _actionNotificationService = actionNotificationService;
         _barNotificationService = barNotificationService;
         _managerConfigService = managerConfigService;
+        _localizationService = localizationService;
         _logger = logger;
         _httpClient = httpClient;
+
+        _localizationService.Translate(new CultureInfo(_managerConfigService.Config.CurrentLanguageSelected));
+
+        var faTheme = Application.Current?.Styles.OfType<FluentAvaloniaTheme>().FirstOrDefault();
+        if (faTheme != null) faTheme.CustomAccentColor = _managerConfigService.Config.AccentColor;
 
         _actionNotificationService.ActionNotificationReceived += ActionNotificationService_ActionNotificationReceived;
         _barNotificationService.BarNotificationReceived += BarNotificationService_BarNotificationReceived;
@@ -79,7 +90,7 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
         {
             Version currentVersion = Assembly.GetExecutingAssembly().GetName().Version ?? new Version("0");
             string gitVersionString = await _httpClient.GetStringAsync(MANAGER_VERSION_URL);
-            Version gitVersion = new Version(gitVersionString);
+            Version gitVersion = new(gitVersionString);
 
             UpdateAvailable = gitVersion.CompareTo(currentVersion) > 0;
         }
@@ -93,13 +104,13 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
     {
         ContentDialogResult updateResult = await new ContentDialog()
         {
-            Title = "Update Confirmation",
-            Content = "Are you sure you want to update? This will close the manager to perform an update.",
-            PrimaryButtonText = "Yes",
-            CloseButtonText = "No"
+            Title = _localizationService.TranslateSource("MainPageViewModelUpdateConfirmationTitle"),
+            Content = _localizationService.TranslateSource("MainPageViewModelUpdateConfirmationDescription"),
+            PrimaryButtonText = _localizationService.TranslateSource("MainPageViewModelButtonYes"),
+            CloseButtonText = _localizationService.TranslateSource("MainPageViewModelButtonNo")
         }.ShowAsync();
 
-        if(updateResult == ContentDialogResult.Primary)
+        if (updateResult == ContentDialogResult.Primary)
         {
             //TODO: Add a way to update for linux users
             if (OperatingSystem.IsWindows())
@@ -124,39 +135,46 @@ public partial class MainViewModel : ViewModelBase, IRecipient<PageNavigationMes
             {
                 await new ContentDialog()
                 {
-                    Title = "Unsupported",
-                    Content = "Automatic updating isn't currently available for Linux.",
-                    CloseButtonText = "Ok"
+                    Title = _localizationService.TranslateSource("MainPageViewModelUnsupportedTitle"),
+                    Content = _localizationService.TranslateSource("MainPageViewModelUnsupportedDescription"),
+                    CloseButtonText = _localizationService.TranslateSource("MainPageViewModelButtonOk")
                 }.ShowAsync();
             }
         }
     }
 
-    private void ActionNotificationService_ActionNotificationReceived(object? sender, ActionNotification e) {
+    private void ActionNotificationService_ActionNotificationReceived(object? sender, ActionNotification e)
+    {
         ActionPanelNotification = e;
     }
 
-    private async void BarNotificationService_BarNotificationReceived(object? sender, BarNotification e) {
+    private async void BarNotificationService_BarNotificationReceived(object? sender, BarNotification e)
+    {
         BarNotifications.Add(e);
-        if (e.Delay > 0) {
+        if (e.Delay > 0)
+        {
             await Task.Delay(TimeSpan.FromSeconds(e.Delay));
             BarNotifications.Remove(e);
         }
     }
 
-    private bool NavigateToPage(Type page, bool suppressTransition = false) {
+    private bool NavigateToPage(Type page, bool suppressTransition = false)
+    {
         object? currentPage = contentFrame?.Content;
-        if (page == currentPage?.GetType()) {
+        if (page == currentPage?.GetType())
+        {
             return false;
         }
         return contentFrame?.Navigate(page, null, suppressTransition ? new SuppressNavigationTransitionInfo() : null) ?? false;
     }
 
-    public void RegisterContentFrame(Frame frame) {
+    public void RegisterContentFrame(Frame frame)
+    {
         contentFrame = frame;
     }
 
-    public void Receive(PageNavigationMessage message) {
+    public void Receive(PageNavigationMessage message)
+    {
         NavigateToPage(message.Value.TargetPage, message.Value.SuppressTransition);
     }
 }

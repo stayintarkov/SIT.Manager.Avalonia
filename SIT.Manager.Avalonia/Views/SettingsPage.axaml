@@ -2,17 +2,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:cp="clr-namespace:ThemeEditor.Controls.ColorPicker;assembly=ThemeEditor.Controls.ColorPicker"
-			 xmlns:converters="clr-namespace:SIT.Manager.Avalonia.Converters"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:vm="clr-namespace:SIT.Manager.Avalonia.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="550"
              x:Class="SIT.Manager.Avalonia.Views.SettingsPage"
+			 x:CompileBindings="True"
 			 Background="{DynamicResource ApplicationPageBackgroundThemeBrush}"	 
 			 x:DataType="vm:SettingsPageViewModel">
-	<UserControl.Resources>
-		<converters:ColorToBrushConverter x:Key="ColorToBrushConverter"/>
-	</UserControl.Resources>
-	
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="*"/>
@@ -22,74 +18,140 @@
 		<ScrollViewer Grid.Row="0">
 			<StackPanel Margin="10">
 				<!--Launcher settings-->
-				<TextBlock Text="Launcher Settings" Margin="5" VerticalAlignment="Center"/>
+				<TextBlock Text="{DynamicResource SettingsLauncherSettingsTitle}" Margin="5" VerticalAlignment="Center"/>
 				<Border CornerRadius="8" BorderBrush="Gray" BorderThickness="1" Padding="10">
 					<StackPanel>
-						<CheckBox Content="Close Launcher After Game Launch" 
-								  ToolTip.Tip="Closes the launcher automatically after opening the game."
+						<CheckBox Content="{DynamicResource SettingsCloseLauncherAfterGameLaunchTitle}" 
+								  ToolTip.Tip="{DynamicResource SettingsCloseLauncherAfterGameLaunchToolTip}"
 								  IsChecked="{Binding Config.CloseAfterLaunch, Mode=TwoWay}"/>
-						<CheckBox Content="Look For Updates" 
-								  ToolTip.Tip="Automatically look for updates when opening the launcher."
+						<CheckBox Content="{DynamicResource SettingsLookForUpdatesTitle}" 
+								  ToolTip.Tip="{DynamicResource SettingsLookForUpdatesTitleToolTip}"
 								  IsChecked="{Binding Config.LookForUpdates, Mode=TwoWay}"/>
+						<CheckBox Content="{DynamicResource SettingsHideIpAddressTitle}"
+								  ToolTip.Tip="{DynamicResource SettingsHideIpAddressToolTip}"
+								  IsChecked="{Binding Config.HideIpAddress, Mode=TwoWay}"/>
+						<Grid ColumnDefinitions="auto, *">
+							<TextBlock Text="{DynamicResource SettingsLanguageTitle}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+							<ComboBox Margin="5,0,0,0" Grid.Column="1" ToolTip.Tip="{DynamicResource SettingsLanguageTitleToolTip}" ItemsSource="{Binding AvailableLocalization}" SelectedItem="{Binding CurrentLocalization}">
+								<ComboBox.ItemTemplate>
+									<DataTemplate>
+										<TextBlock Text="{Binding NativeName}" Tag="{Binding Name}"/>
+									</DataTemplate>
+								</ComboBox.ItemTemplate>
+							</ComboBox>
+						</Grid>
+						<Grid Margin="0,5,0,0" ColumnDefinitions="auto, *">
+							<TextBlock Text="{DynamicResource SettingsAccentColorTitle}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+							<ui:ColorPickerButton Margin="5,0,0,0" Grid.Column="1" ToolTip.Tip="{DynamicResource SettingsAccentColorToolTip}"
+												  IsCompact="True"
+												  IsMoreButtonVisible="False"
+												  UseColorPalette="False"
+												  UseColorWheel="False"
+												  UseSpectrum="True"
+												  Color="{Binding Config.AccentColor, Mode=TwoWay}"/>
+						</Grid>
+					</StackPanel>
+				</Border>
+
+				<!--Linux Settings-->
+				<TextBlock Text="{DynamicResource SettingsLinuxSettingsTitle}"
+						   Margin="5"
+						   VerticalAlignment="Center"
+						   IsVisible="{OnPlatform Default=False, Linux=True}"/>
+				<Border CornerRadius="8"
+						BorderBrush="Gray"
+						BorderThickness="1"
+						Padding="10"
+						IsVisible="{OnPlatform Default=False, Linux=True}">
+					<StackPanel>
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Text="{DynamicResource SettingsLinuxWinePrefixTitle}" Margin="0,0,10,0" VerticalAlignment="Center"/>
+							<TextBox Watermark="{DynamicResource SettingsLinuxWinePrefixPlaceholder}"
+									 MinWidth="425"
+									 MaxWidth="425"
+									 ToolTip.Tip="{DynamicResource SettingsLinuxWinePrefixToolTip}"
+									 Text="{Binding Config.WinePrefix}"/>
+						</StackPanel>
+
+						<StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+							<TextBlock Text="{DynamicResource SettingsLinuxWineRunnerTitle}" Margin="0,0,10,0" VerticalAlignment="Center"/>
+							<TextBox Watermark="{DynamicResource SettingsLinuxWineRunnerPlaceholder}"
+									 MinWidth="425"
+									 MaxWidth="425"
+									 ToolTip.Tip="{DynamicResource SettingsLinuxWineRunnerToolTip}"
+									 Text="{Binding Config.WineRunner}"/>
+						</StackPanel>
 					</StackPanel>
 				</Border>
 				
 				<!--EFT Settings-->
-				<TextBlock Text="EFT Settings" Margin="5" VerticalAlignment="Center"/>
+				<TextBlock Text="{DynamicResource SettingsEFTSettingsTitle}" Margin="5" VerticalAlignment="Center"/>
 				<Border CornerRadius="8" BorderBrush="Gray" BorderThickness="1" Padding="10">
 					<StackPanel>
 						<StackPanel Orientation="Horizontal" >
-							<TextBlock Text="EFT Path:" Margin="0,0,10,0" VerticalAlignment="Center"/>
-							<TextBox Watermark="EFT Install Path..." 
+							<TextBlock Text="{DynamicResource SettingsEFTInstallPathTitle}" Margin="0,0,10,0" VerticalAlignment="Center"/>
+							<TextBox Watermark="{DynamicResource SettingsEFTInstallPathPlaceholder}" 
 									 Margin="0,0,10,0" 
 									 MinWidth="425" 
 									 MaxWidth="425" 
 									 IsReadOnly="True"
 									 Text="{Binding Config.InstallPath}"/>
 							<Button Name="ChangeInstallButton" 
-									Content="Change"
+									Content="{DynamicResource SettingsEFTSettingsButtonChangeTitle}"
 									Margin="0,0,10,0" 
-									ToolTip.Tip="Change the EFT Install Path."
+									ToolTip.Tip="{DynamicResource SettingsEFTChangeInstallPathToolTip}"
 									Command="{Binding ChangeInstallLocationCommand}"/>
 						</StackPanel>
 						<StackPanel Orientation="Horizontal">
-							<TextBlock Text="EFT Version:" Margin="0,10,10,0" VerticalAlignment="Center"/>
+							<TextBlock Text="{DynamicResource SettingsEFTVersionTitle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
 							<SelectableTextBlock Text="{Binding Config.TarkovVersion, Mode=TwoWay}" Margin="0,10,10,0" VerticalAlignment="Center"/>
 						</StackPanel>
 						<StackPanel Orientation="Horizontal">
-							<TextBlock Text="SIT Version:" Margin="0,10,10,0" VerticalAlignment="Center"/>
+							<TextBlock Text="{DynamicResource SettingsSITVersionTitle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
 							<SelectableTextBlock Text="{Binding Config.SitVersion, Mode=TwoWay}" Margin="0,10,10,0" VerticalAlignment="Center"/>
 						</StackPanel>
 					</StackPanel>
 				</Border>
 				
 				<!--SPT-AKI Settings-->
-				<TextBlock Text="SPT-AKI Settings" Margin="5" VerticalAlignment="Center"/>
+				<TextBlock Text="{DynamicResource SettingsSPTAKITitle}" Margin="5" VerticalAlignment="Center"/>
 				<Border CornerRadius="8" BorderBrush="Gray" BorderThickness="1" Padding="10">
 					<StackPanel>
 						<StackPanel Orientation="Horizontal">
-							<TextBlock Text="SPT-AKI Path:"  VerticalAlignment="Center"/>
-							<TextBox Watermark="SPT-AKI Install Path..." 
+							<TextBlock Text="{DynamicResource SettingsSPTAKIPathTitle}"  VerticalAlignment="Center"/>
+							<TextBox Watermark="{DynamicResource SettingsSPTAKIInstallPathPlaceholder}" 
 									 Margin="5" 
 									 MinWidth="397" 
 									 MaxWidth="425" 
 									 IsReadOnly="True"
 									 Text="{Binding Config.AkiServerPath}"/>
 							<Button Name="ChangeAkiServerPath" 
-									Content="Change" 
+									Content="{DynamicResource SettingsEFTSettingsButtonChangeTitle}" 
 									Margin="5" 
-									ToolTip.Tip="Change the SPT-AKI Install Path."
+									ToolTip.Tip="{DynamicResource SettingsSPTAKIInstallPathToolTip}"
 									Command="{Binding ChangeAkiServerLocationCommand}"/>
 						</StackPanel>
+
+						<TextBlock Margin="0,10,0,0">
+							<Run Text="{DynamicResource SettingsSPTAKIVersionTitle}"/>
+							<Run Text=" "/>
+							<Run Text="{Binding Config.SptAkiVersion}"/>
+						</TextBlock>
+
+						<TextBlock Margin="0,10,0,0">
+							<Run Text="{DynamicResource SettingsSITModVersionTitle}"/>
+							<Run Text=" "/>
+							<Run Text="{Binding Config.SitModVersion}"/>
+						</TextBlock>
 					</StackPanel>
 				</Border>
 				
 				<!--Server Console-->
-				<TextBlock Text="Server Console" Margin="5" VerticalAlignment="Center"/>
+				<TextBlock Text="{DynamicResource SettingsServerConsoleTitle}" Margin="5" VerticalAlignment="Center"/>
 				<Border CornerRadius="8" BorderBrush="Gray" BorderThickness="1" Padding="10">
 					<StackPanel>
 						<StackPanel Orientation="Horizontal">
-							<TextBlock Text="Font family:" Margin="0,0,10,0" VerticalAlignment="Center"/>
+							<TextBlock Text="{DynamicResource SettingsServerConsoleFontFamilyTitle}" Margin="0,0,10,0" VerticalAlignment="Center"/>
 							<ComboBox x:Name="fontComboBox" 
 									  Margin="0,0,10,0" 
 									  VerticalAlignment="Center" 
@@ -108,50 +170,15 @@
 							</ComboBox>
 						</StackPanel>
 						<StackPanel Orientation="Horizontal">
-							<TextBlock Text="Font Color:" Margin="0,10,10,0" VerticalAlignment="Center"/>
-							<ToggleButton Name="ConsoleColorPopupButton"
-										  Width="30"
-										  Height="15" 
-										  BorderThickness="0"
-										  Padding="0"
-										  Margin="0,10,10,0"
-										  HorizontalAlignment="Stretch"
-										  VerticalAlignment="Stretch"
-										  HorizontalContentAlignment="Stretch"
-										  VerticalContentAlignment="Stretch">
-								<ToggleButton.Styles>
-									<Style Selector="ToggleButton">
-										<Setter Property="RenderTransform" Value="none" />
-										<Setter Property="Transitions" Value="{x:Null}" />
-									</Style>
-									<Style Selector="ToggleButton:pressed">
-										<Setter Property="RenderTransform" Value="none" />
-									</Style>
-									<Style Selector="ToggleButton:checked /template/ ContentPresenter, ToggleButton:pressed /template/ ContentPresenter">
-										<Setter Property="Background"
-												Value="{Binding Config.ConsoleFontColor, Mode=OneWay, Converter={StaticResource ColorToBrushConverter}}"/>
-									</Style>
-									<Style Selector="ToggleButton:checked /template/ ContentPresenter">
-										<Setter Property="BorderBrush"
-												Value="{Binding Config.ConsoleFontColor, Mode=OneWay, Converter={StaticResource ColorToBrushConverter}}"/>
-									</Style>
-								</ToggleButton.Styles>
-								<Panel DockPanel.Dock="Top"
-									   VerticalAlignment="Stretch">
-									<Border BorderThickness="0" CornerRadius="0" />
-									<Border BorderThickness="0" CornerRadius="0" />
-									<Border BorderThickness="0" CornerRadius="0"
-											Background="{Binding Config.ConsoleFontColor, Mode=OneWay, Converter={StaticResource ColorToBrushConverter}}"/>
-								</Panel>
-							</ToggleButton>
-							<Popup IsOpen="{Binding #ConsoleColorPopupButton.IsChecked, Mode=TwoWay}"
-								   IsLightDismissEnabled="True"
-								   PlacementMode="Pointer">
-								<Border Background="{DynamicResource ApplicationPageBackgroundThemeBrush}" 
-										CornerRadius="5">
-									<cp:ColorPicker Color="{Binding Config.ConsoleFontColor, Mode=TwoWay}"/>
-								</Border>
-							</Popup>
+							<TextBlock Text="{DynamicResource SettingsServerConsoleFontColorTitle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
+							<ui:ColorPickerButton Name="PickerButton" 
+												  Margin="0,10,0,0"
+												  IsCompact="True"
+												  IsMoreButtonVisible="False"
+												  UseColorPalette="False"
+												  UseColorWheel="False"
+												  UseSpectrum="True"
+												  Color="{Binding Config.ConsoleFontColor, Mode=TwoWay}" />
 						</StackPanel>
 					</StackPanel>
 				</Border>
@@ -159,7 +186,7 @@
 		</ScrollViewer>
 
 		<StackPanel Margin="0,5" Orientation="Horizontal" Grid.Row="1">
-			<TextBlock Margin="10" Text="Manager Version: "/>
+			<TextBlock Margin="10" Text="{DynamicResource SettingsManagerVersionTitle}"/>
 			<SelectableTextBlock Text="{Binding ManagerVersionString}" VerticalAlignment="Center" Padding="5"/>
 		</StackPanel>
 	</Grid>
