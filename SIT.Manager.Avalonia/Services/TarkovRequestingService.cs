@@ -17,31 +17,26 @@ public class TarkovRequestingService(HttpClient httpClient, ResiliencePipelinePr
 {
     private static readonly MediaTypeHeaderValue _contentHeaderType = new("application/json");
     private readonly HttpClient _httpClient = httpClient;
-    private readonly ResiliencePipelineProvider<string> resiliencePipeline = resiliencePipelineProvider;
+    private readonly ResiliencePipelineProvider<string> resiliencePipelineProvider = resiliencePipelineProvider;
 
-    //TODO: Combine these to reduce duplication
-    public async Task<Stream> GetAsync(Uri remoteAddress, string path, CancellationToken cancellationToken = default)
+    public async Task<Stream> SendAsync(Uri remoteAddress, string path, HttpMethod? method, string? data, ResiliencePipeline<HttpResponseMessage>? resiliencePipeline = null, CancellationToken cancellationToken = default)
     {
-        ResiliencePipeline<HttpResponseMessage> pipeline = resiliencePipeline.GetPipeline<HttpResponseMessage>("get-pipeline");
-        UriBuilder endpoint = new(remoteAddress) { Path = path };
-        HttpResponseMessage reqResp = await pipeline.ExecuteAsync(async token => await _httpClient.GetAsync(endpoint.Uri, token), cancellationToken);
-        return await reqResp.Content.ReadAsStreamAsync(cancellationToken);
-    }
+        if (resiliencePipeline == null && !resiliencePipelineProvider.TryGetPipeline("default-pipeline", out resiliencePipeline))
+            throw new ArgumentNullException(nameof(resiliencePipeline), "No default pipeline was specified and argument was null.");
 
-    public async Task<Stream> PostAsync(Uri remoteAddress, string path, string data, CancellationToken cancellationToken = default)
-    {
-        ResiliencePipeline<HttpResponseMessage> pipeline = resiliencePipeline.GetPipeline<HttpResponseMessage>("get-pipeline");
         UriBuilder endpoint = new(remoteAddress) { Path = path };
-
         HttpRequestMessage req = new(HttpMethod.Post, endpoint.Uri);
 
-        byte[] contentBytes = SimpleZlib.CompressToBytes(data, (int) ZlibCompression.BestSpeed);
-        req.Content = new ByteArrayContent(contentBytes);
-        req.Content.Headers.ContentType = _contentHeaderType;
-        req.Content.Headers.ContentEncoding.Add("deflate");
-        req.Content.Headers.Add("Content-Length", contentBytes.Length.ToString());
+        if (data != null)
+        {
+            byte[] contentBytes = SimpleZlib.CompressToBytes(data, (int) ZlibCompression.BestSpeed);
+            req.Content = new ByteArrayContent(contentBytes);
+            req.Content.Headers.ContentType = _contentHeaderType;
+            req.Content.Headers.ContentEncoding.Add("deflate");
+            req.Content.Headers.Add("Content-Length", contentBytes.Length.ToString());
+        }
 
-        HttpResponseMessage reqResp = await pipeline.ExecuteAsync(async token => await _httpClient.SendAsync(req, token), cancellationToken);
+        HttpResponseMessage reqResp = await resiliencePipeline.ExecuteAsync(async token => await _httpClient.SendAsync(req, token), cancellationToken);
         return await reqResp.Content.ReadAsStreamAsync(cancellationToken);
     }
 }
