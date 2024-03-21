@@ -128,7 +128,8 @@ public sealed partial class App : Application
                 {
                     MaxRetryAttempts = 10,
                     //TODO: Imrpove curve for better detection
-                    DelayGenerator = static args => new ValueTask<TimeSpan?>(TimeSpan.FromSeconds(Math.Pow(args.AttemptNumber, 1.5))),
+                    BackoffType = DelayBackoffType.Exponential,
+                    MaxDelay = TimeSpan.FromSeconds(45),
                     OnRetry = static args =>
                     {
                         Console.WriteLine("Retrying ping. Attempt: {0}", args.AttemptNumber);
