@@ -22,18 +22,35 @@ public class AppUpdaterService(ILogger<AppUpdaterService> logger, HttpClient htt
 {
     private const string MANAGER_VERSION_URL = @"https://api.github.com/repos/stayintarkov/SIT.Manager.Avalonia/releases/latest";
     private const string SITMANAGER_PROC_NAME = "SIT.Manager.Avalonia.Desktop.exe";
-    private const string SITMANAGER_RELEASE_URL = @"https://github.com/stayintarkov/SIT.Manager.Avalonia/releases/latest/download/win-x64.zip";
+    private const string SITMANAGER_WIN_RELEASE_URL = @"https://github.com/stayintarkov/SIT.Manager.Avalonia/releases/latest/download/win-x64.zip";
+    private const string SITMANAGER_LINUX_RELEASE_URL = @"https://github.com/stayintarkov/SIT.Manager.Avalonia/releases/latest/download/linux-x64.tar";
 
     private readonly ILogger<AppUpdaterService> _logger = logger;
     private readonly HttpClient _httpClient = httpClient;
     private readonly IManagerConfigService _managerConfigService = managerConfigService;
 
-    private async Task MoveManager(DirectoryInfo source, string destination)
+    private static string ReleaseUrl
+    {
+        get
+        {
+            if (OperatingSystem.IsWindows())
+            {
+                return SITMANAGER_WIN_RELEASE_URL;
+            }
+            else if (OperatingSystem.IsLinux())
+            {
+                return SITMANAGER_LINUX_RELEASE_URL;
+            }
+            throw new NotImplementedException("No Release URL found for this platform");
+        }
+    }
+
+    private static async Task MoveManager(DirectoryInfo source, string destination)
     {
         await MoveManager(source, new DirectoryInfo(destination));
     }
 
-    private async Task MoveManager(DirectoryInfo source, DirectoryInfo destination)
+    private static async Task MoveManager(DirectoryInfo source, DirectoryInfo destination)
     {
         IEnumerable<DirectoryInfo> directories = source.EnumerateDirectories();
         IEnumerable<FileInfo> files = source.EnumerateFiles();
@@ -88,27 +105,27 @@ public class AppUpdaterService(ILogger<AppUpdaterService> logger, HttpClient htt
         string workingDir = AppDomain.CurrentDomain.BaseDirectory;
         if (!File.Exists(Path.Combine(workingDir, SITMANAGER_PROC_NAME)))
         {
-            _logger.LogError("Unable to find '{0}' in root directory. Make sure the app is installed correctly.", SITMANAGER_PROC_NAME);
+            _logger.LogError("Unable to find '{SIT_MANAGER_PROC_NAME}' in root directory. Make sure the app is installed correctly.", SITMANAGER_PROC_NAME);
             return false;
         }
 
         string tempPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
         Directory.CreateDirectory(tempPath);
-        string zipName = Path.GetFileName(SITMANAGER_RELEASE_URL);
+        string zipName = Path.GetFileName(ReleaseUrl);
         string zipPath = Path.Combine(tempPath, zipName);
 
         try
         {
-            _logger.LogInformation("Downloading '{0}' to '{1}'", zipName, zipPath);
+            _logger.LogInformation("Downloading '{ZipName}' to '{ZipPath}'", zipName, zipPath);
             using (FileStream fs = new(zipPath, FileMode.Create, FileAccess.Write, FileShare.None))
             {
-                await _httpClient.DownloadAsync(fs, SITMANAGER_RELEASE_URL, progress);
+                await _httpClient.DownloadAsync(fs, ReleaseUrl, progress);
             }
             progress.Report(1);
         }
         catch (Exception ex)
         {
-            _logger.LogError("Error during download: {0}", ex.Message);
+            _logger.LogError(ex, "Error during download");
             return false;
         }
 
@@ -139,7 +156,8 @@ public class AppUpdaterService(ILogger<AppUpdaterService> logger, HttpClient htt
         await MoveManager(releasePath, workingDir);
         Directory.Delete(tempPath, true);
 
-        _logger.LogInformation($"\nUpdate done. Backup can be found in the {Path.GetFileName(backupPath)} folder. User settings have been saved.");
+        string backupPathFileName = Path.GetFileName(backupPath);
+        _logger.LogInformation("Update done. Backup can be found in the {BackupPathFileName} folder. User settings have been saved.", backupPathFileName);
         return true;
     }
 
