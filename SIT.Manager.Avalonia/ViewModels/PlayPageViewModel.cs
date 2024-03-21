@@ -1,5 +1,4 @@
-﻿using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
+﻿using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -23,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.ViewModels;
 
-public partial class PlayPageViewModel : ViewModelBase
+public partial class PlayPageViewModel : ObservableObject
 {
     //TODO: Merge these constants into one play. Pretty sure we delcare at least one of these somewhere else already
     private const string SIT_DLL_FILENAME = "StayInTarkov.dll";

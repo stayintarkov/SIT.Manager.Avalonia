@@ -3,7 +3,6 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
-using ReactiveUI;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
@@ -13,7 +12,6 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reactive.Disposables;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -22,7 +20,7 @@ namespace SIT.Manager.Avalonia.ViewModels;
 /// <summary>
 /// ServerPageViewModel for handling SPT-AKI Server execution and console output.
 /// </summary>
-public partial class ServerPageViewModel : ViewModelBase
+public partial class ServerPageViewModel : ObservableRecipient
 {
     [GeneratedRegex("\\x1B(?:[@-Z\\\\-_]|\\[[0-?]*[ -/]*[@-~])")]
     internal static partial Regex ConsoleTextRemoveANSIFilterRegex();
@@ -58,27 +56,6 @@ public partial class ServerPageViewModel : ViewModelBase
         {
             StartServerButtonTextBlock = _localizationService.TranslateSource("ServerPageViewModelStartServer");
         };
-
-        this.WhenActivated((CompositeDisposable disposables) =>
-        {
-            /* Handle activation */
-            UpdateCachedServerProperties(null, _configService.Config);
-            _configService.ConfigChanged += UpdateCachedServerProperties;
-            if (_akiServerService.State != RunningState.NotRunning)
-                AkiServer_RunningStateChanged(null, _akiServerService.State);
-
-            _akiServerService.OutputDataReceived += AkiServer_OutputDataReceived;
-            _akiServerService.RunningStateChanged += AkiServer_RunningStateChanged;
-
-            UpdateConsoleWithCachedEntries();
-
-            Disposable.Create(() =>
-            {
-                /* Handle deactivation */
-                _akiServerService.OutputDataReceived -= AkiServer_OutputDataReceived;
-                _akiServerService.RunningStateChanged -= AkiServer_RunningStateChanged;
-            }).DisposeWith(disposables);
-        });
     }
 
     private void UpdateCachedServerProperties(object? sender, ManagerConfig newConfig)
@@ -227,5 +204,26 @@ public partial class ServerPageViewModel : ViewModelBase
                 AddConsole(ex.Message);
             }
         }
+    }
+
+    protected override void OnActivated()
+    {
+        UpdateCachedServerProperties(null, _configService.Config);
+        _configService.ConfigChanged += UpdateCachedServerProperties;
+        if (_akiServerService.State != RunningState.NotRunning)
+        {
+            AkiServer_RunningStateChanged(null, _akiServerService.State);
+        }
+
+        _akiServerService.OutputDataReceived += AkiServer_OutputDataReceived;
+        _akiServerService.RunningStateChanged += AkiServer_RunningStateChanged;
+
+        UpdateConsoleWithCachedEntries();
+    }
+
+    protected override void OnDeactivated()
+    {
+        _akiServerService.OutputDataReceived -= AkiServer_OutputDataReceived;
+        _akiServerService.RunningStateChanged -= AkiServer_RunningStateChanged;
     }
 }

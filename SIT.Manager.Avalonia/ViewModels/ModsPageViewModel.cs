@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
-using ReactiveUI;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
@@ -10,13 +9,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Reactive.Disposables;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.ViewModels;
 
-public partial class ModsPageViewModel : ViewModelBase
+public partial class ModsPageViewModel : ObservableRecipient
 {
     private readonly IBarNotificationService _barNotificationService;
     private readonly IManagerConfigService _managerConfigService;
@@ -64,17 +62,6 @@ public partial class ModsPageViewModel : ViewModelBase
         DownloadModPackageCommand = new AsyncRelayCommand(DownloadModPackage);
         InstallModCommand = new AsyncRelayCommand(InstallMod);
         UninstallModCommand = new AsyncRelayCommand(UninstallMod);
-
-        this.WhenActivated(async (CompositeDisposable disposables) =>
-        {
-            /* Handle activation */
-            await LoadMasterList();
-
-            Disposable.Create(() =>
-            {
-                /* Handle deactivation */
-            }).DisposeWith(disposables);
-        });
     }
 
     private async Task LoadMasterList()
@@ -196,5 +183,10 @@ public partial class ModsPageViewModel : ViewModelBase
 
         bool uninstallSuccessful = await _modService.UninstallMod(SelectedMod);
         EnableInstall = uninstallSuccessful;
+    }
+
+    protected override async void OnActivated()
+    {
+        await LoadMasterList();
     }
 }

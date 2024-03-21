@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace SIT.Manager.Avalonia.ViewModels.Dialogs;
 
-public partial class SelectDowngradePatcherMirrorDialogViewModel : ViewModelBase
+public partial class SelectDowngradePatcherMirrorDialogViewModel : ObservableObject
 {
     [ObservableProperty]
     private KeyValuePair<string, string>? _selectedMirror;
