@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.Interfaces;
@@ -12,6 +13,11 @@ public interface IAppUpdaterService
     /// <summary>
     /// Download, extract and then replace the current manager with the newsest version
     /// </summary>
+    /// <returns>true if the update was successfully applied; otherwise false</returns>
+    Task<bool> Update(IProgress<double> progress);
+    /// <summary>
+    /// Restarts the current app
+    /// </summary>
     /// <returns></returns>
-    Task Update();
+    void RestartApp();
 }

@@ -9,6 +9,7 @@ using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
 using SIT.Manager.Avalonia.Models.Messages;
+using SIT.Manager.Avalonia.Views;
 using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -35,7 +36,6 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<PageNavigat
 
     public ObservableCollection<BarNotification> BarNotifications { get; } = [];
 
-    public IAsyncRelayCommand UpdateButtonCommand { get; }
     public IRelayCommand CloseButtonCommand { get; }
 
     public MainViewModel(IActionNotificationService actionNotificationService,
@@ -58,7 +58,6 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<PageNavigat
         _actionNotificationService.ActionNotificationReceived += ActionNotificationService_ActionNotificationReceived;
         _barNotificationService.BarNotificationReceived += BarNotificationService_BarNotificationReceived;
 
-        UpdateButtonCommand = new AsyncRelayCommand(UpdateButton);
         CloseButtonCommand = new RelayCommand(() => { UpdateAvailable = false; });
 
         _managerConfigService.ConfigChanged += async (o, c) => await CheckForUpdate();
@@ -69,19 +68,11 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<PageNavigat
         UpdateAvailable = await _appUpdaterService.CheckForUpdate();
     }
 
-    private async Task UpdateButton()
+    [RelayCommand]
+    private void UpdateButton()
     {
-        ContentDialogResult updateResult = await new ContentDialog()
-        {
-            Title = _localizationService.TranslateSource("MainPageViewModelUpdateConfirmationTitle"),
-            Content = _localizationService.TranslateSource("MainPageViewModelUpdateConfirmationDescription"),
-            PrimaryButtonText = _localizationService.TranslateSource("MainPageViewModelButtonYes"),
-            CloseButtonText = _localizationService.TranslateSource("MainPageViewModelButtonNo")
-        }.ShowAsync();
-        if (updateResult == ContentDialogResult.Primary)
-        {
-            await _appUpdaterService.Update();
-        }
+        NavigateToPage(typeof(UpdatePage), false);
+        UpdateAvailable = false;
     }
 
     private void ActionNotificationService_ActionNotificationReceived(object? sender, ActionNotification e)

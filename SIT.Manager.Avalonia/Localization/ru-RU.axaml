@@ -1,12 +1,6 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
 					xmlns:system="clr-namespace:System;assembly=System.Runtime"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-	<!-- Main Page ViewModel -->
-	<system:String x:Key="MainPageViewModelUpdateConfirmationTitle">Подтверждение обновления</system:String>
-	<system:String x:Key="MainPageViewModelUpdateConfirmationDescription">Вы уверены, что хотите обновить? Это приведет к закрытию менеджера для выполнения обновления.</system:String>
-	<system:String x:Key="MainPageViewModelButtonYes">Да</system:String>
-	<system:String x:Key="MainPageViewModelButtonNo">Нет</system:String>
-
 	<!-- Play Page / View -->
 	<system:String x:Key="AddressBoxTitle">Адрес</system:String>
 	<system:String x:Key="UsernameBoxTitle">Никнейм игрока</system:String>
@@ -311,4 +305,15 @@
 	<system:String x:Key="FileServiceProgressDownloading">Загрузка файла '%1'</system:String>
 	<system:String x:Key="FileServiceProgressExtracting">Извлечение файла %1 (%2)</system:String>
 
+	<!-- Update Page -->
+	<system:String x:Key="UpdatePageUpdateButtonTitle">Start Update</system:String>
+	<system:String x:Key="UpdatePageUpdateInfoTextPt1">SIT Manager is updating for you please wait...</system:String>
+	<system:String x:Key="UpdatePageUpdateInfoTextPt2">The app restart as soon as it has finished</system:String>
+	<system:String x:Key="UpdatePageUpdatingTitle">Updating</system:String>
+
+	<!-- Update Page View Model -->
+	<system:String x:Key="UpdatePageViewModelUpdateConfirmationTitle">Update Confirmation</system:String>
+	<system:String x:Key="UpdatePageViewModelUpdateConfirmationDescription">Are you sure you want to update? The manager will automatically restart once it has updated</system:String>
+	<system:String x:Key="UpdatePageViewModelButtonYes">Yes</system:String>
+	<system:String x:Key="UpdatePageViewModelButtonNo">No</system:String>
 </ResourceDictionary>
