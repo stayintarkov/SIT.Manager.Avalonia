@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Retry;
+using Polly.Timeout;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Services;
@@ -119,9 +120,11 @@ public sealed partial class App : Application
                 ServerCertificateCustomValidationCallback = delegate { return true; }
             });
 
-            services.AddResiliencePipeline("ping-pipeline", builder =>
+
+
+            services.AddResiliencePipeline<string, HttpResponseMessage>("ping-pipeline", builder =>
             {
-                builder.AddRetry(new RetryStrategyOptions()
+                builder.AddRetry(new RetryStrategyOptions<HttpResponseMessage>()
                 {
                     MaxRetryAttempts = 10,
                     //TODO: Imrpove curve for better detection
@@ -131,7 +134,11 @@ public sealed partial class App : Application
                         Console.WriteLine("Retrying ping. Attempt: {0}", args.AttemptNumber);
                         //TODO: Add logging
                         return default;
-                    }
+                    },
+                    ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
+                        .Handle<HttpRequestException>()
+                        .Handle<TimeoutRejectedException>()
+                        .HandleResult(response => response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
                 });
             })
                 .AddResiliencePipeline("get-pipeline", builder =>
