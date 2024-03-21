@@ -4,7 +4,7 @@ using SIT.Manager.Avalonia.Models.Installation;
 
 namespace SIT.Manager.Avalonia.ViewModels.Installation;
 
-public partial class InstallationViewModelBase : ViewModelBase
+public partial class InstallationViewModelBase : ObservableRecipient
 {
     [ObservableProperty]
     private InstallProcessState _currentInstallProcessState;

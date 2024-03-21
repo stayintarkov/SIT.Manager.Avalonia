@@ -9,7 +9,7 @@ using System.Collections.ObjectModel;
 
 namespace SIT.Manager.Avalonia.ViewModels;
 
-public partial class InstallPageViewModel : ViewModelBase,
+public partial class InstallPageViewModel : ObservableRecipient,
                                             IRecipient<ProgressInstallMessage>,
                                             IRecipient<InstallProcessStateChangedMessage>,
                                             IRecipient<InstallProcessStateRequestMessage>

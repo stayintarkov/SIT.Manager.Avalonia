@@ -1,8 +1,7 @@
 ﻿using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using DynamicData;
-using ReactiveUI;
+using SIT.Manager.Avalonia.Extentions;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models.Installation;
@@ -10,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reactive.Disposables;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.ViewModels.Installation;
@@ -51,8 +49,6 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
         _pickerDialogService = pickerDialogService;
 
         ChangeEftInstallLocationCommand = new AsyncRelayCommand(ChangeEftInstallLocation);
-
-        this.WhenActivated(async (CompositeDisposable disposables) => await FetchVersionAndMirrorMatrix());
     }
 
     private async Task ChangeEftInstallLocation()
@@ -161,6 +157,12 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
             IsConfigurationValid = false;
             return;
         }
+    }
+
+    protected override async void OnActivated()
+    {
+        base.OnActivated();
+        await FetchVersionAndMirrorMatrix();
     }
 
     partial void OnSelectedVersionChanged(SitInstallVersion? value)

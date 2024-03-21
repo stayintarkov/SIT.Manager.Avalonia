@@ -11,7 +11,7 @@ public partial class CompleteViewModel : InstallationViewModelBase
 {
     public CompleteViewModel() : base()
     {
-        WeakReferenceMessenger.Default.Send(new InstallationRunningMessage(false));
+        Messenger.Send(new InstallationRunningMessage(false));
     }
 
     [RelayCommand]
@@ -30,6 +30,6 @@ public partial class CompleteViewModel : InstallationViewModelBase
         CurrentInstallProcessState = new();
         ProgressInstall();
 
-        WeakReferenceMessenger.Default.Send(new PageNavigationMessage(pageNavigation));
+        Messenger.Send(new PageNavigationMessage(pageNavigation));
     }
 }

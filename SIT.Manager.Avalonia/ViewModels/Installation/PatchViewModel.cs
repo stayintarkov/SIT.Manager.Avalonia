@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Logging;
-using ReactiveUI;
 using SIT.Manager.Avalonia.Controls;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.Models.Installation;
@@ -9,7 +8,6 @@ using SIT.Manager.Avalonia.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reactive.Disposables;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.ViewModels.Installation;
@@ -60,19 +58,6 @@ public partial class PatchViewModel : InstallationViewModelBase
         _copyProgress.ProgressChanged += CopyProgress_ProgressChanged;
         _downloadProgress.ProgressChanged += DownloadProgress_ProgressChanged;
         _extractionProgress.ProgressChanged += ExtractionProgress_ProgressChanged;
-
-        this.WhenActivated(async (CompositeDisposable disposables) =>
-        {
-            WeakReferenceMessenger.Default.Send(new InstallationRunningMessage(true));
-
-            Disposable.Create(() =>
-            {
-                /* Handle deactivation */
-                WeakReferenceMessenger.Default.Send(new InstallationRunningMessage(false));
-            }).DisposeWith(disposables);
-
-            await DownloadAndRunPatcher();
-        });
     }
 
     private void CopyProgress_ProgressChanged(object? sender, double e)
@@ -137,6 +122,22 @@ public partial class PatchViewModel : InstallationViewModelBase
         {
             // TODO report error here somehow
         }
+    }
+
+    protected override async void OnActivated()
+    {
+        base.OnActivated();
+
+        Messenger.Send(new InstallationRunningMessage(true));
+
+        await DownloadAndRunPatcher();
+    }
+
+    protected override void OnDeactivated()
+    {
+        base.OnDeactivated();
+
+        Messenger.Send(new InstallationRunningMessage(false));
     }
 
     public async Task DownloadAndRunPatcher()

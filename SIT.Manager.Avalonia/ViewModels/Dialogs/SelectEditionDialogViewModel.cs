@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using SIT.Manager.Avalonia.Extentions;
 using SIT.Manager.Avalonia.Models;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -14,10 +15,7 @@ public partial class SelectEditionDialogViewModel : ObservableObject
 
     public SelectEditionDialogViewModel(TarkovEdition[] editions)
     {
-        foreach (TarkovEdition edition in editions)
-        {
-            Editions.Add(edition);
-        }
+        Editions.AddRange(editions);
         SelectedEdition = Editions.FirstOrDefault();
     }
 }

@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.Messaging;
 using FluentAvalonia.UI.Controls;
+using FluentAvalonia.UI.Navigation;
 using SIT.Manager.Avalonia.Controls;
 using SIT.Manager.Avalonia.Models;
 using SIT.Manager.Avalonia.Models.Messages;

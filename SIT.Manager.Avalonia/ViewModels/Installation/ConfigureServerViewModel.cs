@@ -1,15 +1,13 @@
 ﻿using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using DynamicData;
-using ReactiveUI;
+using SIT.Manager.Avalonia.Extentions;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.Models;
 using SIT.Manager.Avalonia.Models.Installation;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reactive.Disposables;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.ViewModels.Installation;
@@ -38,8 +36,6 @@ public partial class ConfigureServerViewModel : InstallationViewModelBase
         _pickerDialogService = pickerDialogService;
 
         ChangeServerInstallLocationCommand = new AsyncRelayCommand(ChangeServerInstallLocation);
-
-        this.WhenActivated(async (CompositeDisposable disposables) => await LoadAvailableVersionData());
     }
 
     private async Task ChangeServerInstallLocation()
@@ -101,6 +97,12 @@ public partial class ConfigureServerViewModel : InstallationViewModelBase
             IsConfigurationValid = false;
         }
         IsConfigurationValid = true;
+    }
+
+    protected override async void OnActivated()
+    {
+        base.OnActivated();
+        await LoadAvailableVersionData();
     }
 
     partial void OnSelectedVersionChanged(GithubRelease? value)
