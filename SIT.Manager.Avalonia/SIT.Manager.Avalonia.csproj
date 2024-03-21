@@ -31,9 +31,12 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
     <PackageReference Include="PeNet" Version="4.0.4" />
+    <PackageReference Include="Polly.Core" Version="8.3.1" />
+    <PackageReference Include="Polly.Extensions" Version="8.3.1" />
     <PackageReference Include="SharpCompress" Version="0.36.0" />
     <PackageReference Include="SkiaSharp" Version="2.88.7" />
     <PackageReference Include="System.Threading.Channels" Version="8.0.0" />
