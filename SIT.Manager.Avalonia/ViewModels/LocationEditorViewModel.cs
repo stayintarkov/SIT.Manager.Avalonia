@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.ViewModels;
 
-public partial class LocationEditorViewModel : ViewModelBase
+public partial class LocationEditorViewModel : ObservableObject
 {
     private readonly IBarNotificationService _barNotificationService;
     private readonly IPickerDialogService _pickerDialogService;

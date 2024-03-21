@@ -7,7 +7,6 @@ using FluentAvalonia.Styling;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -18,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.ViewModels;
 
-public partial class SettingsPageViewModel : ViewModelBase
+public partial class SettingsPageViewModel : ObservableObject
 {
     private readonly IManagerConfigService _configsService;
     private readonly ILocalizationService _localizationService;
@@ -43,8 +42,6 @@ public partial class SettingsPageViewModel : ViewModelBase
 
     [ObservableProperty]
     private string _managerVersionString;
-
-    public static bool ShowLinuxSettings => OperatingSystem.IsLinux();
 
     public IAsyncRelayCommand ChangeInstallLocationCommand { get; }
 

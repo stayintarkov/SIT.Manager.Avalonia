@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using FluentAvalonia.UI.Controls;
 using SIT.Manager.Avalonia.Interfaces;
@@ -15,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.ViewModels;
 
-public partial class ToolsPageViewModel : ViewModelBase
+public partial class ToolsPageViewModel : ObservableObject
 {
     private readonly IAkiServerService _akiServerService;
     private readonly IBarNotificationService _barNotificationService;

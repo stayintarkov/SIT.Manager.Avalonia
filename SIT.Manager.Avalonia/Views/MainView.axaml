@@ -51,9 +51,12 @@
 				</ItemsControl.ItemTemplate>
 			</ItemsControl>
 		</StackPanel>
+		
+		
 
 		<ui:NavigationView PaneDisplayMode="Left"
 						   IsBackButtonVisible="False"
+						   IsSettingsVisible="False"
 						   IsPaneToggleButtonVisible="False"
 						   OpenPaneLength="166"
 						   Grid.Row="1"
@@ -73,6 +76,10 @@
 				<ui:NavigationViewItem IconSource="MapDrive" Content="{DynamicResource ServerTitle}" Tag="SIT.Manager.Avalonia.Views.ServerPage" ToolTip.Tip="{DynamicResource ServerTitleToolTip}"/>
 				<ui:NavigationViewItem IconSource="Library" Content="{DynamicResource ModsTitle}" Tag="SIT.Manager.Avalonia.Views.ModsPage" ToolTip.Tip="{DynamicResource ModsTitleToolTip}"/>
 			</ui:NavigationView.MenuItems>
+
+			<ui:NavigationView.FooterMenuItems>
+				<ui:NavigationViewItem IconSource="Settings" Content="{DynamicResource SettingsTitle}" Tag="SIT.Manager.Avalonia.Views.SettingsPage"/>
+			</ui:NavigationView.FooterMenuItems>		
 
 			<Grid RowDefinitions="*,Auto">
 				<ui:Frame Name="ContentFrame" 
