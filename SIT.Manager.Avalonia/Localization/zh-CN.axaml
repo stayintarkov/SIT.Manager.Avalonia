@@ -6,9 +6,6 @@
 	<system:String x:Key="MainPageViewModelUpdateConfirmationDescription">您确定要更新吗？这将关闭 SIT Manager 以执行更新！</system:String>
 	<system:String x:Key="MainPageViewModelButtonYes">是</system:String>
 	<system:String x:Key="MainPageViewModelButtonNo">否</system:String>
-	<system:String x:Key="MainPageViewModelUnsupportedTitle">尚不支持</system:String>
-	<system:String x:Key="MainPageViewModelUnsupportedDescription">Linux 当前尚不支持自动更新！</system:String>
-	<system:String x:Key="MainPageViewModelButtonOk">Linux 当前尚不支持自动更新！</system:String>
 
 	<!-- Play Page / View -->
 	<system:String x:Key="AddressBoxTitle">服务器地址</system:String>

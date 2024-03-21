@@ -1,8 +1,12 @@
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
 using Microsoft.Extensions.Logging;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
 using System;
+using System.Diagnostics;
+using System.IO;
 using System.Net.Http;
 using System.Reflection;
 using System.Text.Json;
@@ -42,8 +46,29 @@ public class AppUpdaterService(ILogger<AppUpdaterService> logger, HttpClient htt
         return false;
     }
 
-    public Task Update()
+    public async Task Update()
     {
-        throw new NotImplementedException();
+        if (OperatingSystem.IsWindows())
+        {
+            //TODO: Change this to use a const
+            string updaterPath = Path.Combine(AppContext.BaseDirectory, "SIT.Manager.Updater.exe");
+            if (File.Exists(updaterPath))
+            {
+                Process.Start(updaterPath);
+                IApplicationLifetime? lifetime = Application.Current?.ApplicationLifetime;
+                if (lifetime != null && lifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
+                {
+                    desktopLifetime.Shutdown();
+                }
+                else
+                {
+                    Environment.Exit(0);
+                }
+            }
+        }
+        else
+        {
+            throw new NotImplementedException();
+        }
     }
 }

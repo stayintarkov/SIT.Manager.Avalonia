@@ -6,9 +6,6 @@
 	<system:String x:Key="MainPageViewModelUpdateConfirmationDescription">Ви впевнені, що хочете оновити? Це призведе до закриття менеджера для виконання оновлення.</system:String>
 	<system:String x:Key="MainPageViewModelButtonYes">Так</system:String>
 	<system:String x:Key="MainPageViewModelButtonNo">Ні</system:String>
-	<system:String x:Key="MainPageViewModelUnsupportedTitle">Непідтримувана операція</system:String>
-	<system:String x:Key="MainPageViewModelUnsupportedDescription">Автоматичне оновлення наразі недоступне для Linux.</system:String>
-	<system:String x:Key="MainPageViewModelButtonOk">Автоматичне оновлення наразі недоступне для Linux.</system:String>
 
 	<!-- Play Page / View -->
 	<system:String x:Key="AddressBoxTitle">Адреса</system:String>

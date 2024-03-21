@@ -6,9 +6,6 @@
 	<system:String x:Key="MainPageViewModelUpdateConfirmationDescription">您確定要進行更新嗎？這將關閉管理員以執行更新！</system:String>
 	<system:String x:Key="MainPageViewModelButtonYes">是</system:String>
 	<system:String x:Key="MainPageViewModelButtonNo">否</system:String>
-	<system:String x:Key="MainPageViewModelUnsupportedTitle">尚不支援</system:String>
-	<system:String x:Key="MainPageViewModelUnsupportedDescription">Linux 目前尚不支援自動更新！</system:String>
-	<system:String x:Key="MainPageViewModelButtonOk">Linux 目前尚不支援自動更新！</system:String>
 
 	<!-- Play Page / View -->
 	<system:String x:Key="AddressBoxTitle">伺服器位址</system:String>

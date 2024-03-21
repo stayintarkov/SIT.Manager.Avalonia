@@ -1,23 +1,18 @@
 using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using FluentAvalonia.Styling;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Media.Animation;
-using Microsoft.Extensions.Logging;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
 using SIT.Manager.Avalonia.Models.Messages;
 using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.ViewModels;
@@ -47,7 +42,7 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<PageNavigat
         IAppUpdaterService appUpdaterService,
         IBarNotificationService barNotificationService,
         IManagerConfigService managerConfigService,
-        ILocalizationService localizationService)        
+        ILocalizationService localizationService)
     {
         _actionNotificationService = actionNotificationService;
         _appUpdaterService = appUpdaterService;
@@ -83,37 +78,9 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<PageNavigat
             PrimaryButtonText = _localizationService.TranslateSource("MainPageViewModelButtonYes"),
             CloseButtonText = _localizationService.TranslateSource("MainPageViewModelButtonNo")
         }.ShowAsync();
-
         if (updateResult == ContentDialogResult.Primary)
         {
-            //TODO: Add a way to update for linux users
-            if (OperatingSystem.IsWindows())
-            {
-                //TODO: Change this to use a const
-                string updaterPath = Path.Combine(AppContext.BaseDirectory, "SIT.Manager.Updater.exe");
-                if (File.Exists(updaterPath))
-                {
-                    Process.Start(updaterPath);
-                    IApplicationLifetime? lifetime = Application.Current?.ApplicationLifetime;
-                    if (lifetime != null && lifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
-                    {
-                        desktopLifetime.Shutdown();
-                    }
-                    else
-                    {
-                        Environment.Exit(0);
-                    }
-                }
-            }
-            else
-            {
-                await new ContentDialog()
-                {
-                    Title = _localizationService.TranslateSource("MainPageViewModelUnsupportedTitle"),
-                    Content = _localizationService.TranslateSource("MainPageViewModelUnsupportedDescription"),
-                    CloseButtonText = _localizationService.TranslateSource("MainPageViewModelButtonOk")
-                }.ShowAsync();
-            }
+            await _appUpdaterService.Update();
         }
     }
 
