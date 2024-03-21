@@ -77,6 +77,7 @@ public sealed partial class App : Application
                 })
                 .AddSingleton<ITarkovClientService, TarkovClientService>()
                 .AddSingleton<IVersionService, VersionService>()
+                //TODO: Move this to httpclient factory with proper configuration
                 .AddSingleton(new HttpClientHandler
                 {
                     SslProtocols = System.Security.Authentication.SslProtocols.Tls12,
@@ -90,7 +91,6 @@ public sealed partial class App : Application
                         { "User-Agent", "request" }
                     }
                 })
-                .AddSingleton<IZlibService, ZlibService>()
                 .AddSingleton<ILocalizationService, LocalizationService>();
 
             #endregion Services
@@ -156,7 +156,7 @@ public sealed partial class App : Application
         }
     }
 
-    private static readonly string[] trEncodings = new string[] { "deflate", "gzip" };
+    private static readonly string[] trEncodings = ["deflate", "gzip"];
 
     public override void Initialize()
     {
