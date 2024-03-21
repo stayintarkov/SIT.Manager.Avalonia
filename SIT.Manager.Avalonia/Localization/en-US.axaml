@@ -311,6 +311,7 @@
 	<system:String x:Key="UpdatePageUpdateInfoTextPt1">SIT Manager is updating for you please wait...</system:String>
 	<system:String x:Key="UpdatePageUpdateInfoTextPt2">The app restart as soon as it has finished</system:String>
 	<system:String x:Key="UpdatePageUpdatingTitle">Updating</system:String>
+	<system:String x:Key="UpdatePageErrorMessage">There was an issue trying to update SIT Manager please view the log for details</system:String>
 
 	<!-- Update Page View Model -->
 	<system:String x:Key="UpdatePageViewModelUpdateConfirmationTitle">Update Confirmation</system:String>

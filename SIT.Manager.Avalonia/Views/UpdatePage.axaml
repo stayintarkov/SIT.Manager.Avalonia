@@ -56,6 +56,10 @@
 						   VerticalAlignment="Center"/>
 			</Grid>
 
+			<TextBlock Text="{DynamicResource UpdatePageErrorMessage}"
+					   Classes="ErrorMessage"
+					   IsVisible="{Binding HasError}"
+					   HorizontalAlignment="Center"/>
 		</StackPanel>
 	</Border>
 </UserControl>

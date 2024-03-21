@@ -17,6 +17,9 @@ public partial class UpdatePageViewModel : ObservableObject
     [ObservableProperty]
     private double _updateProgressPercentage;
 
+    [ObservableProperty]
+    private bool _hasError = false;
+
     public IAsyncRelayCommand UpdateManagerCommand { get; }
 
     public UpdatePageViewModel(IAppUpdaterService appUpdaterService, ILocalizationService localizationService)
@@ -49,7 +52,7 @@ public partial class UpdatePageViewModel : ObservableObject
             }
             else
             {
-                // TODO show error message on failure 
+                HasError = true;
             }
         }
     }
