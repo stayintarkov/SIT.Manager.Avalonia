@@ -5,6 +5,7 @@ using SIT.Manager.Avalonia.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -25,11 +26,15 @@ public class TarkovRequestingService(HttpClient httpClient, ResiliencePipelinePr
             throw new ArgumentNullException(nameof(resiliencePipeline), "No default pipeline was specified and argument was null.");
 
         UriBuilder endpoint = new(remoteAddress) { Path = path };
-        HttpRequestMessage req = new(HttpMethod.Post, endpoint.Uri);
+        HttpRequestMessage req = new(method ?? HttpMethod.Get, endpoint.Uri);
 
         if (data != null)
         {
-            byte[] contentBytes = SimpleZlib.CompressToBytes(data, (int) ZlibCompression.BestSpeed);
+            using MemoryStream ms = new();
+            using ZLibStream zlib = new(ms, CompressionLevel.Fastest, true);
+            await zlib.WriteAsync(Encoding.UTF8.GetBytes(data), cancellationToken);
+            await zlib.DisposeAsync();
+            byte[] contentBytes = ms.ToArray();
             req.Content = new ByteArrayContent(contentBytes);
             req.Content.Headers.ContentType = _contentHeaderType;
             req.Content.Headers.ContentEncoding.Add("deflate");
@@ -39,10 +44,4 @@ public class TarkovRequestingService(HttpClient httpClient, ResiliencePipelinePr
         HttpResponseMessage reqResp = await resiliencePipeline.ExecuteAsync(async token => await _httpClient.SendAsync(req, token), cancellationToken);
         return await reqResp.Content.ReadAsStreamAsync(cancellationToken);
     }
-}
-
-public enum ZlibCompression
-{
-    BestSpeed = 1,
-    BestCompression = 9
 }
