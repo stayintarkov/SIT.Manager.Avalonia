@@ -1,15 +1,6 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
 					xmlns:system="clr-namespace:System;assembly=System.Runtime"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-	<!-- Main Page ViewModel -->
-	<system:String x:Key="MainPageViewModelUpdateConfirmationTitle">更新确认</system:String>
-	<system:String x:Key="MainPageViewModelUpdateConfirmationDescription">您确定要更新吗？这将关闭 SIT Manager 以执行更新！</system:String>
-	<system:String x:Key="MainPageViewModelButtonYes">是</system:String>
-	<system:String x:Key="MainPageViewModelButtonNo">否</system:String>
-	<system:String x:Key="MainPageViewModelUnsupportedTitle">尚不支持</system:String>
-	<system:String x:Key="MainPageViewModelUnsupportedDescription">Linux 当前尚不支持自动更新！</system:String>
-	<system:String x:Key="MainPageViewModelButtonOk">Linux 当前尚不支持自动更新！</system:String>
-
 	<!-- Play Page / View -->
 	<system:String x:Key="AddressBoxTitle">服务器地址</system:String>
 	<system:String x:Key="UsernameBoxTitle">用户名</system:String>
@@ -296,6 +287,19 @@
 	<!-- File Service -->
 	<system:String x:Key="FileServiceProgressDownloading">正在下载 '%1'</system:String>
 	<system:String x:Key="FileServiceProgressExtracting">正在解压 %1 (%2)</system:String>
+
+	<!-- Update Page -->
+	<system:String x:Key="UpdatePageUpdateButtonTitle">Start Update</system:String>
+	<system:String x:Key="UpdatePageUpdateInfoTextPt1">SIT Manager is updating for you please wait...</system:String>
+	<system:String x:Key="UpdatePageUpdateInfoTextPt2">The app restart as soon as it has finished</system:String>
+	<system:String x:Key="UpdatePageUpdatingTitle">Updating</system:String>
+	<system:String x:Key="UpdatePageErrorMessage">There was an issue trying to update SIT Manager please view the log for details</system:String>
+
+	<!-- Update Page View Model -->
+	<system:String x:Key="UpdatePageViewModelUpdateConfirmationTitle">Update Confirmation</system:String>
+	<system:String x:Key="UpdatePageViewModelUpdateConfirmationDescription">Are you sure you want to update? The manager will automatically restart once it has updated</system:String>
+	<system:String x:Key="UpdatePageViewModelButtonYes">Yes</system:String>
+	<system:String x:Key="UpdatePageViewModelButtonNo">No</system:String>
 	
 	<!-- Install - Complete View -->
 	<system:String x:Key="CompleteViewInstallComplete">Install Completed</system:String>
@@ -313,7 +317,7 @@
 	<system:String x:Key="ConfigureServerViewSPTAKIPathTitle">SPT-AKI Path:</system:String>
 	<system:String x:Key="ConfigureServerViewSPTAKIPathWarningNoPath">No SPT-AKI install path specified</system:String>
 	<system:String x:Key="ConfigureServerViewVersionSelectionTitle">Version to install:</system:String>
-
+	
 	<!-- Install - Configure Sit View -->
 	<system:String x:Key="ConfigureSitViewLoadingVersionSelectionText">Working out available SIT versions please wait...</system:String>
 	<system:String x:Key="ConfigureSitViewEFTChangeInstallPathToolTip">Change the EFT Install Path.</system:String>
@@ -328,7 +332,7 @@
 	<system:String x:Key="InstallViewDownloadingTitle">Downloading</system:String>
 	<system:String x:Key="InstallViewExtractingTitle">Extracting</system:String>
 	<system:String x:Key="InstallViewInstallTitle">Install</system:String>
-
+	
 	<!-- Install - Patch View -->
 	<system:String x:Key="PatchViewSummaryMessage">Setting up your EFT instance so it's ready to install the requested SIT version</system:String>
 	<system:String x:Key="PatchViewCopyingTitle">Copying EFT Install</system:String>

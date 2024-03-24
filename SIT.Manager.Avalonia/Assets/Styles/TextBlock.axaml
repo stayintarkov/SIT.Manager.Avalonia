@@ -1,19 +1,27 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Design.PreviewWith>
-        <Border Padding="20">
-            <!-- Add Controls for Previewer Here -->
-        </Border>
-    </Design.PreviewWith>
+	<Design.PreviewWith>
+		<Border Padding="20">
+			<StackPanel>
+				<TextBlock Classes="ErrorMessage" Text="Error"/>
+				<TextBlock Classes="WarningMessage" Text="Warning"/>
+			</StackPanel>
+		</Border>
+	</Design.PreviewWith>
 
-    <!-- Add Styles Here -->
 	<Style Selector="TextBlock.FrameHeading">
 		<Setter Property="VerticalAlignment" Value="Center"/>
 		<Setter Property="Margin" Value="8,0,0,0"/>
 	</Style>
-	
+
 	<Style Selector="TextBlock.WarningMessage">
 		<Setter Property="Foreground" Value="Yellow"/>
+		<Setter Property="TextWrapping" Value="Wrap"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
+	</Style>
+	
+	<Style Selector="TextBlock.ErrorMessage">
+		<Setter Property="Foreground" Value="Red"/>
 		<Setter Property="TextWrapping" Value="Wrap"/>
 		<Setter Property="VerticalAlignment" Value="Center"/>
 	</Style>
