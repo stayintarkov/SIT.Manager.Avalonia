@@ -1,15 +1,6 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
 					xmlns:system="clr-namespace:System;assembly=System.Runtime"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-	<!-- Main Page ViewModel -->
-	<system:String x:Key="MainPageViewModelUpdateConfirmationTitle">Підтвердження оновлення</system:String>
-	<system:String x:Key="MainPageViewModelUpdateConfirmationDescription">Ви впевнені, що хочете оновити? Це призведе до закриття менеджера для виконання оновлення.</system:String>
-	<system:String x:Key="MainPageViewModelButtonYes">Так</system:String>
-	<system:String x:Key="MainPageViewModelButtonNo">Ні</system:String>
-	<system:String x:Key="MainPageViewModelUnsupportedTitle">Непідтримувана операція</system:String>
-	<system:String x:Key="MainPageViewModelUnsupportedDescription">Автоматичне оновлення наразі недоступне для Linux.</system:String>
-	<system:String x:Key="MainPageViewModelButtonOk">Автоматичне оновлення наразі недоступне для Linux.</system:String>
-
 	<!-- Play Page / View -->
 	<system:String x:Key="AddressBoxTitle">Адреса</system:String>
 	<system:String x:Key="UsernameBoxTitle">Нікнейм гравця</system:String>
@@ -309,8 +300,16 @@
 	<system:String x:Key="InstallServiceInstallSITSuccessfulDescription">Установка SIT пройшла успішно.</system:String>
 	<system:String x:Key="InstallerServiceNoDowngradePatcher">Для цієї версії Таркова нема доступних програм для відкату версії.</system:String>
 
-	<!-- File Service -->
-	<system:String x:Key="FileServiceProgressDownloading">Завантаження файлу '%1'</system:String>
-	<system:String x:Key="FileServiceProgressExtracting">Розпакування файлу %1 (%2)</system:String>
+	<!-- Update Page -->
+	<system:String x:Key="UpdatePageUpdateButtonTitle">Start Update</system:String>
+	<system:String x:Key="UpdatePageUpdateInfoTextPt1">SIT Manager is updating for you please wait...</system:String>
+	<system:String x:Key="UpdatePageUpdateInfoTextPt2">The app restart as soon as it has finished</system:String>
+	<system:String x:Key="UpdatePageUpdatingTitle">Updating</system:String>
+	<system:String x:Key="UpdatePageErrorMessage">There was an issue trying to update SIT Manager please view the log for details</system:String>
 
+	<!-- Update Page View Model -->
+	<system:String x:Key="UpdatePageViewModelUpdateConfirmationTitle">Update Confirmation</system:String>
+	<system:String x:Key="UpdatePageViewModelUpdateConfirmationDescription">Are you sure you want to update? The manager will automatically restart once it has updated</system:String>
+	<system:String x:Key="UpdatePageViewModelButtonYes">Yes</system:String>
+	<system:String x:Key="UpdatePageViewModelButtonNo">No</system:String>
 </ResourceDictionary>

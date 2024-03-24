@@ -51,6 +51,7 @@ public sealed partial class App : Application
         // Services
         services.AddSingleton<IActionNotificationService, ActionNotificationService>();
         services.AddSingleton<IAkiServerService, AkiServerService>();
+        services.AddSingleton<IAppUpdaterService, AppUpdaterService>();
         services.AddSingleton<ITarkovClientService, TarkovClientService>();
         services.AddSingleton<IBarNotificationService, BarNotificationService>();
         services.AddTransient<IFileService, FileService>();
@@ -90,6 +91,7 @@ public sealed partial class App : Application
         services.AddTransient<SettingsPageViewModel>();
         services.AddTransient<ServerPageViewModel>();
         services.AddTransient<ToolsPageViewModel>();
+        services.AddTransient<UpdatePageViewModel>();
 
         return services.BuildServiceProvider();
     }
