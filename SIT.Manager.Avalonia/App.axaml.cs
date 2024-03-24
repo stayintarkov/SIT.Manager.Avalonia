@@ -13,6 +13,7 @@ using SIT.Manager.Avalonia.Services;
 using SIT.Manager.Avalonia.ViewModels;
 using SIT.Manager.Avalonia.Views;
 using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -120,19 +121,24 @@ public sealed partial class App : Application
                 ServerCertificateCustomValidationCallback = delegate { return true; }
             });
 
-
-
-            services.AddResiliencePipeline<string, HttpResponseMessage>("ping-pipeline", builder =>
+            services.AddResiliencePipeline("default-pipeline", builder =>
+            {
+                builder.AddRetry(new RetryStrategyOptions()
+                {
+                    MaxRetryAttempts = 3,
+                    Delay = TimeSpan.FromSeconds(3)
+                });
+            })
+            .AddResiliencePipeline<string, HttpResponseMessage>("ping-pipeline", builder =>
             {
                 builder.AddRetry(new RetryStrategyOptions<HttpResponseMessage>()
                 {
                     MaxRetryAttempts = 10,
-                    //TODO: Imrpove curve for better detection
                     BackoffType = DelayBackoffType.Exponential,
                     MaxDelay = TimeSpan.FromSeconds(45),
                     OnRetry = static args =>
                     {
-                        Console.WriteLine("Retrying ping. Attempt: {0}", args.AttemptNumber);
+                        Debug.WriteLine("Retrying ping. Attempt: {0}", args.AttemptNumber);
                         //TODO: Add logging
                         return default;
                     },
@@ -141,15 +147,7 @@ public sealed partial class App : Application
                         .Handle<TimeoutRejectedException>()
                         .HandleResult(response => response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
                 });
-            })
-                .AddResiliencePipeline("get-pipeline", builder =>
-                {
-                    builder.AddRetry(new RetryStrategyOptions()
-                    {
-                        MaxRetryAttempts = 3,
-                        Delay = TimeSpan.FromSeconds(3)
-                    });
-                });
+            });
 
             #endregion Polly
 
