@@ -27,24 +27,4 @@ internal static class HttpClientExtentions
             await contentStream.CopyToAsync(destination, 65535, reportWrapper, cancellationToken);
         }
     }
-
-    public static async Task CopyToAsync(this Stream source, Stream destination, ushort bufferSize, IProgress<long> progressReporter, CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(source, nameof(source));
-        ArgumentNullException.ThrowIfNull(destination, nameof(destination));
-        if (!source.CanRead)
-            throw new InvalidOperationException($"'{nameof(source)}' is not readable.");
-        if (!destination.CanWrite)
-            throw new InvalidOperationException($"'{nameof(destination)}' is not writable.");
-
-        byte[] dataBuffer = new byte[bufferSize];
-        long totalReadBytes = 0;
-        int bytesRead;
-        while ((bytesRead = await source.ReadAsync(dataBuffer, cancellationToken).ConfigureAwait(false)) > 0)
-        {
-            await destination.WriteAsync(dataBuffer.AsMemory(0, bytesRead), cancellationToken).ConfigureAwait(false);
-            totalReadBytes += bytesRead;
-            progressReporter.Report(totalReadBytes);
-        }
-    }
 }
