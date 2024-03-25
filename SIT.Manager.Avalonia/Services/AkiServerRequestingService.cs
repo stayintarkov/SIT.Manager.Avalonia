@@ -3,6 +3,7 @@ using Polly.Registry;
 using SIT.Manager.Avalonia.Classes;
 using SIT.Manager.Avalonia.Extentions;
 using SIT.Manager.Avalonia.Interfaces;
+using SIT.Manager.Avalonia.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,7 +22,7 @@ public class AkiServerRequestingService(HttpClient httpClient, ResiliencePipelin
     private readonly HttpClient _httpClient = httpClient;
     private readonly ResiliencePipelineProvider<string> resiliencePipelineProvider = resiliencePipelineProvider;
 
-    public async Task<Stream> SendAsync(Uri remoteAddress, string path, HttpMethod? method, string? data, ResiliencePipeline<HttpResponseMessage>? resiliencePipeline = null, CancellationToken cancellationToken = default)
+    private async Task<Stream> SendAsync(Uri remoteAddress, string path, HttpMethod? method = null, string? data = null, ResiliencePipeline<HttpResponseMessage>? resiliencePipeline = null, CancellationToken cancellationToken = default)
     {
         if (resiliencePipeline == null && !resiliencePipelineProvider.TryGetPipeline("default-pipeline", out resiliencePipeline))
             throw new ArgumentNullException(nameof(resiliencePipeline), "No default pipeline was specified and argument was null.");
@@ -45,5 +46,15 @@ public class AkiServerRequestingService(HttpClient httpClient, ResiliencePipelin
         HttpResponseMessage reqResp = await resiliencePipeline.ExecuteAsync(async token => await _httpClient.SendAsync(req, token), cancellationToken);
         Stream respStream = await reqResp.Content.ReadAsStreamAsync(cancellationToken);
         return await respStream.InflateAsync(cancellationToken);
+    }
+
+    public async Task<int> PingAsync(AkiServer akiServer, CancellationToken cancellationToken = default)
+    {
+        System.Diagnostics.Stopwatch stopwatch = new();
+        stopwatch.Start();
+        Stream resp = await SendAsync(akiServer.Address, "/launcher/ping", resiliencePipeline: resiliencePipelineProvider.GetPipeline<HttpResponseMessage>("ping-pipeline"), cancellationToken: cancellationToken);
+        stopwatch.Stop();
+        string serverRespStr = await resp.ReadAsStringAsync(cancellationToken: cancellationToken);
+        return serverRespStr.Equals("\"pong!\"") ? Convert.ToInt32(stopwatch.ElapsedMilliseconds) : -1;
     }
 }

@@ -38,4 +38,7 @@ public static class StreamExtensions
         ms.Seek(0, SeekOrigin.Begin);
         return ms;
     }
+
+    public static async Task<string> ReadAsStringAsync(this Stream stream, CancellationToken cancellationToken = default)
+        => await new StreamReader(stream).ReadToEndAsync(cancellationToken);
 }
