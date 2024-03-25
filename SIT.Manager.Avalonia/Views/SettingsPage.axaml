@@ -18,8 +18,8 @@
 		<ScrollViewer Grid.Row="0">
 			<StackPanel Margin="10">
 				<!--Launcher settings-->
-				<TextBlock Text="{DynamicResource SettingsLauncherSettingsTitle}" Margin="5" VerticalAlignment="Center"/>
-				<Border CornerRadius="8" BorderBrush="Gray" BorderThickness="1" Padding="10">
+				<TextBlock Text="{DynamicResource SettingsLauncherSettingsTitle}" Classes="FrameHeading"/>
+				<Border Classes="StandardFrame">
 					<StackPanel>
 						<CheckBox Content="{DynamicResource SettingsCloseLauncherAfterGameLaunchTitle}" 
 								  ToolTip.Tip="{DynamicResource SettingsCloseLauncherAfterGameLaunchToolTip}"
@@ -55,14 +55,9 @@
 
 				<!--Linux Settings-->
 				<TextBlock Text="{DynamicResource SettingsLinuxSettingsTitle}"
-						   Margin="5"
-						   VerticalAlignment="Center"
+						   Classes="FrameHeading"
 						   IsVisible="{OnPlatform Default=False, Linux=True}"/>
-				<Border CornerRadius="8"
-						BorderBrush="Gray"
-						BorderThickness="1"
-						Padding="10"
-						IsVisible="{OnPlatform Default=False, Linux=True}">
+				<Border Classes="StandardFrame" IsVisible="{OnPlatform Default=False, Linux=True}">
 					<StackPanel>
 						<StackPanel Orientation="Horizontal">
 							<TextBlock Text="{DynamicResource SettingsLinuxWinePrefixTitle}" Margin="0,0,10,0" VerticalAlignment="Center"/>
@@ -85,8 +80,8 @@
 				</Border>
 				
 				<!--EFT Settings-->
-				<TextBlock Text="{DynamicResource SettingsEFTSettingsTitle}" Margin="5" VerticalAlignment="Center"/>
-				<Border CornerRadius="8" BorderBrush="Gray" BorderThickness="1" Padding="10">
+				<TextBlock Text="{DynamicResource SettingsEFTSettingsTitle}" Classes="FrameHeading"/>
+				<Border Classes="StandardFrame">
 					<StackPanel>
 						<StackPanel Orientation="Horizontal" >
 							<TextBlock Text="{DynamicResource SettingsEFTInstallPathTitle}" Margin="0,0,10,0" VerticalAlignment="Center"/>
@@ -114,8 +109,8 @@
 				</Border>
 				
 				<!--SPT-AKI Settings-->
-				<TextBlock Text="{DynamicResource SettingsSPTAKITitle}" Margin="5" VerticalAlignment="Center"/>
-				<Border CornerRadius="8" BorderBrush="Gray" BorderThickness="1" Padding="10">
+				<TextBlock Text="{DynamicResource SettingsSPTAKITitle}" Classes="FrameHeading"/>
+				<Border Classes="StandardFrame">
 					<StackPanel>
 						<StackPanel Orientation="Horizontal">
 							<TextBlock Text="{DynamicResource SettingsSPTAKIPathTitle}"  VerticalAlignment="Center"/>
@@ -147,8 +142,8 @@
 				</Border>
 				
 				<!--Server Console-->
-				<TextBlock Text="{DynamicResource SettingsServerConsoleTitle}" Margin="5" VerticalAlignment="Center"/>
-				<Border CornerRadius="8" BorderBrush="Gray" BorderThickness="1" Padding="10">
+				<TextBlock Text="{DynamicResource SettingsServerConsoleTitle}" Classes="FrameHeading"/>
+				<Border Classes="StandardFrame">
 					<StackPanel>
 						<StackPanel Orientation="Horizontal">
 							<TextBlock Text="{DynamicResource SettingsServerConsoleFontFamilyTitle}" Margin="0,0,10,0" VerticalAlignment="Center"/>

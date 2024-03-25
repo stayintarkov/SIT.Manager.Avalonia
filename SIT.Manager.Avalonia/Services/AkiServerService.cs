@@ -122,22 +122,6 @@ public class AkiServerService(IBarNotificationService barNotificationService,
             },
             EnableRaisingEvents = true
         };
-        if (OperatingSystem.IsLinux())
-        {
-            _process.StartInfo.FileName = _configService.Config.WineRunner;
-            _process.StartInfo.Arguments = $"\"{ExecutableFilePath}\"";
-
-            string winePrefix = Path.GetFullPath(_configService.Config.WinePrefix);
-            if (!Path.EndsInDirectorySeparator(winePrefix))
-            {
-                winePrefix = $"{winePrefix}{Path.DirectorySeparatorChar}";
-            }
-            _process.StartInfo.EnvironmentVariables.Add("WINEPREFIX", winePrefix);
-        }
-        else
-        {
-            _process.StartInfo.WorkingDirectory = ExecutableDirectory;
-        }
 
         _process.OutputDataReceived += AkiServer_OutputDataReceived;
         _process.Exited += new EventHandler((sender, e) =>

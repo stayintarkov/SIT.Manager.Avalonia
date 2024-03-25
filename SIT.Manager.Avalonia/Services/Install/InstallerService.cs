@@ -503,9 +503,12 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         // Remove the downloaded Server after extraction
         File.Delete(downloadLocation);
 
-        ManagerConfig config = _configService.Config;
+        // Ensure that the file is marked as executable
+        string executablePath = Path.Combine(targetInstallDir, "Aki.Server.exe");
+        await _fileService.SetFileAsExecutable(executablePath);
 
         // Attempt to automatically set the AKI Server Path after successful installation and save it to config
+        ManagerConfig config = _configService.Config;
         if (!string.IsNullOrEmpty(targetInstallDir))
         {
             config.AkiServerPath = targetInstallDir;

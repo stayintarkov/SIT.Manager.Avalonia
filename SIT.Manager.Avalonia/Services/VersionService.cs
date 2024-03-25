@@ -47,6 +47,7 @@ public partial class VersionService(ILogger<VersionService> logger) : IVersionSe
 
     public string GetSptAkiVersion(string path)
     {
+        // TODO fix this when installed on linux
         string filePath = Path.Combine(path, "Aki.Server.exe");
         string fileVersion = GetFileProductVersionString(filePath);
         if (string.IsNullOrEmpty(fileVersion))

@@ -1,8 +1,7 @@
 ﻿using CG.Web.MegaApiClient;
 using Microsoft.Extensions.Logging;
-using SharpCompress.Archives;
-using SharpCompress.Archives.Zip;
 using SharpCompress.Common;
+using SharpCompress.Readers;
 using SIT.Manager.Avalonia.Extentions;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
@@ -11,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -260,8 +258,7 @@ public class FileService(IActionNotificationService actionNotificationService,
         return result;
     }
 
-    // TODO unify this with the other ExtractArchive function
-    public async Task ExtractArchive(string filePath, string destination, IProgress<double> progress)
+    public async Task ExtractArchive(string filePath, string destination, IProgress<double>? progress = null)
     {
         // Ensures that the last character on the extraction path is the directory separator char.
         // Without this, a malicious zip file could try to traverse outside of the expected extraction path.
@@ -275,90 +272,35 @@ public class FileService(IActionNotificationService actionNotificationService,
 
         try
         {
-            using ZipArchive archive = await Task.Run(() => ZipArchive.Open(filePath));
-            double totalFiles = archive.Entries.Where(file => !file.IsDirectory).Count();
-            double completed = 0;
-
-            foreach (ZipArchiveEntry entry in archive.Entries)
+            using (Stream stream = await Task.Run(() => File.OpenRead(filePath)))
             {
-                if (entry.IsDirectory)
+                double totalBytes = stream.Length;
+                double bytesCompleted = 0;
+                using (IReader reader = await Task.Run(() => ReaderFactory.Open(stream)))
                 {
-                    continue;
-                }
-                else
-                {
-                    await Task.Run(() => entry.WriteToDirectory(destination, new ExtractionOptions()
+                    reader.EntryExtractionProgress += (s, e) =>
+                    {
+                        if (e.ReaderProgress?.PercentageReadExact == 100)
+                        {
+                            bytesCompleted += e.Item.CompressedSize;
+                            progress?.Report(bytesCompleted / totalBytes * 100);
+                        }
+                    };
+
+                    await Task.Run(() => reader.WriteAllToDirectory(destination, new ExtractionOptions()
                     {
                         ExtractFullPath = true,
-                        Overwrite = true
+                        Overwrite = true,
                     }));
                 }
-
-                double progressPercentage = ++completed / totalFiles * 100;
-                progress.Report(progressPercentage);
+                progress?.Report(100);
             }
-
-            progress.Report(100);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "ExtractFile: Error when opening Archive");
+            _logger.LogError(ex, "Error when extracting archive");
             throw;
         }
-    }
-
-    public async Task ExtractArchive(string filePath, string destination)
-    {
-        _actionNotificationService.StartActionNotification();
-
-        // Ensures that the last character on the extraction path is the directory separator char.
-        // Without this, a malicious zip file could try to traverse outside of the expected extraction path.
-        if (!destination.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
-        {
-            destination += Path.DirectorySeparatorChar;
-        }
-
-        DirectoryInfo destinationInfo = new(destination);
-        destinationInfo.Create();
-
-        ActionNotification actionNotification = new(string.Empty, 0, true);
-        try
-        {
-            using ZipArchive archive = await Task.Run(() => ZipArchive.Open(filePath));
-            int totalFiles = archive.Entries.Where(file => !file.IsDirectory).Count();
-            int completed = 0;
-
-            Progress<float> progress = new((prog) =>
-            {
-                actionNotification.ProgressPercentage = prog;
-                _actionNotificationService.UpdateActionNotification(actionNotification);
-            });
-
-            foreach (ZipArchiveEntry entry in archive.Entries)
-            {
-                if (entry.IsDirectory)
-                {
-                    continue;
-                }
-                else
-                {
-                    entry.WriteToDirectory(destination, new ExtractionOptions()
-                    {
-                        ExtractFullPath = true,
-                        Overwrite = true
-                    });
-                }
-
-                actionNotification.ActionText = _localizationService.TranslateSource("FileServiceProgressExtracting", $"{Path.GetFileName(entry.Key)}", $"{++completed}/{totalFiles}");
-                ((IProgress<float>) progress).Report((float) completed / totalFiles * 100);
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "ExtractFile: Error when opening Archive");
-        }
-
-        _actionNotificationService.StopActionNotification();
     }
 
     public async Task OpenDirectoryAsync(string path)
@@ -381,5 +323,30 @@ public class FileService(IActionNotificationService actionNotificationService,
         }
         path = Path.GetFullPath(path);
         await OpenAtLocation(path);
+    }
+
+    public async Task SetFileAsExecutable(string filePath)
+    {
+        if (OperatingSystem.IsLinux())
+        {
+            string cmd = $"chmod 755 {filePath}";
+            string escapedArgs = cmd.Replace("\"", "\\\"");
+            using (Process process = new()
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    FileName = "/bin/bash",
+                    Arguments = $"-c \"{escapedArgs}\""
+                }
+            })
+            {
+                process.Start();
+                await process.WaitForExitAsync();
+            }
+        }
     }
 }
