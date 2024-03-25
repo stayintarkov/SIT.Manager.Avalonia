@@ -1,6 +1,7 @@
 ﻿using Polly;
 using Polly.Registry;
 using SIT.Manager.Avalonia.Classes;
+using SIT.Manager.Avalonia.Extentions;
 using SIT.Manager.Avalonia.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -42,6 +43,7 @@ public class TarkovRequestingService(HttpClient httpClient, ResiliencePipelinePr
         }
 
         HttpResponseMessage reqResp = await resiliencePipeline.ExecuteAsync(async token => await _httpClient.SendAsync(req, token), cancellationToken);
-        return await reqResp.Content.ReadAsStreamAsync(cancellationToken);
+        Stream respStream = await reqResp.Content.ReadAsStreamAsync(cancellationToken);
+        return await respStream.InflateAsync(cancellationToken);
     }
 }
