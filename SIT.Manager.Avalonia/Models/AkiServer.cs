@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.Models;
-public class SPTServer : ObservableObject
+public class AkiServer : ObservableObject
 {
     public string Name { get; internal set; } = string.Empty;
     public Uri? Address { get; set; } = null;
