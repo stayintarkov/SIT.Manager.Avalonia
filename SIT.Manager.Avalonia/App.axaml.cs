@@ -110,7 +110,7 @@ public sealed partial class App : Application
 
             #region Polly
 
-            services.AddHttpClient<TarkovRequestingService>(client =>
+            services.AddHttpClient<AkiServerRequestingService>(client =>
             {
                 foreach (string encoding in trEncodings)
                     client.DefaultRequestHeaders.AcceptEncoding.ParseAdd(encoding);

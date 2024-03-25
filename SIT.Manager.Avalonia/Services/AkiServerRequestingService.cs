@@ -15,7 +15,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.Services;
-public class TarkovRequestingService(HttpClient httpClient, ResiliencePipelineProvider<string> resiliencePipelineProvider)
+public class AkiServerRequestingService(HttpClient httpClient, ResiliencePipelineProvider<string> resiliencePipelineProvider)
 {
     private static readonly MediaTypeHeaderValue _contentHeaderType = new("application/json");
     private readonly HttpClient _httpClient = httpClient;
