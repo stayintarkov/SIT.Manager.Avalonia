@@ -30,7 +30,11 @@ public class EmbeddedProcessWindow : NativeControlHost
 
     protected override void DestroyNativeControlCore(IPlatformHandle control)
     {
-        if (!OperatingSystem.IsWindows())
+        if (OperatingSystem.IsWindows())
+        {
+            _p.Dispose();
+        }
+        else
         {
             base.DestroyNativeControlCore(control);
         }
@@ -94,13 +98,26 @@ public class EmbeddedProcessWindow : NativeControlHost
         // Start the process
         _p.Start();
 
-        // Wait until p.MainWindowHandle is non-zero
-        while (_p.MainWindowHandle == IntPtr.Zero)
+        try
         {
-            await Task.Delay(250);
-        }
+            if (OperatingSystem.IsWindows())
+            {
+                // Wait until p.MainWindowHandle is non-zero
+                while (_p.MainWindowHandle == IntPtr.Zero)
+                {
+                    // Discard cached information about the process because MainWindowHandle might be cached.
+                    _p.Refresh();
+                    await Task.Delay(250);
+                }
 
-        // Set ProcessWindowHandle to the MainWindowHandle of the process
-        ProcessWindowHandle = _p.MainWindowHandle;
+                // Set ProcessWindowHandle to the MainWindowHandle of the process
+                ProcessWindowHandle = _p.MainWindowHandle;
+            }
+        }
+        catch
+        {
+            // The process has probably exited, so accessing MainWindowHandle threw an exception
+            throw;
+        }
     }
 }

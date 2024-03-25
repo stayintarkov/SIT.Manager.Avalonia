@@ -87,8 +87,19 @@ public partial class PatchViewModel : InstallationViewModelBase
         EmbeddedProcessWindow embeddedProcessWindow = new(_installerService.CreatePatcherProcess(patcherPath));
         await embeddedProcessWindow.StartProcess();
 
-        EmbeddedPatcherWindow = embeddedProcessWindow;
-        await EmbeddedPatcherWindow.WaitForExit();
+        // TODO get window embedding working on linux - maybe we just add the patcher as a git module? and then embed the window of the patcher itself?
+        // Window embedding only seems to work properly on Windows 
+        // More info here: https://github.com/AvaloniaUI/Avalonia/issues/10354 and https://github.com/AvaloniaUI/Avalonia/issues/6124
+        // So we will only do this on Windows for now until we spend some time to get it working nicely on Linux.
+        if (OperatingSystem.IsWindows())
+        {
+            EmbeddedPatcherWindow = embeddedProcessWindow;
+            await EmbeddedPatcherWindow.WaitForExit();
+        }
+        else
+        {
+            await embeddedProcessWindow.StartProcess();
+        }
 
         _patcherResultMessages.TryGetValue(EmbeddedPatcherWindow.ExitCode, out string? patcherResult);
         _logger.LogInformation($"RunPatcher: {patcherResult}");
