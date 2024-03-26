@@ -80,7 +80,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Project Screen Shot][project-screenshot]]
+[![Project Screen Shot][project-image]]
 
 This project is a rewrite of the [SIT.Manager](https://github.com/stayintarkov/SIT.Manager) in an attempt to create a long lasting, maintainable and long lasting manager for SIT. In addition to bringing the functionality from the previous manager this project plans to bring multiple new features to improve the experience.
 
