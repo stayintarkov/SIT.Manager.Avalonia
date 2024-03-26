@@ -189,7 +189,7 @@ Support is best found in the [SIT Discord](https://discord.gg/f4CN4n3nP2)
 [license-shield]: https://img.shields.io/github/license/stayintarkov/SIT.Manager.Avalonia.svg?style=for-the-badge
 [license-url]: https://github.com/stayintarkov/SIT.Manager.Avalonia/blob/master/LICENSE.txt
 
-[project-image]: https://github.com/stayintarkov/SIT.Manager.Avalonia/images/manager-sc.png
+[project-image]: images/manager-sc.png
 
 [avalonia-repo]: https://github.com/AvaloniaUI/Avalonia
 [avalonia-shield]: https://img.shields.io/badge/Avalonia-8b44ac?style=for-the-badge
