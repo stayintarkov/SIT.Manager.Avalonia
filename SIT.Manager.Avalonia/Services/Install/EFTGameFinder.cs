@@ -13,8 +13,8 @@ internal static class EFTGameFinder
             if (!string.IsNullOrEmpty(path))
             {
                 validGame = LC1A(path);
-                validGame = LC2B(path);
-                validGame = LC3C(path);
+                validGame = LC2B(path) && validGame;
+                validGame = LC3C(path) && validGame;
             }
         }
         catch { }

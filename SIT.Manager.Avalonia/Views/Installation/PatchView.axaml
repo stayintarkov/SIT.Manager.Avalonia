@@ -98,6 +98,17 @@
 				Grid.Row="1">
 			<Grid ColumnDefinitions="*" RowDefinitions="*">
 				<ContentControl Content="{Binding EmbeddedPatcherWindow}"/>
+
+				<StackPanel IsVisible="{Binding HasPatcherError}"
+							HorizontalAlignment="Center"
+							VerticalAlignment="Center">
+					<TextBlock Classes="ErrorMessage" 
+							   Text="{DynamicResource PatchViewPatchingErrorMessage}"/>
+					<Button Command="{Binding EndInstallCommand}"
+							HorizontalAlignment="Center"
+							Margin="8"
+							Content="{DynamicResource PatchViewPatchingEndInstallButtonTitle}"/>
+				</StackPanel>
 			</Grid>
 		</Border>
 	</Grid>

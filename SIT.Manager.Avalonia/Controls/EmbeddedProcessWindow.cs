@@ -9,24 +9,13 @@ using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.Controls;
 
-public class EmbeddedProcessWindow : NativeControlHost
+public class EmbeddedProcessWindow(Process p) : NativeControlHost
 {
-    private readonly Process _p;
+    private readonly Process _p = p;
 
     public int ExitCode => _p.ExitCode;
 
     public IntPtr ProcessWindowHandle { get; private set; }
-
-    public EmbeddedProcessWindow(Process p)
-    {
-        _p = p;
-        _p.Exited += Process_Exited;
-    }
-
-    private void Process_Exited(object? sender, EventArgs e)
-    {
-
-    }
 
     protected override void DestroyNativeControlCore(IPlatformHandle control)
     {

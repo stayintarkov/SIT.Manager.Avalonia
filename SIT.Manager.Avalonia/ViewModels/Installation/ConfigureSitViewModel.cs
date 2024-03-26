@@ -1,6 +1,7 @@
 ﻿using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FluentAvalonia.UI.Controls;
 using SIT.Manager.Avalonia.Extentions;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
@@ -17,6 +18,7 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
 {
     private readonly IManagerConfigService _configService;
     private readonly IInstallerService _installerService;
+    private readonly ILocalizationService _localizationService;
     private readonly IPickerDialogService _pickerDialogService;
 
     [ObservableProperty]
@@ -42,10 +44,15 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
 
     public IAsyncRelayCommand ChangeEftInstallLocationCommand { get; }
 
-    public ConfigureSitViewModel(IManagerConfigService configService, IInstallerService installerService, IPickerDialogService pickerDialogService) : base()
+    public ConfigureSitViewModel(
+        IManagerConfigService configService,
+        IInstallerService installerService,
+        ILocalizationService localizationService,
+        IPickerDialogService pickerDialogService) : base()
     {
         _configService = configService;
         _installerService = installerService;
+        _localizationService = localizationService;
         _pickerDialogService = pickerDialogService;
 
         ChangeEftInstallLocationCommand = new AsyncRelayCommand(ChangeEftInstallLocation);
@@ -58,7 +65,13 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
         {
             if (directorySelected.Path.LocalPath == CurrentInstallProcessState.BsgInstallPath)
             {
-                // TODO show an error of some kind as we don't want the legit install to be the same as the SIT install.
+                // Using the same location as the current BSG install and we don't want this the same as the SIT install.
+                await new ContentDialog()
+                {
+                    Title = _localizationService.TranslateSource("ConfigureSitViewModelLocationSelectionErrorTitle"),
+                    Content = _localizationService.TranslateSource("ConfigureSitViewModelLocationSelectionErrorDescription"),
+                    PrimaryButtonText = _localizationService.TranslateSource("ConfigureSitViewModelLocationSelectionErrorOk")
+                }.ShowAsync();
             }
             else
             {
@@ -104,7 +117,7 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
 
         // Make sure we only offer versions which are actually available to use to maximize the chances the install will work
         AvailableVersions.AddRange(availableVersions.Where(x => x.IsAvailable));
-        if (AvailableVersions.Any())
+        if (AvailableVersions.Count > 0)
         {
             SelectedVersion = AvailableVersions[0];
             HasVersionsAvailable = true;

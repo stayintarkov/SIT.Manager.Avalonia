@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Logging;
 using SIT.Manager.Avalonia.Controls;
@@ -45,6 +46,9 @@ public partial class PatchViewModel : InstallationViewModelBase
     private bool _requiresPatching = false;
 
     [ObservableProperty]
+    private bool _hasPatcherError = false;
+
+    [ObservableProperty]
     private EmbeddedProcessWindow? _embeddedPatcherWindow;
 
     public PatchViewModel(IFileService fileService, IInstallerService installerService, ILogger<PatchViewModel> logger) : base()
@@ -80,7 +84,9 @@ public partial class PatchViewModel : InstallationViewModelBase
         string[] files = Directory.GetFiles(CurrentInstallProcessState.EftInstallPath, "Patcher.exe", new EnumerationOptions() { MatchCasing = MatchCasing.CaseInsensitive, MaxRecursionDepth = 0 });
         if (files.Length == 0)
         {
-            // TODO handle this: return $"Patcher.exe not found in {CurrentInstallProcessState.EftInstallPath}";
+            _logger.LogError("Patcher.exe not found in install directory even though one should exist already");
+            HasPatcherError = true;
+            return;
         }
         string patcherPath = files[0];
 
@@ -101,10 +107,10 @@ public partial class PatchViewModel : InstallationViewModelBase
             await embeddedProcessWindow.StartProcess();
         }
 
-        _patcherResultMessages.TryGetValue(EmbeddedPatcherWindow.ExitCode, out string? patcherResult);
+        _patcherResultMessages.TryGetValue(embeddedProcessWindow.ExitCode, out string? patcherResult);
         _logger.LogInformation($"RunPatcher: {patcherResult}");
 
-        int exitCode = EmbeddedPatcherWindow.ExitCode;
+        int exitCode = embeddedProcessWindow.ExitCode;
         EmbeddedPatcherWindow = null;
 
         // Success exit code
@@ -131,8 +137,14 @@ public partial class PatchViewModel : InstallationViewModelBase
         }
         else
         {
-            // TODO report error here somehow
+            HasPatcherError = true;
         }
+    }
+
+    [RelayCommand]
+    private void EndInstall()
+    {
+        RegressInstall();
     }
 
     protected override async void OnActivated()

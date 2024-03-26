@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -28,24 +29,19 @@ public class FileService(IActionNotificationService actionNotificationService,
     private readonly ILogger<FileService> _logger = logger;
     private readonly ILocalizationService _localizationService = localizationService;
 
-    private static long CalculateDirectorySize(DirectoryInfo d)
+    private static async Task<long> CalculateDirectorySize(DirectoryInfo d)
     {
         long size = 0;
 
-        IEnumerable<DirectoryInfo> directories = d.EnumerateDirectories();
-        IEnumerable<FileInfo> files = d.EnumerateFiles();
-
         // Add subdirectory sizes.
+        IEnumerable<DirectoryInfo> directories = d.EnumerateDirectories();
         foreach (DirectoryInfo dir in directories)
         {
-            size += CalculateDirectorySize(dir);
+            size += await CalculateDirectorySize(dir).ConfigureAwait(false);
         }
 
         // Add file sizes.
-        foreach (FileInfo f in files)
-        {
-            size += f.Length;
-        }
+        size += d.EnumerateFiles().Sum(x => x.Length);
 
         return size;
     }
@@ -174,7 +170,7 @@ public class FileService(IActionNotificationService actionNotificationService,
     public async Task CopyDirectory(string source, string destination, IProgress<double>? progress = null)
     {
         DirectoryInfo sourceDir = new(source);
-        double totalSize = CalculateDirectorySize(sourceDir);
+        double totalSize = await CalculateDirectorySize(sourceDir).ConfigureAwait(false);
 
         DirectoryInfo destinationDir = new(destination);
         destinationDir.Create();

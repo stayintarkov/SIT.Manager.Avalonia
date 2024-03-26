@@ -328,6 +328,11 @@
 	<system:String x:Key="ConfigureSitViewMirrorSelectionTitle">Select the mirror to use:</system:String>
 	<system:String x:Key="ConfigureSitViewVersionSelectionTitle">Version to install:</system:String>
 
+	<!-- Install - Configure Sit View Model -->
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorTitle">Location Selection Error</system:String>
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorDescription">You've selected the same folder as the BSG install of EFT, please choose a different location to install SIT to</system:String>
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorOk">Ok</system:String>
+
 	<!-- Install - Install View -->
 	<system:String x:Key="InstallViewDownloadingTitle">Downloading</system:String>
 	<system:String x:Key="InstallViewExtractingTitle">Extracting</system:String>
@@ -338,7 +343,9 @@
 	<system:String x:Key="PatchViewCopyingTitle">Copying EFT Install</system:String>
 	<system:String x:Key="PatchViewDownloadingTitle">Downloading Patcher</system:String>
 	<system:String x:Key="PatchViewExtractingTitle">Extracting Patcher</system:String>
-
+	<system:String x:Key="PatchViewPatchingErrorMessage">Error trying to patch EFT consult the logs for details</system:String>
+	<system:String x:Key="PatchViewPatchingEndInstallButtonTitle">End Install</system:String>
+	
 	<!-- Install - Select View -->
 	<system:String x:Key="SelectViewInstallServerButtonTitle">Install Server + SIT Mod</system:String>
 	<system:String x:Key="SelectViewInstallServerButtonToolTip">Download SPT Server + SIT Server Mod.</system:String>

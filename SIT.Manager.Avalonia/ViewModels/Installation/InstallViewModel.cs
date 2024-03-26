@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.Logging;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.Models.Installation;
 using System;
@@ -10,6 +11,7 @@ namespace SIT.Manager.Avalonia.ViewModels.Installation;
 public partial class InstallViewModel : InstallationViewModelBase
 {
     private readonly IInstallerService _installerService;
+    private readonly ILogger<InstallViewModel> _logger;
 
     private readonly Progress<double> _downloadProgress = new();
     private readonly Progress<double> _extractionProgress = new();
@@ -23,9 +25,10 @@ public partial class InstallViewModel : InstallationViewModelBase
     [ObservableProperty]
     private double _installProgressPercentage = 0;
 
-    public InstallViewModel(IInstallerService installerService) : base()
+    public InstallViewModel(IInstallerService installerService, ILogger<InstallViewModel> logger) : base()
     {
         _installerService = installerService;
+        _logger = logger;
 
         _downloadProgress.ProgressChanged += DownloadProgress_ProgressChanged;
         _extractionProgress.ProgressChanged += ExtractionProgress_ProgressChanged;
@@ -65,9 +68,9 @@ public partial class InstallViewModel : InstallationViewModelBase
                 await _installerService.InstallSit(CurrentInstallProcessState.RequestedVersion, CurrentInstallProcessState.EftInstallPath, _downloadProgress, _extractionProgress);
             }
         }
-        catch
+        catch (Exception ex)
         {
-            // TODO show the information that we need out of this
+            _logger.LogError(ex, "Failed to install requested target");
             return;
         }
 
