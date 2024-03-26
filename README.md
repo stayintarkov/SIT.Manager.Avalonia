@@ -62,7 +62,6 @@
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
@@ -71,7 +70,7 @@
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
     <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="#contactsupport">Contact</a></li>
   </ol>
 </details>
 
@@ -82,7 +81,7 @@
 
 [![Project Screen Shot][project-image]]
 
-This project is a rewrite of the [SIT.Manager](https://github.com/stayintarkov/SIT.Manager) in an attempt to create a long lasting, maintainable and long lasting manager for SIT. In addition to bringing the functionality from the previous manager this project plans to bring multiple new features to improve the experience.
+This project is a rewrite of the [SIT.Manager](https://github.com/stayintarkov/SIT.Manager) in an attempt to create a long lasting, maintainable and helpful manager for SIT. In addition to bringing the functionality from the previous manager this project plans to bring multiple new features to improve the experience.
 
 
 
@@ -155,6 +154,7 @@ If you have a suggestion that would make this better, please fork the repo and c
 * A huge thanks to [Artehe](https://github.com/artehe) for all their contributions that helped bring the manager to life
 * [J0nathan550](https://github.com/J0nathan550) For all their work on the localization system, Russian & Ukrainian localizations, fixes, and tweaks
 * [JimWails](https://github.com/JimWails) For adding Chinese localizations
+* [Plootie](https://github.com/Plootie) For starting the development of the avalonia manager and various contributions
 
 
 <!-- LICENSE -->
