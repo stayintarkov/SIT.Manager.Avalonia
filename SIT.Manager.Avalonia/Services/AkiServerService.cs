@@ -175,43 +175,6 @@ public class AkiServerService(IBarNotificationService barNotificationService,
                     }
                 }
             }
-
-            TarkovRequesting requesting = ActivatorUtilities.CreateInstance<TarkovRequesting>(_serviceProvider, serverUri);
-            int retryCounter = 0;
-            while (retryCounter < 6)
-            {
-                using (CancellationTokenSource cts = new())
-                {
-                    DateTime abortTime = DateTime.Now + TimeSpan.FromSeconds(10);
-                    cts.CancelAfter(abortTime - DateTime.Now);
-
-                    bool pingReponse;
-                    try
-                    {
-                        pingReponse = await requesting.PingServer(cts.Token);
-                    }
-                    catch (HttpRequestException)
-                    {
-                        pingReponse = false;
-                    }
-
-                    if (pingReponse && _process?.HasExited == false)
-                    {
-                        IsStarted = true;
-                        ServerStarted?.Invoke(this, new EventArgs());
-                        UpdateRunningState(RunningState.Running);
-                        return;
-                    }
-                    else if (_process?.HasExited == true)
-                    {
-                        UpdateRunningState(RunningState.NotRunning);
-                        return;
-                    }
-                }
-
-                await Task.Delay(5 * 1000);
-                retryCounter++;
-            }
         });
     }
 }

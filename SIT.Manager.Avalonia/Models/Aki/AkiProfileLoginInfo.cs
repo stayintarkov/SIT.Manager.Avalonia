@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace SIT.Manager.Avalonia.Models;
+namespace SIT.Manager.Avalonia.Models.Aki;
 public class AkiProfileLoginInfo(AkiProfile akiProfile)
 {
     [JsonPropertyName("username")]
@@ -17,5 +17,5 @@ public class AkiProfileLoginInfo(AkiProfile akiProfile)
     [JsonPropertyName("password")]
     public string Password { get; init; } = akiProfile.Password;
     [JsonPropertyName("backendUrl")]
-    public string BackendUrl { get; init; } = akiProfile.Server.Address
+    public string BackendUrl { get; init; } = akiProfile.ParentServer.Address.ToString();
 }

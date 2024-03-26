@@ -3,7 +3,7 @@ using Polly.Registry;
 using SIT.Manager.Avalonia.Classes;
 using SIT.Manager.Avalonia.Extentions;
 using SIT.Manager.Avalonia.Interfaces;
-using SIT.Manager.Avalonia.Models;
+using SIT.Manager.Avalonia.Models.Aki;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -57,4 +57,12 @@ public class AkiServerRequestingService(HttpClient httpClient, ResiliencePipelin
         string serverRespStr = await resp.ReadAsStringAsync(cancellationToken: cancellationToken);
         return serverRespStr.Equals("\"pong!\"") ? Convert.ToInt32(stopwatch.ElapsedMilliseconds) : -1;
     }
+
+    /*
+    public async Task<bool> LoginAsync(AkiProfile profile, CancellationToken cancellationToken = default)
+    {
+        
+        string sessionID = await SendAsync()
+    }
+    */
 }

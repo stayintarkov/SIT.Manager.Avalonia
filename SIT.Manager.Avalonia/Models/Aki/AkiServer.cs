@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SIT.Manager.Avalonia.Models;
+namespace SIT.Manager.Avalonia.Models.Aki;
 public class AkiServer(Uri address) : ObservableObject
 {
     public Uri Address = address;
