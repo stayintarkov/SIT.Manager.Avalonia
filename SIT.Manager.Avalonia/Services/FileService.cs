@@ -1,13 +1,13 @@
 ﻿using CG.Web.MegaApiClient;
 using Microsoft.Extensions.Logging;
-using SharpCompress.Archives;
-using SharpCompress.Archives.Zip;
 using SharpCompress.Common;
+using SharpCompress.Readers;
 using SIT.Manager.Avalonia.Extentions;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -28,6 +28,54 @@ public class FileService(IActionNotificationService actionNotificationService,
     private readonly HttpClient _httpClient = httpClient;
     private readonly ILogger<FileService> _logger = logger;
     private readonly ILocalizationService _localizationService = localizationService;
+
+    private static async Task<long> CalculateDirectorySize(DirectoryInfo d)
+    {
+        long size = 0;
+
+        // Add subdirectory sizes.
+        IEnumerable<DirectoryInfo> directories = d.EnumerateDirectories();
+        foreach (DirectoryInfo dir in directories)
+        {
+            size += await CalculateDirectorySize(dir).ConfigureAwait(false);
+        }
+
+        // Add file sizes.
+        size += d.EnumerateFiles().Sum(x => x.Length);
+
+        return size;
+    }
+
+    private static async Task<double> CopyDirectoryAsync(DirectoryInfo source, DirectoryInfo destination, double currentProgress, double totalSize, IProgress<double>? progress = null)
+    {
+        IEnumerable<DirectoryInfo> directories = source.EnumerateDirectories();
+        IEnumerable<FileInfo> files = source.EnumerateFiles();
+
+        foreach (DirectoryInfo directory in directories)
+        {
+            DirectoryInfo newDestination = destination.CreateSubdirectory(directory.Name);
+            currentProgress = await CopyDirectoryAsync(directory, newDestination, currentProgress, totalSize, progress);
+        }
+
+        foreach (FileInfo file in files)
+        {
+            using (FileStream sourceStream = file.OpenRead())
+            {
+                using (FileStream destinationStream = File.Create(Path.Combine(destination.FullName, file.Name)))
+                {
+                    Progress<long> streamProgress = new(x =>
+                    {
+                        double progressPercentage = (currentProgress + x) / totalSize * 100;
+                        progress?.Report(progressPercentage);
+                    });
+                    await sourceStream.CopyToAsync(destinationStream, ushort.MaxValue, streamProgress);
+                    currentProgress += file.Length;
+                }
+            }
+        }
+
+        return currentProgress;
+    }
 
     private static async Task OpenAtLocation(string path)
     {
@@ -53,6 +101,37 @@ public class FileService(IActionNotificationService actionNotificationService,
         }
     }
 
+    private async Task<bool> DownloadMegaFile(string fileName, string fileUrl, IProgress<double> progress)
+    {
+        _logger.LogInformation("Attempting to use Mega API.");
+        try
+        {
+            MegaApiClient megaApiClient = new();
+            await megaApiClient.LoginAnonymousAsync();
+
+            // TODO: Add proper error handling below
+            if (!megaApiClient.IsLoggedIn)
+            {
+                return false;
+            }
+
+            _logger.LogInformation($"Starting download of '{fileName}' from '{fileUrl}'");
+
+            Uri fileLink = new(fileUrl);
+            INode fileNode = await megaApiClient.GetNodeFromLinkAsync(fileLink);
+
+            string targetPath = Path.Combine(_configService.Config.InstallPath, fileName);
+            await megaApiClient.DownloadFileAsync(fileNode, targetPath, progress);
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    // TODO unify this and the other DownloadMegaFile function nicely
     private async Task<bool> DownloadMegaFile(string fileName, string fileUrl, bool showProgress)
     {
         _logger.LogInformation("Attempting to use Mega API.");
@@ -61,7 +140,7 @@ public class FileService(IActionNotificationService actionNotificationService,
             MegaApiClient megaApiClient = new();
             await megaApiClient.LoginAnonymousAsync();
 
-            // Todo: Add proper error handling below
+            // TODO: Add proper error handling below
             if (!megaApiClient.IsLoggedIn)
             {
                 return false;
@@ -88,14 +167,52 @@ public class FileService(IActionNotificationService actionNotificationService,
         }
     }
 
-    /// <summary>
-    /// Downloads a file and shows a progress bar if enabled
-    /// </summary>
-    /// <param name="fileName">The name of the file to be downloaded.</param>
-    /// <param name="filePath">The path (not including the filename) to download to.</param>
-    /// <param name="fileUrl">The URL to download from.</param>
-    /// <param name="showProgress">If a progress bar should show the status.</param>
-    /// <returns></returns>
+    public async Task CopyDirectory(string source, string destination, IProgress<double>? progress = null)
+    {
+        DirectoryInfo sourceDir = new(source);
+        double totalSize = await CalculateDirectorySize(sourceDir).ConfigureAwait(false);
+
+        DirectoryInfo destinationDir = new(destination);
+        destinationDir.Create();
+
+        double currentprogress = 0;
+
+        await CopyDirectoryAsync(sourceDir, destinationDir, currentprogress, totalSize, progress);
+    }
+
+    // TODO unify this and the other DownloadFile function nicely
+    public async Task<bool> DownloadFile(string fileName, string filePath, string fileUrl, IProgress<double> progress)
+    {
+        bool result = false;
+        if (fileUrl.Contains("mega.nz"))
+        {
+            result = await DownloadMegaFile(fileName, fileUrl, progress);
+        }
+        else
+        {
+            _logger.LogInformation($"Starting download of '{fileName}' from '{fileUrl}'");
+            filePath = Path.Combine(filePath, fileName);
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+
+            try
+            {
+                using (FileStream file = new(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
+                {
+                    await _httpClient.DownloadAsync(file, fileUrl, progress);
+                }
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "DownloadFile");
+            }
+        }
+        return result;
+    }
+
     public async Task<bool> DownloadFile(string fileName, string filePath, string fileUrl, bool showProgress = false)
     {
         _actionNotificationService.StartActionNotification();
@@ -137,10 +254,8 @@ public class FileService(IActionNotificationService actionNotificationService,
         return result;
     }
 
-    public async Task ExtractArchive(string filePath, string destination)
+    public async Task ExtractArchive(string filePath, string destination, IProgress<double>? progress = null)
     {
-        _actionNotificationService.StartActionNotification();
-
         // Ensures that the last character on the extraction path is the directory separator char.
         // Without this, a malicious zip file could try to traverse outside of the expected extraction path.
         if (!destination.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
@@ -151,44 +266,37 @@ public class FileService(IActionNotificationService actionNotificationService,
         DirectoryInfo destinationInfo = new(destination);
         destinationInfo.Create();
 
-        ActionNotification actionNotification = new(string.Empty, 0, true);
         try
         {
-            using ZipArchive archive = await Task.Run(() => ZipArchive.Open(filePath));
-            int totalFiles = archive.Entries.Where(file => !file.IsDirectory).Count();
-            int completed = 0;
-
-            Progress<float> progress = new((prog) =>
+            using (Stream stream = await Task.Run(() => File.OpenRead(filePath)))
             {
-                actionNotification.ProgressPercentage = prog;
-                _actionNotificationService.UpdateActionNotification(actionNotification);
-            });
+                double totalBytes = stream.Length;
+                double bytesCompleted = 0;
+                using (IReader reader = await Task.Run(() => ReaderFactory.Open(stream)))
+                {
+                    reader.EntryExtractionProgress += (s, e) =>
+                    {
+                        if (e.ReaderProgress?.PercentageReadExact == 100)
+                        {
+                            bytesCompleted += e.Item.CompressedSize;
+                            progress?.Report(bytesCompleted / totalBytes * 100);
+                        }
+                    };
 
-            foreach (ZipArchiveEntry entry in archive.Entries)
-            {
-                if (entry.IsDirectory)
-                {
-                    continue;
-                }
-                else
-                {
-                    entry.WriteToDirectory(destination, new ExtractionOptions()
+                    await Task.Run(() => reader.WriteAllToDirectory(destination, new ExtractionOptions()
                     {
                         ExtractFullPath = true,
-                        Overwrite = true
-                    });
+                        Overwrite = true,
+                    }));
                 }
-
-                actionNotification.ActionText = _localizationService.TranslateSource("FileServiceProgressExtracting", $"{Path.GetFileName(entry.Key)}", $"{++completed}/{totalFiles}");
-                ((IProgress<float>) progress).Report((float) completed / totalFiles * 100);
+                progress?.Report(100);
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "ExtractFile: Error when opening Archive");
+            _logger.LogError(ex, "Error when extracting archive");
+            throw;
         }
-
-        _actionNotificationService.StopActionNotification();
     }
 
     public async Task OpenDirectoryAsync(string path)
@@ -211,5 +319,30 @@ public class FileService(IActionNotificationService actionNotificationService,
         }
         path = Path.GetFullPath(path);
         await OpenAtLocation(path);
+    }
+
+    public async Task SetFileAsExecutable(string filePath)
+    {
+        if (OperatingSystem.IsLinux())
+        {
+            string cmd = $"chmod 755 {filePath}";
+            string escapedArgs = cmd.Replace("\"", "\\\"");
+            using (Process process = new()
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    FileName = "/bin/bash",
+                    Arguments = $"-c \"{escapedArgs}\""
+                }
+            })
+            {
+                process.Start();
+                await process.WaitForExitAsync();
+            }
+        }
     }
 }

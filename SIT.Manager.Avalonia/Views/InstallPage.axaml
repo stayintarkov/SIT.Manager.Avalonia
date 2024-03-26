@@ -1,0 +1,47 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"					 
+			 xmlns:labs="using:Avalonia.Labs.Controls"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:iv="clr-namespace:SIT.Manager.Avalonia.Views.Installation"
+			 xmlns:vm="clr-namespace:SIT.Manager.Avalonia.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SIT.Manager.Avalonia.Views.InstallPage"
+			 x:DataType="vm:InstallPageViewModel"
+			 Background="Black">
+	<UserControl.Styles>
+		<Style Selector="labs|StepBarItem:selected">
+			<Setter Property="Foreground" Value="{StaticResource TextControlForeground}"/>
+			<Setter Property="Background" Value="{StaticResource AppAccentColor}"/>
+		</Style>
+	</UserControl.Styles>
+					
+	<Grid ColumnDefinitions="Auto, *">
+		<labs:StepBar Grid.Column="0"
+					  IsMouseSelectable="False"
+					  Grid.Row="0"
+					  Margin="8,0,8,0"
+					  SelectedIndex="{Binding CurrentInstallStep}"
+					  ItemsSource="{Binding InstallationSteps}"
+					  Dock="Left">
+			<labs:StepBar.ItemTemplate>
+				<DataTemplate>
+					<TextBlock FontSize="14"
+							   Margin="0,0,0,3"
+							   VerticalAlignment="Center"
+							   HorizontalAlignment="Left"
+							   Text="{Binding Header}"/>
+				</DataTemplate>
+			</labs:StepBar.ItemTemplate>
+		</labs:StepBar>
+
+		<TransitioningContentControl Grid.Column="1" 
+									 Content="{Binding InstallStepControl}"
+									 Margin="4">
+			<TransitioningContentControl.PageTransition>
+				<PageSlide Orientation="Vertical" Duration="0:00:00.500" />
+			</TransitioningContentControl.PageTransition>
+		</TransitioningContentControl>
+	</Grid>
+</UserControl>

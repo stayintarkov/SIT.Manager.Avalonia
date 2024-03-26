@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using FluentAvalonia.UI.Controls;
 using SIT.Manager.Avalonia.Interfaces;
+using SIT.Manager.Avalonia.Models.Installation;
 using System;
 using System.Threading.Tasks;
 
@@ -44,7 +46,8 @@ public partial class UpdatePageViewModel : ObservableObject
 
         if (updateRequestResult == ContentDialogResult.Primary)
         {
-            // TODO disable users being able to navigate until we have finished updating and restarted (or there is an error)
+            WeakReferenceMessenger.Default.Send(new InstallationRunningMessage(true));
+
             bool updateResult = await _appUpdaterService.Update(_updateProgress);
             if (updateResult)
             {
@@ -53,6 +56,7 @@ public partial class UpdatePageViewModel : ObservableObject
             else
             {
                 HasError = true;
+                WeakReferenceMessenger.Default.Send(new InstallationRunningMessage(false));
             }
         }
     }

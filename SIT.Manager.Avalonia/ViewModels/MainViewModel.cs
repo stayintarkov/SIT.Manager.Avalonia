@@ -8,6 +8,7 @@ using FluentAvalonia.UI.Media.Animation;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models;
+using SIT.Manager.Avalonia.Models.Installation;
 using SIT.Manager.Avalonia.Models.Messages;
 using SIT.Manager.Avalonia.Views;
 using System;
@@ -18,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.ViewModels;
 
-public partial class MainViewModel : ObservableRecipient, IRecipient<PageNavigationMessage>
+public partial class MainViewModel : ObservableRecipient, IRecipient<InstallationRunningMessage>, IRecipient<PageNavigationMessage>
 {
     private readonly IActionNotificationService _actionNotificationService;
     private readonly IAppUpdaterService _appUpdaterService;
@@ -33,6 +34,9 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<PageNavigat
 
     [ObservableProperty]
     private bool _updateAvailable = false;
+
+    [ObservableProperty]
+    private bool _isInstallRunning = false;
 
     public ObservableCollection<BarNotification> BarNotifications { get; } = [];
 
@@ -114,5 +118,10 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<PageNavigat
     public void Receive(PageNavigationMessage message)
     {
         NavigateToPage(message.Value.TargetPage, message.Value.SuppressTransition);
+    }
+
+    public void Receive(InstallationRunningMessage message)
+    {
+        IsInstallRunning = message.Value;
     }
 }

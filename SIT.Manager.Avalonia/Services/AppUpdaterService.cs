@@ -1,9 +1,6 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Microsoft.Extensions.Logging;
-using SharpCompress.Archives;
-using SharpCompress.Archives.Tar;
-using SharpCompress.Archives.Zip;
 using SIT.Manager.Avalonia.Extentions;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
@@ -19,10 +16,11 @@ using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.Services;
 
-public class AppUpdaterService(ILogger<AppUpdaterService> logger, HttpClient httpClient, IManagerConfigService managerConfigService) : IAppUpdaterService
+public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterService> logger, HttpClient httpClient, IManagerConfigService managerConfigService) : IAppUpdaterService
 {
     private const string MANAGER_VERSION_URL = @"https://api.github.com/repos/stayintarkov/SIT.Manager.Avalonia/releases/latest";
 
+    private readonly IFileService _fileService = fileService;
     private readonly ILogger<AppUpdaterService> _logger = logger;
     private readonly HttpClient _httpClient = httpClient;
     private readonly IManagerConfigService _managerConfigService = managerConfigService;
@@ -90,50 +88,11 @@ public class AppUpdaterService(ILogger<AppUpdaterService> logger, HttpClient htt
         }
     }
 
-    private static void ExtractUpdatedManager(string zipPath, string destination)
+    private void ExtractUpdatedManager(string zipPath, string destination)
     {
         DirectoryInfo releasePath = new(destination);
         releasePath.Create();
-
-        if (OperatingSystem.IsWindows())
-        {
-            using (ZipArchive archive = ZipArchive.Open(zipPath))
-            {
-                archive.ExtractToDirectory(releasePath.FullName);
-            }
-        }
-        else if (OperatingSystem.IsLinux())
-        {
-            using (TarArchive archive = TarArchive.Open(zipPath))
-            {
-                archive.ExtractToDirectory(releasePath.FullName);
-            }
-        }
-        else
-        {
-            throw new NotImplementedException("No manager extraction has been configured for this OS.");
-        }
-    }
-
-    private static void SetLinuxExecutablePermissions(string cmd)
-    {
-        string escapedArgs = cmd.Replace("\"", "\\\"");
-        using (Process process = new()
-        {
-            StartInfo = new ProcessStartInfo
-            {
-                RedirectStandardOutput = true,
-                UseShellExecute = false,
-                CreateNoWindow = true,
-                WindowStyle = ProcessWindowStyle.Hidden,
-                FileName = "/bin/bash",
-                Arguments = $"-c \"{escapedArgs}\""
-            }
-        })
-        {
-            process.Start();
-            process.WaitForExit();
-        }
+        _fileService.ExtractArchive(zipPath, releasePath.FullName);
     }
 
     public async Task<bool> CheckForUpdate()
@@ -195,13 +154,10 @@ public class AppUpdaterService(ILogger<AppUpdaterService> logger, HttpClient htt
 
         // Set the permissions for the executable now that we have extracted it
         // this has the added bonus of making sure that Process.dll tm is loaded 
-        // before we move it elsewhere
-        if (OperatingSystem.IsLinux())
-        {
-            string executablePath = Path.Combine(releasePath, ProcessName);
-            SetLinuxExecutablePermissions($"chmod 755 {executablePath}");
-        }
-        else
+        // before we move it elsewhere allowing us to restart the app
+        string executablePath = Path.Combine(releasePath, ProcessName);
+        await _fileService.SetFileAsExecutable(executablePath);
+        if (OperatingSystem.IsWindows())
         {
             // HACK this literally is just so that the Process class and related dlls
             // get loaded on Windows :)

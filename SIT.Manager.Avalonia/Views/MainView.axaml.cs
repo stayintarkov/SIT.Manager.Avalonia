@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.Messaging;
 using FluentAvalonia.UI.Controls;
+using FluentAvalonia.UI.Navigation;
 using SIT.Manager.Avalonia.Controls;
 using SIT.Manager.Avalonia.Models;
 using SIT.Manager.Avalonia.Models.Messages;
@@ -15,9 +16,21 @@ public partial class MainView : ActivatableUserControl
     {
         InitializeComponent();
 
-        // Set the initially loaded page to be the play page and highlight this in the nav view.
+        // Set the initially loaded page to be the play page and highlight this
+        // in the nav view.
+        ContentFrame.Navigated += ContentFrame_Navigated;
         ContentFrame.Navigate(typeof(PlayPage));
         NavView.SelectedItem = NavView.MenuItems.First();
+    }
+
+    private void ContentFrame_Navigated(object sender, NavigationEventArgs e)
+    {
+        // Make sure that the selection indicator is always right for whatever is currently displayed.
+        object? selectedItem = NavView.MenuItems.FirstOrDefault(x => Type.GetType(((NavigationViewItem) x).Tag?.ToString() ?? string.Empty) == e.Content.GetType());
+        if (selectedItem != null)
+        {
+            NavView.SelectedItem = selectedItem;
+        }
     }
 
     // I hate this so much, Please if someone knows of a better way to do this make a pull request. Even microsoft docs recommend this heathenry

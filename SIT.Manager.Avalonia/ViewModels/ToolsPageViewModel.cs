@@ -8,7 +8,6 @@ using SIT.Manager.Avalonia.Models;
 using SIT.Manager.Avalonia.Models.Messages;
 using SIT.Manager.Avalonia.Services;
 using SIT.Manager.Avalonia.Views;
-using SIT.Manager.Avalonia.Views.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,20 +22,14 @@ public partial class ToolsPageViewModel : ObservableObject
     private readonly IBarNotificationService _barNotificationService;
     private readonly IManagerConfigService _configService;
     private readonly IFileService _fileService;
-    private readonly IInstallerService _installerService;
     private readonly ITarkovClientService _tarkovClientService;
-    private readonly IVersionService _versionService;
     private readonly ILocalizationService _localizationService;
-
-    public IAsyncRelayCommand InstallSITCommand { get; }
 
     public IAsyncRelayCommand OpenEFTFolderCommand { get; }
 
     public IAsyncRelayCommand OpenBepInExFolderCommand { get; }
 
     public IAsyncRelayCommand OpenSITConfigCommand { get; }
-
-    public IAsyncRelayCommand InstallServerCommand { get; }
 
     public IAsyncRelayCommand OpenEFTLogCommand { get; }
 
@@ -47,89 +40,20 @@ public partial class ToolsPageViewModel : ObservableObject
                               IManagerConfigService configService,
                               IFileService fileService,
                               ILocalizationService localizationService,
-                              IInstallerService installerService,
-                              ITarkovClientService tarkovClientService,
-                              IVersionService versionService)
+                              ITarkovClientService tarkovClientService)
     {
         _akiServerService = akiServerService;
         _barNotificationService = barNotificationService;
         _configService = configService;
         _fileService = fileService;
-        _installerService = installerService;
         _tarkovClientService = tarkovClientService;
-        _versionService = versionService;
         _localizationService = localizationService;
 
-        InstallSITCommand = new AsyncRelayCommand(InstallSIT);
         OpenEFTFolderCommand = new AsyncRelayCommand(OpenEFTFolder);
         OpenBepInExFolderCommand = new AsyncRelayCommand(OpenBepInExFolder);
         OpenSITConfigCommand = new AsyncRelayCommand(OpenSITConfig);
-        InstallServerCommand = new AsyncRelayCommand(InstallServer);
         OpenEFTLogCommand = new AsyncRelayCommand(OpenEFTLog);
         ClearCacheCommand = new AsyncRelayCommand(ClearCache);
-    }
-
-    /// <summary>
-    /// Check the current version of EFT and update the version in the config if it's different
-    /// </summary>
-    private void CheckTarkovVersion()
-    {
-        ManagerConfig config = _configService.Config;
-        string tarkovVersion = _versionService.GetEFTVersion(config.InstallPath);
-        if (tarkovVersion != config.TarkovVersion)
-        {
-            config.TarkovVersion = tarkovVersion;
-            _configService.UpdateConfig(config);
-        }
-    }
-
-    private async Task<GithubRelease?> EnsureEftVersion(List<GithubRelease> releases)
-    {
-        if (!releases.Any())
-        {
-            _barNotificationService.ShowWarning(_localizationService.TranslateSource("ToolsPageViewModelErrorMessageTitle"), _localizationService.TranslateSource("ToolsPageViewModelErrorMessageDescription"));
-            return null;
-        }
-
-        SelectVersionDialog selectWindow = new(releases);
-        GithubRelease? selectedVersion = await selectWindow.ShowAsync();
-        if (selectedVersion == null)
-        {
-            return null;
-        }
-
-        // Ensure the tarkov version is up to date before we check it
-        CheckTarkovVersion();
-        if (_configService.Config.TarkovVersion != selectedVersion.body)
-        {
-            Dictionary<string, string>? availableMirrors = await _installerService.GetAvaiableMirrorsForVerison(selectedVersion.body);
-            if (availableMirrors == null)
-            {
-                return null;
-            }
-
-            SelectDowngradePatcherMirrorDialog selectDowngradePatcherWindow = new(availableMirrors);
-            string? selectedMirrorUrl = await selectDowngradePatcherWindow.ShowAsync();
-            if (string.IsNullOrEmpty(selectedMirrorUrl))
-            {
-                return null;
-            }
-
-            await _installerService.DownloadAndRunPatcher(selectedMirrorUrl);
-            CheckTarkovVersion();
-        }
-
-        return selectedVersion;
-    }
-
-    private async Task InstallSIT()
-    {
-        List<GithubRelease> sitReleases = await _installerService.GetSITReleases();
-        GithubRelease? versionToInstall = await EnsureEftVersion(sitReleases);
-        if (versionToInstall != null)
-        {
-            await _installerService.InstallSIT(versionToInstall);
-        }
     }
 
     private async Task OpenEFTFolder()
@@ -221,16 +145,6 @@ public partial class ToolsPageViewModel : ObservableObject
                 CloseButtonText = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigButtonOk")
             };
             await contentDialog.ShowAsync();
-        }
-    }
-
-    private async Task InstallServer()
-    {
-        List<GithubRelease> serverReleases = await _installerService.GetServerReleases();
-        GithubRelease? versionToInstall = await EnsureEftVersion(serverReleases);
-        if (versionToInstall != null)
-        {
-            await _installerService.InstallServer(versionToInstall);
         }
     }
 

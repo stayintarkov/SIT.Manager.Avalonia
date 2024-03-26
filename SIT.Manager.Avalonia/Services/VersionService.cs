@@ -47,6 +47,7 @@ public partial class VersionService(ILogger<VersionService> logger) : IVersionSe
 
     public string GetSptAkiVersion(string path)
     {
+        // TODO fix this when installed on linux
         string filePath = Path.Combine(path, "Aki.Server.exe");
         string fileVersion = GetFileProductVersionString(filePath);
         if (string.IsNullOrEmpty(fileVersion))
@@ -62,7 +63,14 @@ public partial class VersionService(ILogger<VersionService> logger) : IVersionSe
 
     public string GetEFTVersion(string path)
     {
-        string filePath = Path.Combine(path, "EscapeFromTarkov.exe");
+        string eftFilename = "EscapeFromTarkov.exe";
+
+        string filePath = path;
+        if (Path.GetFileName(path) != eftFilename)
+        {
+            filePath = Path.Combine(path, "EscapeFromTarkov.exe");
+        }
+
         string fileVersion = GetFileProductVersionString(filePath);
         if (string.IsNullOrEmpty(fileVersion))
         {

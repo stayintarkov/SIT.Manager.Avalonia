@@ -82,16 +82,12 @@
 	<system:String x:Key="ModsPageViewModelErrorNoModsFound">未找到任何模組</system:String>
 
 	<!-- Tools Page -->
-	<system:String x:Key="ToolsSITTitle">安裝客戶端 SIT 模組</system:String>
-	<system:String x:Key="ToolsSITToolTip">如果需要，降級 EFT，安裝客戶端 SIT 和模組支援</system:String>
 	<system:String x:Key="ToolsOpenEFTFolderButtonToolTip">打開 EFT 安裝資料夾</system:String>
 	<system:String x:Key="ToolsOpenEFTFolderButtonTitle">打開 EFT 資料夾</system:String>
 	<system:String x:Key="ToolsOpenBepInExFolderButtonToolTip">打開 BepInEx 插件資料夾</system:String>
 	<system:String x:Key="ToolsOpenBepInExFolderButtonTitle">打開插件資料夾</system:String>
 	<system:String x:Key="ToolsOpenSITConfigButtonToolTip">使用默認文本編輯器打開 SIT 設定檔</system:String>
 	<system:String x:Key="ToolsOpenSITConfigButtonTitle">打開 SIT 設定檔</system:String>
-	<system:String x:Key="ToolsInstallServerButtonToolTip">下載 SPT 本地伺服器 + SIT 伺服器模組</system:String>
-	<system:String x:Key="ToolsInstallServerButtonTitle">安裝伺服器 + SIT 伺服器模組</system:String>
 	<system:String x:Key="ToolsOpenEFTLogButtonToolTip">使用默認文本編輯器打開 EFT 的 'Player.log' 檔案</system:String>
 	<system:String x:Key="ToolsOpenEFTLogButtonTitle">打開 EFT 日誌</system:String>
 	<system:String x:Key="ToolsOpenLocationEditorButtonToolTip">打開地圖配置編輯器</system:String>
@@ -207,22 +203,10 @@
 	<system:String x:Key="LocationEditorViewModelSaveSuccessTitle">儲存</system:String>
 	<system:String x:Key="LocationEditorViewModelSaveSuccessDescription">已成功儲存檔案至：%1</system:String>
 
-	<!-- Select Version Dialog -->
-	<system:String x:Key="SelectVersionDialogTitle">選擇版本</system:String>
-	<system:String x:Key="SelectVersionDialogToInstallTitle">選擇要安裝的版本：</system:String>
-	<system:String x:Key="SelectVersionButtonInstallTitle">安裝</system:String>
-	<system:String x:Key="SelectVersionButtonCloseTitle">取消</system:String>
-
 	<!-- Select Edition Dialog -->
 	<system:String x:Key="SelectEditionDialogTitle">選擇版本</system:String>
 	<system:String x:Key="SelectEditionDialogTextBlockTitle">為您的 SIT 帳戶選擇版本：</system:String>
 	<system:String x:Key="SelectEditionDialogButtonCreateTitle">創建</system:String>
-
-	<!-- Select Downgrade Dialog -->
-	<system:String x:Key="SelectDowngradeRequiredTitle">需要降級 EFT</system:String>
-	<system:String x:Key="SelectDowngradeRequiredButtonDownload">下載</system:String>
-	<system:String x:Key="SelectDowngradeRequiredButtonCancel">取消</system:String>
-	<system:String x:Key="SelectDowngradeRequiredTextBlock">選擇要安裝的版本：</system:String>
 
 	<!-- Tools Page ViewModel -->
 	<system:String x:Key="ToolsPageViewModelErrorMessageTitle">錯誤</system:String>
@@ -312,4 +296,66 @@
 	<system:String x:Key="UpdatePageViewModelUpdateConfirmationDescription">Are you sure you want to update? The manager will automatically restart once it has updated</system:String>
 	<system:String x:Key="UpdatePageViewModelButtonYes">Yes</system:String>
 	<system:String x:Key="UpdatePageViewModelButtonNo">No</system:String>
+
+	<!-- Install - Complete View -->
+	<system:String x:Key="CompleteViewInstallComplete">Install Completed</system:String>
+	<system:String x:Key="CompleteViewResetButtonTitle">Happy Playing</system:String>
+
+	<!-- Install - Configure View -->
+	<system:String x:Key="ConfigureViewStartInstallButtonTitle">Start Install</system:String>
+	<system:String x:Key="ConfigureViewBackButtonTitle">Back</system:String>
+	<system:String x:Key="ConfigureViewVersionSelectionGroupTitle">Version Selection</system:String>
+
+	<!-- Install - Configure Server View -->
+	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathToolTip">Change the SPT-AKI Install Path.</system:String>
+	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathTitle">Change</system:String>
+	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathPlaceholder">SPT-AKI Install Path...</system:String>
+	<system:String x:Key="ConfigureServerViewSPTAKIPathTitle">SPT-AKI Path:</system:String>
+	<system:String x:Key="ConfigureServerViewSPTAKIPathWarningNoPath">No SPT-AKI install path specified</system:String>
+	<system:String x:Key="ConfigureServerViewVersionSelectionTitle">Version to install:</system:String>
+	
+	<!-- Install - Configure Sit View -->
+	<system:String x:Key="ConfigureSitViewLoadingVersionSelectionText">Working out available SIT versions please wait...</system:String>
+	<system:String x:Key="ConfigureSitViewEFTChangeInstallPathToolTip">Change the EFT Install Path.</system:String>
+	<system:String x:Key="ConfigureSitViewEFTSettingsButtonChangeTitle">Change</system:String>
+	<system:String x:Key="ConfigureSitViewEFTInstallPathPlaceholder">EFT Install Path...</system:String>
+	<system:String x:Key="ConfigureSitViewEFTInstallPathTitle">EFT Path:</system:String>
+	<system:String x:Key="ConfigureSitViewEFTPathWarningNoPath">Currently using the BSG EFT install location please install EFT to a different location to avoid any possible issues with SIT</system:String>
+	<system:String x:Key="ConfigureSitViewMirrorSelectionTitle">Select the mirror to use:</system:String>
+	<system:String x:Key="ConfigureSitViewVersionSelectionTitle">Version to install:</system:String>
+
+	<!-- Install - Configure Sit View Model -->
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorTitle">Location Selection Error</system:String>
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorDescription">You've selected the same folder as the BSG install of EFT, please choose a different location to install SIT to</system:String>
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorOk">Ok</system:String>
+
+	<!-- Install - Install View -->
+	<system:String x:Key="InstallViewDownloadingTitle">Downloading</system:String>
+	<system:String x:Key="InstallViewExtractingTitle">Extracting</system:String>
+	<system:String x:Key="InstallViewInstallTitle">Install</system:String>
+	
+	<!-- Install - Patch View -->
+	<system:String x:Key="PatchViewSummaryMessage">Setting up your EFT instance so it's ready to install the requested SIT version</system:String>
+	<system:String x:Key="PatchViewCopyingTitle">Copying EFT Install</system:String>
+	<system:String x:Key="PatchViewDownloadingTitle">Downloading Patcher</system:String>
+	<system:String x:Key="PatchViewExtractingTitle">Extracting Patcher</system:String>
+	<system:String x:Key="PatchViewPatchingErrorMessage">Error trying to patch EFT consult the logs for details</system:String>
+	<system:String x:Key="PatchViewPatchingEndInstallButtonTitle">End Install</system:String>
+	
+	<!-- Install - Select View -->
+	<system:String x:Key="SelectViewInstallServerButtonTitle">Install Server + SIT Mod</system:String>
+	<system:String x:Key="SelectViewInstallServerButtonToolTip">Download SPT Server + SIT Server Mod.</system:String>
+	<system:String x:Key="SelectViewServerModVersionTitle">SIT Mod Version:</system:String>
+	<system:String x:Key="SelectViewServerVersionTitle">SPT-AKI Version:</system:String>
+	<system:String x:Key="SelectViewSPTAKIPathTitle">SPT-AKI Path:</system:String>
+	<system:String x:Key="SelectViewSPTAKINoPathWarningMessage">Unable to find SPT-AKI install if you have already installed AKI-SPT please go to the Settings page and set the SPT-AKI install path. Otherwise you will be asked to provide an empty folder to install SPT-AKI to</system:String>
+	<system:String x:Key="SelectViewServerSectionHeading">SPT-AKI</system:String>
+	<system:String x:Key="SelectViewInstallSITButtonTitle">Install SIT</system:String>
+	<system:String x:Key="SelectViewInstallSITButtonToolTip">Downgrade EFT if needed, install SIT and mod support.</system:String>
+	<system:String x:Key="SelectViewSITVersionTitle">SIT Version:</system:String>
+	<system:String x:Key="SelectViewEFTVersionTitle">EFT Version:</system:String>
+	<system:String x:Key="SelectViewEFTPathTitle">EFT Path:</system:String>
+	<system:String x:Key="SelectViewEFTNoPathWarningMessage">Unable to find EFT install please go and set this manually in the Settings page</system:String>
+	<system:String x:Key="SelectViewEFTUsingBSGInstallWarningMessage">Detected BSG Escape From Tarkov install, if you have already installed SIT please go to the Settings page and change the EFT install path to this folder. Otherwise you will be asked to provide an empty folder to copy BSG EFT installation and install SIT to</system:String>
+	<system:String x:Key="SelectViewEFTSectionHeading">Escape From Tarkov</system:String>
 </ResourceDictionary>
