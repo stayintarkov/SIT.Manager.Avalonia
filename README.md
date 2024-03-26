@@ -143,7 +143,7 @@ See the [open issues](https://github.com/stayintarkov/SIT.Manager.Avalonia/issue
 <!-- CONTRIBUTING -->
 ## Contributing
 
-Any contributions you make are **greatly appreciated** by all all of us <3
+Any contributions you make are **greatly appreciated** by all of us <3
 
 If you have a suggestion that would make this better, please fork the repo and create a pull request or open an issue with the tag "enhancement"
 
