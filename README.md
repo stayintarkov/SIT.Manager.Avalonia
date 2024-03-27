@@ -128,7 +128,7 @@ _For questions about usage please refer to the [SIT Discord](https://discord.gg/
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Revamped installation system
+- [x] Revamped installation system
     - [ ] Overhauled mod installation
 - [ ] New play page
     - [ ] Server bookmarking/saving
