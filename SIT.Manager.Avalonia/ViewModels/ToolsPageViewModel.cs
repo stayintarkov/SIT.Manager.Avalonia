@@ -50,7 +50,7 @@ public partial class ToolsPageViewModel : ObservableObject
 
     public IAsyncRelayCommand ClearCacheCommand { get; }
 
-    public IAsyncRelayCommand GenerateBugReportCommand { get; }
+    public IAsyncRelayCommand GenerateDiagnosticReportCommand { get; }
 
     public ToolsPageViewModel(IAkiServerService akiServerService,
                               IBarNotificationService barNotificationService,
@@ -73,7 +73,7 @@ public partial class ToolsPageViewModel : ObservableObject
         OpenSITConfigCommand = new AsyncRelayCommand(OpenSITConfig);
         OpenEFTLogCommand = new AsyncRelayCommand(OpenEFTLog);
         ClearCacheCommand = new AsyncRelayCommand(ClearCache);
-        GenerateBugReportCommand = new AsyncRelayCommand(GenerateBugReport);
+        GenerateDiagnosticReportCommand = new AsyncRelayCommand(GenerateDiagnosticReport);
     }
 
     private async Task OpenEFTFolder()
@@ -237,7 +237,7 @@ public partial class ToolsPageViewModel : ObservableObject
         }
     }
 
-    private async Task GenerateBugReport()
+    private async Task GenerateDiagnosticReport()
     {
         var results = await new SelectLogsDialog().ShowAsync();
         List<Tuple<string, string>> DiagnosticData = new(4);
@@ -314,7 +314,7 @@ public partial class ToolsPageViewModel : ObservableObject
         {
             var pickedPath = await mainWindow.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
             {
-                Title = _localizationService.TranslateSource("ToolsBugReportSaveFileTitle"),
+                Title = _localizationService.TranslateSource("ToolsDiagnosticReportSaveFileTitle"),
                 SuggestedFileName = "diagnostics",
                 DefaultExtension = "zip"
             });

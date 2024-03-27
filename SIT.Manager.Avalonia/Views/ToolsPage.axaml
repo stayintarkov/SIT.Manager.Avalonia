@@ -59,15 +59,14 @@
 					<TextBlock Text="{DynamicResource ToolsOpenSITConfigButtonTitle}"/>
 				</StackPanel>
 			</Button>
-			<Button Name="GenerateBugReport"
+			<Button Name="GenerateDiagnosticReport"
 					HorizontalAlignment="Stretch"
 					HorizontalContentAlignment="Stretch"
 					Classes="toolsButton"
-					ToolTip.Tip="{DynamicResource ToolsGenerateBugReportToolTip}"
-					Command="{Binding GenerateBugReportCommand}">
+					Command="{Binding GenerateDiagnosticReportCommand}">
 				<StackPanel Orientation="Horizontal">
 					<ui:SymbolIcon Symbol="ReportHacked" Margin="0,0,10,0"/>
-					<TextBlock Text="{DynamicResource ToolsGenerateBugReportButtonTitle}"/>
+					<TextBlock Text="{DynamicResource ToolsGenerateDiagnosticReportButtonTitle}"/>
 				</StackPanel>
 			</Button>
 		</StackPanel>

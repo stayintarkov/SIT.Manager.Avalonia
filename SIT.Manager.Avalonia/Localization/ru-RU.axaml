@@ -94,7 +94,7 @@
 	<system:String x:Key="ToolsOpenLocationEditorButtonTitle">Редактор локаций</system:String>
 	<system:String x:Key="ToolsClearCacheButtonToolTip">Очистить кеш локального пользователя EFT.</system:String>
 	<system:String x:Key="ToolsClearCacheButtonTitle">Очистить кеш</system:String>
-	<system:String x:Key="ToolsGenerateBugReportButtonTitle">Generate Logs</system:String>
+	<system:String x:Key="ToolsGenerateDiagnosticReportButtonTitle">Generate Logs</system:String>
 	<system:String x:Key="ToolsClientLogCheckboxContent">Include EFT Logs</system:String>
 	<system:String x:Key="ToolsServerLogCheckboxContent">Include Server Logs</system:String>
 	<system:String x:Key="ToolsDiagnosticsLogCheckboxContent">Include Diagnostic Logs (Contains System Info!)</system:String>
