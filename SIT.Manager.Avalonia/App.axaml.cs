@@ -84,6 +84,7 @@ public sealed partial class App : Application
         });
         services.AddSingleton<IZlibService, ZlibService>();
         services.AddSingleton<ILocalizationService, LocalizationService>();
+        services.AddSingleton<IDiagnosticService, DiagnosticService>();
 
         // Page Viewmodels
         services.AddTransient<InstallPageViewModel>();

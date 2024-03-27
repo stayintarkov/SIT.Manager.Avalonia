@@ -13,9 +13,9 @@
 				  x:Class="SIT.Manager.Avalonia.Views.Dialogs.SelectLogsDialog"
 				  x:DataType="vm:SelectLogsDialogViewModel">
 	<StackPanel>
-		<CheckBox Name="ClientLogCheckbox" Content="{DynamicResource ToolsClientLogCheckboxContent}" IsChecked="{Binding SelectedOptions.IncludeClientLog, Mode=OneWay}" />
-		<CheckBox Name="ServerLogCheckbox" Content="{DynamicResource ToolsServerLogCheckboxContent}" IsChecked="{Binding SelectedOptions.IncludeServerLog, Mode=OneWay}" />
-		<CheckBox Name="DiagnosticLogCheckbox" Content="{DynamicResource ToolsDiagnosticsLogCheckboxContent}" IsChecked="{Binding SelectedOptions.IncludeDiagnosticLog, Mode=OneWay}" />
-		<CheckBox Name="HttpJsonCheckbox" Content="{DynamicResource ToolsHttpJsonCheckboxContent}" IsChecked="{Binding SelectedOptions.IncludeHttpJson, Mode=OneWay}" />
+		<CheckBox Name="ClientLogCheckbox" Content="{DynamicResource ToolsClientLogCheckboxContent}" IsChecked="{Binding SelectedOptions.IncludeClientLog, Mode=TwoWay}" />
+		<CheckBox Name="ServerLogCheckbox" Content="{DynamicResource ToolsServerLogCheckboxContent}" IsChecked="{Binding SelectedOptions.IncludeServerLog, Mode=TwoWay}" />
+		<CheckBox Name="DiagnosticLogCheckbox" Content="{DynamicResource ToolsDiagnosticsLogCheckboxContent}" IsChecked="{Binding SelectedOptions.IncludeDiagnosticLog, Mode=TwoWay}" />
+		<CheckBox Name="HttpJsonCheckbox" Content="{DynamicResource ToolsHttpJsonCheckboxContent}" IsChecked="{Binding SelectedOptions.IncludeHttpJson, Mode=TwoWay}" />
 	</StackPanel>
 </ui:ContentDialog>

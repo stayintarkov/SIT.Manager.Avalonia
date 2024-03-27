@@ -34,7 +34,7 @@ public partial class ToolsPageViewModel : ObservableObject
     private readonly IFileService _fileService;
     private readonly ITarkovClientService _tarkovClientService;
     private readonly ILocalizationService _localizationService;
-    private readonly HttpClient _httpClient;
+    private readonly IDiagnosticService _diagnosticService;
     private static string EFTLogPath
     {
         get => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "..", "LocalLow", "Battlestate Games", "EscapeFromTarkov", "Player.log");
@@ -58,7 +58,7 @@ public partial class ToolsPageViewModel : ObservableObject
                               IFileService fileService,
                               ILocalizationService localizationService,
                               ITarkovClientService tarkovClientService,
-                              HttpClient httpClient)
+                              IDiagnosticService diagnosticService)
     {
         _akiServerService = akiServerService;
         _barNotificationService = barNotificationService;
@@ -66,7 +66,7 @@ public partial class ToolsPageViewModel : ObservableObject
         _fileService = fileService;
         _tarkovClientService = tarkovClientService;
         _localizationService = localizationService;
-        _httpClient = httpClient;
+        _diagnosticService = diagnosticService;
 
         OpenEFTFolderCommand = new AsyncRelayCommand(OpenEFTFolder);
         OpenBepInExFolderCommand = new AsyncRelayCommand(OpenBepInExFolder);
@@ -240,111 +240,37 @@ public partial class ToolsPageViewModel : ObservableObject
     private async Task GenerateDiagnosticReport()
     {
         var results = await new SelectLogsDialog().ShowAsync();
-        List<Tuple<string, string>> DiagnosticData = new(4);
 
-        if (results.IncludeClientLog)
+        using (Stream diagnosticArchive = await _diagnosticService.GenerateDiagnosticReport(results))
         {
-            string eftLogPath = EFTLogPath;
-            DiagnosticData.Add(new(Path.GetFileName(eftLogPath), await File.ReadAllTextAsync(eftLogPath)));
-        }
-
-        if (results.IncludeServerLog && !string.IsNullOrEmpty(_configService.Config.AkiServerPath))
-        {
-            DirectoryInfo serverLogDirectory = new(Path.Combine(_configService.Config.AkiServerPath, "user", "logs"));
-            if (serverLogDirectory.Exists)
+            string savePath;
+            Window? mainWindow = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+            if (mainWindow != null)
             {
-                IEnumerable<FileInfo> files = serverLogDirectory.GetFiles("*.log");
-                files = files.OrderBy(x => x.LastWriteTime);
-                if (files.Any())
+                var pickedPath = await mainWindow.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
                 {
-                    string serverLogFile = files.First().FullName;
-                    DiagnosticData.Add(new(Path.GetFileName(serverLogFile), await File.ReadAllTextAsync(serverLogFile)));
-                }
-            }
-        }
-
-        if (results.IncludeDiagnosticLog)
-        {
-            //TODO: Add more diagnostics if needed
-            StringBuilder sb = new("#--- DIAGNOSTICS LOG ---#\n\n");
-
-            //Get all networks adaptors local address if they're online
-            sb.AppendLine("#-- Network Information: --#\n");
-            foreach (NetworkInterface networkInterface in NetworkInterface.GetAllNetworkInterfaces())
-            {
-                if (networkInterface.OperationalStatus == OperationalStatus.Up)
+                    Title = _localizationService.TranslateSource("ToolsDiagnosticReportSaveFileTitle"),
+                    SuggestedFileName = "diagnostics",
+                    DefaultExtension = "zip"
+                });
+                if (pickedPath != null)
                 {
-                    foreach (UnicastIPAddressInformation ip in networkInterface.GetIPProperties().UnicastAddresses)
-                    {
-                        if (ip.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                        {
-                            sb.AppendLine($"Network Interface: {networkInterface.Name}");
-                            sb.AppendLine($"Interface Type: {networkInterface.NetworkInterfaceType.ToString()}");
-                            sb.AppendLine($"Address: {ip.Address}\n");
-                        }
-                    }
+                    savePath = pickedPath.Path.AbsolutePath;
                 }
-            }
-
-            //TODO: Add system hardware information
-
-            DiagnosticData.Add(new("Diagnostics.log", sb.ToString()));
-        }
-
-        if (results.IncludeHttpJson)
-        {
-            FileInfo httpJsonFile = new(Path.Combine(_configService.Config.AkiServerPath, "Aki_Data", "Server", "configs", "http.json"));
-            if (httpJsonFile.Exists)
-                DiagnosticData.Add(new(httpJsonFile.Name, await File.ReadAllTextAsync(httpJsonFile.FullName)));
-        }
-
-        //I hate doing it this way but at least icanhazip is owned by cloudlfare
-        HttpResponseMessage resp = await _httpClient.GetAsync("https://ipv4.icanhazip.com/");
-        string externalAddress = await resp.Content.ReadAsStringAsync();
-
-        List<Tuple<string, string>> CleanLogFiles = new(DiagnosticData.Count);
-        foreach (Tuple<string, string> diagnosticFile in DiagnosticData)
-        {
-            CleanLogFiles.Add(new(diagnosticFile.Item1, diagnosticFile.Item2.Replace(externalAddress.Trim(), "REACTED")));
-        }
-
-        Stream? fileStream;
-        Window? mainWindow = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
-        if (mainWindow != null)
-        {
-            var pickedPath = await mainWindow.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
-            {
-                Title = _localizationService.TranslateSource("ToolsDiagnosticReportSaveFileTitle"),
-                SuggestedFileName = "diagnostics",
-                DefaultExtension = "zip"
-            });
-            if (pickedPath != null)
-            {
-                fileStream = await pickedPath.OpenWriteAsync();
+                else
+                {
+                    return;
+                }
             }
             else
             {
-                return;
+                savePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
             }
-        }
-        else
-        {
-            fileStream = File.OpenWrite(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads"));
-        }
 
-        using (ZipArchive zipArchive = new(fileStream, ZipArchiveMode.Create, true))
-        {
-            foreach (Tuple<string, string> entryData in CleanLogFiles)
+            using (FileStream fs = File.OpenWrite(savePath))
             {
-                var entry = zipArchive.CreateEntry(entryData.Item1);
-                using (Stream entryStream = entry.Open())
-                using (StreamWriter sw = new(entryStream))
-                {
-                    await sw.WriteAsync(entryData.Item2);
-                    await sw.FlushAsync();
-                }
+                await diagnosticArchive.CopyToAsync(fs);
             }
         }
-        await fileStream.DisposeAsync();
     }
 }
