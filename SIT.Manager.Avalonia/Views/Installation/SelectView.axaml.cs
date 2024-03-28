@@ -2,14 +2,13 @@ using Avalonia.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using SIT.Manager.Avalonia.ViewModels.Installation;
 
-namespace SIT.Manager.Avalonia.Views.Installation
+namespace SIT.Manager.Avalonia.Views.Installation;
+
+public partial class SelectView : UserControl
 {
-    public partial class SelectView : UserControl
+    public SelectView()
     {
-        public SelectView()
-        {
-            InitializeComponent();
-            this.DataContext = App.Current.Services.GetService<SelectViewModel>();
-        }
+        InitializeComponent();
+        this.DataContext = App.Current.Services.GetService<SelectViewModel>();
     }
 }

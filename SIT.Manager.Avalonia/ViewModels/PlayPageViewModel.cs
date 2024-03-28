@@ -16,7 +16,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -47,10 +46,11 @@ public partial class PlayPageViewModel : ObservableObject
     private ManagerConfig _managerConfig;
 
     [ObservableProperty]
+    private bool _isServerRunning;
+
+    [ObservableProperty]
     private string _quickPlayText = "Start Server and Connect";
 
-    private readonly HttpClient _httpClient;
-    private readonly HttpClientHandler _httpClientHandler;
     private readonly ITarkovClientService _tarkovClientService;
     private readonly IAkiServerService _akiServerService;
     private readonly ILocalizationService _localizationService;
@@ -61,8 +61,6 @@ public partial class PlayPageViewModel : ObservableObject
 
     public PlayPageViewModel(
         IManagerConfigService configService,
-        HttpClient httpClient,
-        HttpClientHandler httpClientHandler,
         ITarkovClientService tarkovClientService,
         IAkiServerService akiServerService,
         ILocalizationService localizationService,
@@ -72,8 +70,6 @@ public partial class PlayPageViewModel : ObservableObject
         _configService = configService;
         _managerConfig = _configService.Config;
         //TODO: Check that this is the best way to implement DI for the TarkovRequesting. Prettysure service provider would be better
-        _httpClient = httpClient;
-        _httpClientHandler = httpClientHandler;
         _tarkovClientService = tarkovClientService;
         _akiServerService = akiServerService;
         _serviceProvider = serviceProvider;
@@ -87,6 +83,8 @@ public partial class PlayPageViewModel : ObservableObject
             QuickPlayText = _localizationService.TranslateSource("PlayPageViewModelQuickPlayText");
         };
 
+        _akiServerService.RunningStateChanged += AkiServerService_RunningStateChanged;
+
         _lastServer = _configService.Config.LastServer;
         _username = _configService.Config.Username;
         _password = _configService.Config.Password;
@@ -96,7 +94,34 @@ public partial class PlayPageViewModel : ObservableObject
         QuickPlayCommand = new AsyncRelayCommand(async () => await ConnectToServer(true));
     }
 
-    private string CreateLaunchArugments(TarkovLaunchConfig launchConfig, string token)
+    private void AkiServerService_RunningStateChanged(object? sender, RunningState e)
+    {
+        switch (e)
+        {
+            case RunningState.NotRunning:
+                IsServerRunning = false;
+                QuickPlayText = _localizationService.TranslateSource("PlayPageViewModelQuickPlayText");
+                break;
+            case RunningState.Starting:
+                IsServerRunning = true;
+                QuickPlayText = _localizationService.TranslateSource("PlayPageViewModelQuickPlayText");
+                break;
+            case RunningState.Running:
+                IsServerRunning = true;
+                QuickPlayText = "Server is running!"; //_localizationService.TranslateSource("PlayPageViewModelServerIsRunningTitle"); // Server is running!
+                break;
+            case RunningState.StoppedUnexpectedly:
+                IsServerRunning = false;
+                QuickPlayText = _localizationService.TranslateSource("PlayPageViewModelQuickPlayText");
+                break;
+            default:
+                IsServerRunning = false;
+                QuickPlayText = _localizationService.TranslateSource("PlayPageViewModelQuickPlayText");
+                break;
+        }
+    }
+
+    private string CreateLaunchArguments(TarkovLaunchConfig launchConfig, string token)
     {
         string jsonConfig = JsonSerializer.Serialize(launchConfig);
 
@@ -260,7 +285,7 @@ public partial class PlayPageViewModel : ObservableObject
         if (launchServer)
         {
             validationRules.AddRange(
-                [
+            [
                 //Unhandled Instance
                 new ValidationRule()
                 {
@@ -268,14 +293,14 @@ public partial class PlayPageViewModel : ObservableObject
                     ErrorMessage = _localizationService.TranslateSource("PlayPageViewModelUnhandledAkiInstanceDescription"),
                     Check = () => { return !_akiServerService.IsUnhandledInstanceRunning(); }
                 },
-                    //Missing executable
-                    new ValidationRule()
-                    {
-                        Name = _localizationService.TranslateSource("PlayPageViewModelMissingAKIInstallationTitle"),
-                        ErrorMessage = _localizationService.TranslateSource("PlayPageViewModelMissingAKIInstallationDescription"),
-                        Check = () => { return File.Exists(_akiServerService.ExecutableFilePath); }
-                    }
-                ]);
+                //Missing executable
+                new ValidationRule()
+                {
+                    Name = _localizationService.TranslateSource("PlayPageViewModelMissingAKIInstallationTitle"),
+                    ErrorMessage = _localizationService.TranslateSource("PlayPageViewModelMissingAKIInstallationDescription"),
+                    Check = () => { return File.Exists(_akiServerService.ExecutableFilePath); }
+                }
+            ]);
         }
 
         foreach (ValidationRule rule in validationRules)
@@ -294,6 +319,10 @@ public partial class PlayPageViewModel : ObservableObject
 
         if (launchServer)
         {
+            if (_akiServerService.State == RunningState.Starting)
+            {
+                return;
+            }
             _akiServerService.Start();
 
             bool aborted = false;
@@ -326,7 +355,6 @@ public partial class PlayPageViewModel : ObservableObject
                 await Task.Delay(1000);
             }
 
-            QuickPlayText = _localizationService.TranslateSource("PlayPageViewModelQuickPlayText");
             if (aborted)
             {
                 return;
@@ -342,14 +370,14 @@ public partial class PlayPageViewModel : ObservableObject
         string backendUrl = serverAddress.AbsoluteUri[..^(SITVersion >= standardUriFormatSupportedVersion ? 0 : 1)];
 
         // Launch game
-        string launchArguments = CreateLaunchArugments(new TarkovLaunchConfig { BackendUrl = backendUrl }, token);
+        string launchArguments = CreateLaunchArguments(new TarkovLaunchConfig { BackendUrl = backendUrl }, token);
         try
         {
             _tarkovClientService.Start(launchArguments);
         }
         catch (Exception ex)
         {
-            _logger.LogError("An exception occured while launching Tarkov: {exMessage}", ex.Message);
+            _logger.LogError($"An exception occured while launching Tarkov: {ex.Message}");
             await new ContentDialog()
             {
                 Title = _localizationService.TranslateSource("ModsPageViewModelErrorTitle"),
