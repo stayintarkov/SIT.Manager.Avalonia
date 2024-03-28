@@ -2,14 +2,13 @@ using Avalonia.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using SIT.Manager.Avalonia.ViewModels;
 
-namespace SIT.Manager.Avalonia.Views
+namespace SIT.Manager.Avalonia.Views;
+
+public partial class InstallPage : UserControl
 {
-    public partial class InstallPage : UserControl
+    public InstallPage()
     {
-        public InstallPage()
-        {
-            InitializeComponent();
-            this.DataContext = App.Current.Services.GetService<InstallPageViewModel>();
-        }
+        InitializeComponent();
+        DataContext = App.Current.Services.GetService<InstallPageViewModel>();
     }
 }

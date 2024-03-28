@@ -39,18 +39,21 @@
 	<system:String x:Key="PlayPageViewModelWaitingForServerTitle">Ожидание сервера</system:String>
 	<system:String x:Key="PlayPageViewModelServerErrorTitle">Ошибка сервера</system:String>
 	<system:String x:Key="PlayPageViewModelServerErrorDescription">Сервер не запустился. Пожалуйста, проверьте журналы для получения дополнительной информации.</system:String>
+	<system:String x:Key="PlayPageViewModelServerIsRunningTitle">Сервер запущен!</system:String>
 
 	<!-- Pane View (Menu on the left also tooltip about update on top) -->
-	<system:String x:Key="UpdateNotification">Доступно обновление SIT Manager, нажмите здесь для обновления:</system:String>
-	<system:String x:Key="UpdateButtonTitle">Обновление</system:String>
+	<system:String x:Key="UpdateNotification">Доступно обновление менеджера SIT. Нажмите здесь, чтобы обновить:</system:String>
+	<system:String x:Key="UpdateButtonTitle">Обновить</system:String>
 	<system:String x:Key="SetupTitle">Настройка</system:String>
-	<system:String x:Key="InstallPathErrorNotification">Путь установки клиента еще не настроен. Перейдите в настройки, чтобы настроить пусковую установку.</system:String>
+	<system:String x:Key="InstallPathErrorNotification">Путь установки клиента еще не настроен. Перейдите в настройки, чтобы настроить лаунчер.</system:String>
 	<system:String x:Key="PlayTitle">Играть</system:String>
+	<system:String x:Key="InstallTitle">Установка</system:String>
 	<system:String x:Key="ToolsTitle">Инструменты</system:String>
 	<system:String x:Key="ServerTitle">Сервер</system:String>
 	<system:String x:Key="ModsTitle">Моды</system:String>
 	<system:String x:Key="SettingsTitle">Настройки</system:String>
-	<system:String x:Key="PlayTitleToolTip">Подключайтесь и играйте.</system:String>
+	<system:String x:Key="PlayTitleToolTip">Подключиться и играть.</system:String>
+	<system:String x:Key="InstallTitleToolTip">Установить/обновить SIT и SIT Server</system:String>
 	<system:String x:Key="ToolsTitleToolTip">Инструменты для управления SIT и Tarkov.</system:String>
 	<system:String x:Key="ServerTitleToolTip">Управление сервером.</system:String>
 	<system:String x:Key="ModsTitleToolTip">Управление модами.</system:String>
@@ -94,22 +97,24 @@
 	<system:String x:Key="ToolsOpenLocationEditorButtonTitle">Редактор локаций</system:String>
 	<system:String x:Key="ToolsClearCacheButtonToolTip">Очистить кеш локального пользователя EFT.</system:String>
 	<system:String x:Key="ToolsClearCacheButtonTitle">Очистить кеш</system:String>
-	<system:String x:Key="ToolsGenerateDiagnosticReportButtonTitle">Generate Logs</system:String>
-	<system:String x:Key="ToolsClientLogCheckboxContent">Include EFT Logs</system:String>
-	<system:String x:Key="ToolsServerLogCheckboxContent">Include Server Logs</system:String>
-	<system:String x:Key="ToolsDiagnosticsLogCheckboxContent">Include Diagnostic Logs (Contains System Info!)</system:String>
-	<system:String x:Key="ToolsHttpJsonCheckboxContent">Include Http.json File</system:String>
-	<system:String x:Key="ToolsSelectLogsTitle">Select which logs to include</system:String>
-	<system:String x:Key="ToolsSelectLogsProceedButtonText">Generate Log Bundle</system:String>
-	<system:String x:Key="ToolsSelectLogsCloseButtonText">Cancel</system:String>
-	<system:String x:Key="ToolsBugReportSaveFileTitle">Save zip file</system:String>
-	
+	<system:String x:Key="ToolsGenerateDiagnosticReportButtonTitle">Создать журналы</system:String>
+	<system:String x:Key="ToolsClientLogCheckboxContent">Включить логи EFT</system:String>
+	<system:String x:Key="ToolsServerLogCheckboxContent">Включить логи сервера</system:String>
+	<system:String x:Key="ToolsDiagnosticsLogCheckboxContent">Включить диагностические логи (Содержит информацию о системе!)</system:String>
+	<system:String x:Key="ToolsHttpJsonCheckboxContent">Включить файл Http.json</system:String>
+	<system:String x:Key="ToolsSelectLogsTitle">Выберите, какие логи включить</system:String>
+	<system:String x:Key="ToolsSelectLogsProceedButtonText">Создать пакет логов</system:String>
+	<system:String x:Key="ToolsSelectLogsCloseButtonText">Отмена</system:String>
+	<system:String x:Key="ToolsBugReportSaveFileTitle">Сохранить Zip File</system:String>
+
 	<!-- Server Page -->
 	<system:String x:Key="ServerConsoleOutputTitle">Вывод консоли</system:String>
 	<system:String x:Key="ServerButtonStartToolTip">Запустить сервер.</system:String>
 	<system:String x:Key="ServerEditServerConfig">Редактировать конфигурацию сервера</system:String>
 	<system:String x:Key="ServerEditServerConfigButtonToolTip">Редактировать сервер</system:String>
-
+	<system:String x:Key="ServerClearServerOutputText">Очистить вывод сервера</system:String>
+	<system:String x:Key="ServerClearServerOutputTooltip">Очищает весь вывод консоли.</system:String>
+	
 	<!-- Settings Page -->
 	<system:String x:Key="SettingsLauncherSettingsTitle">Настройки Лаунчера</system:String>
 	<system:String x:Key="SettingsCloseLauncherAfterGameLaunchTitle">Закрыть лаунчер после запуска игры</system:String>
@@ -252,6 +257,10 @@
 	<system:String x:Key="ServerPageViewModelSPTAkiNotFound">SPT-AKI не найден. Пожалуйста, настройте путь к SPT-AKI во вкладке Настройки перед запуском сервера.</system:String>
 	<system:String x:Key="ServerPageViewModelStartingServerLog">Запуск сервера...</system:String>
 	<system:String x:Key="ServerPageViewModelStoppingServerLog">Остановка сервера...</system:String>
+	<system:String x:Key="ServerPageViewModelClearServerOutputTitle">Очистить вывод сервера</system:String>
+	<system:String x:Key="ServerPageViewModelClearServerOutputDescription">Хотите очистить весь текст из вывода консоли?</system:String>
+	<system:String x:Key="ServerPageViewModelClearServerOutputPrimary">Да</system:String>
+	<system:String x:Key="ServerPageViewModelClearServerOutputSecondary">Нет</system:String>
 
 	<!-- Tarkov Client Service -->
 	<system:String x:Key="TarkovClientServiceCacheClearedTitle">Кеш очищен</system:String>
@@ -282,7 +291,6 @@
 	<system:String x:Key="ModServiceFileUninstallModTitle">Удалить мод</system:String>
 	<system:String x:Key="ModServiceFileUninstallModDescription">%1 успешно удален.</system:String>
 
-
 	<!-- Install Service -->
 	<system:String x:Key="InstallServiceErrorTitle">Ошибка</system:String>
 	<system:String x:Key="InstallServiceErrorInstallServerDescription">Пожалуйста, настройте путь к EFT в разделе Настройки.</system:String>
@@ -299,77 +307,85 @@
 	<system:String x:Key="FileServiceProgressExtracting">Извлечение файла %1 (%2)</system:String>
 
 	<!-- Update Page -->
-	<system:String x:Key="UpdatePageUpdateButtonTitle">Start Update</system:String>
-	<system:String x:Key="UpdatePageUpdateInfoTextPt1">SIT Manager is updating for you please wait...</system:String>
-	<system:String x:Key="UpdatePageUpdateInfoTextPt2">The app restart as soon as it has finished</system:String>
-	<system:String x:Key="UpdatePageUpdatingTitle">Updating</system:String>
-	<system:String x:Key="UpdatePageErrorMessage">There was an issue trying to update SIT Manager please view the log for details</system:String>
+	<system:String x:Key="UpdatePageUpdateButtonTitle">Начать обновление</system:String>
+	<system:String x:Key="UpdatePageUpdateInfoTextPt1">Менеджер SIT обновляется, пожалуйста, подождите...</system:String>
+	<system:String x:Key="UpdatePageUpdateInfoTextPt2">Приложение перезапустится сразу после завершения обновления</system:String>
+	<system:String x:Key="UpdatePageUpdatingTitle">Обновление</system:String>
+	<system:String x:Key="UpdatePageErrorMessage">Возникла проблема при попытке обновления менеджера SIT. Пожалуйста, просмотрите журнал для получения дополнительной информации</system:String>
 
 	<!-- Update Page View Model -->
-	<system:String x:Key="UpdatePageViewModelUpdateConfirmationTitle">Update Confirmation</system:String>
-	<system:String x:Key="UpdatePageViewModelUpdateConfirmationDescription">Are you sure you want to update? The manager will automatically restart once it has updated</system:String>
-	<system:String x:Key="UpdatePageViewModelButtonYes">Yes</system:String>
-	<system:String x:Key="UpdatePageViewModelButtonNo">No</system:String>
+	<system:String x:Key="UpdatePageViewModelUpdateConfirmationTitle">Подтверждение обновления</system:String>
+	<system:String x:Key="UpdatePageViewModelUpdateConfirmationDescription">Вы уверены, что хотите обновить? Менеджер автоматически перезапустится после обновления</system:String>
+	<system:String x:Key="UpdatePageViewModelButtonYes">Да</system:String>
+	<system:String x:Key="UpdatePageViewModelButtonNo">Нет</system:String>
 
 	<!-- Install - Complete View -->
-	<system:String x:Key="CompleteViewInstallComplete">Install Completed</system:String>
-	<system:String x:Key="CompleteViewResetButtonTitle">Happy Playing</system:String>
+	<system:String x:Key="CompleteViewInstallComplete">Установка завершена</system:String>
+	<system:String x:Key="CompleteViewResetButtonTitle">Приятной игры</system:String>
 
 	<!-- Install - Configure View -->
-	<system:String x:Key="ConfigureViewStartInstallButtonTitle">Start Install</system:String>
-	<system:String x:Key="ConfigureViewBackButtonTitle">Back</system:String>
-	<system:String x:Key="ConfigureViewVersionSelectionGroupTitle">Version Selection</system:String>
+	<system:String x:Key="ConfigureViewStartInstallButtonTitle">Начать установку</system:String>
+	<system:String x:Key="ConfigureViewBackButtonTitle">Назад</system:String>
+	<system:String x:Key="ConfigureViewVersionSelectionGroupTitle">Выбор версии</system:String>
 
 	<!-- Install - Configure Server View -->
-	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathToolTip">Change the SPT-AKI Install Path.</system:String>
-	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathTitle">Change</system:String>
-	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathPlaceholder">SPT-AKI Install Path...</system:String>
-	<system:String x:Key="ConfigureServerViewSPTAKIPathTitle">SPT-AKI Path:</system:String>
-	<system:String x:Key="ConfigureServerViewSPTAKIPathWarningNoPath">No SPT-AKI install path specified</system:String>
-	<system:String x:Key="ConfigureServerViewVersionSelectionTitle">Version to install:</system:String>
-	
+	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathToolTip">Изменить путь установки SPT-AKI.</system:String>
+	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathTitle">Изменить</system:String>
+	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathPlaceholder">Путь установки SPT-AKI...</system:String>
+	<system:String x:Key="ConfigureServerViewSPTAKIPathTitle">Путь SPT-AKI:</system:String>
+	<system:String x:Key="ConfigureServerViewSPTAKIPathWarningNoPath">Не указан путь установки SPT-AKI</system:String>
+	<system:String x:Key="ConfigureServerViewVersionSelectionTitle">Версия для установки:</system:String>
+
 	<!-- Install - Configure Sit View -->
-	<system:String x:Key="ConfigureSitViewLoadingVersionSelectionText">Working out available SIT versions please wait...</system:String>
-	<system:String x:Key="ConfigureSitViewEFTChangeInstallPathToolTip">Change the EFT Install Path.</system:String>
-	<system:String x:Key="ConfigureSitViewEFTSettingsButtonChangeTitle">Change</system:String>
-	<system:String x:Key="ConfigureSitViewEFTInstallPathPlaceholder">EFT Install Path...</system:String>
-	<system:String x:Key="ConfigureSitViewEFTInstallPathTitle">EFT Path:</system:String>
-	<system:String x:Key="ConfigureSitViewEFTPathWarningNoPath">Currently using the BSG EFT install location please install EFT to a different location to avoid any possible issues with SIT</system:String>
-	<system:String x:Key="ConfigureSitViewMirrorSelectionTitle">Select the mirror to use:</system:String>
-	<system:String x:Key="ConfigureSitViewVersionSelectionTitle">Version to install:</system:String>
+	<system:String x:Key="ConfigureSitViewLoadingVersionSelectionText">Определение доступных версий SIT, пожалуйста, подождите...</system:String>
+	<system:String x:Key="ConfigureSitViewEFTChangeInstallPathToolTip">Изменить путь установки EFT.</system:String>
+	<system:String x:Key="ConfigureSitViewEFTSettingsButtonChangeTitle">Изменить</system:String>
+	<system:String x:Key="ConfigureSitViewEFTInstallPathPlaceholder">Путь установки EFT...</system:String>
+	<system:String x:Key="ConfigureSitViewEFTInstallPathTitle">Путь EFT:</system:String>
+	<system:String x:Key="ConfigureSitViewEFTPathWarningNoPath">В настоящее время используется местоположение установки BSG EFT. Пожалуйста, установите EFT в другое место, чтобы избежать возможных проблем с SIT</system:String>
+	<system:String x:Key="ConfigureSitViewMirrorSelectionTitle">Выберите зеркало для использования:</system:String>
+	<system:String x:Key="ConfigureSitViewVersionSelectionTitle">Версия для установки:</system:String>
 
 	<!-- Install - Configure Sit View Model -->
-	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorTitle">Location Selection Error</system:String>
-	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorDescription">You've selected the same folder as the BSG install of EFT, please choose a different location to install SIT to</system:String>
-	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorOk">Ok</system:String>
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorTitle">Ошибка выбора местоположения</system:String>
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorDescription">Вы выбрали ту же папку, что и установка BSG EFT, выберите другое местоположение для установки SIT</system:String>
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorOk">Ок</system:String>
 
 	<!-- Install - Install View -->
-	<system:String x:Key="InstallViewDownloadingTitle">Downloading</system:String>
-	<system:String x:Key="InstallViewExtractingTitle">Extracting</system:String>
-	<system:String x:Key="InstallViewInstallTitle">Install</system:String>
-	
+	<system:String x:Key="InstallViewDownloadingTitle">Загрузка</system:String>
+	<system:String x:Key="InstallViewExtractingTitle">Распаковка</system:String>
+	<system:String x:Key="InstallViewInstallTitle">Установка</system:String>
+
 	<!-- Install - Patch View -->
-	<system:String x:Key="PatchViewSummaryMessage">Setting up your EFT instance so it's ready to install the requested SIT version</system:String>
-	<system:String x:Key="PatchViewCopyingTitle">Copying EFT Install</system:String>
-	<system:String x:Key="PatchViewDownloadingTitle">Downloading Patcher</system:String>
-	<system:String x:Key="PatchViewExtractingTitle">Extracting Patcher</system:String>
-	<system:String x:Key="PatchViewPatchingErrorMessage">Error trying to patch EFT consult the logs for details</system:String>
-	<system:String x:Key="PatchViewPatchingEndInstallButtonTitle">End Install</system:String>
-	
+	<system:String x:Key="PatchViewSummaryMessage">Подготовка вашего экземпляра EFT к установке запрошенной версии SIT</system:String>
+	<system:String x:Key="PatchViewCopyingTitle">Копирование установки EFT</system:String>
+	<system:String x:Key="PatchViewDownloadingTitle">Загрузка патчера</system:String>
+	<system:String x:Key="PatchViewExtractingTitle">Распаковка патчера</system:String>
+	<system:String x:Key="PatchViewPatchingErrorMessage">Ошибка при попытке патча EFT. Подробности смотрите в журналах</system:String>
+	<system:String x:Key="PatchViewPatchingEndInstallButtonTitle">Завершить установку</system:String>
+
 	<!-- Install - Select View -->
-	<system:String x:Key="SelectViewInstallServerButtonTitle">Install Server + SIT Mod</system:String>
-	<system:String x:Key="SelectViewInstallServerButtonToolTip">Download SPT Server + SIT Server Mod.</system:String>
-	<system:String x:Key="SelectViewServerModVersionTitle">SIT Mod Version:</system:String>
-	<system:String x:Key="SelectViewServerVersionTitle">SPT-AKI Version:</system:String>
-	<system:String x:Key="SelectViewSPTAKIPathTitle">SPT-AKI Path:</system:String>
-	<system:String x:Key="SelectViewSPTAKINoPathWarningMessage">Unable to find SPT-AKI install if you have already installed AKI-SPT please go to the Settings page and set the SPT-AKI install path. Otherwise you will be asked to provide an empty folder to install SPT-AKI to</system:String>
+	<system:String x:Key="SelectViewInstallServerButtonTitle">Установить сервер + мод SIT</system:String>
+	<system:String x:Key="SelectViewInstallServerButtonToolTip">Загрузить SPT-сервер + мод SIT-сервера.</system:String>
+	<system:String x:Key="SelectViewServerModVersionTitle">Версия мода SIT:</system:String>
+	<system:String x:Key="SelectViewServerVersionTitle">Версия SPT-AKI:</system:String>
+	<system:String x:Key="SelectViewSPTAKIPathTitle">Путь SPT-AKI:</system:String>
+	<system:String x:Key="SelectViewSPTAKINoPathWarningMessage">Не удалось найти установку SPT-AKI. Если вы уже установили AKI-SPT, перейдите на страницу настроек и установите путь установки SPT-AKI. В противном случае вам будет предложено указать пустую папку для установки SPT-AKI</system:String>
 	<system:String x:Key="SelectViewServerSectionHeading">SPT-AKI</system:String>
-	<system:String x:Key="SelectViewInstallSITButtonTitle">Install SIT</system:String>
-	<system:String x:Key="SelectViewInstallSITButtonToolTip">Downgrade EFT if needed, install SIT and mod support.</system:String>
-	<system:String x:Key="SelectViewSITVersionTitle">SIT Version:</system:String>
-	<system:String x:Key="SelectViewEFTVersionTitle">EFT Version:</system:String>
-	<system:String x:Key="SelectViewEFTPathTitle">EFT Path:</system:String>
-	<system:String x:Key="SelectViewEFTNoPathWarningMessage">Unable to find EFT install please go and set this manually in the Settings page</system:String>
-	<system:String x:Key="SelectViewEFTUsingBSGInstallWarningMessage">Detected BSG Escape From Tarkov install, if you have already installed SIT please go to the Settings page and change the EFT install path to this folder. Otherwise you will be asked to provide an empty folder to copy BSG EFT installation and install SIT to</system:String>
+	<system:String x:Key="SelectViewInstallSITButtonTitle">Установить SIT</system:String>
+	<system:String x:Key="SelectViewInstallSITButtonToolTip">Понизить версию EFT при необходимости, установить SIT и поддержку модов.</system:String>
+	<system:String x:Key="SelectViewSITVersionTitle">Версия SIT:</system:String>
+	<system:String x:Key="SelectViewEFTVersionTitle">Версия EFT:</system:String>
+	<system:String x:Key="SelectViewEFTPathTitle">Путь EFT:</system:String>
+	<system:String x:Key="SelectViewEFTNoPathWarningMessage">Не удалось найти установку EFT. Пожалуйста, установите его вручную на странице настроек</system:String>
+	<system:String x:Key="SelectViewEFTUsingBSGInstallWarningMessage">Обнаружена установка BSG Escape From Tarkov. Если вы уже установили SIT, перейдите на страницу настроек и измените путь установки EFT на эту папку. В противном случае вам будет предложено указать пустую папку для копирования установки BSG EFT и установки SIT</system:String>
 	<system:String x:Key="SelectViewEFTSectionHeading">Escape From Tarkov</system:String>
+
+	<!-- Install - View Model -->
+	<system:String x:Key="InstallPageViewModelSelectText">Выбрать</system:String>
+	<system:String x:Key="InstallPageViewModelConfigureText">Настройка</system:String>
+	<system:String x:Key="InstallPageViewModelPatchText">Патч</system:String>
+	<system:String x:Key="InstallPageViewModelInstallText">Установка</system:String>
+	<system:String x:Key="InstallPageViewModelCompleteText">Завершение</system:String>
+	
 </ResourceDictionary>

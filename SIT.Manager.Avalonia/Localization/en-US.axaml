@@ -39,6 +39,7 @@
 	<system:String x:Key="PlayPageViewModelWaitingForServerTitle">Waiting for server</system:String>
 	<system:String x:Key="PlayPageViewModelServerErrorTitle">Server Error</system:String>
 	<system:String x:Key="PlayPageViewModelServerErrorDescription">The server never started. Please check the logs for more information.</system:String>
+	<system:String x:Key="PlayPageViewModelServerIsRunningTitle">Server is running!</system:String>
 	
 	<!-- Pane View (Menu on the left also tooltip about update on top) -->
 	<system:String x:Key="UpdateNotification">An update to the SIT Manager is available click here to update:</system:String>
@@ -111,6 +112,8 @@
 	<system:String x:Key="ServerButtonStartToolTip">Start server.</system:String>
 	<system:String x:Key="ServerEditServerConfig">Edit Server Config</system:String>
 	<system:String x:Key="ServerEditServerConfigButtonToolTip">Edit Server</system:String>
+	<system:String x:Key="ServerClearServerOutputText">Clear Server Output</system:String>
+	<system:String x:Key="ServerClearServerOutputTooltip">Clears all of the output in console.</system:String>
 
 	<!-- Settings Page -->
 	<system:String x:Key="SettingsLauncherSettingsTitle">Launcher Settings</system:String>
@@ -256,6 +259,10 @@
 	<system:String x:Key="ServerPageViewModelSPTAkiNotFound">SPT-AKI not found. Please configure the SPT-AKI path in Settings tab before starting the server.</system:String>
 	<system:String x:Key="ServerPageViewModelStartingServerLog">Starting server...</system:String>
 	<system:String x:Key="ServerPageViewModelStoppingServerLog">Stopping server...</system:String>
+	<system:String x:Key="ServerPageViewModelClearServerOutputTitle">Clear Server Output</system:String>
+	<system:String x:Key="ServerPageViewModelClearServerOutputDescription">Do you wish to clear all text from the console output?</system:String>
+	<system:String x:Key="ServerPageViewModelClearServerOutputPrimary">Yes</system:String>
+	<system:String x:Key="ServerPageViewModelClearServerOutputSecondary">No</system:String>
 
 	<!-- Tarkov Client Service -->
 	<system:String x:Key="TarkovClientServiceCacheClearedTitle">Cache Cleared</system:String>
@@ -375,4 +382,12 @@
 	<system:String x:Key="SelectViewEFTNoPathWarningMessage">Unable to find EFT install please go and set this manually in the Settings page</system:String>
 	<system:String x:Key="SelectViewEFTUsingBSGInstallWarningMessage">Detected BSG Escape From Tarkov install, if you have already installed SIT please go to the Settings page and change the EFT install path to this folder. Otherwise you will be asked to provide an empty folder to copy BSG EFT installation and install SIT to</system:String>
 	<system:String x:Key="SelectViewEFTSectionHeading">Escape From Tarkov</system:String>
+
+	<!-- Install - View Model -->
+	<system:String x:Key="InstallPageViewModelSelectText">Select</system:String>
+	<system:String x:Key="InstallPageViewModelConfigureText">Configure</system:String>
+	<system:String x:Key="InstallPageViewModelPatchText">Patch</system:String>
+	<system:String x:Key="InstallPageViewModelInstallText">Install</system:String>
+	<system:String x:Key="InstallPageViewModelCompleteText">Complete</system:String>
+	
 </ResourceDictionary>

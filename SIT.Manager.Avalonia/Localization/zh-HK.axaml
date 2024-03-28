@@ -39,21 +39,24 @@
 	<system:String x:Key="PlayPageViewModelWaitingForServerTitle">等待伺服器</system:String>
 	<system:String x:Key="PlayPageViewModelServerErrorTitle">伺服器錯誤</system:String>
 	<system:String x:Key="PlayPageViewModelServerErrorDescription">伺服器從未啟動，請查看日誌以獲取更多信息！</system:String>
+	<system:String x:Key="PlayPageViewModelServerIsRunningTitle">伺服器已啟動！</system:String>
 
 	<!-- Pane View (Menu on the left also tooltip about update on top) -->
-	<system:String x:Key="UpdateNotification">SIT Manager 有更新，請按此處進行更新：</system:String>
+	<system:String x:Key="UpdateNotification">SIT 管理器有新版本可供更新。點擊這裡進行更新：</system:String>
 	<system:String x:Key="UpdateButtonTitle">更新</system:String>
-	<system:String x:Key="SetupTitle">安裝</system:String>
-	<system:String x:Key="InstallPathErrorNotification">客戶端安裝路徑尚未配置，請前往設置頁面配置啟動器</system:String>
+	<system:String x:Key="SetupTitle">設定</system:String>
+	<system:String x:Key="InstallPathErrorNotification">尚未設定客戶端安裝路徑。請進入設定以設定啟動器。</system:String>
 	<system:String x:Key="PlayTitle">遊玩</system:String>
+	<system:String x:Key="InstallTitle">安裝</system:String>
 	<system:String x:Key="ToolsTitle">工具</system:String>
-	<system:String x:Key="ServerTitle">本地伺服器</system:String>
+	<system:String x:Key="ServerTitle">伺服器</system:String>
 	<system:String x:Key="ModsTitle">模組</system:String>
 	<system:String x:Key="SettingsTitle">設定</system:String>
-	<system:String x:Key="PlayTitleToolTip">連接與啟動遊戲.</system:String>
-	<system:String x:Key="ToolsTitleToolTip">用於管理 SIT 和 Tarkov 的工具</system:String>
-	<system:String x:Key="ServerTitleToolTip">伺服器管理</system:String>
-	<system:String x:Key="ModsTitleToolTip">模組管理</system:String>
+	<system:String x:Key="PlayTitleToolTip">連線並遊玩。</system:String>
+	<system:String x:Key="InstallTitleToolTip">安裝/更新 SIT 和 SIT 伺服器</system:String>
+	<system:String x:Key="ToolsTitleToolTip">管理 SIT 和 Tarkov 的工具。</system:String>
+	<system:String x:Key="ServerTitleToolTip">管理伺服器。</system:String>
+	<system:String x:Key="ModsTitleToolTip">管理模組。</system:String>
 
 	<!-- Mods Page -->
 	<system:String x:Key="ModsWarningTitle">警告</system:String>
@@ -94,22 +97,24 @@
 	<system:String x:Key="ToolsOpenLocationEditorButtonTitle">地圖配置編輯器</system:String>
 	<system:String x:Key="ToolsClearCacheButtonToolTip">清除本地 EFT 快取</system:String>
 	<system:String x:Key="ToolsClearCacheButtonTitle">清除快取</system:String>
-	<system:String x:Key="ToolsGenerateDiagnosticReportButtonTitle">Generate Logs</system:String>
-	<system:String x:Key="ToolsClientLogCheckboxContent">Include EFT Logs</system:String>
-	<system:String x:Key="ToolsServerLogCheckboxContent">Include Server Logs</system:String>
-	<system:String x:Key="ToolsDiagnosticsLogCheckboxContent">Include Diagnostic Logs (Contains System Info!)</system:String>
-	<system:String x:Key="ToolsHttpJsonCheckboxContent">Include Http.json File</system:String>
-	<system:String x:Key="ToolsSelectLogsTitle">Select which logs to include</system:String>
-	<system:String x:Key="ToolsSelectLogsProceedButtonText">Generate Log Bundle</system:String>
-	<system:String x:Key="ToolsSelectLogsCloseButtonText">Cancel</system:String>
-	<system:String x:Key="ToolsDiagnosticReportSaveFileTitle">Save zip file</system:String>
+	<system:String x:Key="ToolsGenerateDiagnosticReportButtonTitle">生成日誌</system:String>
+	<system:String x:Key="ToolsClientLogCheckboxContent">包括 EFT 日誌</system:String>
+	<system:String x:Key="ToolsServerLogCheckboxContent">包括伺服器日誌</system:String>
+	<system:String x:Key="ToolsDiagnosticsLogCheckboxContent">包括診斷日誌（含系統資訊！）</system:String>
+	<system:String x:Key="ToolsHttpJsonCheckboxContent">包括 Http.json 檔案</system:String>
+	<system:String x:Key="ToolsSelectLogsTitle">選擇要包括的日誌</system:String>
+	<system:String x:Key="ToolsSelectLogsProceedButtonText">生成日誌捆綁</system:String>
+	<system:String x:Key="ToolsSelectLogsCloseButtonText">取消</system:String>
+	<system:String x:Key="ToolsBugReportSaveFileTitle">保存 Zip 檔案</system:String>
 
 	<!-- Server Page -->
 	<system:String x:Key="ServerConsoleOutputTitle">控制臺輸出</system:String>
 	<system:String x:Key="ServerButtonStartToolTip">啟動伺服器</system:String>
 	<system:String x:Key="ServerEditServerConfig">編輯伺服器配置</system:String>
 	<system:String x:Key="ServerEditServerConfigButtonToolTip">編輯伺服器配置檔案</system:String>
-
+	<system:String x:Key="ServerClearServerOutputText">清除伺服器輸出</system:String>
+	<system:String x:Key="ServerClearServerOutputTooltip">清除控制台中的所有輸出。</system:String>
+	
 	<!-- Settings Page -->
 	<system:String x:Key="SettingsLauncherSettingsTitle">啟動器設定</system:String>
 	<system:String x:Key="SettingsCloseLauncherAfterGameLaunchTitle">遊戲啟動後關閉啟動器</system:String>
@@ -252,7 +257,11 @@
 	<system:String x:Key="ServerPageViewModelSPTAkiNotFound">未找到 SPT-AKI 伺服器端，請在啟動伺服器之前在設置選項卡中配置 SPT-AKI 伺服器端路徑！</system:String>
 	<system:String x:Key="ServerPageViewModelStartingServerLog">正在啟動伺服器...</system:String>
 	<system:String x:Key="ServerPageViewModelStoppingServerLog">正在停止伺服器...</system:String>
-
+	<system:String x:Key="ServerPageViewModelClearServerOutputTitle">清除伺服器輸出</system:String>
+	<system:String x:Key="ServerPageViewModelClearServerOutputDescription">您是否要清除控制台輸出的所有文本？</system:String>
+	<system:String x:Key="ServerPageViewModelClearServerOutputPrimary">是</system:String>
+	<system:String x:Key="ServerPageViewModelClearServerOutputSecondary">否</system:String>
+	
 	<!-- Tarkov Client Service -->
 	<system:String x:Key="TarkovClientServiceCacheClearedTitle">緩存已清除</system:String>
 	<system:String x:Key="TarkovClientServiceCacheClearedErrorTitle">清除緩存時出錯</system:String>
@@ -292,79 +301,91 @@
 	<system:String x:Key="InstallServiceInstallSuccessfulDescription">伺服器端安裝成功</system:String>
 	<system:String x:Key="InstallServiceInstallSITSuccessfulDescription">SIT 安裝成功</system:String>
 	<system:String x:Key="InstallerServiceNoDowngradePatcher">這些版本的《逃離塔科夫》沒有可用的降級補丁。</system:String>
+	
+	<!-- File Service -->
+	<system:String x:Key="FileServiceProgressDownloading">下載檔案 '%1'</system:String>
+	<system:String x:Key="FileServiceProgressExtracting">正在提取檔案 %1 (%2)</system:String>
 
 	<!-- Update Page -->
-	<system:String x:Key="UpdatePageUpdateButtonTitle">Start Update</system:String>
-	<system:String x:Key="UpdatePageUpdateInfoTextPt1">SIT Manager is updating for you please wait...</system:String>
-	<system:String x:Key="UpdatePageUpdateInfoTextPt2">The app restart as soon as it has finished</system:String>
-	<system:String x:Key="UpdatePageUpdatingTitle">Updating</system:String>
-	<system:String x:Key="UpdatePageErrorMessage">There was an issue trying to update SIT Manager please view the log for details</system:String>
+	<system:String x:Key="UpdatePageUpdateButtonTitle">開始更新</system:String>
+	<system:String x:Key="UpdatePageUpdateInfoTextPt1">SIT 管理器正在進行更新，請稍候...</system:String>
+	<system:String x:Key="UpdatePageUpdateInfoTextPt2">更新完成後應用程式將重新啟動</system:String>
+	<system:String x:Key="UpdatePageUpdatingTitle">更新中</system:String>
+	<system:String x:Key="UpdatePageErrorMessage">更新 SIT 管理器時出現問題。請查看日誌以獲取更多信息</system:String>
 
 	<!-- Update Page View Model -->
-	<system:String x:Key="UpdatePageViewModelUpdateConfirmationTitle">Update Confirmation</system:String>
-	<system:String x:Key="UpdatePageViewModelUpdateConfirmationDescription">Are you sure you want to update? The manager will automatically restart once it has updated</system:String>
-	<system:String x:Key="UpdatePageViewModelButtonYes">Yes</system:String>
-	<system:String x:Key="UpdatePageViewModelButtonNo">No</system:String>
+	<system:String x:Key="UpdatePageViewModelUpdateConfirmationTitle">更新確認</system:String>
+	<system:String x:Key="UpdatePageViewModelUpdateConfirmationDescription">您確定要進行更新嗎？更新完成後管理器將自動重新啟動</system:String>
+	<system:String x:Key="UpdatePageViewModelButtonYes">是</system:String>
+	<system:String x:Key="UpdatePageViewModelButtonNo">否</system:String>
 
 	<!-- Install - Complete View -->
-	<system:String x:Key="CompleteViewInstallComplete">Install Completed</system:String>
-	<system:String x:Key="CompleteViewResetButtonTitle">Happy Playing</system:String>
+	<system:String x:Key="CompleteViewInstallComplete">安裝完成</system:String>
+	<system:String x:Key="CompleteViewResetButtonTitle">開始遊戲</system:String>
 
 	<!-- Install - Configure View -->
-	<system:String x:Key="ConfigureViewStartInstallButtonTitle">Start Install</system:String>
-	<system:String x:Key="ConfigureViewBackButtonTitle">Back</system:String>
-	<system:String x:Key="ConfigureViewVersionSelectionGroupTitle">Version Selection</system:String>
+	<system:String x:Key="ConfigureViewStartInstallButtonTitle">開始安裝</system:String>
+	<system:String x:Key="ConfigureViewBackButtonTitle">返回</system:String>
+	<system:String x:Key="ConfigureViewVersionSelectionGroupTitle">版本選擇</system:String>
 
 	<!-- Install - Configure Server View -->
-	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathToolTip">Change the SPT-AKI Install Path.</system:String>
-	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathTitle">Change</system:String>
-	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathPlaceholder">SPT-AKI Install Path...</system:String>
-	<system:String x:Key="ConfigureServerViewSPTAKIPathTitle">SPT-AKI Path:</system:String>
-	<system:String x:Key="ConfigureServerViewSPTAKIPathWarningNoPath">No SPT-AKI install path specified</system:String>
-	<system:String x:Key="ConfigureServerViewVersionSelectionTitle">Version to install:</system:String>
-	
+	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathToolTip">更改 SPT-AKI 的安裝路徑。</system:String>
+	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathTitle">更改</system:String>
+	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathPlaceholder">SPT-AKI 安裝路徑...</system:String>
+	<system:String x:Key="ConfigureServerViewSPTAKIPathTitle">SPT-AKI 路徑：</system:String>
+	<system:String x:Key="ConfigureServerViewSPTAKIPathWarningNoPath">未指定 SPT-AKI 的安裝路徑</system:String>
+	<system:String x:Key="ConfigureServerViewVersionSelectionTitle">要安裝的版本：</system:String>
+
 	<!-- Install - Configure Sit View -->
-	<system:String x:Key="ConfigureSitViewLoadingVersionSelectionText">Working out available SIT versions please wait...</system:String>
-	<system:String x:Key="ConfigureSitViewEFTChangeInstallPathToolTip">Change the EFT Install Path.</system:String>
-	<system:String x:Key="ConfigureSitViewEFTSettingsButtonChangeTitle">Change</system:String>
-	<system:String x:Key="ConfigureSitViewEFTInstallPathPlaceholder">EFT Install Path...</system:String>
-	<system:String x:Key="ConfigureSitViewEFTInstallPathTitle">EFT Path:</system:String>
-	<system:String x:Key="ConfigureSitViewEFTPathWarningNoPath">Currently using the BSG EFT install location please install EFT to a different location to avoid any possible issues with SIT</system:String>
-	<system:String x:Key="ConfigureSitViewMirrorSelectionTitle">Select the mirror to use:</system:String>
-	<system:String x:Key="ConfigureSitViewVersionSelectionTitle">Version to install:</system:String>
+	<system:String x:Key="ConfigureSitViewLoadingVersionSelectionText">正在確定可用的 SIT 版本，請稍候...</system:String>
+	<system:String x:Key="ConfigureSitViewEFTChangeInstallPathToolTip">更改 EFT 的安裝路徑。</system:String>
+	<system:String x:Key="ConfigureSitViewEFTSettingsButtonChangeTitle">更改</system:String>
+	<system:String x:Key="ConfigureSitViewEFTInstallPathPlaceholder">EFT 安裝路徑...</system:String>
+	<system:String x:Key="ConfigureSitViewEFTInstallPathTitle">EFT 路徑：</system:String>
+	<system:String x:Key="ConfigureSitViewEFTPathWarningNoPath">目前使用 BSG EFT 的安裝位置。請將 EFT 安裝到其他位置以避免與 SIT 的潛在問題</system:String>
+	<system:String x:Key="ConfigureSitViewMirrorSelectionTitle">選擇要使用的鏡像：</system:String>
+	<system:String x:Key="ConfigureSitViewVersionSelectionTitle">要安裝的版本：</system:String>
 
 	<!-- Install - Configure Sit View Model -->
-	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorTitle">Location Selection Error</system:String>
-	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorDescription">You've selected the same folder as the BSG install of EFT, please choose a different location to install SIT to</system:String>
-	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorOk">Ok</system:String>
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorTitle">位置選擇錯誤</system:String>
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorDescription">您選擇了與 BSG EFT 安裝相同的目錄，請選擇另一個位置以安裝 SIT</system:String>
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorOk">好的</system:String>
 
 	<!-- Install - Install View -->
-	<system:String x:Key="InstallViewDownloadingTitle">Downloading</system:String>
-	<system:String x:Key="InstallViewExtractingTitle">Extracting</system:String>
-	<system:String x:Key="InstallViewInstallTitle">Install</system:String>
-	
+	<system:String x:Key="InstallViewDownloadingTitle">正在下載</system:String>
+	<system:String x:Key="InstallViewExtractingTitle">正在提取</system:String>
+	<system:String x:Key="InstallViewInstallTitle">正在安裝</system:String>
+
 	<!-- Install - Patch View -->
-	<system:String x:Key="PatchViewSummaryMessage">Setting up your EFT instance so it's ready to install the requested SIT version</system:String>
-	<system:String x:Key="PatchViewCopyingTitle">Copying EFT Install</system:String>
-	<system:String x:Key="PatchViewDownloadingTitle">Downloading Patcher</system:String>
-	<system:String x:Key="PatchViewExtractingTitle">Extracting Patcher</system:String>
-	<system:String x:Key="PatchViewPatchingErrorMessage">Error trying to patch EFT consult the logs for details</system:String>
-	<system:String x:Key="PatchViewPatchingEndInstallButtonTitle">End Install</system:String>
-	
+	<system:String x:Key="PatchViewSummaryMessage">準備您的 EFT 實例以安裝所請求的 SIT 版本</system:String>
+	<system:String x:Key="PatchViewCopyingTitle">複製 EFT 安裝</system:String>
+	<system:String x:Key="PatchViewDownloadingTitle">正在下載補丁程序</system:String>
+	<system:String x:Key="PatchViewExtractingTitle">正在提取補丁程序</system:String>
+	<system:String x:Key="PatchViewPatchingErrorMessage">尝试对 EFT 进行修补时出错。请查看日志以获取详细信息</system:String>
+	<system:String x:Key="PatchViewPatchingEndInstallButtonTitle">完成安裝</system:String>
+
 	<!-- Install - Select View -->
-	<system:String x:Key="SelectViewInstallServerButtonTitle">Install Server + SIT Mod</system:String>
-	<system:String x:Key="SelectViewInstallServerButtonToolTip">Download SPT Server + SIT Server Mod.</system:String>
-	<system:String x:Key="SelectViewServerModVersionTitle">SIT Mod Version:</system:String>
-	<system:String x:Key="SelectViewServerVersionTitle">SPT-AKI Version:</system:String>
-	<system:String x:Key="SelectViewSPTAKIPathTitle">SPT-AKI Path:</system:String>
-	<system:String x:Key="SelectViewSPTAKINoPathWarningMessage">Unable to find SPT-AKI install if you have already installed AKI-SPT please go to the Settings page and set the SPT-AKI install path. Otherwise you will be asked to provide an empty folder to install SPT-AKI to</system:String>
+	<system:String x:Key="SelectViewInstallServerButtonTitle">安裝服务器 + SIT 模組</system:String>
+	<system:String x:Key="SelectViewInstallServerButtonToolTip">下載 SPT 服务器 + SIT 服务器模組。</system:String>
+	<system:String x:Key="SelectViewServerModVersionTitle">SIT 模組版本：</system:String>
+	<system:String x:Key="SelectViewServerVersionTitle">SPT-AKI 版本：</system:String>
+	<system:String x:Key="SelectViewSPTAKIPathTitle">SPT-AKI 路徑：</system:String>
+	<system:String x:Key="SelectViewSPTAKINoPathWarningMessage">找不到 SPT-AKI 安裝。如果您已安装了 AKI-SPT，请转到设置页面并设置 SPT-AKI 安装路径。否则，您将被要求指定一个空目录以安装 SPT-AKI</system:String>
 	<system:String x:Key="SelectViewServerSectionHeading">SPT-AKI</system:String>
-	<system:String x:Key="SelectViewInstallSITButtonTitle">Install SIT</system:String>
-	<system:String x:Key="SelectViewInstallSITButtonToolTip">Downgrade EFT if needed, install SIT and mod support.</system:String>
-	<system:String x:Key="SelectViewSITVersionTitle">SIT Version:</system:String>
-	<system:String x:Key="SelectViewEFTVersionTitle">EFT Version:</system:String>
-	<system:String x:Key="SelectViewEFTPathTitle">EFT Path:</system:String>
-	<system:String x:Key="SelectViewEFTNoPathWarningMessage">Unable to find EFT install please go and set this manually in the Settings page</system:String>
-	<system:String x:Key="SelectViewEFTUsingBSGInstallWarningMessage">Detected BSG Escape From Tarkov install, if you have already installed SIT please go to the Settings page and change the EFT install path to this folder. Otherwise you will be asked to provide an empty folder to copy BSG EFT installation and install SIT to</system:String>
-	<system:String x:Key="SelectViewEFTSectionHeading">Escape From Tarkov</system:String>
+	<system:String x:Key="SelectViewInstallSITButtonTitle">安裝 SIT</system:String>
+	<system:String x:Key="SelectViewInstallSITButtonToolTip">根據需要降級 EFT 版本，並安裝 SIT 和模組支持。</system:String>
+	<system:String x:Key="SelectViewSITVersionTitle">SIT 版本：</system:String>
+	<system:String x:Key="SelectViewEFTVersionTitle">EFT 版本：</system:String>
+	<system:String x:Key="SelectViewEFTPathTitle">EFT 路徑：</system:String>
+	<system:String x:Key="SelectViewEFTNoPathWarningMessage">找不到 EFT 安裝。請手動在設置页面上安裝它</system:String>
+	<system:String x:Key="SelectViewEFTUsingBSGInstallWarningMessage">檢測到 BSG 逃離塔科夫的安裝。如果您已安裝了 SIT，请轉到設置页面並將 EFT 安裝路徑更改為此目錄。否則，您將被要求指定一個空目錄以複製 BSG EFT 安裝並安裝 SIT</system:String>
+	<system:String x:Key="SelectViewEFTSectionHeading">逃離塔科夫</system:String>
+
+	<!-- Install - View Model -->
+	<system:String x:Key="InstallPageViewModelSelectText">選擇</system:String>
+	<system:String x:Key="InstallPageViewModelConfigureText">配置</system:String>
+	<system:String x:Key="InstallPageViewModelPatchText">補丁</system:String>
+	<system:String x:Key="InstallPageViewModelInstallText">安裝</system:String>
+	<system:String x:Key="InstallPageViewModelCompleteText">完成</system:String>
+
 </ResourceDictionary>

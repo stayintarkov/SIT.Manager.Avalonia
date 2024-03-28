@@ -40,6 +40,8 @@ public partial class ServerPageViewModel : ObservableRecipient
     public ObservableCollection<ConsoleText> ConsoleOutput { get; } = [];
 
     public IAsyncRelayCommand EditServerConfigCommand { get; }
+    public IAsyncRelayCommand ClearServerOutputCommand { get; }
+
     private readonly ILocalizationService _localizationService;
 
     public ServerPageViewModel(IAkiServerService akiServerService, ILocalizationService localizationService, IManagerConfigService configService, IFileService fileService)
@@ -51,11 +53,28 @@ public partial class ServerPageViewModel : ObservableRecipient
 
         StartServerButtonTextBlock = _localizationService.TranslateSource("ServerPageViewModelStartServer");
         EditServerConfigCommand = new AsyncRelayCommand(EditServerConfig);
+        ClearServerOutputCommand = new AsyncRelayCommand(ClearServerOutput);
 
         configService.ConfigChanged += (o, e) =>
         {
             StartServerButtonTextBlock = _localizationService.TranslateSource("ServerPageViewModelStartServer");
         };
+    }
+
+    private async Task ClearServerOutput()
+    {
+        ContentDialogResult clearServerOutputResponse = await new ContentDialog()
+        {
+            Title = _localizationService.TranslateSource("ServerPageViewModelClearServerOutputTitle"),
+            Content = _localizationService.TranslateSource("ServerPageViewModelClearServerOutputDescription"),
+            IsPrimaryButtonEnabled = true,
+            PrimaryButtonText = _localizationService.TranslateSource("ServerPageViewModelClearServerOutputPrimary"),
+            CloseButtonText = _localizationService.TranslateSource("ServerPageViewModelClearServerOutputSecondary")
+        }.ShowAsync();
+        if (clearServerOutputResponse == ContentDialogResult.Primary)
+        {
+            ConsoleOutput.Clear();
+        }
     }
 
     private void UpdateCachedServerProperties(object? sender, ManagerConfig newConfig)
