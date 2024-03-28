@@ -12,6 +12,7 @@ using SIT.Manager.Avalonia.Models.Installation;
 using SIT.Manager.Avalonia.Models.Messages;
 using SIT.Manager.Avalonia.Views;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
@@ -24,6 +25,7 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
     private readonly IActionNotificationService _actionNotificationService;
     private readonly IAppUpdaterService _appUpdaterService;
     private readonly IBarNotificationService _barNotificationService;
+    private readonly IInstallerService _installerService;
     private readonly IManagerConfigService _managerConfigService;
     private readonly ILocalizationService _localizationService;
 
@@ -36,6 +38,9 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
     private bool _updateAvailable = false;
 
     [ObservableProperty]
+    private bool _sitUpdateAvailable = false;
+
+    [ObservableProperty]
     private bool _isInstallRunning = false;
 
     public ObservableCollection<BarNotification> BarNotifications { get; } = [];
@@ -45,12 +50,14 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
     public MainViewModel(IActionNotificationService actionNotificationService,
         IAppUpdaterService appUpdaterService,
         IBarNotificationService barNotificationService,
+        IInstallerService installerService,
         IManagerConfigService managerConfigService,
         ILocalizationService localizationService)
     {
         _actionNotificationService = actionNotificationService;
         _appUpdaterService = appUpdaterService;
         _barNotificationService = barNotificationService;
+        _installerService = installerService;
         _managerConfigService = managerConfigService;
         _localizationService = localizationService;
 
@@ -70,6 +77,25 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
     private async Task CheckForUpdate()
     {
         UpdateAvailable = await _appUpdaterService.CheckForUpdate();
+
+        // Get the list of available releases then check if one exists which is newer than the current and for the same Tarkov version
+        if (!string.IsNullOrEmpty(_managerConfigService.Config.SitVersion))
+        {
+            List<SitInstallVersion> availableSitVersions = await _installerService.GetAvailableSitReleases(_managerConfigService.Config.TarkovVersion);
+            SitUpdateAvailable = availableSitVersions.Where(x =>
+            {
+                bool parsedSitVersion = Version.TryParse(x.SitVersion.Replace("StayInTarkov.Client-", ""), out Version? sitVersion);
+                if (parsedSitVersion)
+                {
+                    Version installedSit = Version.Parse(_managerConfigService.Config.SitVersion);
+                    if (sitVersion > installedSit && _managerConfigService.Config.TarkovVersion == x.EftVersion)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }).Any();
+        }
     }
 
     [RelayCommand]
