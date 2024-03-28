@@ -94,7 +94,16 @@
 	<system:String x:Key="ToolsOpenLocationEditorButtonTitle">Редактор локаций</system:String>
 	<system:String x:Key="ToolsClearCacheButtonToolTip">Очистить кеш локального пользователя EFT.</system:String>
 	<system:String x:Key="ToolsClearCacheButtonTitle">Очистить кеш</system:String>
-
+	<system:String x:Key="ToolsGenerateDiagnosticReportButtonTitle">Generate Logs</system:String>
+	<system:String x:Key="ToolsClientLogCheckboxContent">Include EFT Logs</system:String>
+	<system:String x:Key="ToolsServerLogCheckboxContent">Include Server Logs</system:String>
+	<system:String x:Key="ToolsDiagnosticsLogCheckboxContent">Include Diagnostic Logs (Contains System Info!)</system:String>
+	<system:String x:Key="ToolsHttpJsonCheckboxContent">Include Http.json File</system:String>
+	<system:String x:Key="ToolsSelectLogsTitle">Select which logs to include</system:String>
+	<system:String x:Key="ToolsSelectLogsProceedButtonText">Generate Log Bundle</system:String>
+	<system:String x:Key="ToolsSelectLogsCloseButtonText">Cancel</system:String>
+	<system:String x:Key="ToolsBugReportSaveFileTitle">Save zip file</system:String>
+	
 	<!-- Server Page -->
 	<system:String x:Key="ServerConsoleOutputTitle">Вывод консоли</system:String>
 	<system:String x:Key="ServerButtonStartToolTip">Запустить сервер.</system:String>
