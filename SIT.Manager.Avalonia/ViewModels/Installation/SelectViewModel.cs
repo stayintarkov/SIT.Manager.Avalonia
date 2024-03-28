@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models.Installation;
@@ -11,6 +12,7 @@ public partial class SelectViewModel : InstallationViewModelBase
 {
     private readonly IManagerConfigService _configService;
     private readonly IInstallerService _installerService;
+    private readonly ILogger<SelectViewModel> _logger;
     private readonly IVersionService _versionService;
 
     [ObservableProperty]
@@ -21,10 +23,12 @@ public partial class SelectViewModel : InstallationViewModelBase
 
     public SelectViewModel(IManagerConfigService configsService,
                            IInstallerService installerService,
+                           ILogger<SelectViewModel> logger,
                            IVersionService versionService) : base()
     {
         _configService = configsService;
         _installerService = installerService;
+        _logger = logger;
         _versionService = versionService;
 
         EstablishEFTInstallStatus();
@@ -77,6 +81,8 @@ public partial class SelectViewModel : InstallationViewModelBase
         if (requestedOperation != null)
         {
             CurrentInstallProcessState.RequestedInstallOperation = (RequestedInstallOperation) requestedOperation;
+            _logger.LogInformation("Progressing install to Configure page with requested operation of {requestedOperation}", requestedOperation);
+            _logger.LogDebug("Install process state {CurrentInstallProcessState}", CurrentInstallProcessState);
             ProgressInstall();
         }
     }
