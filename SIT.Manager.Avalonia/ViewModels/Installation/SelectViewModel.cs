@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using SIT.Manager.Avalonia.Interfaces;
 using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models.Installation;
@@ -11,20 +12,20 @@ public partial class SelectViewModel : InstallationViewModelBase
 {
     private readonly IManagerConfigService _configService;
     private readonly IInstallerService _installerService;
+    private readonly ILogger<SelectViewModel> _logger;
     private readonly IVersionService _versionService;
-
-    [ObservableProperty]
-    private bool _noEftInstallPathSet = true;
 
     [ObservableProperty]
     private bool _noAkiInstallPathSet = true;
 
     public SelectViewModel(IManagerConfigService configsService,
                            IInstallerService installerService,
+                           ILogger<SelectViewModel> logger,
                            IVersionService versionService) : base()
     {
         _configService = configsService;
         _installerService = installerService;
+        _logger = logger;
         _versionService = versionService;
 
         EstablishEFTInstallStatus();
@@ -33,9 +34,9 @@ public partial class SelectViewModel : InstallationViewModelBase
 
     private void EstablishEFTInstallStatus()
     {
-        string detectedBSGInstallPath = Path.GetDirectoryName(_installerService.GetEFTInstallPath()) ?? string.Empty;
         if (string.IsNullOrEmpty(_configService.Config.InstallPath))
         {
+            string detectedBSGInstallPath = Path.GetDirectoryName(_installerService.GetEFTInstallPath()) ?? string.Empty;
             if (!string.IsNullOrEmpty(detectedBSGInstallPath))
             {
                 CurrentInstallProcessState.BsgInstallPath = detectedBSGInstallPath;
@@ -53,8 +54,6 @@ public partial class SelectViewModel : InstallationViewModelBase
         {
             CurrentInstallProcessState.EftVersion = _versionService.GetEFTVersion(CurrentInstallProcessState.EftInstallPath);
             CurrentInstallProcessState.SitVersion = _versionService.GetSITVersion(CurrentInstallProcessState.EftInstallPath);
-
-            NoEftInstallPathSet = false;
         }
     }
 
@@ -77,6 +76,8 @@ public partial class SelectViewModel : InstallationViewModelBase
         if (requestedOperation != null)
         {
             CurrentInstallProcessState.RequestedInstallOperation = (RequestedInstallOperation) requestedOperation;
+            _logger.LogInformation("Progressing install to Configure page with requested operation of {requestedOperation}", requestedOperation);
+            _logger.LogDebug("Install process state {CurrentInstallProcessState}", CurrentInstallProcessState);
             ProgressInstall();
         }
     }

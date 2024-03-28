@@ -32,8 +32,14 @@
 								   IsVisible="{Binding CurrentInstallProcessState.UsingBsgInstallPath}"
 								   Classes="WarningMessage"/>
 						<TextBlock Text="{DynamicResource SelectViewEFTNoPathWarningMessage}"
-								   IsVisible="{Binding NoEftInstallPathSet}"
-								   Classes="WarningMessage"/>
+								   Classes="WarningMessage">
+							<TextBlock.IsVisible>
+								<MultiBinding Converter="{x:Static BoolConverters.Or}">
+									<Binding Path="CurrentInstallProcessState.EftInstallPath" Converter="{x:Static StringConverters.IsNullOrEmpty}"/>
+									<Binding Path="CurrentInstallProcessState.EftVersion" Converter="{x:Static StringConverters.IsNullOrEmpty}"/>
+								</MultiBinding>
+							</TextBlock.IsVisible>
+						</TextBlock>
 						
 						<TextBlock>
 							<Run Text="{DynamicResource SelectViewEFTPathTitle}"/>
@@ -56,9 +62,15 @@
 						<Grid ColumnDefinitions="*,*">
 							<Button Grid.Column="0"
 									ToolTip.Tip="{DynamicResource SelectViewInstallSITButtonToolTip}"
-									IsEnabled="{Binding !NoEftInstallPathSet}"
 									Command="{Binding ProgressInstallCommand}"
 									CommandParameter="{x:Static im:RequestedInstallOperation.InstallSit}">
+								<Button.IsEnabled>
+									<MultiBinding Converter="{x:Static BoolConverters.And}">
+										<Binding Path="CurrentInstallProcessState.EftInstallPath" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
+										<Binding Path="CurrentInstallProcessState.EftVersion" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
+									</MultiBinding>
+								</Button.IsEnabled>
+
 								<StackPanel Orientation="Horizontal">
 									<ui:SymbolIcon Symbol="Add"/>
 									<TextBlock Text="{DynamicResource SelectViewInstallSITButtonTitle}"/>
