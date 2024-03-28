@@ -363,7 +363,7 @@
 	<system:String x:Key="SelectViewSITVersionTitle">SIT Version:</system:String>
 	<system:String x:Key="SelectViewEFTVersionTitle">EFT Version:</system:String>
 	<system:String x:Key="SelectViewEFTPathTitle">EFT Path:</system:String>
-	<system:String x:Key="SelectViewEFTNoPathWarningMessage">Unable to find EFT install please go and set this manually in the Settings page</system:String>
+	<system:String x:Key="SelectViewEFTNoPathWarningMessage">Unable to find EFT install and/or version please go and set this manually in the Settings page</system:String>
 	<system:String x:Key="SelectViewEFTUsingBSGInstallWarningMessage">Detected BSG Escape From Tarkov install, if you have already installed SIT please go to the Settings page and change the EFT install path to this folder. Otherwise you will be asked to provide an empty folder to copy BSG EFT installation and install SIT to</system:String>
 	<system:String x:Key="SelectViewEFTSectionHeading">Escape From Tarkov</system:String>
 </ResourceDictionary>

@@ -14,9 +14,6 @@ public partial class SelectViewModel : InstallationViewModelBase
     private readonly IVersionService _versionService;
 
     [ObservableProperty]
-    private bool _noEftInstallPathSet = true;
-
-    [ObservableProperty]
     private bool _noAkiInstallPathSet = true;
 
     public SelectViewModel(IManagerConfigService configsService,
@@ -33,9 +30,9 @@ public partial class SelectViewModel : InstallationViewModelBase
 
     private void EstablishEFTInstallStatus()
     {
-        string detectedBSGInstallPath = Path.GetDirectoryName(_installerService.GetEFTInstallPath()) ?? string.Empty;
         if (string.IsNullOrEmpty(_configService.Config.InstallPath))
         {
+            string detectedBSGInstallPath = Path.GetDirectoryName(_installerService.GetEFTInstallPath()) ?? string.Empty;
             if (!string.IsNullOrEmpty(detectedBSGInstallPath))
             {
                 CurrentInstallProcessState.BsgInstallPath = detectedBSGInstallPath;
@@ -53,8 +50,6 @@ public partial class SelectViewModel : InstallationViewModelBase
         {
             CurrentInstallProcessState.EftVersion = _versionService.GetEFTVersion(CurrentInstallProcessState.EftInstallPath);
             CurrentInstallProcessState.SitVersion = _versionService.GetSITVersion(CurrentInstallProcessState.EftInstallPath);
-
-            NoEftInstallPathSet = false;
         }
     }
 
