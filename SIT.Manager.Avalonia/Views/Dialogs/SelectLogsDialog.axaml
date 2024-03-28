@@ -1,0 +1,21 @@
+<ui:ContentDialog xmlns="https://github.com/avaloniaui"
+				  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+				  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+				  xmlns:sty="using:FluentAvalonia.Styling"
+				  xmlns:ui="using:FluentAvalonia.UI.Controls"
+				  xmlns:vm="clr-namespace:SIT.Manager.Avalonia.ViewModels.Dialogs"
+			      mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+				  FullSizeDesired="False"
+				  Title="{DynamicResource ToolsSelectLogsTitle}"
+				  PrimaryButtonText="{DynamicResource ToolsSelectLogsProceedButtonText}"
+				  CloseButtonText="{DynamicResource ToolsSelectLogsCloseButtonText}"
+				  x:Class="SIT.Manager.Avalonia.Views.Dialogs.SelectLogsDialog"
+				  x:DataType="vm:SelectLogsDialogViewModel">
+	<StackPanel>
+		<CheckBox Name="ClientLogCheckbox" Content="{DynamicResource ToolsClientLogCheckboxContent}" IsChecked="{Binding SelectedOptions.IncludeClientLog, Mode=TwoWay}" />
+		<CheckBox Name="ServerLogCheckbox" Content="{DynamicResource ToolsServerLogCheckboxContent}" IsChecked="{Binding SelectedOptions.IncludeServerLog, Mode=TwoWay}" />
+		<CheckBox Name="DiagnosticLogCheckbox" Content="{DynamicResource ToolsDiagnosticsLogCheckboxContent}" IsChecked="{Binding SelectedOptions.IncludeDiagnosticLog, Mode=TwoWay}" />
+		<CheckBox Name="HttpJsonCheckbox" Content="{DynamicResource ToolsHttpJsonCheckboxContent}" IsChecked="{Binding SelectedOptions.IncludeHttpJson, Mode=TwoWay}" />
+	</StackPanel>
+</ui:ContentDialog>

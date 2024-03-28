@@ -1,4 +1,7 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Platform.Storage;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using FluentAvalonia.UI.Controls;
@@ -8,10 +11,17 @@ using SIT.Manager.Avalonia.Models;
 using SIT.Manager.Avalonia.Models.Messages;
 using SIT.Manager.Avalonia.Services;
 using SIT.Manager.Avalonia.Views;
+using SIT.Manager.Avalonia.Views.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.NetworkInformation;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Avalonia.ViewModels;
@@ -24,6 +34,11 @@ public partial class ToolsPageViewModel : ObservableObject
     private readonly IFileService _fileService;
     private readonly ITarkovClientService _tarkovClientService;
     private readonly ILocalizationService _localizationService;
+    private readonly IDiagnosticService _diagnosticService;
+    private static string EFTLogPath
+    {
+        get => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "..", "LocalLow", "Battlestate Games", "EscapeFromTarkov", "Player.log");
+    }
 
     public IAsyncRelayCommand OpenEFTFolderCommand { get; }
 
@@ -35,12 +50,15 @@ public partial class ToolsPageViewModel : ObservableObject
 
     public IAsyncRelayCommand ClearCacheCommand { get; }
 
+    public IAsyncRelayCommand GenerateDiagnosticReportCommand { get; }
+
     public ToolsPageViewModel(IAkiServerService akiServerService,
                               IBarNotificationService barNotificationService,
                               IManagerConfigService configService,
                               IFileService fileService,
                               ILocalizationService localizationService,
-                              ITarkovClientService tarkovClientService)
+                              ITarkovClientService tarkovClientService,
+                              IDiagnosticService diagnosticService)
     {
         _akiServerService = akiServerService;
         _barNotificationService = barNotificationService;
@@ -48,12 +66,14 @@ public partial class ToolsPageViewModel : ObservableObject
         _fileService = fileService;
         _tarkovClientService = tarkovClientService;
         _localizationService = localizationService;
+        _diagnosticService = diagnosticService;
 
         OpenEFTFolderCommand = new AsyncRelayCommand(OpenEFTFolder);
         OpenBepInExFolderCommand = new AsyncRelayCommand(OpenBepInExFolder);
         OpenSITConfigCommand = new AsyncRelayCommand(OpenSITConfig);
         OpenEFTLogCommand = new AsyncRelayCommand(OpenEFTLog);
         ClearCacheCommand = new AsyncRelayCommand(ClearCache);
+        GenerateDiagnosticReportCommand = new AsyncRelayCommand(GenerateDiagnosticReport);
     }
 
     private async Task OpenEFTFolder()
@@ -151,8 +171,7 @@ public partial class ToolsPageViewModel : ObservableObject
     private async Task OpenEFTLog()
     {
         // TODO fix this for linux :)
-        string logPath = @"%userprofile%\AppData\LocalLow\Battlestate Games\EscapeFromTarkov\Player.log";
-        logPath = Environment.ExpandEnvironmentVariables(logPath);
+        string logPath = EFTLogPath;
         if (File.Exists(logPath))
         {
             await _fileService.OpenFileAsync(logPath);
@@ -214,6 +233,43 @@ public partial class ToolsPageViewModel : ObservableObject
             {
                 // Handle any exceptions that may occur during the process.
                 _barNotificationService.ShowError(_localizationService.TranslateSource("ToolsPageViewModelErrorMessageTitle"), _localizationService.TranslateSource("ToolsPageViewModelUnhandledExceptionError", ex.Message));
+            }
+        }
+    }
+
+    private async Task GenerateDiagnosticReport()
+    {
+        var results = await new SelectLogsDialog().ShowAsync();
+
+        using (Stream diagnosticArchive = await _diagnosticService.GenerateDiagnosticReport(results))
+        {
+            string savePath;
+            Window? mainWindow = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+            if (mainWindow != null)
+            {
+                var pickedPath = await mainWindow.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+                {
+                    Title = _localizationService.TranslateSource("ToolsDiagnosticReportSaveFileTitle"),
+                    SuggestedFileName = "diagnostics",
+                    DefaultExtension = "zip"
+                });
+                if (pickedPath != null)
+                {
+                    savePath = pickedPath.Path.AbsolutePath;
+                }
+                else
+                {
+                    return;
+                }
+            }
+            else
+            {
+                savePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
+            }
+
+            using (FileStream fs = File.OpenWrite(savePath))
+            {
+                await diagnosticArchive.CopyToAsync(fs);
             }
         }
     }
