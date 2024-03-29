@@ -177,8 +177,6 @@ public partial class PlayPageViewModel : ObservableObject
                 CloseButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonOk")
             }.ShowAsync();
         }
-        
-        QuickPlayText = _localizationService.TranslateSource("PlayPageViewModelQuickPlayText");
 
         return string.Empty;
     }
@@ -290,10 +288,6 @@ public partial class PlayPageViewModel : ObservableObject
 
         if (launchServer)
         {
-            if (_akiServerService.State == RunningState.Starting)
-            {
-                return;
-            }
             _akiServerService.Start();
 
             bool aborted = false;
@@ -326,6 +320,7 @@ public partial class PlayPageViewModel : ObservableObject
                 await Task.Delay(1000);
             }
 
+            QuickPlayText = _localizationService.TranslateSource("PlayPageViewModelQuickPlayText");
             if (aborted)
             {
                 return;
@@ -348,7 +343,7 @@ public partial class PlayPageViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            _logger.LogError($"An exception occured while launching Tarkov: {ex.Message}");
+            _logger.LogError("An exception occured while launching Tarkov: {exMessage}", ex.Message);
             await new ContentDialog()
             {
                 Title = _localizationService.TranslateSource("ModsPageViewModelErrorTitle"),

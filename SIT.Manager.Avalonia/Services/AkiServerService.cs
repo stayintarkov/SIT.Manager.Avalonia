@@ -80,30 +80,24 @@ public class AkiServerService(IBarNotificationService barNotificationService,
 
     public bool IsUnhandledInstanceRunning()
     {
-        try
-        {
-            Process[] akiServerProcesses = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(SERVER_EXE));
+        Process[] akiServerProcesses = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(SERVER_EXE));
 
-            if (akiServerProcesses.Length > 0)
+        if (akiServerProcesses.Length > 0)
+        {
+            if (_process == null || _process.HasExited)
             {
-                if (_process == null || _process.HasExited) // error here (No process is associated with this object.)
+                return true;
+            }
+
+            foreach (Process akiServerProcess in akiServerProcesses)
+            {
+                if (_process.Id != akiServerProcess.Id)
                 {
                     return true;
                 }
-
-                foreach (Process akiServerProcess in akiServerProcesses)
-                {
-                    if (_process.Id != akiServerProcess.Id)
-                    {
-                        return true;
-                    }
-                }
             }
         }
-        catch
-        {
-            return false;
-        }
+
         return false;
     }
 

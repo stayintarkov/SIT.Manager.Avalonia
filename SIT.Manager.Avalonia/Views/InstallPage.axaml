@@ -17,7 +17,7 @@
 		</Style>
 	</UserControl.Styles>
 					
-	<Grid ColumnDefinitions="Auto, *" VerticalAlignment="Top" Margin="0,5,0,0">
+	<Grid ColumnDefinitions="Auto, *">
 		<labs:StepBar Grid.Column="0"
 					  IsMouseSelectable="False"
 					  Grid.Row="0"

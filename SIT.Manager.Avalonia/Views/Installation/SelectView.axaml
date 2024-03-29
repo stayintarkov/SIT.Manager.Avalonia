@@ -12,7 +12,7 @@
 		<Style Selector="ui|SymbolIcon">
 			<Setter Property="Margin" Value="0,0,8,0"/>
 		</Style>
-		
+
 		<Style Selector="Button">
 			<Setter Property="Height" Value="50"/>
 			<Setter Property="HorizontalAlignment" Value="Center"/>
@@ -36,7 +36,7 @@
 								   TextTrimming="CharacterEllipsis"
 								   IsVisible="{Binding NoEftInstallPathSet}"
 								   Classes="WarningMessage"/>
-						
+
 						<TextBlock>
 							<Run Text="{DynamicResource SelectViewEFTPathTitle}"/>
 							<Run Text=" "/>
@@ -58,9 +58,14 @@
 						<Button
 								HorizontalAlignment="Left"
 								ToolTip.Tip="{DynamicResource SelectViewInstallSITButtonToolTip}"
-								IsEnabled="{Binding !NoEftInstallPathSet}"
 								Command="{Binding ProgressInstallCommand}"
 								CommandParameter="{x:Static im:RequestedInstallOperation.InstallSit}">
+							<Button.IsEnabled>
+								<MultiBinding Converter="{x:Static BoolConverters.And}">
+									<Binding Path="CurrentInstallProcessState.EftInstallPath" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
+									<Binding Path="CurrentInstallProcessState.EftVersion" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
+								</MultiBinding>
+							</Button.IsEnabled>
 							<Grid ColumnDefinitions="*,*">
 								<ui:SymbolIcon Grid.Column="0" Symbol="Add"/>
 								<TextBlock Grid.Column="1" Text="{DynamicResource SelectViewInstallSITButtonTitle}" TextTrimming="CharacterEllipsis"/>
@@ -85,7 +90,7 @@
 							<Run Text=" "/>
 							<Run Text="{Binding CurrentInstallProcessState.SptAkiInstallPath}"/>
 						</TextBlock>
-						
+
 						<TextBlock TextTrimming="CharacterEllipsis">
 							<Run Text="{DynamicResource SelectViewServerVersionTitle}"/>
 							<Run Text=" "/>
@@ -97,7 +102,7 @@
 							<Run Text=" "/>
 							<Run Text="{Binding CurrentInstallProcessState.SitModVersion}"/>
 						</TextBlock>
-						
+
 						<Button
 								HorizontalAlignment="Left"
 								ToolTip.Tip="{DynamicResource SelectViewInstallServerButtonToolTip}"

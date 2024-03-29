@@ -19,7 +19,6 @@ public partial class InstallPageViewModel : ObservableRecipient,
     private List<InstallStep> _sitInstallSteps;
     private List<InstallStep> _serverInstallSteps;
     private readonly ILocalizationService _localizationService;
-    private readonly IManagerConfigService _managerConfigService;
 
     private InstallProcessState _installProcessState = new();
 
@@ -34,12 +33,12 @@ public partial class InstallPageViewModel : ObservableRecipient,
     [ObservableProperty]
     private ReadOnlyCollection<InstallStep> _installationSteps;
 
-    public InstallPageViewModel(ILocalizationService localizationService, IManagerConfigService managerConfigService)
+    public InstallPageViewModel(ILocalizationService localizationService)
     {
-        _managerConfigService = managerConfigService;
         _localizationService = localizationService;
-        _managerConfigService.ConfigChanged += (o, e) =>
+        _localizationService.LocalizationChanged += (o, e) =>
         {
+
             _sitInstallSteps =
             [
                 new(typeof(SelectView), _localizationService.TranslateSource("InstallPageViewModelSelectText")),
