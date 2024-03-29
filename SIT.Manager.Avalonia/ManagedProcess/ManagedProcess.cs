@@ -48,10 +48,12 @@ public abstract class ManagedProcess(IBarNotificationService barNotificationServ
 
         // Stop the server process
         bool clsMsgSent = _process.CloseMainWindow();
-        if (!clsMsgSent)
-            _process.Kill();
-
-        _process.WaitForExit();
-        _process.Close();
+        if (clsMsgSent)
+        {
+            if (!_process.WaitForExit(TimeSpan.FromSeconds(5)))
+            {
+                _process.Kill();
+            }
+        }
     }
 }
