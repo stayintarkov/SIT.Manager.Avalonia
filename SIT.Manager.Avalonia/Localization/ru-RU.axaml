@@ -371,6 +371,7 @@
 	<system:String x:Key="SelectViewSPTAKIPathTitle">Путь SPT-AKI:</system:String>
 	<system:String x:Key="SelectViewSPTAKINoPathWarningMessage">Не удалось найти установку SPT-AKI. Если вы уже установили AKI-SPT, перейдите на страницу настроек и установите путь установки SPT-AKI. В противном случае вам будет предложено указать пустую папку для установки SPT-AKI</system:String>
 	<system:String x:Key="SelectViewServerSectionHeading">SPT-AKI</system:String>
+
 	<system:String x:Key="SelectViewInstallSITButtonTitle">Установить SIT</system:String>
 	<system:String x:Key="SelectViewInstallSITButtonToolTip">Понизить версию EFT при необходимости, установить SIT и поддержку модов.</system:String>
 	<system:String x:Key="SelectViewSITVersionTitle">Версия SIT:</system:String>

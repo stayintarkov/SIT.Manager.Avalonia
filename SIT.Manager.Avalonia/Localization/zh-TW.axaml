@@ -371,6 +371,7 @@
 	<system:String x:Key="SelectViewSPTAKIPathTitle">SPT-AKI 路徑：</system:String>
 	<system:String x:Key="SelectViewSPTAKINoPathWarningMessage">找不到 SPT-AKI 安裝。如果您已經安裝了 AKI-SPT，請轉到設置頁面並設置 SPT-AKI 安裝路徑。否則，您將被要求指定一個空目錄以安裝 SPT-AKI</system:String>
 	<system:String x:Key="SelectViewServerSectionHeading">SPT-AKI</system:String>
+
 	<system:String x:Key="SelectViewInstallSITButtonTitle">安裝 SIT</system:String>
 	<system:String x:Key="SelectViewInstallSITButtonToolTip">根據需要降級 EFT 版本，並安裝 SIT 和模組支援。</system:String>
 	<system:String x:Key="SelectViewSITVersionTitle">SIT 版本：</system:String>
