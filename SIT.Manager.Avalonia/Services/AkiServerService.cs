@@ -109,7 +109,7 @@ public class AkiServerService(IBarNotificationService barNotificationService,
 
     public override void Start(string? arguments = null)
     {
-        if (State == RunningState.Running)
+        if (State == RunningState.Running || State == RunningState.Starting)
         {
             return;
         }

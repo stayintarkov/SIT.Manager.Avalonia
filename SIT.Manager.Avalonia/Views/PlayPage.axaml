@@ -28,14 +28,14 @@
 			<TextBox Name="PasswordBox" Text="{Binding Password, Mode=TwoWay}" MinWidth="150" Margin="10 5 10 10" HorizontalAlignment="Left" PasswordChar="●" Watermark="{DynamicResource EnterPasswordPlaceholder}"/>
 			<CheckBox Name="RememberMeCheck" Content="{DynamicResource RememberMeCheckBoxTitle}" Margin="10" IsChecked="{Binding RememberMe}"/>
 			<Button Name="ConnectButton" Command="{Binding ConnectToServerCommand}" Content="{DynamicResource ConnectButtonTitle}" ToolTip.Tip="{DynamicResource ConnectButtonTitleToolTip}" Margin="10"/>
-			<Button Name="QuickPlayButton" Command="{Binding QuickPlayCommand}" IsEnabled="{Binding !IsServerRunning}" ToolTip.Tip="{DynamicResource StartServerAndConnectButtonTitleToolTip}" Margin="10">
+			<Button Name="QuickPlayButton" Command="{Binding QuickPlayCommand}" ToolTip.Tip="{DynamicResource StartServerAndConnectButtonTitleToolTip}" Margin="10">
 				<StackPanel Orientation="Horizontal">
 					<TextBlock Text="{Binding QuickPlayText}"/>
 					<controls:LoadingSpinner Width="12" 
 											 Height="12" 
 											 Margin="4,0,0,0"
 											 VerticalAlignment="Center"
-											 IsVisible="{Binding IsServerRunning}"
+											 IsVisible="{Binding QuickPlayCommand.IsRunning}"
 											 Foreground="{DynamicResource TextControlForeground}"
 											 StrokeWidth="2"/>
 				</StackPanel>

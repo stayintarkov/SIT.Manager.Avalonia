@@ -39,7 +39,6 @@
 	<system:String x:Key="PlayPageViewModelWaitingForServerTitle">Waiting for server</system:String>
 	<system:String x:Key="PlayPageViewModelServerErrorTitle">Server Error</system:String>
 	<system:String x:Key="PlayPageViewModelServerErrorDescription">The server never started. Please check the logs for more information.</system:String>
-	<system:String x:Key="PlayPageViewModelServerIsRunningTitle">Server is running!</system:String>
 	
 	<!-- Pane View (Menu on the left also tooltip about update on top) -->
 	<system:String x:Key="UpdateNotification">An update to the SIT Manager is available click here to update:</system:String>

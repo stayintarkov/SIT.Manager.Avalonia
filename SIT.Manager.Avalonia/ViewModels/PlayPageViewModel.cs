@@ -46,9 +46,6 @@ public partial class PlayPageViewModel : ObservableObject
     private ManagerConfig _managerConfig;
 
     [ObservableProperty]
-    private bool _isServerRunning;
-
-    [ObservableProperty]
     private string _quickPlayText = "Start Server and Connect";
 
     private readonly ITarkovClientService _tarkovClientService;
@@ -83,8 +80,6 @@ public partial class PlayPageViewModel : ObservableObject
             QuickPlayText = _localizationService.TranslateSource("PlayPageViewModelQuickPlayText");
         };
 
-        _akiServerService.RunningStateChanged += AkiServerService_RunningStateChanged;
-
         _lastServer = _configService.Config.LastServer;
         _username = _configService.Config.Username;
         _password = _configService.Config.Password;
@@ -92,33 +87,6 @@ public partial class PlayPageViewModel : ObservableObject
 
         ConnectToServerCommand = new AsyncRelayCommand(async () => await ConnectToServer());
         QuickPlayCommand = new AsyncRelayCommand(async () => await ConnectToServer(true));
-    }
-
-    private void AkiServerService_RunningStateChanged(object? sender, RunningState e)
-    {
-        switch (e)
-        {
-            case RunningState.NotRunning:
-                IsServerRunning = false;
-                QuickPlayText = _localizationService.TranslateSource("PlayPageViewModelQuickPlayText");
-                break;
-            case RunningState.Starting:
-                IsServerRunning = true;
-                QuickPlayText = _localizationService.TranslateSource("PlayPageViewModelQuickPlayText");
-                break;
-            case RunningState.Running:
-                IsServerRunning = true;
-                QuickPlayText = "Server is running!"; //_localizationService.TranslateSource("PlayPageViewModelServerIsRunningTitle"); // Server is running!
-                break;
-            case RunningState.StoppedUnexpectedly:
-                IsServerRunning = false;
-                QuickPlayText = _localizationService.TranslateSource("PlayPageViewModelQuickPlayText");
-                break;
-            default:
-                IsServerRunning = false;
-                QuickPlayText = _localizationService.TranslateSource("PlayPageViewModelQuickPlayText");
-                break;
-        }
     }
 
     private string CreateLaunchArguments(TarkovLaunchConfig launchConfig, string token)
@@ -209,6 +177,9 @@ public partial class PlayPageViewModel : ObservableObject
                 CloseButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonOk")
             }.ShowAsync();
         }
+        
+        QuickPlayText = _localizationService.TranslateSource("PlayPageViewModelQuickPlayText");
+
         return string.Empty;
     }
 
