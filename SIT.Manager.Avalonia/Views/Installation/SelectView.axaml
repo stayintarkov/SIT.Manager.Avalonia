@@ -34,9 +34,15 @@
 								   Classes="WarningMessage"/>
 						<TextBlock Text="{DynamicResource SelectViewEFTNoPathWarningMessage}"
 								   TextTrimming="CharacterEllipsis"
-								   IsVisible="{Binding NoEftInstallPathSet}"
-								   Classes="WarningMessage"/>
-
+								   Classes="WarningMessage">
+							<TextBlock.IsVisible>
+								<MultiBinding Converter="{x:Static BoolConverters.Or}">
+									<Binding Path="CurrentInstallProcessState.EftInstallPath" Converter="{x:Static StringConverters.IsNullOrEmpty}"/>
+									<Binding Path="CurrentInstallProcessState.EftVersion" Converter="{x:Static StringConverters.IsNullOrEmpty}"/>
+								</MultiBinding>
+							</TextBlock.IsVisible>
+						</TextBlock>
+						
 						<TextBlock>
 							<Run Text="{DynamicResource SelectViewEFTPathTitle}"/>
 							<Run Text=" "/>
