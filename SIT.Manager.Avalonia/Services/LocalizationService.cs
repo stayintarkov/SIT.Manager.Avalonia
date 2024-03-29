@@ -16,6 +16,8 @@ public partial class LocalizationService : ILocalizationService
 
     private ResourceInclude? resourceInclude;
 
+    public event EventHandler<EventArgs>? LocalizationChanged;
+
     public LocalizationService(IManagerConfigService configService)
     {
         _configService = configService;
@@ -49,6 +51,7 @@ public partial class LocalizationService : ILocalizationService
         {
             LoadTranslationResources(DEFAULT_LANGUAGE);
         }
+        LocalizationChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void LoadTranslationResources(string cultureInfo)

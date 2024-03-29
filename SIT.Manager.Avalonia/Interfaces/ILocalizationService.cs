@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace SIT.Manager.Avalonia.Interfaces;
 
 public interface ILocalizationService
 {
+    event EventHandler<EventArgs>? LocalizationChanged;
     /// <summary>
     /// Changes the localization based on your culture info. This specific function changes it inside of Settings. And mainly changes all dynamic Resources in pages.
     /// </summary>

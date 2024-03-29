@@ -1,6 +1,8 @@
 ﻿using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using SIT.Manager.Avalonia.Interfaces;
+using SIT.Manager.Avalonia.ManagedProcess;
 using SIT.Manager.Avalonia.Models.Installation;
 using SIT.Manager.Avalonia.Views.Installation;
 using System;
@@ -14,20 +16,9 @@ public partial class InstallPageViewModel : ObservableRecipient,
                                             IRecipient<InstallProcessStateChangedMessage>,
                                             IRecipient<InstallProcessStateRequestMessage>
 {
-    private readonly List<InstallStep> _sitInstallSteps = [
-        new(typeof(SelectView), "Select"),
-        new(typeof(ConfigureSitView), "Configure"),
-        new(typeof(PatchView), "Patch"),
-        new(typeof(InstallView), "Install"),
-        new(typeof(CompleteView), "Complete")
-    ];
-
-    private readonly List<InstallStep> _serverInstallSteps = [
-        new (typeof(SelectView), "Select"),
-        new(typeof(ConfigureServerView), "Configure"),
-        new(typeof(InstallView), "Install"),
-        new(typeof(CompleteView), "Complete")
-    ];
+    private List<InstallStep> _sitInstallSteps;
+    private List<InstallStep> _serverInstallSteps;
+    private readonly ILocalizationService _localizationService;
 
     private InstallProcessState _installProcessState = new();
 
@@ -42,9 +33,45 @@ public partial class InstallPageViewModel : ObservableRecipient,
     [ObservableProperty]
     private ReadOnlyCollection<InstallStep> _installationSteps;
 
-    public InstallPageViewModel()
+    public InstallPageViewModel(ILocalizationService localizationService)
     {
+        _localizationService = localizationService;
+        _localizationService.LocalizationChanged += (o, e) =>
+        {
+
+            _sitInstallSteps =
+            [
+                new(typeof(SelectView), _localizationService.TranslateSource("InstallPageViewModelSelectText")),
+                new(typeof(ConfigureSitView), _localizationService.TranslateSource("InstallPageViewModelConfigureText")),
+                new(typeof(PatchView), _localizationService.TranslateSource("InstallPageViewModelPatchText")),
+                new(typeof(InstallView), _localizationService.TranslateSource("InstallPageViewModelInstallText")),
+                new(typeof(CompleteView), _localizationService.TranslateSource("InstallPageViewModelCompleteText"))
+            ];
+            _serverInstallSteps =
+            [
+                new(typeof(SelectView), _localizationService.TranslateSource("InstallPageViewModelSelectText")),
+                new(typeof(ConfigureServerView), _localizationService.TranslateSource("InstallPageViewModelConfigureText")),
+                new(typeof(InstallView), _localizationService.TranslateSource("InstallPageViewModelInstallText")),
+                new(typeof(CompleteView), _localizationService.TranslateSource("InstallPageViewModelCompleteText"))
+            ];
+            InstallationSteps = _sitInstallSteps.AsReadOnly();
+        };
         WeakReferenceMessenger.Default.RegisterAll(this);
+        _sitInstallSteps =
+        [
+            new(typeof(SelectView), _localizationService.TranslateSource("InstallPageViewModelSelectText")),
+            new(typeof(ConfigureSitView), _localizationService.TranslateSource("InstallPageViewModelConfigureText")),
+            new(typeof(PatchView), _localizationService.TranslateSource("InstallPageViewModelPatchText")),
+            new(typeof(InstallView), _localizationService.TranslateSource("InstallPageViewModelInstallText")),
+            new(typeof(CompleteView), _localizationService.TranslateSource("InstallPageViewModelCompleteText"))
+        ];
+        _serverInstallSteps = 
+        [
+            new(typeof(SelectView), _localizationService.TranslateSource("InstallPageViewModelSelectText")),
+            new(typeof(ConfigureServerView), _localizationService.TranslateSource("InstallPageViewModelConfigureText")),
+            new(typeof(InstallView), _localizationService.TranslateSource("InstallPageViewModelInstallText")),
+            new(typeof(CompleteView), _localizationService.TranslateSource("InstallPageViewModelCompleteText"))
+        ];
         InstallationSteps = _sitInstallSteps.AsReadOnly();
         ResetInstallState();
     }
