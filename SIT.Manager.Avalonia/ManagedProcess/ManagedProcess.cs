@@ -46,14 +46,20 @@ public abstract class ManagedProcess(IBarNotificationService barNotificationServ
 
         _stopRequest = true;
 
+        bool closed = false;
         // Stop the server process
-        bool clsMsgSent = _process.CloseMainWindow();
-        if (clsMsgSent)
+        if (_process.CloseMainWindow())
         {
-            if (!_process.WaitForExit(TimeSpan.FromSeconds(5)))
-            {
-                _process.Kill();
-            }
+            closed = _process.WaitForExit(TimeSpan.FromSeconds(5));
         }
+
+        if (!closed)
+        {
+            _process.Kill();
+            _process.WaitForExit(TimeSpan.FromSeconds(5));
+        }
+
+        //This seems to cause the deadlock?
+        //_process.Close();
     }
 }
