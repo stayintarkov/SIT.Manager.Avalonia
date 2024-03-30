@@ -7,7 +7,7 @@
 	<Application.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceInclude Source="avares://SIT.Manager/Localization/en-US.axaml"/>
+				<ResourceInclude Source="avares://SIT.Manager.ASM/Localization/en-US.axaml"/>
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Application.Resources>
@@ -15,6 +15,6 @@
     <Application.Styles>
 		<sty:FluentAvaloniaTheme CustomAccentColor="#FF7F7F7F"/>
 		<labs:ControlThemes/>
-		<StyleInclude Source="avares://SIT.Manager/Assets/Styles/Theme.axaml"/>
+		<StyleInclude Source="avares://SIT.Manager.ASM/Assets/Styles/Theme.axaml"/>
     </Application.Styles>
 </Application>

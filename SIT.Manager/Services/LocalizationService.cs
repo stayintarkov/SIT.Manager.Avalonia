@@ -137,7 +137,7 @@ public partial class LocalizationService : ILocalizationService
     /// <returns>Resource with Localization</returns>
     private ResourceInclude CreateResourceLocalization(string locale)
     {
-        string url = $"avares://SIT.Manager/Localization/{locale}.axaml";
+        string url = $"avares://SIT.Manager.ASM/Localization/{locale}.axaml";
         Uri self = new("resm:Styles?assembly=SIT.Manager");
         return new ResourceInclude(self)
         {
