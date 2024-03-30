@@ -9,6 +9,7 @@
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
 		<TargetFramework>net8.0</TargetFramework>
+		<AssemblyName>SIT.Manager.ASM</AssemblyName>
 	</PropertyGroup>
   
 	<ItemGroup>
