@@ -18,7 +18,7 @@ namespace SIT.Manager.Services;
 
 public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterService> logger, HttpClient httpClient, IManagerConfigService managerConfigService) : IAppUpdaterService
 {
-    private const string MANAGER_VERSION_URL = @"https://api.github.com/repos/stayintarkov/SIT.Manager/releases/latest";
+    private const string MANAGER_VERSION_URL = @"https://api.github.com/repos/stayintarkov/SIT.Manager.Avalonia/releases/latest";
 
     private readonly IFileService _fileService = fileService;
     private readonly ILogger<AppUpdaterService> _logger = logger;
@@ -31,11 +31,11 @@ public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterServi
         {
             if (OperatingSystem.IsWindows())
             {
-                return "SIT.Manager.Desktop.exe";
+                return "SIT.Manager.exe";
             }
             else if (OperatingSystem.IsLinux())
             {
-                return "SIT.Manager.Desktop";
+                return "SIT.Manager";
             }
             throw new NotImplementedException("No process name found for this platform");
         }
@@ -47,11 +47,11 @@ public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterServi
         {
             if (OperatingSystem.IsWindows())
             {
-                return @"https://github.com/stayintarkov/SIT.Manager/releases/latest/download/win-x64.zip";
+                return @"https://github.com/stayintarkov/SIT.Manager.Avalonia/releases/latest/download/win-x64.zip";
             }
             else if (OperatingSystem.IsLinux())
             {
-                return @"https://github.com/stayintarkov/SIT.Manager/releases/latest/download/linux-x64.tar";
+                return @"https://github.com/stayintarkov/SIT.Manager.Avalonia/releases/latest/download/linux-x64.tar";
             }
             throw new NotImplementedException("No Release URL found for this platform");
         }
