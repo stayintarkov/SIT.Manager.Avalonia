@@ -16,6 +16,8 @@ public partial class MainView : ActivatableUserControl
     {
         InitializeComponent();
 
+        throw new Exception();
+
         // Set the initially loaded page to be the play page and highlight this
         // in the nav view.
         ContentFrame.Navigated += ContentFrame_Navigated;
