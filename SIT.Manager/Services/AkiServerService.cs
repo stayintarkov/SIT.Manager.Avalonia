@@ -166,7 +166,7 @@ public class AkiServerService(IBarNotificationService barNotificationService,
             {
                 using (CancellationTokenSource cts = new())
                 {
-                    DateTime abortTime = DateTime.Now + TimeSpan.FromSeconds(10);
+                    DateTime abortTime = DateTime.Now + TimeSpan.FromSeconds(3);
                     cts.CancelAfter(abortTime - DateTime.Now);
 
                     bool pingReponse;
@@ -193,7 +193,7 @@ public class AkiServerService(IBarNotificationService barNotificationService,
                     }
                 }
 
-                await Task.Delay(5 * 1000);
+                await Task.Delay((int)(Math.Pow(retryCounter, 1.5) * 1000));
                 retryCounter++;
             }
         });
