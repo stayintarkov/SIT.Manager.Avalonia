@@ -123,7 +123,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         string releasesJsonString;
         try
         {
-            releasesJsonString = await GetHttpStringWithRetryAsync(() => _httpClient.GetStringAsync(@"https://sitcoop.publicvm.com/api/v1/repos/SIT/Downgrade-Patches/releases"), TimeSpan.FromSeconds(1), 3);
+            releasesJsonString = await GetHttpStringWithRetryAsync(() => _httpClient.GetStringAsync(@"https://patcher.stayintarkov.com/api/v1/repos/SIT/Downgrade-Patches/releases"), TimeSpan.FromSeconds(1), 3);
         }
         catch(AuthenticationException)
         {
