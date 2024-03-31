@@ -1,5 +1,9 @@
 ﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Threading;
+using SIT.Manager.Views;
 using System;
+using System.Threading.Tasks;
 
 namespace SIT.Manager.Desktop;
 
@@ -11,14 +15,16 @@ class Program
     [STAThread]
     public static void Main(string[] args)
     {
+        AppBuilder aB = BuildAvaloniaApp();
         try
         {
-            BuildAvaloniaApp()
-            .StartWithClassicDesktopLifetime(args);
+            aB.StartWithClassicDesktopLifetime(args);
         }
         catch (Exception ex)
         {
             System.IO.File.WriteAllText("crash.log", ex.ToString());
+            CrashApp crashApp = new CrashApp();
+            crashApp.RunWithMainWindow<CrashWindow>();
         }
     }
 
