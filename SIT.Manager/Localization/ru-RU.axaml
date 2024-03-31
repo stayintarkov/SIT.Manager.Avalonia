@@ -391,5 +391,12 @@
 	<system:String x:Key="InstallPageViewModelPatchText">Патч</system:String>
 	<system:String x:Key="InstallPageViewModelInstallText">Установка</system:String>
 	<system:String x:Key="InstallPageViewModelCompleteText">Завершение</system:String>
-	
+
+	<!-- Crash Window -->
+	<system:String x:Key="CrashPageWindowTitle">Упс!</system:String>
+	<system:String x:Key="CrashPageTitle">Что-то вызвало сбой вашего лаунчера :/</system:String>
+	<system:String x:Key="CrashPageDescription">Мы создали файл журнала с именем "crash.log", если вы хотите сообщить нам об этой проблеме на GitHub.</system:String>
+	<system:String x:Key="CrashPageReport">Сообщить</system:String>
+	<system:String x:Key="CrashPageClose">Закрыть</system:String>
+
 </ResourceDictionary>

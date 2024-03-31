@@ -393,4 +393,15 @@
 	<system:String x:Key="InstallPageViewModelInstallText">Install</system:String>
 	<system:String x:Key="InstallPageViewModelCompleteText">Complete</system:String>
 	
+	<!-- Crash Window -->
+	<system:String x:Key="CrashPageWindowTitle">Uh oh!</system:String>
+	<system:String x:Key="CrashPageTitle">Something crashed your launcher :/</system:String>
+	<system:String x:Key="CrashPageDescription">
+	We've created a log called "crash.log" 
+	if you wish to report this issue to us in 
+	GitHub.</system:String>
+	<system:String x:Key="CrashPageReport">Report</system:String>
+	<system:String x:Key="CrashPageClose">Close</system:String>
+	
+	
 </ResourceDictionary>

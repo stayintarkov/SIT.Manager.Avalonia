@@ -105,7 +105,7 @@ public partial class LocalizationService : ILocalizationService
     {
         List<CultureInfo?> result = [];
         var assembly = typeof(LocalizationService).Assembly;
-        string folderName = string.Format("{0}.Localization", assembly.GetName().Name);
+        string folderName = string.Format("{0}.Localization", "SIT.Manager");
         result = assembly.GetManifestResourceNames()
             .Where(r => r.StartsWith(folderName) && r.EndsWith(".axaml"))
             .Select(r =>

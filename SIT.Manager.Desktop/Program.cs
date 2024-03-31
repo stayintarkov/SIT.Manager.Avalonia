@@ -23,7 +23,7 @@ class Program
         catch (Exception ex)
         {
             System.IO.File.WriteAllText("crash.log", ex.ToString());
-            CrashApp crashApp = new CrashApp();
+            CrashApp crashApp = new();
             crashApp.RunWithMainWindow<CrashWindow>();
         }
     }

@@ -392,4 +392,11 @@
 	<system:String x:Key="InstallPageViewModelInstallText">安裝</system:String>
 	<system:String x:Key="InstallPageViewModelCompleteText">完成</system:String>
 
+	<!-- Crash Window -->
+	<system:String x:Key="CrashPageWindowTitle">唉呀！</system:String>
+	<system:String x:Key="CrashPageTitle">某些東西導致了啟動器崩潰 :/</system:String>
+	<system:String x:Key="CrashPageDescription"> 我們建立了一個名為 "crash.log" 的日誌文件，如果您希望將此問題報告給我們在 GitHub 上。</system:String>
+	<system:String x:Key="CrashPageReport">報告</system:String>
+	<system:String x:Key="CrashPageClose">關閉</system:String>
+
 </ResourceDictionary>
