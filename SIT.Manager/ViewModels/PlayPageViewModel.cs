@@ -166,7 +166,11 @@ public partial class PlayPageViewModel : ObservableObject
         catch (IncorrectServerPasswordException)
         {
             Debug.WriteLine("DEBUG: Incorrect password");
-            //TODO: Utils.ShowInfoBar("Connect", $"Invalid password!", InfoBarSeverity.Error);
+            await new ContentDialog()
+            {
+                Title = _localizationService.TranslateSource("PlayPageViewModelLoginErrorTitle"),
+                Content = _localizationService.TranslateSource("")
+            }.ShowAsync();
         }
         catch (Exception ex)
         {
