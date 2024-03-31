@@ -1,0 +1,24 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Design.PreviewWith>
+		<Border Padding="20">
+		</Border>
+	</Design.PreviewWith>
+
+	<Styles.Resources>
+		<ResourceDictionary>
+			<FontFamily x:Key="BenderFont">/Assets/Fonts/Bender.otf#Bender</FontFamily>
+
+			<Color x:Key="AppAccentColor">#FF7F7F7F</Color>
+			<Color x:Key="AppBlueColor">#3399FFFF</Color>
+			<Color x:Key="AppWhiteColor">#FFFFFFFF</Color>
+
+			<StaticResource x:Key="TextControlForeground" ResourceKey="AppWhiteColor"/>
+			<StaticResource x:Key="TextControlSelection" ResourceKey="AppBlueColor"/>
+		</ResourceDictionary>
+	</Styles.Resources>
+
+	<StyleInclude Source="avares://SIT.Manager.ASM/Assets/Styles/Border.axaml"/>
+	<StyleInclude Source="avares://SIT.Manager.ASM/Assets/Styles/SelectableTextBlock.axaml"/>
+	<StyleInclude Source="avares://SIT.Manager.ASM/Assets/Styles/TextBlock.axaml"/>
+</Styles>

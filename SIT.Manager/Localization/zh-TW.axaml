@@ -1,0 +1,391 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+					xmlns:system="clr-namespace:System;assembly=System.Runtime"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<!-- Play Page / View -->
+	<system:String x:Key="AddressBoxTitle">伺服器位址</system:String>
+	<system:String x:Key="UsernameBoxTitle">使用者名稱</system:String>
+	<system:String x:Key="PasswordBoxTitle">密碼</system:String>
+	<system:String x:Key="EnterUserNamePlaceholder">請輸入使用者名稱...</system:String>
+	<system:String x:Key="EnterPasswordPlaceholder">請輸入密碼...</system:String>
+	<system:String x:Key="EnterServerAddressPlaceholder">請輸入伺服器位址...</system:String>
+	<system:String x:Key="RememberMeCheckBoxTitle">記住我</system:String>
+	<system:String x:Key="ConnectButtonTitle">連線</system:String>
+	<system:String x:Key="StartServerAndConnectButtonTitleToolTip">啟動本地Aki伺服器並連接至該伺服器</system:String>
+	<system:String x:Key="ConnectButtonTitleToolTip">連接至伺服器</system:String>
+
+	<!-- Play Page ViewModel -->
+	<system:String x:Key="PlayPageViewModelQuickPlayText">啟動伺服器並連線</system:String>
+	<system:String x:Key="PlayPageViewModelAccountNotFound">帳戶未找到</system:String>
+	<system:String x:Key="PlayPageViewModelAccountNotFoundDescription">找不到您的帳戶，您是否要使用這些憑證註冊新帳戶？</system:String>
+	<system:String x:Key="PlayPageViewModelButtonYes">是</system:String>
+	<system:String x:Key="PlayPageViewModelButtonOk">確定</system:String>
+	<system:String x:Key="PlayPageViewModelButtonNo">否</system:String>
+	<system:String x:Key="PlayPageViewModelLoginErrorTitle">登入錯誤</system:String>
+	<system:String x:Key="PlayPageViewModelLoginErrorDescription">無法與伺服器 %1 通訊</system:String>
+	<system:String x:Key="PlayPageViewModelServerAddressTitle">伺服器位址</system:String>
+	<system:String x:Key="PlayPageViewModelServerAddressDescription">請修正您的伺服器位址，然後重試！</system:String>
+	<system:String x:Key="PlayPageViewModelInstallPathTitle">安裝路徑</system:String>
+	<system:String x:Key="PlayPageViewModelInstallPathDescription">尚未設定 EFT 的安裝路徑，請前往設定並設定安裝路徑！</system:String>
+	<system:String x:Key="PlayPageViewModelSITInstallationTitle">SIT 安裝</system:String>
+	<system:String x:Key="PlayPageViewModelSITInstallationDescription">找不到 "%1"，連線前請先安裝 SIT！</system:String>
+	<system:String x:Key="PlayPageViewModelEFTInstallationTitle">EFT 安裝</system:String>
+	<system:String x:Key="PlayPageViewModelEFTInstallationDescription">在安裝路徑中找不到 "%1"！</system:String>
+	<system:String x:Key="PlayPageViewModelInputValidationTitle">輸入驗證</system:String>
+	<system:String x:Key="PlayPageViewModelInputValidationDescription">缺少輸入欄位！</system:String>
+	<system:String x:Key="PlayPageViewModelUnhandledAkiInstanceTitle">未處理的 Aki 實例</system:String>
+	<system:String x:Key="PlayPageViewModelUnhandledAkiInstanceDescription">SPT-AKI 伺服器端目前正在運行，請關閉任何正在運行的 SPT-AKI 伺服器端實例！</system:String>
+	<system:String x:Key="PlayPageViewModelMissingAKIInstallationTitle">缺少 AKI 安裝</system:String>
+	<system:String x:Key="PlayPageViewModelMissingAKIInstallationDescription">SPT-AKI 伺服器可執行檔丟失！</system:String>
+	<system:String x:Key="PlayPageViewModelWaitingForServerTitle">等待伺服器</system:String>
+	<system:String x:Key="PlayPageViewModelServerErrorTitle">伺服器錯誤</system:String>
+	<system:String x:Key="PlayPageViewModelServerErrorDescription">伺服器從未啟動，請查看日誌以獲取更多資訊！</system:String>
+
+	<!-- Pane View (Menu on the left also tooltip about update on top) -->
+	<system:String x:Key="UpdateNotification">SIT 管理器有新版本可用。按此處更新：</system:String>
+	<system:String x:Key="UpdateButtonTitle">更新</system:String>
+	<system:String x:Key="SetupTitle">設定</system:String>
+	<system:String x:Key="InstallPathErrorNotification">尚未設定客戶端安裝路徑。請前往設定以設定啟動器。</system:String>
+	<system:String x:Key="PlayTitle">遊玩</system:String>
+	<system:String x:Key="InstallTitle">安裝</system:String>
+	<system:String x:Key="ToolsTitle">工具</system:String>
+	<system:String x:Key="ServerTitle">伺服器</system:String>
+	<system:String x:Key="ModsTitle">模組</system:String>
+	<system:String x:Key="SettingsTitle">設定</system:String>
+	<system:String x:Key="PlayTitleToolTip">連線並開始遊玩。</system:String>
+	<system:String x:Key="InstallTitleToolTip">安裝/更新 SIT 和 SIT 伺服器</system:String>
+	<system:String x:Key="ToolsTitleToolTip">用於管理 SIT 和 Tarkov 的工具。</system:String>
+	<system:String x:Key="ServerTitleToolTip">管理伺服器。</system:String>
+	<system:String x:Key="ModsTitleToolTip">管理模組。</system:String>
+
+	<!-- Mods Page -->
+	<system:String x:Key="ModsWarningTitle">警告</system:String>
+	<system:String x:Key="ModsWarningDescription">使用模組可能會影響遊戲的穩定性，並可能導致遊戲崩潰或出現其他問題！儘管模組可以增強您的遊戲體驗並添加新功能，但它們可能未被 SIT 官方支持或經過兼容性測試；安裝模組需自擔風險，並在進行任何更改之前始終備份遊戲文件；我們對由安裝模組導致的任何損壞或進度丟失概不負責，請謹慎操作！</system:String>
+	<system:String x:Key="ModsWarningButtonTitle">我了解</system:String>
+	<system:String x:Key="ModsPageTitle">模組</system:String>
+	<system:String x:Key="ModsDownloadCollectionButtonTitle">下載模組合集</system:String>
+	<system:String x:Key="ModsDownloadCollectionButtonToolTip">下載最新的移植模組合集</system:String>
+	<system:String x:Key="ModInfoTitle">模組信息</system:String>
+	<system:String x:Key="ModInfoNameTitle">名稱:</system:String>
+	<system:String x:Key="ModInfoAuthorTitle">作者:</system:String>
+	<system:String x:Key="ModInfoSupportedVersionTitle">支援的 SIT 版本:</system:String>
+	<system:String x:Key="ModInfoModVersionTitle">模組版本:</system:String>
+	<system:String x:Key="ModInfoModPageTitle">模組頁面:</system:String>
+	<system:String x:Key="ModInfoExtraFilesToolTip">如果移植模組需要額外文件，請點擊鏈接下載它們</system:String>
+	<system:String x:Key="ModInfoRequiresExtraFilesTitle">需要額外文件:</system:String>
+	<system:String x:Key="ModInfoDescription">描述:</system:String>
+	<system:String x:Key="ModInfoInstallToolTip">安裝模組</system:String>
+	<system:String x:Key="ModInfoInstallTitle">安裝</system:String>
+	<system:String x:Key="ModInfoUninstallToolTip">卸載模組</system:String>
+	<system:String x:Key="ModInfoUninstallTitle">卸載</system:String>
+
+	<!-- Mods Page ViewModel -->
+	<system:String x:Key="ModsPageViewModelErrorTitle">錯誤</system:String>
+	<system:String x:Key="ModsPageViewModelErrorInstallPathDescription">未設定 EFT 安裝路徑，請先在設定中配置！</system:String>
+	<system:String x:Key="ModsPageViewModelErrorNoModsFound">未找到任何模組</system:String>
+
+	<!-- Tools Page -->
+	<system:String x:Key="ToolsOpenEFTFolderButtonToolTip">打開 EFT 安裝資料夾</system:String>
+	<system:String x:Key="ToolsOpenEFTFolderButtonTitle">打開 EFT 資料夾</system:String>
+	<system:String x:Key="ToolsOpenBepInExFolderButtonToolTip">打開 BepInEx 外掛資料夾</system:String>
+	<system:String x:Key="ToolsOpenBepInExFolderButtonTitle">打開外掛資料夾</system:String>
+	<system:String x:Key="ToolsOpenSITConfigButtonToolTip">使用預設文字編輯器打開 SIT 設定檔</system:String>
+	<system:String x:Key="ToolsOpenSITConfigButtonTitle">打開 SIT 設定檔</system:String>
+	<system:String x:Key="ToolsOpenEFTLogButtonToolTip">使用預設文字編輯器打開 EFT 的 'Player.log' 檔案</system:String>
+	<system:String x:Key="ToolsOpenEFTLogButtonTitle">打開 EFT 日誌</system:String>
+	<system:String x:Key="ToolsOpenLocationEditorButtonToolTip">打開地圖設定編輯器</system:String>
+	<system:String x:Key="ToolsOpenLocationEditorButtonTitle">地圖設定編輯器</system:String>
+	<system:String x:Key="ToolsClearCacheButtonToolTip">清除本地 EFT 快取</system:String>
+	<system:String x:Key="ToolsClearCacheButtonTitle">清除快取</system:String>
+	<system:String x:Key="ToolsGenerateDiagnosticReportButtonTitle">生成日誌</system:String>
+	<system:String x:Key="ToolsClientLogCheckboxContent">啟用 EFT 日誌</system:String>
+	<system:String x:Key="ToolsServerLogCheckboxContent">啟用伺服器日誌</system:String>
+	<system:String x:Key="ToolsDiagnosticsLogCheckboxContent">啟用診斷日誌（包含系統信息！）</system:String>
+	<system:String x:Key="ToolsHttpJsonCheckboxContent">啟用 Http.json 檔案</system:String>
+	<system:String x:Key="ToolsSelectLogsTitle">選擇要包含的日誌</system:String>
+	<system:String x:Key="ToolsSelectLogsProceedButtonText">生成日誌套件</system:String>
+	<system:String x:Key="ToolsSelectLogsCloseButtonText">取消</system:String>
+	<system:String x:Key="ToolsBugReportSaveFileTitle">保存 Zip 檔案</system:String>
+
+	<!-- Server Page -->
+	<system:String x:Key="ServerConsoleOutputTitle">控制臺輸出</system:String>
+	<system:String x:Key="ServerButtonStartToolTip">啟動伺服器</system:String>
+	<system:String x:Key="ServerEditServerConfig">編輯伺服器設定</system:String>
+	<system:String x:Key="ServerEditServerConfigButtonToolTip">編輯伺服器設定檔</system:String>
+	<system:String x:Key="ServerClearServerOutputText">清除伺服器輸出</system:String>
+	<system:String x:Key="ServerClearServerOutputTooltip">清除控制台中的所有輸出。</system:String>
+	
+	<!-- Settings Page -->
+	<system:String x:Key="SettingsLauncherSettingsTitle">啟動器設定</system:String>
+	<system:String x:Key="SettingsCloseLauncherAfterGameLaunchTitle">遊戲啟動後關閉啟動器</system:String>
+	<system:String x:Key="SettingsCloseLauncherAfterGameLaunchToolTip">開啟遊戲後自動關閉啟動器</system:String>
+	<system:String x:Key="SettingsLookForUpdatesTitle">檢查更新</system:String>
+	<system:String x:Key="SettingsLookForUpdatesTitleToolTip">開啟啟動器時自動檢查更新</system:String>
+	<system:String x:Key="SettingsHideIpAddressTitle">隱藏 IP 位址</system:String>
+	<system:String x:Key="SettingsHideIpAddressToolTip">在 IP 位址框中使用星號隱藏 IP 位址。</system:String>
+	<system:String x:Key="SettingsLanguageTitle">語言:</system:String>
+	<system:String x:Key="SettingsLanguageTitleToolTip">將整個啟動器翻譯為您的語言，選擇其中一種!</system:String>
+	<system:String x:Key="SettingsAccentColorTitle">強調顏色:</system:String>
+	<system:String x:Key="SettingsAccentColorToolTip">將所選視覺的顏色更改為您選擇的顏色！</system:String>
+	<system:String x:Key="SettingsLinuxSettingsTitle">Linux 設定</system:String>
+	<system:String x:Key="SettingsLinuxWinePrefixTitle">Wine 前綴:</system:String>
+	<system:String x:Key="SettingsLinuxWinePrefixPlaceholder">Wine 前綴路徑</system:String>
+	<system:String x:Key="SettingsLinuxWinePrefixToolTip">更改用於啟動 EFT 的 WINEPREFIX</system:String>
+	<system:String x:Key="SettingsLinuxWineRunnerTitle">Wine Runner:</system:String>
+	<system:String x:Key="SettingsLinuxWineRunnerPlaceholder">Wine Runner 路徑</system:String>
+	<system:String x:Key="SettingsLinuxWineRunnerToolTip">設置用於啟動 EFT 的 wine runner</system:String>
+	<system:String x:Key="SettingsEFTSettingsTitle">EFT 設定</system:String>
+	<system:String x:Key="SettingsEFTSettingsButtonChangeTitle">更改</system:String>
+	<system:String x:Key="SettingsEFTInstallPathTitle">EFT 路徑:</system:String>
+	<system:String x:Key="SettingsEFTInstallPathPlaceholder">EFT 安裝路徑...</system:String>
+	<system:String x:Key="SettingsEFTChangeInstallPathToolTip">更改 EFT 安裝路徑</system:String>
+	<system:String x:Key="SettingsEFTVersionTitle">EFT 版本:</system:String>
+	<system:String x:Key="SettingsSITVersionTitle">SIT 版本:</system:String>
+	<system:String x:Key="SettingsSPTAKITitle">SPT-AKI 設定</system:String>
+	<system:String x:Key="SettingsSPTAKIPathTitle">SPT-AKI 路徑:</system:String>
+	<system:String x:Key="SettingsSPTAKIInstallPathPlaceholder">SPT-AKI 安裝路徑...</system:String>
+	<system:String x:Key="SettingsSPTAKIInstallPathToolTip">更改 SPT-AKI 安裝路徑</system:String>
+	<system:String x:Key="SettingsServerConsoleTitle">伺服器控制臺</system:String>
+	<system:String x:Key="SettingsServerConsoleFontFamilyTitle">字體:</system:String>
+	<system:String x:Key="SettingsServerConsoleFontColorTitle">字體顏色:</system:String>
+	<system:String x:Key="SettingsManagerVersionTitle">當前 SIT Manager 版本:</system:String>
+
+	<!-- Location Editor View -->
+	<system:String x:Key="LocationEditorLoadButtonTitle">載入</system:String>
+	<system:String x:Key="LocationEditorSaveButtonTitle">儲存</system:String>
+	<system:String x:Key="LocationEditorLocationTitle">位置</system:String>
+	<system:String x:Key="LocationEditorLocationTextBoxPlaceholder">請先點擊「載入」</system:String>
+	<system:String x:Key="LocationEditorGeneralSettingsTitle">一般設定</system:String>
+	<system:String x:Key="LocationEditorBotMaxHeader">最大機器人數量</system:String>
+	<system:String x:Key="LocationEditorBotMaxPlayerHeader">最大 PMC 機器人數量</system:String>
+	<system:String x:Key="LocationEditorBotNormalHeader">普通機器人</system:String>
+	<system:String x:Key="LocationEditorBotSpawnTimeOffMaxHeader">離線最大機器人生成時間</system:String>
+	<system:String x:Key="LocationEditorBotSpawnTimeOffMinHeader">離線最小機器人生成時間</system:String>
+	<system:String x:Key="LocationEditorBotSpawnTimeOnMaxHeader">線上最大機器人生成時間</system:String>
+	<system:String x:Key="LocationEditorBotSpawnTimeOnMinHeader">線上最小機器人生成時間</system:String>
+	<system:String x:Key="LocationEditorBotStartHeader">起始機器人</system:String>
+	<system:String x:Key="LocationEditorBotStopHeader">終止機器人</system:String>
+	<system:String x:Key="LocationEditorBotSpawnCountStepHeader">單次機器人生成數量</system:String>
+	<system:String x:Key="LocationEditorBotSpawnPeriodCheckHeader">機器人生成檢查週期</system:String>
+	<system:String x:Key="LocationEditorBotMaxToolTip">地圖上允許的最大機器人數量</system:String>
+	<system:String x:Key="LocationEditorBotMaxPlayerToolTip">地圖上允許的最大 PMC 機器人數量</system:String>
+	<system:String x:Key="LocationEditorBotSpawnTimeOffMaxToolTip">離線模式的最大機器人生成時間（秒）</system:String>
+	<system:String x:Key="LocationEditorBotSpawnTimeOffMinToolTip">離線模式的最小機器人生成時間（秒）</system:String>
+	<system:String x:Key="LocationEditorBotSpawnTimeOnMaxToolTip">線上模式的最大機器人生成時間（秒）</system:String>
+	<system:String x:Key="LocationEditorBotSpawnTimeOnMinToolTip">線上模式的最小機器人生成時間（秒）</system:String>
+	<system:String x:Key="LocationEditorWavesSettingsTitle">波次設定</system:String>
+	<system:String x:Key="LocationEditorAddWaveButtonText">新增波次</system:String>
+	<system:String x:Key="LocationEditorRemoveWaveButtonText">移除波次</system:String>
+	<system:String x:Key="LocationEditorSpawnWavesText">生成波次</system:String>
+	<system:String x:Key="LocationEditorBotPresetText">機器人預設</system:String>
+	<system:String x:Key="LocationEditorBotPresetToolTip">設定機器人難度</system:String>
+	<system:String x:Key="LocationEditorBotSideText">機器人陣營</system:String>
+	<system:String x:Key="LocationEditorBotSideToolTip">設定機器人所在陣營</system:String>
+	<system:String x:Key="LocationEditorSpawnPointsText">生成點</system:String>
+	<system:String x:Key="LocationEditorWildSpawnTypeText">野外生成類型</system:String>
+	<system:String x:Key="LocationEditorIsPlayersContent">是否為玩家</system:String>
+	<system:String x:Key="LocationEditorIsPlayersToolTip">需要勾選以使波次在3.8以上的版本中生效</system:String>
+	<system:String x:Key="LocationEditorNumberHeader">波次編號</system:String>
+	<system:String x:Key="LocationEditorNumberToolTip">波次編號（必須大於0）</system:String>
+	<system:String x:Key="LocationEditorSlotsMaxHeader">最大生成數量</system:String>
+	<system:String x:Key="LocationEditorSlotsMaxToolTip">最大生成的數量</system:String>
+	<system:String x:Key="LocationEditorSlotsMinHeader">最低生成數量</system:String>
+	<system:String x:Key="LocationEditorSlotsMinToolTip">最低生成的數量</system:String>
+	<system:String x:Key="LocationEditorTimeMaxHeader">最大生成時間</system:String>
+	<system:String x:Key="LocationEditorTimeMaxToolTip">生成波次的最大時間</system:String>
+	<system:String x:Key="LocationEditorTimeMinHeader">最小生成時間</system:String>
+	<system:String x:Key="LocationEditorTimeMinToolTip">生成波次的最小時間</system:String>
+	<system:String x:Key="LocationEditorBossSettingsTitle">Boss 設定</system:String>
+	<system:String x:Key="LocationEditorAddBossButtonText">新增 Boss</system:String>
+	<system:String x:Key="LocationEditorRemoveBossButtonText">移除 Boss</system:String>
+	<system:String x:Key="LocationEditorBossListText">Boss 列表</system:String>
+	<system:String x:Key="LocationEditorBossChanceHeader">Boss 出現機率</system:String>
+	<system:String x:Key="LocationEditorBossEscortAmountText">Boss 小弟數量</system:String>
+	<system:String x:Key="LocationEditorBossEscortTypeText">Boss 小弟類型</system:String>
+	<system:String x:Key="LocationEditorBossNameText">Boss 名稱</system:String>
+	<system:String x:Key="LocationEditorForceSpawnContent">強制生成</system:String>
+	<system:String x:Key="LocationEditorIgnoreMaxBotsContent">忽略最大機器人數量限制</system:String>
+	<system:String x:Key="LocationEditorRandomTimeSpawnContent">隨機生成時間</system:String>
+
+	<!-- LocationEditor ViewModel -->
+	<system:String x:Key="LocationEditorViewModelLoadErrorTitle">載入錯誤</system:String>
+	<system:String x:Key="LocationEditorViewModelLoadErrorDescription">載入檔案時發生錯誤！</system:String>
+	<system:String x:Key="LocationEditorViewModelLoadLocationTitle">載入位置</system:String>
+	<system:String x:Key="LocationEditorViewModelLoadLocationDescription">成功載入位置 %1！</system:String>
+	<system:String x:Key="LocationEditorViewModelSaveErrorTitle">儲存錯誤</system:String>
+	<system:String x:Key="LocationEditorViewModelSaveErrorDescription">儲存檔案時發生錯誤！</system:String>
+	<system:String x:Key="LocationEditorViewModelSaveSuccessTitle">儲存</system:String>
+	<system:String x:Key="LocationEditorViewModelSaveSuccessDescription">已成功儲存檔案至：%1</system:String>
+
+	<!-- Select Edition Dialog -->
+	<system:String x:Key="SelectEditionDialogTitle">選擇版本</system:String>
+	<system:String x:Key="SelectEditionDialogTextBlockTitle">為您的 SIT 帳戶選擇版本：</system:String>
+	<system:String x:Key="SelectEditionDialogButtonCreateTitle">創建</system:String>
+
+	<!-- Tools Page ViewModel -->
+	<system:String x:Key="ToolsPageViewModelErrorMessageTitle">錯誤</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageDescription">無法取得發布版本</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigTitle">配置錯誤</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigDescription">未配置 EFT 安裝路徑，前往設置以配置安裝路徑！</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigBepInExDescription">找不到指定的路徑，請確認 BepInEx 是否已安裝？路徑：%1</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigSITDescription">找不到「%1」，請確保 SIT 已安裝並且您已經啟動過遊戲！</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigLogDescription">找不到日誌文件！</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigButtonOk">確定</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigButtonCancel">取消</system:String>
+	<system:String x:Key="ToolsPageViewModelConfigClearEFTTitle">清除快取</system:String>
+	<system:String x:Key="ToolsPageViewModelConfigClearEFTDescription">您是否要清除 EFT 本地快取或清除所有快取？</system:String>
+	<system:String x:Key="ToolsPageViewModelConfigClearEFTCache">清除 EFT 本地快取</system:String>
+	<system:String x:Key="ToolsPageViewModelConfigClearAllCache">清除所有快取</system:String>
+	<system:String x:Key="ToolsPageViewModelUnhandledExceptionError">發生錯誤：%1</system:String>
+
+	<!-- Settings Page ViewModel -->
+	<system:String x:Key="SettingsPageViewModelErrorTitle">錯誤</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigTitle">配置</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigErrorEFTDescription">所選檔案夾無效，請確保它是正確的 EFT 遊戲檔案夾！</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigInformationEFTDescription">EFT 安裝路徑已設置為 '%1'</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">SPT-AKI 伺服器安裝路徑已設置為 '%1'</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigErrorSPTAKI">所選檔案夾無效，請確保它是正確的 SPT-AKI 伺服器檔案夾！</system:String>
+
+	<!-- Server Page ViewModel -->
+	<system:String x:Key="ServerPageViewModelStartingServer">正在啟動伺服器！</system:String>
+	<system:String x:Key="ServerPageViewModelServerStarted">伺服器已啟動！</system:String>
+	<system:String x:Key="ServerPageViewModelServerStopped">伺服器已停止！</system:String>
+	<system:String x:Key="ServerPageViewModelStopServer">停止伺服器</system:String>
+	<system:String x:Key="ServerPageViewModelStartServer">啟動伺服器</system:String>
+	<system:String x:Key="ServerPageViewModelServerError">伺服器意外停止，請檢查控制台以獲取錯誤訊息！</system:String>
+	<system:String x:Key="ServerPageViewModelSPTAkiRunning">SPT-AKI 正在運行中，請關閉任何正在運行的 SPT-AKI 實例！</system:String>
+	<system:String x:Key="ServerPageViewModelSPTAkiNotFound">未找到 SPT-AKI 伺服器端，請在啟動伺服器之前在設置選項卡中配置 SPT-AKI 伺服器端路徑！</system:String>
+	<system:String x:Key="ServerPageViewModelStartingServerLog">正在啟動伺服器...</system:String>
+	<system:String x:Key="ServerPageViewModelStoppingServerLog">正在停止伺服器...</system:String>
+	<system:String x:Key="ServerPageViewModelClearServerOutputTitle">清除伺服器輸出</system:String>
+	<system:String x:Key="ServerPageViewModelClearServerOutputDescription">您是否要清除控制台輸出的所有文本？</system:String>
+	<system:String x:Key="ServerPageViewModelClearServerOutputPrimary">是</system:String>
+	<system:String x:Key="ServerPageViewModelClearServerOutputSecondary">否</system:String>
+	
+	<!-- Tarkov Client Service -->
+	<system:String x:Key="TarkovClientServiceCacheClearedTitle">緩存已清除</system:String>
+	<system:String x:Key="TarkovClientServiceCacheClearedErrorTitle">清除緩存時出錯</system:String>
+	<system:String x:Key="TarkovClientServiceCacheClearedDescription">一切緩存已清除！</system:String>
+	<system:String x:Key="TarkovClientServiceCacheClearedErrorDescription">在設置中找不到 EFT 安裝路徑</system:String>
+	<system:String x:Key="TarkovClientServiceCacheClearedErrorEFTDescription">EFT 本地緩存目錄未找到：%1</system:String>
+	<system:String x:Key="TarkovClientServiceCacheClearedEFTDescription">EFT 本地緩存已清除！</system:String>
+
+	<!-- Mod Service -->
+	<system:String x:Key="ModServiceOutdatedDescription">您有 %1 個過時的模組，您想要自動更新它們嗎？過時的模組：%2</system:String>
+	<system:String x:Key="ModServiceOutdatedModsFoundTitle">發現過時的模組</system:String>
+	<system:String x:Key="ModServiceButtonNo">否</system:String>
+	<system:String x:Key="ModServiceButtonYes">是</system:String>
+	<system:String x:Key="ModServiceUpdatedModsTitle">已更新的模組</system:String>
+	<system:String x:Key="ModServiceUpdatedModsDescription">已更新 %1 個模組！</system:String>
+	<system:String x:Key="ModServiceInstallModTitle">安裝模組</system:String>
+	<system:String x:Key="ModServiceInstallErrorModDescription">EFT 安裝路徑未設定，請在設置中配置！</system:String>
+	<system:String x:Key="ModServiceWarningTitle">警告</system:String>
+	<system:String x:Key="ModServiceWarningDescription">您正在嘗試安裝的模組與您當前安裝的 SIT 版本不相容！支持的 SIT 版本：%1 已安裝的 SIT 版本：%2 仍要繼續安裝嗎？</system:String>
+	<system:String x:Key="ModServiceUnknownTitle">未知</system:String>
+	<system:String x:Key="ModServiceInstallModDescription">成功安裝了 %1！</system:String>
+	<system:String x:Key="ModServiceErrorInstallModDescription">%1 安裝失敗，請檢查您的 Launcher.log！</system:String>
+	<system:String x:Key="ModServiceErrorUninstallModTitle">卸載模組時出錯</system:String>
+	<system:String x:Key="ModServiceErrorUninstallModDescription">模組 %1 中缺少文件：'%2' ，是否強制從已安裝模組列表中移除此模組？</system:String>
+	<system:String x:Key="ModServiceErrorExceptionUninstallModDescription">模組 %1 中缺少文件：'%2' ，是否強制從已安裝模組列表中移除此模組？</system:String>
+	<system:String x:Key="ModServiceErrorExceptionFileUninstallModDescription">模組 %1 中缺少文件：'%2'</system:String>
+	<system:String x:Key="ModServiceFileUninstallModTitle">卸載模組</system:String>
+	<system:String x:Key="ModServiceFileUninstallModDescription">已成功卸載 %1 ！</system:String>
+
+	<!-- Install Service -->
+	<system:String x:Key="InstallServiceErrorTitle">錯誤</system:String>
+	<system:String x:Key="InstallServiceErrorInstallServerDescription">請先在設置中配置 EFT 路徑</system:String>
+	<system:String x:Key="InstallServiceErrorInstallSITDescription">未設定 EFT 路徑，請先在設置中進行配置</system:String>
+	<system:String x:Key="InstallServiceConfigTitle">配置</system:String>
+	<system:String x:Key="InstallServiceConfigDescription">伺服器端安裝路徑已設置為 '%1'</system:String>
+	<system:String x:Key="InstallServiceInstallSuccessfulTitle">安裝</system:String>
+	<system:String x:Key="InstallServiceInstallSuccessfulDescription">伺服器端安裝成功</system:String>
+	<system:String x:Key="InstallServiceInstallSITSuccessfulDescription">SIT 安裝成功</system:String>
+	<system:String x:Key="InstallerServiceNoDowngradePatcher">《逃離塔科夫》這些版本沒有可用的降級補丁。</system:String>
+
+	<!-- File Service -->
+	<system:String x:Key="FileServiceProgressDownloading">下載檔案 '%1'</system:String>
+	<system:String x:Key="FileServiceProgressExtracting">正在解壓縮檔案 %1 (%2)</system:String>
+
+	<!-- Update Page -->
+	<system:String x:Key="UpdatePageUpdateButtonTitle">開始更新</system:String>
+	<system:String x:Key="UpdatePageUpdateInfoTextPt1">SIT 管理員正在更新，請稍候...</system:String>
+	<system:String x:Key="UpdatePageUpdateInfoTextPt2">更新完成後應用程式將重新啟動</system:String>
+	<system:String x:Key="UpdatePageUpdatingTitle">更新中</system:String>
+	<system:String x:Key="UpdatePageErrorMessage">更新 SIT 管理員時發生問題。請查看日誌以獲取更多信息</system:String>
+
+	<!-- Update Page View Model -->
+	<system:String x:Key="UpdatePageViewModelUpdateConfirmationTitle">更新確認</system:String>
+	<system:String x:Key="UpdatePageViewModelUpdateConfirmationDescription">您確定要進行更新嗎？更新完成後管理員將自動重新啟動</system:String>
+	<system:String x:Key="UpdatePageViewModelButtonYes">是</system:String>
+	<system:String x:Key="UpdatePageViewModelButtonNo">否</system:String>
+
+	<!-- Install - Complete View -->
+	<system:String x:Key="CompleteViewInstallComplete">安裝完成</system:String>
+	<system:String x:Key="CompleteViewResetButtonTitle">開始遊戲</system:String>
+
+	<!-- Install - Configure View -->
+	<system:String x:Key="ConfigureViewStartInstallButtonTitle">開始安裝</system:String>
+	<system:String x:Key="ConfigureViewBackButtonTitle">返回</system:String>
+	<system:String x:Key="ConfigureViewVersionSelectionGroupTitle">版本選擇</system:String>
+
+	<!-- Install - Configure Server View -->
+	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathToolTip">更改 SPT-AKI 的安裝路徑。</system:String>
+	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathTitle">更改</system:String>
+	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathPlaceholder">SPT-AKI 安裝路徑...</system:String>
+	<system:String x:Key="ConfigureServerViewSPTAKIPathTitle">SPT-AKI 路徑：</system:String>
+	<system:String x:Key="ConfigureServerViewSPTAKIPathWarningNoPath">未指定 SPT-AKI 的安裝路徑</system:String>
+	<system:String x:Key="ConfigureServerViewVersionSelectionTitle">要安裝的版本：</system:String>
+
+	<!-- Install - Configure Sit View -->
+	<system:String x:Key="ConfigureSitViewLoadingVersionSelectionText">正在確定可用的 SIT 版本，請稍候...</system:String>
+	<system:String x:Key="ConfigureSitViewEFTChangeInstallPathToolTip">更改 EFT 的安裝路徑。</system:String>
+	<system:String x:Key="ConfigureSitViewEFTSettingsButtonChangeTitle">更改</system:String>
+	<system:String x:Key="ConfigureSitViewEFTInstallPathPlaceholder">EFT 安裝路徑...</system:String>
+	<system:String x:Key="ConfigureSitViewEFTInstallPathTitle">EFT 路徑：</system:String>
+	<system:String x:Key="ConfigureSitViewEFTPathWarningNoPath">目前使用 BSG EFT 的安裝位置。請將 EFT 安裝到其他位置以避免與 SIT 的潛在問題</system:String>
+	<system:String x:Key="ConfigureSitViewMirrorSelectionTitle">選擇要使用的鏡像：</system:String>
+	<system:String x:Key="ConfigureSitViewVersionSelectionTitle">要安裝的版本：</system:String>
+
+	<!-- Install - Configure Sit View Model -->
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorTitle">位置選擇錯誤</system:String>
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorDescription">您選擇了與 BSG EFT 安裝相同的目錄，請選擇另一個位置以安裝 SIT</system:String>
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorOk">好的</system:String>
+
+	<!-- Install - Install View -->
+	<system:String x:Key="InstallViewDownloadingTitle">下載中</system:String>
+	<system:String x:Key="InstallViewExtractingTitle">正在解壓縮</system:String>
+	<system:String x:Key="InstallViewInstallTitle">正在安裝</system:String>
+
+	<!-- Install - Patch View -->
+	<system:String x:Key="PatchViewSummaryMessage">準備您的 EFT 實例以安裝所請求的 SIT 版本</system:String>
+	<system:String x:Key="PatchViewCopyingTitle">複製 EFT 安裝</system:String>
+	<system:String x:Key="PatchViewDownloadingTitle">正在下載補丁</system:String>
+	<system:String x:Key="PatchViewExtractingTitle">正在解壓縮補丁</system:String>
+	<system:String x:Key="PatchViewPatchingErrorMessage">嘗試對 EFT 進行補丁時出錯。請查看日誌以獲取詳細信息</system:String>
+	<system:String x:Key="PatchViewPatchingEndInstallButtonTitle">完成安裝</system:String>
+
+	<!-- Install - Select View -->
+	<system:String x:Key="SelectViewInstallServerButtonTitle">安裝伺服器 + SIT 模組</system:String>
+	<system:String x:Key="SelectViewInstallServerButtonToolTip">下載 SPT 伺服器 + SIT 伺服器模組。</system:String>
+	<system:String x:Key="SelectViewServerModVersionTitle">SIT 模組版本：</system:String>
+	<system:String x:Key="SelectViewServerVersionTitle">SPT-AKI 版本：</system:String>
+	<system:String x:Key="SelectViewSPTAKIPathTitle">SPT-AKI 路徑：</system:String>
+	<system:String x:Key="SelectViewSPTAKINoPathWarningMessage">找不到 SPT-AKI 安裝。如果您已經安裝了 AKI-SPT，請轉到設置頁面並設置 SPT-AKI 安裝路徑。否則，您將被要求指定一個空目錄以安裝 SPT-AKI</system:String>
+	<system:String x:Key="SelectViewServerSectionHeading">SPT-AKI</system:String>
+
+	<system:String x:Key="SelectViewInstallSITButtonTitle">安裝 SIT</system:String>
+	<system:String x:Key="SelectViewInstallSITButtonToolTip">根據需要降級 EFT 版本，並安裝 SIT 和模組支援。</system:String>
+	<system:String x:Key="SelectViewSITVersionTitle">SIT 版本：</system:String>
+	<system:String x:Key="SelectViewEFTVersionTitle">EFT 版本：</system:String>
+	<system:String x:Key="SelectViewEFTPathTitle">EFT 路徑：</system:String>
+	<system:String x:Key="SelectViewEFTNoPathWarningMessage">找不到 EFT 安裝。請手動在設置頁面上安裝它</system:String>
+	<system:String x:Key="SelectViewEFTUsingBSGInstallWarningMessage">檢測到 BSG 逃離塔科夫的安裝。如果您已安裝了 SIT，請轉到設置頁面並將 EFT 安裝路徑更改為此目錄。否則，您將被要求指定一個空目錄以複製 BSG EFT 安裝並安裝 SIT</system:String>
+	<system:String x:Key="SelectViewEFTSectionHeading">逃離塔科夫</system:String>
+
+	<!-- Install - View Model -->
+	<system:String x:Key="InstallPageViewModelSelectText">選擇</system:String>
+	<system:String x:Key="InstallPageViewModelConfigureText">配置</system:String>
+	<system:String x:Key="InstallPageViewModelPatchText">補丁</system:String>
+	<system:String x:Key="InstallPageViewModelInstallText">安裝</system:String>
+	<system:String x:Key="InstallPageViewModelCompleteText">完成</system:String>
+
+</ResourceDictionary>

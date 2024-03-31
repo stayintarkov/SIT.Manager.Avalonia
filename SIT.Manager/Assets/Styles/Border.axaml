@@ -1,0 +1,18 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Design.PreviewWith>
+		<Border Padding="20">
+			<Border Classes="StandardFrame">
+				<TextBlock Text="StandardFrame"/>
+			</Border>
+		</Border>
+	</Design.PreviewWith>
+
+	<Style Selector="Border.StandardFrame">
+		<Setter Property="CornerRadius" Value="8"/>
+		<Setter Property="BorderBrush" Value="Gray"/>
+		<Setter Property="BorderThickness" Value="1"/>
+		<Setter Property="Margin" Value="4"/>
+		<Setter Property="Padding" Value="10"/>
+	</Style>
+</Styles>
