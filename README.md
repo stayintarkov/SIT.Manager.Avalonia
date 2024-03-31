@@ -172,6 +172,16 @@ Support is best found in the [SIT Discord](https://discord.gg/f4CN4n3nP2)
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
+<!-- Credits -->
+## Project Credits
+* [Avalonia](https://avaloniaui.net/) for our UI framework
+* [FluentAvalonia](https://github.com/amwx/FluentAvalonia) for additional controls and themes
+* [adams85 filelogger](https://github.com/adams85/filelogger) for our file logging
+* [MegaApiClient](https://github.com/gpailler/MegaApiClient) for downloading mega files
+* [PeNet](https://github.com/secana/PeNet) for reading executable data
+* [SharpCompress](https://github.com/adamhathcock/sharpcompress) for better compression methods
+
+
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/stayintarkov/SIT.Manager.Avalonia.svg?style=for-the-badge
