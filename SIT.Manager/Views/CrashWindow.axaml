@@ -9,6 +9,7 @@
         MaxHeight="240"
 		MaxWidth="450"
 		Title="Uh oh!"
+		Icon="/Assets/Stay-In-Tarkov-512.png"
 		WindowStartupLocation="CenterScreen">
 	<Grid RowDefinitions="auto, *, auto">
 		<TextBlock
