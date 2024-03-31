@@ -30,7 +30,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/stayintarkov/SIT.Manager.Avalonia">
-    <img src="SIT.Manager.Avalonia/Assets/Stay-In-Tarkov-512.png" alt="Logo" width="80" height="80">
+    <img src="SIT.Manager/Assets/Stay-In-Tarkov-512.png" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">SIT.Manager.Avalonia</h3>

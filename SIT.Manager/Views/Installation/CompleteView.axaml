@@ -1,0 +1,38 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Installation"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SIT.Manager.Views.Installation.CompleteView"
+			 x:DataType="vm:CompleteViewModel">
+
+	<Border Classes="StandardFrame" Grid.Row="0">
+		<Grid RowDefinitions="*, *"
+			  HorizontalAlignment="Center"
+			  VerticalAlignment="Center">
+			<Viewbox VerticalAlignment="Center"
+					 Grid.Row="0"
+					 MaxHeight="1024"
+					 MaxWidth="1024">
+				<StackPanel>
+					<ui:SymbolIcon Symbol="Accept"
+								   Foreground="Green"/>
+					<TextBlock Foreground="White"
+							   VerticalAlignment="Center"
+							   HorizontalAlignment="Center"
+							   Text="{DynamicResource CompleteViewInstallComplete}"
+							   FontSize="12"/>
+				</StackPanel>
+			</Viewbox>		
+
+			<Button Content="{DynamicResource CompleteViewResetButtonTitle}" 
+					Grid.Row="1"
+					HorizontalAlignment="Center"
+					Margin="0,32,0,0"
+					VerticalAlignment="Bottom"
+					Command="{Binding ResetCommand}"/>
+		</Grid>
+	</Border>
+</UserControl>

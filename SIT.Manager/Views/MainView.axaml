@@ -1,0 +1,120 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:SIT.Manager.ViewModels"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SIT.Manager.Views.MainView"
+             x:DataType="vm:MainViewModel"
+			 x:CompileBindings="True"
+			 Background="Black">
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+
+		<ui:TeachingTip Name="InstallPathTip"
+						Title="Setup"
+						Subtitle="{DynamicResource InstallPathErrorNotification}"
+						PreferredPlacement="Bottom"
+						IsVisible="False">
+			<ui:TeachingTip.IconSource>
+				<ui:SymbolIconSource Symbol="Setting"/>
+			</ui:TeachingTip.IconSource>
+		</ui:TeachingTip>
+
+		<StackPanel Name="InfoBarStackPanel" Grid.Row="0" x:FieldModifier="Public">
+			<Grid ColumnDefinitions="auto, auto, auto, *, auto" IsVisible="{Binding UpdateAvailable}">
+				<Panel Margin="14 0" VerticalAlignment="Center" Grid.Column="0">
+					<Ellipse Fill="#1e4f8a" Width="18" Height="18"/>
+					<ui:SymbolIcon Symbol="Important" VerticalAlignment="Center" Margin="0 1 0 0"/>
+				</Panel>
+				<TextBlock Text="{DynamicResource UpdateNotification}" Grid.Column="1" VerticalAlignment="Center" FontFamily="Default"/>
+				<Button Content="{DynamicResource UpdateButtonTitle}" Command="{Binding UpdateButtonCommand}" VerticalAlignment="Center" FontSize="14" Margin="8 5 0 5" Grid.Column="2"/>
+				<Button Command="{Binding CloseButtonCommand}" HorizontalAlignment="Right" Margin="0 0 4 0" MaxWidth="35" MaxHeight="35" Background="Transparent" Grid.Column="4" BorderBrush="Transparent">
+					<ui:SymbolIcon Symbol="Cancel"/>
+				</Button>
+			</Grid>
+
+			<ItemsControl ItemsSource="{Binding BarNotifications, Mode=OneWay}">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<ui:InfoBar HorizontalAlignment="Stretch"
+									Title="{Binding Title}"
+									Message="{Binding Message}"
+									Severity="{Binding Severity}"
+									IsOpen="True"/>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</StackPanel>
+		
+		
+
+		<ui:NavigationView PaneDisplayMode="Left"
+						   IsBackButtonVisible="False"
+						   IsSettingsVisible="False"
+						   IsPaneToggleButtonVisible="False"
+						   OpenPaneLength="166"
+						   Grid.Row="1"
+						   Name="NavView"
+						   IsEnabled="{Binding !IsInstallRunning}"
+						   ItemInvoked="NavView_ItemInvoked">
+			<ui:NavigationView.Styles>
+				<Style Selector="ui|NavigationViewItem">
+					<Setter Property="FontFamily" Value="{StaticResource BenderFont}"/>
+				</Style>
+			</ui:NavigationView.Styles>
+
+			<ui:NavigationView.MenuItems>
+				<ui:NavigationViewItem IconSource="Play" Content="{DynamicResource PlayTitle}" Tag="SIT.Manager.Views.PlayPage" ToolTip.Tip="{DynamicResource PlayTitleToolTip}"/>
+				<ui:NavigationViewItem IconSource="Sync" Content="{DynamicResource InstallTitle}" Tag="SIT.Manager.Views.InstallPage" ToolTip.Tip="{DynamicResource InstallTitleToolTip}"/>
+				<ui:NavigationViewItem IconSource="AllApps" Content="{DynamicResource ToolsTitle}" Tag="SIT.Manager.Views.ToolsPage" ToolTip.Tip="{DynamicResource ToolsTitleToolTip}"/>
+				<ui:NavigationViewItem IconSource="MapDrive" Content="{DynamicResource ServerTitle}" Tag="SIT.Manager.Views.ServerPage" ToolTip.Tip="{DynamicResource ServerTitleToolTip}"/>
+				<ui:NavigationViewItem IconSource="Library" Content="{DynamicResource ModsTitle}" Tag="SIT.Manager.Views.ModsPage" ToolTip.Tip="{DynamicResource ModsTitleToolTip}"/>
+			</ui:NavigationView.MenuItems>
+
+			<ui:NavigationView.FooterMenuItems>
+				<ui:NavigationViewItem IconSource="Settings" Content="{DynamicResource SettingsTitle}" Tag="SIT.Manager.Views.SettingsPage"/>
+			</ui:NavigationView.FooterMenuItems>		
+
+			<Grid RowDefinitions="*,Auto">
+				<ui:Frame Name="ContentFrame" 
+						  CornerRadius="8">
+					<ui:Frame.Background>
+						<ImageBrush Source="/Assets/bg3.png" Stretch="Fill"/>
+					</ui:Frame.Background>
+				</ui:Frame>
+				<StackPanel Name="ActionPanel" 
+							Orientation="Horizontal" 
+							HorizontalAlignment="Center" 
+							DataContext="{Binding ActionPanelNotification}"
+							IsVisible="{Binding ShowActionPanel}"
+							Grid.Row="1" 
+							MinHeight="24">
+					<TextBlock Name="ActionPanelText" 
+							   Text="{Binding ActionText}" 
+							   Foreground="White" 
+							   VerticalAlignment="Center" 
+							   FontSize="12"/>
+					<ProgressBar Name="ActionPanelBar" 
+								 Margin="15 0 0 0" 
+								 VerticalAlignment="Center"
+								 Width="150"
+								 MinWidth="100" 
+								 MaxWidth="150" 
+								 Minimum="0" 
+								 Maximum="100" 
+								 Value="{Binding ProgressPercentage}"/>
+					<TextBlock Name="ActionPanelPercentageText"
+							   Margin="15 0 0 0"
+							   VerticalAlignment="Center"
+							   Text="{Binding ProgressPercentage, StringFormat={}{0:N2}%}"/>
+				</StackPanel>
+			</Grid>
+		</ui:NavigationView> 
+	</Grid>
+</UserControl>
