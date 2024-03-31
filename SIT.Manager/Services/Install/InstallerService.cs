@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using FluentAvalonia.UI.Controls;
+using Microsoft.Extensions.Logging;
 using SIT.Manager.Interfaces;
 using SIT.Manager.ManagedProcess;
 using SIT.Manager.Models;
@@ -10,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
+using System.Security.Authentication;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -109,8 +111,35 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             return sitVersions;
         }
 
-        string releasesJsonString = await GetHttpStringWithRetryAsync(() => _httpClient.GetStringAsync(@"https://sitcoop.publicvm.com/api/v1/repos/SIT/Downgrade-Patches/releases"), TimeSpan.FromSeconds(1), 3);
-        List<GiteaRelease> giteaReleases = JsonSerializer.Deserialize<List<GiteaRelease>>(releasesJsonString) ?? [];
+        ContentDialog blockedByISPWarning = new()
+        {
+            Title = _localizationService.TranslateSource("InstallServiceErrorTitle"),
+            Content = _localizationService.TranslateSource("InstallServiceSSLError"),
+            PrimaryButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonOk")
+        };
+
+        string releasesJsonString;
+        try
+        {
+            releasesJsonString = await GetHttpStringWithRetryAsync(() => _httpClient.GetStringAsync(@"https://sitcoop.publicvm.com/api/v1/repos/SIT/Downgrade-Patches/releases"), TimeSpan.FromSeconds(1), 3);
+        }
+        catch(AuthenticationException)
+        {
+            await blockedByISPWarning.ShowAsync();
+            return [];
+        }
+
+        List<GiteaRelease> giteaReleases;
+        try
+        {
+            giteaReleases = JsonSerializer.Deserialize<List<GiteaRelease>>(releasesJsonString) ?? [];
+        }
+        catch(JsonException)
+        {
+            await blockedByISPWarning.ShowAsync();
+            return [];
+        }
+
         if (giteaReleases.Count == 0)
         {
             _logger.LogError("Found no available mirrors to use as a downgrade patcher");
