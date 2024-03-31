@@ -39,6 +39,7 @@
 	<system:String x:Key="PlayPageViewModelWaitingForServerTitle">等待伺服器</system:String>
 	<system:String x:Key="PlayPageViewModelServerErrorTitle">伺服器錯誤</system:String>
 	<system:String x:Key="PlayPageViewModelServerErrorDescription">伺服器從未啟動，請查看日誌以獲取更多信息！</system:String>
+	<system:String x:Key="PlayPageViewModelLoginIncorrectPassword">Incorrect password</system:String>
 
 	<!-- Pane View (Menu on the left also tooltip about update on top) -->
 	<system:String x:Key="UpdateNotification">SIT 管理器有新版本可供更新。點擊這裡進行更新：</system:String>

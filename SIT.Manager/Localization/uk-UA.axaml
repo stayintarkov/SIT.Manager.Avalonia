@@ -39,6 +39,7 @@
 	<system:String x:Key="PlayPageViewModelWaitingForServerTitle">Очікування сервера</system:String>
 	<system:String x:Key="PlayPageViewModelServerErrorTitle">Помилка сервера</system:String>
 	<system:String x:Key="PlayPageViewModelServerErrorDescription">Сервер не запустився. Будь ласка, перевірте журнали для отримання додаткової інформації.</system:String>
+	<system:String x:Key="PlayPageViewModelLoginIncorrectPassword">Incorrect password</system:String>
 
 	<!-- Pane View (Menu on the left also tooltip about update on top) -->
 	<system:String x:Key="UpdateNotification">Доступне оновлення менеджера SIT. Натисніть тут, щоб оновити:</system:String>
