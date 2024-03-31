@@ -47,9 +47,6 @@
             <AutoGen>True</AutoGen>
             <DependentUpon>Resources.resx</DependentUpon>
         </Compile>
-        <Compile Update="Views\CrashWindow.axaml.cs">
-          <DependentUpon>CrashWindow.axaml</DependentUpon>
-        </Compile>
     </ItemGroup>
 
     <ItemGroup>
