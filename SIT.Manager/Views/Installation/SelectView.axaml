@@ -1,0 +1,147 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:im="clr-namespace:SIT.Manager.Models.Installation"
+			 xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Installation"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SIT.Manager.Views.Installation.SelectView"
+			 x:DataType="vm:SelectViewModel">
+	<UserControl.Styles>
+		<Style Selector="ui|SymbolIcon">
+			<Setter Property="Margin" Value="0,0,8,0"/>
+		</Style>
+
+		<Style Selector="Button">
+			<Setter Property="Height" Value="50"/>
+			<Setter Property="HorizontalAlignment" Value="Center"/>
+			<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+			<Setter Property="Margin" Value="4"/>
+		</Style>
+	</UserControl.Styles>
+
+	<ScrollViewer>
+		<Grid RowDefinitions="*,*">
+			<!-- EFT Game -->
+			<StackPanel Grid.Row="0" VerticalAlignment="Center">
+				<TextBlock Text="{DynamicResource SelectViewEFTSectionHeading}" TextTrimming="CharacterEllipsis" Classes="FrameHeading"/>
+				<Border Classes="StandardFrame">
+					<StackPanel>
+						<TextBlock Text="{DynamicResource SelectViewEFTUsingBSGInstallWarningMessage}"
+								   TextTrimming="CharacterEllipsis"
+								   IsVisible="{Binding CurrentInstallProcessState.UsingBsgInstallPath}"
+								   Classes="WarningMessage"/>
+						<TextBlock Text="{DynamicResource SelectViewEFTNoPathWarningMessage}"
+								   TextTrimming="CharacterEllipsis"
+								   Classes="WarningMessage">
+							<TextBlock.IsVisible>
+								<MultiBinding Converter="{x:Static BoolConverters.Or}">
+									<Binding Path="CurrentInstallProcessState.EftInstallPath" Converter="{x:Static StringConverters.IsNullOrEmpty}"/>
+									<Binding Path="CurrentInstallProcessState.EftVersion" Converter="{x:Static StringConverters.IsNullOrEmpty}"/>
+								</MultiBinding>
+							</TextBlock.IsVisible>
+						</TextBlock>
+						
+						<TextBlock>
+							<Run Text="{DynamicResource SelectViewEFTPathTitle}"/>
+							<Run Text=" "/>
+							<Run Text="{Binding CurrentInstallProcessState.EftInstallPath}"/>
+						</TextBlock>
+
+						<TextBlock>
+							<Run Text="{DynamicResource SelectViewEFTVersionTitle}"/>
+							<Run Text=" "/>
+							<Run Text="{Binding CurrentInstallProcessState.EftVersion}"/>
+						</TextBlock>
+
+						<TextBlock>
+							<Run Text="{DynamicResource SelectViewSITVersionTitle}"/>
+							<Run Text=" "/>
+							<Run Text="{Binding CurrentInstallProcessState.SitVersion}"/>
+						</TextBlock>
+
+						<Grid ColumnDefinitions="*, *">
+							<Button Grid.Column="0"
+									HorizontalAlignment="Left"
+									ToolTip.Tip="{DynamicResource SelectViewInstallSITButtonToolTip}"
+									Command="{Binding ProgressInstallCommand}"
+									CommandParameter="{x:Static im:RequestedInstallOperation.InstallSit}">
+								<Button.IsEnabled>
+									<MultiBinding Converter="{x:Static BoolConverters.And}">
+										<Binding Path="CurrentInstallProcessState.EftInstallPath" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
+										<Binding Path="CurrentInstallProcessState.EftVersion" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
+									</MultiBinding>
+								</Button.IsEnabled>
+								<Grid ColumnDefinitions="*,*">
+									<ui:SymbolIcon Grid.Column="0" Symbol="Add"/>
+									<TextBlock Grid.Column="1" Text="{DynamicResource SelectViewInstallSITButtonTitle}" TextTrimming="CharacterEllipsis"/>
+								</Grid>
+							</Button>
+
+							<Button Grid.Column="1"
+									HorizontalAlignment="Left"
+									ToolTip.Tip="{DynamicResource SelectViewUpdateSITButtonToolTip}"
+									Command="{Binding ProgressInstallCommand}"
+									CommandParameter="{x:Static im:RequestedInstallOperation.UpdateSit}">
+								<Button.IsEnabled>
+									<MultiBinding Converter="{x:Static BoolConverters.And}">
+										<Binding Path="HasSitUpdateAvailable"/>
+										<Binding Path="CurrentInstallProcessState.EftInstallPath" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
+										<Binding Path="CurrentInstallProcessState.EftVersion" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
+									</MultiBinding>
+								</Button.IsEnabled>
+								<Grid ColumnDefinitions="*,*">
+									<ui:SymbolIcon Grid.Column="0" Symbol="Up"/>
+									<TextBlock Grid.Column="1" Text="{DynamicResource SelectViewUpdateSITButtonTitle}" TextTrimming="CharacterEllipsis"/>
+								</Grid>
+							</Button>
+						</Grid>
+					</StackPanel>
+				</Border>
+			</StackPanel>
+
+			<!-- Server -->
+			<StackPanel Grid.Row="1" VerticalAlignment="Center">
+				<TextBlock Text="{DynamicResource SelectViewServerSectionHeading}" TextTrimming="CharacterEllipsis" Classes="FrameHeading"/>
+				<Border Classes="StandardFrame">
+					<StackPanel>
+						<TextBlock Text="{DynamicResource SelectViewSPTAKINoPathWarningMessage}"
+								   TextTrimming="CharacterEllipsis"
+								   IsVisible="{Binding NoAkiInstallPathSet}"
+								   Classes="WarningMessage"/>
+
+						<TextBlock TextTrimming="CharacterEllipsis">
+							<Run Text="{DynamicResource SelectViewSPTAKIPathTitle}"/>
+							<Run Text=" "/>
+							<Run Text="{Binding CurrentInstallProcessState.SptAkiInstallPath}"/>
+						</TextBlock>
+
+						<TextBlock TextTrimming="CharacterEllipsis">
+							<Run Text="{DynamicResource SelectViewServerVersionTitle}"/>
+							<Run Text=" "/>
+							<Run Text="{Binding CurrentInstallProcessState.SptAkiVersion}"/>
+						</TextBlock>
+
+						<TextBlock TextTrimming="CharacterEllipsis">
+							<Run Text="{DynamicResource SelectViewServerModVersionTitle}"/>
+							<Run Text=" "/>
+							<Run Text="{Binding CurrentInstallProcessState.SitModVersion}"/>
+						</TextBlock>
+
+						<Button
+								HorizontalAlignment="Left"
+								ToolTip.Tip="{DynamicResource SelectViewInstallServerButtonToolTip}"
+								Command="{Binding ProgressInstallCommand}"
+								CommandParameter="{x:Static im:RequestedInstallOperation.InstallServer}">
+							<Grid ColumnDefinitions="*,*">
+								<ui:SymbolIcon Grid.Column="0" Symbol="Download"/>
+								<TextBlock Grid.Column="1" Text="{DynamicResource SelectViewInstallServerButtonTitle}" TextTrimming="CharacterEllipsis"/>
+							</Grid>
+						</Button>
+					</StackPanel>
+				</Border>
+			</StackPanel>
+		</Grid>
+	</ScrollViewer>
+</UserControl>

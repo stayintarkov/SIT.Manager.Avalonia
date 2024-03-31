@@ -1,0 +1,65 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:vm="clr-namespace:SIT.Manager.ViewModels"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 HorizontalAlignment="Center"
+			 VerticalAlignment="Center"
+             x:Class="SIT.Manager.Views.UpdatePage"
+			 x:DataType="vm:UpdatePageViewModel">
+	<Border CornerRadius="8"
+			BorderBrush="Gray"
+			BorderThickness="1"
+			Margin="4"
+			Padding="10"
+			Background="Black">
+		<StackPanel>
+			<Button HorizontalAlignment="Center"
+					Height="50"
+					Margin="8"
+					IsVisible="{Binding !UpdateManagerCommand.IsRunning}"
+					Command="{Binding UpdateManagerCommand}">
+				<StackPanel Orientation="Horizontal">
+					<ui:SymbolIcon Symbol="Up" Margin="0,0,10,0"/>
+					<TextBlock Text="{DynamicResource UpdatePageUpdateButtonTitle}"/>
+				</StackPanel>
+			</Button>
+			
+			<TextBlock Text="{DynamicResource UpdatePageUpdateInfoTextPt1}"
+					   IsVisible="{Binding UpdateManagerCommand.IsRunning}"
+					   HorizontalAlignment="Center"/>
+			<TextBlock Text="{DynamicResource UpdatePageUpdateInfoTextPt2}"
+					   IsVisible="{Binding UpdateManagerCommand.IsRunning}"
+					   HorizontalAlignment="Center"/>
+
+			<Grid ColumnDefinitions="*, 2*, *"
+				  Margin="32"
+				  HorizontalAlignment="Center"
+				  VerticalAlignment="Center">
+				<TextBlock Grid.Column="0"
+						   HorizontalAlignment="Center"
+						   VerticalAlignment="Center"
+						   Text="{DynamicResource UpdatePageUpdatingTitle}"/>
+				<ProgressBar Grid.Column="1"
+							 Margin="16 0 0 0"
+							 VerticalAlignment="Center"
+							 HorizontalAlignment="Stretch"
+							 Minimum="0"
+							 Maximum="100"
+							 Value="{Binding UpdateProgressPercentage}"/>
+				<TextBlock Grid.Column="2"
+						   Margin="16 0 0 0"
+						   HorizontalAlignment="Left"
+						   Text="{Binding UpdateProgressPercentage, StringFormat={}{0:N2}%}"
+						   VerticalAlignment="Center"/>
+			</Grid>
+
+			<TextBlock Text="{DynamicResource UpdatePageErrorMessage}"
+					   Classes="ErrorMessage"
+					   IsVisible="{Binding HasError}"
+					   HorizontalAlignment="Center"/>
+		</StackPanel>
+	</Border>
+</UserControl>
