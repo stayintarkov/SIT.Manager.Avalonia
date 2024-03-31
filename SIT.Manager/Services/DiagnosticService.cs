@@ -37,14 +37,29 @@ public class DiagnosticService : IDiagnosticService
 
     public async Task<string?> GetLogFile(string logFilePath)
     {
+        string logFileName = Path.GetFileName(logFilePath);
         if (File.Exists(logFilePath))
         {
-            string fileData = await File.ReadAllTextAsync(logFilePath);
-            return await CleanseLogFile(await CleanseLogFile(fileData));
+            try
+            {
+                string fileData;
+                using (FileStream fs = File.Open(logFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {
+                    using(StreamReader  sr = new(fs))
+                    {
+                        fileData = await sr.ReadToEndAsync();
+                    }
+                }
+                return fileData;
+            }
+            catch(IOException ex)
+            {
+                return $"Problem reading {logFileName}\n{ex}";
+            }
         }
         else
         {
-            return null;
+            return $"{logFileName} didn't exist at path {logFilePath}";
         }
     }
 
