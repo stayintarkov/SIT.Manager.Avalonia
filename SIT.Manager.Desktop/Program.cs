@@ -26,7 +26,6 @@ class Program
             CrashApp crashApp = new CrashApp();
             crashApp.RunWithMainWindow<CrashWindow>();
         }
-        System.Threading.Thread.Sleep(-1);
     }
 
     // Avalonia configuration, don't remove; also used by visual designer.
