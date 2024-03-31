@@ -300,6 +300,7 @@
 	<system:String x:Key="InstallServiceInstallSuccessfulDescription">伺服器端安裝成功</system:String>
 	<system:String x:Key="InstallServiceInstallSITSuccessfulDescription">SIT 安裝成功</system:String>
 	<system:String x:Key="InstallerServiceNoDowngradePatcher">這些版本的《逃離塔科夫》沒有可用的降級補丁。</system:String>
+	<system:String x:Key="InstallServiceSSLError">Your ISP is likely blocking our connection. Please use a VPN and try again.</system:String>
 	
 	<!-- File Service -->
 	<system:String x:Key="FileServiceProgressDownloading">下載檔案 '%1'</system:String>
