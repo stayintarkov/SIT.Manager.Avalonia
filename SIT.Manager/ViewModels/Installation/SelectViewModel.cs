@@ -27,9 +27,6 @@ public partial class SelectViewModel : InstallationViewModelBase
         _installerService = installerService;
         _logger = logger;
         _versionService = versionService;
-
-        EstablishEFTInstallStatus();
-        EstablishSptAkiInstallStatus();
     }
 
     private void EstablishEFTInstallStatus()
@@ -80,5 +77,13 @@ public partial class SelectViewModel : InstallationViewModelBase
             _logger.LogDebug("Install process state {CurrentInstallProcessState}", CurrentInstallProcessState);
             ProgressInstall();
         }
+    }
+
+    protected override void OnActivated()
+    {
+        base.OnActivated();
+
+        EstablishEFTInstallStatus();
+        EstablishSptAkiInstallStatus();
     }
 }
