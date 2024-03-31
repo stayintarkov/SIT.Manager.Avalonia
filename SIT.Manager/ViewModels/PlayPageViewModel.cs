@@ -169,7 +169,8 @@ public partial class PlayPageViewModel : ObservableObject
             await new ContentDialog()
             {
                 Title = _localizationService.TranslateSource("PlayPageViewModelLoginErrorTitle"),
-                Content = _localizationService.TranslateSource("")
+                Content = _localizationService.TranslateSource("PlayPageViewModelLoginIncorrectPassword"),
+                CloseButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonOk")
             }.ShowAsync();
         }
         catch (Exception ex)
