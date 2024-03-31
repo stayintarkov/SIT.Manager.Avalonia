@@ -24,6 +24,7 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
     private readonly IActionNotificationService _actionNotificationService;
     private readonly IAppUpdaterService _appUpdaterService;
     private readonly IBarNotificationService _barNotificationService;
+    private readonly IInstallerService _installerService;
     private readonly IManagerConfigService _managerConfigService;
     private readonly ILocalizationService _localizationService;
 
@@ -36,6 +37,9 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
     private bool _updateAvailable = false;
 
     [ObservableProperty]
+    private bool _sitUpdateAvailable = false;
+
+    [ObservableProperty]
     private bool _isInstallRunning = false;
 
     public ObservableCollection<BarNotification> BarNotifications { get; } = [];
@@ -45,12 +49,14 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
     public MainViewModel(IActionNotificationService actionNotificationService,
         IAppUpdaterService appUpdaterService,
         IBarNotificationService barNotificationService,
+        IInstallerService installerService,
         IManagerConfigService managerConfigService,
         ILocalizationService localizationService)
     {
         _actionNotificationService = actionNotificationService;
         _appUpdaterService = appUpdaterService;
         _barNotificationService = barNotificationService;
+        _installerService = installerService;
         _managerConfigService = managerConfigService;
         _localizationService = localizationService;
 
@@ -70,6 +76,7 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
     private async Task CheckForUpdate()
     {
         UpdateAvailable = await _appUpdaterService.CheckForUpdate();
+        SitUpdateAvailable = await _installerService.IsSitUpateAvailable();
     }
 
     [RelayCommand]

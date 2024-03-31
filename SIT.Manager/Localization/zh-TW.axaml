@@ -375,6 +375,8 @@
 
 	<system:String x:Key="SelectViewInstallSITButtonTitle">安裝 SIT</system:String>
 	<system:String x:Key="SelectViewInstallSITButtonToolTip">根據需要降級 EFT 版本，並安裝 SIT 和模組支援。</system:String>
+	<system:String x:Key="SelectViewUpdateSITButtonTitle">Update SIT</system:String>
+	<system:String x:Key="SelectViewUpdateSITButtonToolTip">Update SIT to the latest version available for your current EFT version</system:String>
 	<system:String x:Key="SelectViewSITVersionTitle">SIT 版本：</system:String>
 	<system:String x:Key="SelectViewEFTVersionTitle">EFT 版本：</system:String>
 	<system:String x:Key="SelectViewEFTPathTitle">EFT 路徑：</system:String>

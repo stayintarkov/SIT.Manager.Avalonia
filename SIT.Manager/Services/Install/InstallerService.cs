@@ -50,6 +50,8 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         { 15, "Patcher failed." }
     };
 
+    private List<SitInstallVersion>? _availableSitUpdateVersions;
+
     /// <summary>
     /// Cleans up the EFT directory
     /// </summary>
@@ -472,6 +474,39 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             return string.Empty;
         }
         return EFTGameFinder.FindOfficialGamePath();
+    }
+
+    public SitInstallVersion? GetLatestAvailableSitRelease()
+    {
+        return _availableSitUpdateVersions?.MaxBy(x => x.SitVersion);
+    }
+
+    public async Task<bool> IsSitUpateAvailable()
+    {
+        bool updateAvailable = false;
+
+        // Get the list of available releases then check if one exists which is newer than the current and for the same Tarkov version
+        if (!string.IsNullOrEmpty(_configService.Config.SitVersion))
+        {
+            // Cache this list as we will potentially use it later
+            _availableSitUpdateVersions = await GetAvailableSitReleases(_configService.Config.TarkovVersion);
+            _availableSitUpdateVersions = _availableSitUpdateVersions.Where(x =>
+            {
+                bool parsedSitVersion = Version.TryParse(x.SitVersion.Replace("StayInTarkov.Client-", ""), out Version? sitVersion);
+                if (parsedSitVersion)
+                {
+                    Version installedSit = Version.Parse(_configService.Config.SitVersion);
+                    if (sitVersion > installedSit && _configService.Config.TarkovVersion == x.EftVersion)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }).ToList();
+            updateAvailable = _availableSitUpdateVersions.Any();
+        }
+
+        return updateAvailable;
     }
 
     public async Task InstallServer(GithubRelease selectedVersion, string targetInstallDir, IProgress<double> downloadProgress, IProgress<double> extractionProgress)

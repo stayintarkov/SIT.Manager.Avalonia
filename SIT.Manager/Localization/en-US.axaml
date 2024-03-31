@@ -321,7 +321,7 @@
 	<system:String x:Key="UpdatePageViewModelButtonYes">Yes</system:String>
 	<system:String x:Key="UpdatePageViewModelButtonNo">No</system:String>
 
-		<!-- Install - Complete View -->
+	<!-- Install - Complete View -->
 	<system:String x:Key="CompleteViewInstallComplete">Install Completed</system:String>
 	<system:String x:Key="CompleteViewResetButtonTitle">Happy Playing</system:String>
 
@@ -376,6 +376,8 @@
 	<system:String x:Key="SelectViewServerSectionHeading">SPT-AKI</system:String>
 	<system:String x:Key="SelectViewInstallSITButtonTitle">Install SIT</system:String>
 	<system:String x:Key="SelectViewInstallSITButtonToolTip">Downgrade EFT if needed, install SIT and mod support.</system:String>
+	<system:String x:Key="SelectViewUpdateSITButtonTitle">Update SIT</system:String>
+	<system:String x:Key="SelectViewUpdateSITButtonToolTip">Update SIT to the latest version available for your current EFT version</system:String>
 	<system:String x:Key="SelectViewSITVersionTitle">SIT Version:</system:String>
 	<system:String x:Key="SelectViewEFTVersionTitle">EFT Version:</system:String>
 	<system:String x:Key="SelectViewEFTPathTitle">EFT Path:</system:String>

@@ -18,6 +18,9 @@ public partial class SelectViewModel : InstallationViewModelBase
     [ObservableProperty]
     private bool _noAkiInstallPathSet = true;
 
+    [ObservableProperty]
+    private bool _hasSitUpdateAvailable = false;
+
     public SelectViewModel(IManagerConfigService configsService,
                            IInstallerService installerService,
                            ILogger<SelectViewModel> logger,
@@ -79,11 +82,13 @@ public partial class SelectViewModel : InstallationViewModelBase
         }
     }
 
-    protected override void OnActivated()
+    protected override async void OnActivated()
     {
         base.OnActivated();
 
         EstablishEFTInstallStatus();
         EstablishSptAkiInstallStatus();
+
+        HasSitUpdateAvailable = await _installerService.IsSitUpateAvailable();
     }
 }

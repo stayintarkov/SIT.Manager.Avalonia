@@ -375,6 +375,8 @@
 
 	<system:String x:Key="SelectViewInstallSITButtonTitle">Установить SIT</system:String>
 	<system:String x:Key="SelectViewInstallSITButtonToolTip">Понизить версию EFT при необходимости, установить SIT и поддержку модов.</system:String>
+	<system:String x:Key="SelectViewUpdateSITButtonTitle">Update SIT</system:String>
+	<system:String x:Key="SelectViewUpdateSITButtonToolTip">Update SIT to the latest version available for your current EFT version</system:String>
 	<system:String x:Key="SelectViewSITVersionTitle">Версия SIT:</system:String>
 	<system:String x:Key="SelectViewEFTVersionTitle">Версия EFT:</system:String>
 	<system:String x:Key="SelectViewEFTPathTitle">Путь EFT:</system:String>
