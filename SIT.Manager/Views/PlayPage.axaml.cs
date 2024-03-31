@@ -11,9 +11,5 @@ public partial class PlayPage : UserControl
         InitializeComponent();
 
         DataContext = App.Current.Services.GetService<PlayPageViewModel>();
-        if (DataContext is PlayPageViewModel dataContext)
-        {
-            AddressBox.LostFocus += (o, e) => { if (!dataContext.ManagerConfig.HideIpAddress) AddressBox.RevealPassword = true; };
-        }
     }
 }

@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SIT.Manager.Avalonia.Extentions;
+namespace SIT.Manager.Extentions;
 public static class StreamExtensions
 {
     public static async Task CopyToAsync(this Stream source, Stream destination, ushort bufferSize, IProgress<long> progressReporter, CancellationToken cancellationToken = default)

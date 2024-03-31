@@ -1,9 +1,8 @@
 ﻿using Polly;
 using Polly.Registry;
-using SIT.Manager.Avalonia.Classes;
-using SIT.Manager.Avalonia.Extentions;
-using SIT.Manager.Avalonia.Interfaces;
-using SIT.Manager.Avalonia.Models.Aki;
+using SIT.Manager.Extentions;
+using SIT.Manager.Interfaces;
+using SIT.Manager.Models.Aki;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +14,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SIT.Manager.Avalonia.Services;
+namespace SIT.Manager.Services;
 public class AkiServerRequestingService(HttpClient httpClient, ResiliencePipelineProvider<string> resiliencePipelineProvider)
 {
     private static readonly MediaTypeHeaderValue _contentHeaderType = new("application/json");

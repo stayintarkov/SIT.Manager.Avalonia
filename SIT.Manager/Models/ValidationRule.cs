@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SIT.Manager.Classes;
+namespace SIT.Manager.Models;
 
 public class ValidationRule
 {
