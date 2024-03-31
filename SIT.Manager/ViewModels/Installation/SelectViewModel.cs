@@ -82,11 +82,13 @@ public partial class SelectViewModel : InstallationViewModelBase
         }
     }
 
-    protected override void OnActivated()
+    protected override async void OnActivated()
     {
         base.OnActivated();
 
         EstablishEFTInstallStatus();
         EstablishSptAkiInstallStatus();
+
+        HasSitUpdateAvailable = await _installerService.IsSitUpateAvailable();
     }
 }

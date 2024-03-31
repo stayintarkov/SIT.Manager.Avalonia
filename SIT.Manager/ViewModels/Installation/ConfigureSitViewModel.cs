@@ -180,8 +180,18 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
     {
         base.OnActivated();
 
-        OverridenBsgInstallPath = CurrentInstallProcessState.BsgInstallPath != CurrentInstallProcessState.EftInstallPath;
+        if (CurrentInstallProcessState.RequestedInstallOperation == RequestedInstallOperation.UpdateSit)
+        {
+            SitInstallVersion? availableVersion = _installerService.GetLatestAvailableSitRelease();
+            if (availableVersion != null)
+            {
+                CurrentInstallProcessState.RequestedVersion = availableVersion.Release;
+                ProgressInstall();
+                return;
+            }
+        }
 
+        OverridenBsgInstallPath = CurrentInstallProcessState.BsgInstallPath != CurrentInstallProcessState.EftInstallPath;
         await FetchVersionAndMirrorMatrix();
     }
 

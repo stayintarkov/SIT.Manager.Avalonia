@@ -12,7 +12,6 @@ using SIT.Manager.Models.Installation;
 using SIT.Manager.Models.Messages;
 using SIT.Manager.Views;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
@@ -77,25 +76,7 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
     private async Task CheckForUpdate()
     {
         UpdateAvailable = await _appUpdaterService.CheckForUpdate();
-
-        // Get the list of available releases then check if one exists which is newer than the current and for the same Tarkov version
-        if (!string.IsNullOrEmpty(_managerConfigService.Config.SitVersion))
-        {
-            List<SitInstallVersion> availableSitVersions = await _installerService.GetAvailableSitReleases(_managerConfigService.Config.TarkovVersion);
-            SitUpdateAvailable = availableSitVersions.Where(x =>
-            {
-                bool parsedSitVersion = Version.TryParse(x.SitVersion.Replace("StayInTarkov.Client-", ""), out Version? sitVersion);
-                if (parsedSitVersion)
-                {
-                    Version installedSit = Version.Parse(_managerConfigService.Config.SitVersion);
-                    if (sitVersion > installedSit && _managerConfigService.Config.TarkovVersion == x.EftVersion)
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }).Any();
-        }
+        SitUpdateAvailable = await _installerService.IsSitUpateAvailable();
     }
 
     [RelayCommand]

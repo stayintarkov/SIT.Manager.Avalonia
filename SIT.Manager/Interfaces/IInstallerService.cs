@@ -35,6 +35,16 @@ public interface IInstallerService
     /// <returns>The path to the BSG Install of EFT or string.Empty</returns>
     string GetEFTInstallPath();
     /// <summary>
+    /// Get the most up to date version of SIT Install the user can run
+    /// </summary>
+    /// <returns></returns>
+    SitInstallVersion? GetLatestAvailableSitRelease();
+    /// <summary>
+    /// Check to see if there is an update available for the currently installed version of SIT or not
+    /// </summary>
+    /// <returns>True if there is an update; otherwise False</returns>
+    Task<bool> IsSitUpateAvailable();
+    /// <summary>
     /// Fetch all of the currently available Server Releases
     /// </summary>
     /// <returns>A list of the available GitHub releases</returns>
