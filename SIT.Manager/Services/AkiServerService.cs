@@ -161,40 +161,40 @@ public class AkiServerService(IBarNotificationService barNotificationService,
             }
 
             TarkovRequesting requesting = ActivatorUtilities.CreateInstance<TarkovRequesting>(_serviceProvider, serverUri);
-            int retryCounter = 0;
-            while (retryCounter < 6)
+            try
             {
-                using (CancellationTokenSource cts = new())
+                using (CancellationTokenSource cts = new(TimeSpan.FromSeconds(120)))
                 {
-                    DateTime abortTime = DateTime.Now + TimeSpan.FromSeconds(3);
-                    cts.CancelAfter(abortTime - DateTime.Now);
+                    bool pingReponse = false;
+                    while (!pingReponse)
+                    {
+                        try
+                        {
+                            pingReponse = await requesting.PingServer(cts.Token);
+                        }
+                        catch (HttpRequestException) { }
 
-                    bool pingReponse;
-                    try
-                    {
-                        pingReponse = await requesting.PingServer(cts.Token);
-                    }
-                    catch (HttpRequestException)
-                    {
-                        pingReponse = false;
-                    }
+                        if (pingReponse && _process?.HasExited == false)
+                        {
+                            IsStarted = true;
+                            ServerStarted?.Invoke(this, new EventArgs());
+                            UpdateRunningState(RunningState.Running);
+                            return;
+                        }
+                        else if (_process?.HasExited == true)
+                        {
+                            UpdateRunningState(RunningState.NotRunning);
+                            return;
+                        }
 
-                    if (pingReponse && _process?.HasExited == false)
-                    {
-                        IsStarted = true;
-                        ServerStarted?.Invoke(this, new EventArgs());
-                        UpdateRunningState(RunningState.Running);
-                        return;
-                    }
-                    else if (_process?.HasExited == true)
-                    {
-                        UpdateRunningState(RunningState.NotRunning);
-                        return;
+                        await Task.Delay(3 * 1000);
                     }
                 }
-
-                await Task.Delay((int)(Math.Pow(retryCounter, 1.5) * 1000));
-                retryCounter++;
+            }
+            catch (TaskCanceledException)
+            {
+                //TODO: add feedback for why we killed it. Our logging for processes is kinda skuffed
+                _process?.Kill();
             }
         });
     }
