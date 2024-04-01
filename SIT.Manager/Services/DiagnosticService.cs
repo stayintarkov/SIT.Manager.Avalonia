@@ -1,4 +1,5 @@
-﻿using SIT.Manager.Interfaces;
+﻿using Microsoft.Win32;
+using SIT.Manager.Interfaces;
 using SIT.Manager.ManagedProcess;
 using SIT.Manager.Models;
 using System;
@@ -143,6 +144,18 @@ public class DiagnosticService : IDiagnosticService
                         sb.AppendLine($"Interface Type: {networkInterface.NetworkInterfaceType.ToString()}");
                         sb.AppendLine($"Address: {ip.Address}\n");
                     }
+                }
+            }
+        }
+
+        sb.AppendLine("#-- Registry Information --#");
+        using (RegistryKey? key = Registry.LocalMachine.OpenSubKey(@"Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\EscapeFromTarkov"))
+        {
+            if (key != null)
+            {
+                foreach (string valueName in key.GetValueNames())
+                {
+                    sb.Append($"{valueName}: {key.GetValue(valueName)}");
                 }
             }
         }
