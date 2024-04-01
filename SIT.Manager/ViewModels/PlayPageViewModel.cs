@@ -337,7 +337,11 @@ public partial class PlayPageViewModel : ObservableObject
         if (string.IsNullOrEmpty(token))
             return;
 
-        Version SITVersion = new(_configService.Config.SitVersion);
+        Version SITVersion;
+        if (_configService.Config.SitVersion == null)
+            SITVersion = new();
+        else
+            SITVersion = new(_configService.Config.SitVersion);
         string backendUrl = serverAddress.AbsoluteUri[..^(SITVersion >= standardUriFormatSupportedVersion ? 0 : 1)];
 
         // Launch game
