@@ -255,7 +255,7 @@ public partial class ToolsPageViewModel : ObservableObject
                 });
                 if (pickedPath != null)
                 {
-                    savePath = pickedPath.Path.AbsolutePath;
+                    savePath = pickedPath.Path.LocalPath;
                 }
                 else
                 {
