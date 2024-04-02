@@ -87,16 +87,19 @@ public partial class ConfigureServerViewModel : InstallationViewModelBase
 
     private void ValidateConfiguration()
     {
+        IsConfigurationValid = true;
+
         if (string.IsNullOrEmpty(CurrentInstallProcessState.SptAkiInstallPath))
         {
             IsConfigurationValid = false;
             return;
         }
-        if (SelectedVersion == null)
+
+        if (SelectedVersion == null || AvailableVersions.Count == 0)
         {
             IsConfigurationValid = false;
+            return;
         }
-        IsConfigurationValid = true;
     }
 
     protected override async void OnActivated()
