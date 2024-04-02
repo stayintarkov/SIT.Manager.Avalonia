@@ -135,7 +135,7 @@ _For questions about usage please refer to the [SIT Discord](https://discord.gg/
     - [ ] Character manager
     - [ ] Character editor
 - [ ] Character backups
-- [ ] Log package generator
+- [x] Log package generator
 
 See the [open issues](https://github.com/stayintarkov/SIT.Manager.Avalonia/issues) for a full list of proposed features (and known issues).
 
