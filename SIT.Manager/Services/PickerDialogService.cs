@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using SIT.Manager.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -17,14 +18,21 @@ public class PickerDialogService : IPickerDialogService
 
     public async Task<IStorageFolder?> GetDirectoryFromPickerAsync()
     {
-        IReadOnlyList<IStorageFolder> folders = await _target.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions()
+        try
         {
-            AllowMultiple = false
-        });
+            IReadOnlyList<IStorageFolder> folders = await _target.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions()
+            {
+                AllowMultiple = false
+            });
 
-        if (folders.Count != 0)
+            if (folders.Count != 0)
+            {
+                return folders[0];
+            }
+        }
+        catch (ArgumentException)
         {
-            return folders[0];
+            // The likely reason is the folder selected doesn't exist so we should just be able to return null as with other things.
         }
         return null;
     }
