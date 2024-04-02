@@ -1,5 +1,7 @@
 ﻿using CG.Web.MegaApiClient;
 using Microsoft.Extensions.Logging;
+using SharpCompress.Archives;
+using SharpCompress.Archives.SevenZip;
 using SharpCompress.Common;
 using SharpCompress.Readers;
 using SIT.Manager.Extentions;
@@ -265,6 +267,24 @@ public class FileService(IActionNotificationService actionNotificationService,
 
         DirectoryInfo destinationInfo = new(destination);
         destinationInfo.Create();
+        
+        //7z files are handled differently as the can't be streamed
+        if (filePath.EndsWith(".7z", StringComparison.OrdinalIgnoreCase))
+        {
+            using (var archive = SevenZipArchive.Open(filePath))
+            {
+                foreach (var entry in archive.Entries.Where(entry => !entry.IsDirectory))
+                {
+                    entry.WriteToDirectory(destination, new ExtractionOptions()
+                    {
+                        ExtractFullPath = true,
+                        Overwrite = true
+                    });
+                }
+            }
+            progress?.Report(100);
+            return;
+        }
 
         try
         {
