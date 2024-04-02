@@ -650,7 +650,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             {
                 internalDownloadProgress = new(progress =>
                 {
-                    internalDownloadProgressPercentage = 0.5 + (progress / downloadAndExtractionSteps);
+                    internalDownloadProgressPercentage = 50 + (progress / downloadAndExtractionSteps);
                     downloadProgress.Report(internalDownloadProgressPercentage);
                 });
                 internalExtractionProgress = new(progress =>

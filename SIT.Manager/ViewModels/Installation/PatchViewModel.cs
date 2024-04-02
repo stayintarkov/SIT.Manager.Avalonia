@@ -29,9 +29,9 @@ public partial class PatchViewModel : InstallationViewModelBase
         { 15, "Patcher failed." }
     };
 
-    private readonly Progress<double> _copyProgress = new();
-    private readonly Progress<double> _downloadProgress = new();
-    private readonly Progress<double> _extractionProgress = new();
+    private readonly Progress<double> _copyProgress;
+    private readonly Progress<double> _downloadProgress;
+    private readonly Progress<double> _extractionProgress;
 
     [ObservableProperty]
     private double _copyProgressPercentage = 0;
@@ -66,33 +66,9 @@ public partial class PatchViewModel : InstallationViewModelBase
 
         RequiresPatching = !string.IsNullOrEmpty(CurrentInstallProcessState.DownloadMirrorUrl);
 
-        _copyProgress.ProgressChanged += CopyProgress_ProgressChanged;
-        _downloadProgress.ProgressChanged += DownloadProgress_ProgressChanged;
-        _extractionProgress.ProgressChanged += ExtractionProgress_ProgressChanged;
-    }
-
-    private void CopyProgress_ProgressChanged(object? sender, double e)
-    {
-        CopyProgressPercentage = e;
-    }
-
-    private void DownloadProgress_ProgressChanged(object? sender, double e)
-    {
-        // The normal download is 100x smaller than the mega api client outputs
-        // so we have to manually adjust it here (head -> wall)
-        if (CurrentInstallProcessState.DownloadMirrorUrl.Contains("mega.nz"))
-        {
-            DownloadProgressPercentage = e;
-        }
-        else
-        {
-            DownloadProgressPercentage = e * 100;
-        }
-    }
-
-    private void ExtractionProgress_ProgressChanged(object? sender, double e)
-    {
-        ExtractionProgressPercentage = e;
+        _copyProgress = new(x => CopyProgressPercentage = x);
+        _downloadProgress = new(x => DownloadProgressPercentage = x);
+        _extractionProgress = new(x => ExtractionProgressPercentage = x);
     }
 
     private async Task RunPatcher()
