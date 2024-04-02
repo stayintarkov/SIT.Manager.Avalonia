@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Layout;
+using CsQuery;
 using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -241,7 +242,61 @@ public class ModService(IBarNotificationService barNotificationService,
 
         return true;
     }
-    
+
+    private string GetDownloadUrlFromHubSpt(ModInfo mod, string url)
+    {
+        //input url is like this: https://hub.sp-tarkov.com/files/file/1159-morecheckmarks
+        //get source code of url
+        string sourceCode = new WebClient().DownloadString(url);
+        //find download via csquery:
+        CQ dom = sourceCode;
+        // get versions box by id versions
+        CQ versionsBox = dom["#versions"];
+        // get a list of versions by a.externalURL
+        CQ versions = versionsBox["a.externalURL"];
+        // get the top most version that contains the sit version
+        IDomObject? version = versions.FirstOrDefault(x => x.InnerText.Contains(mod.ModVersion));
+        // get the download link from the version
+        string downloadUrl = version?.GetAttribute("href") ?? string.Empty;
+        return downloadUrl;
+    }
+
+    private string GetDownloadUrlFromGithub(ModInfo mod, string url)
+    {
+        string downloadUrl = null;
+        //input url is like this: https://github.com/TommySoucy/MoreCheckmarks/
+        //needs to get all releases and match the version like this: https://api.github.com/repos/rails/rails/releases
+        string apiUrl = url.Replace("https://github.com", "https://api.github.com/repos") + "/releases";
+        //get json from api
+        using (WebClient client = new WebClient())
+        {
+            // Set user-agent header to avoid being blocked by GitHub API for missing user-agent
+            client.Headers.Add("User-Agent", "request");
+
+            string json = client.DownloadString(apiUrl);
+            //parse json
+            //find the release that contains the version
+            // Parse json
+            dynamic releases = JsonConvert.DeserializeObject(json);
+
+            // Find the release that contains the version
+            foreach (var release in releases)
+            {
+                string tagName = release.tag_name;
+                if (tagName != null && tagName.ToString().Contains(mod.ModVersion))
+                {
+                    // Get the newest release asset
+                    downloadUrl = release.assets[0].browser_download_url;
+                }
+            }
+        }
+        if (downloadUrl == null)
+        {
+            throw new Exception("Download url not found");
+        }
+        return downloadUrl;
+    }
+
     public async Task<bool> InstallAdditionalModFiles(ModInfo mod)
     {
         bool fixVersion = true;
@@ -290,6 +345,13 @@ public class ModService(IBarNotificationService barNotificationService,
 
             string tempPath = Path.Combine(_configService.Config.InstallPath, "SITLauncher", "Mods", "AdditionalFiles");
             bool installedClient, installedServer = false;
+            
+            
+            //if mod is from github and not a release, get the download url from the github api
+            if (mod.OriginalDownloadUrl.Contains("github.com") && !mod.OriginalDownloadUrl.Contains("/releases/tags"))
+            {
+                mod.OriginalDownloadUrl = GetDownloadUrlFromGithub(mod, mod.OriginalDownloadUrl);
+            }
 
             try
             {
