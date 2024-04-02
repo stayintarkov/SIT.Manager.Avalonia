@@ -117,7 +117,7 @@ public partial class PatchViewModel : InstallationViewModelBase
         }
 
         _patcherResultMessages.TryGetValue(embeddedProcessWindow.ExitCode, out string? patcherResult);
-        _logger.LogInformation($"RunPatcher: {patcherResult}");
+        _logger.LogInformation("RunPatcher: {patcherResult}", patcherResult);
 
         int exitCode = embeddedProcessWindow.ExitCode;
         EmbeddedPatcherWindow = null;

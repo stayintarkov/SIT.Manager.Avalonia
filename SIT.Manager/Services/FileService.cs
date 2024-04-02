@@ -54,7 +54,7 @@ public class FileService(IActionNotificationService actionNotificationService,
         foreach (DirectoryInfo directory in directories)
         {
             DirectoryInfo newDestination = destination.CreateSubdirectory(directory.Name);
-            currentProgress = await CopyDirectoryAsync(directory, newDestination, currentProgress, totalSize, progress);
+            currentProgress = await CopyDirectoryAsync(directory, newDestination, currentProgress, totalSize, progress).ConfigureAwait(false);
         }
 
         foreach (FileInfo file in files)
@@ -68,7 +68,7 @@ public class FileService(IActionNotificationService actionNotificationService,
                         double progressPercentage = (currentProgress + x) / totalSize * 100;
                         progress?.Report(progressPercentage);
                     });
-                    await sourceStream.CopyToAsync(destinationStream, ushort.MaxValue, streamProgress);
+                    await sourceStream.CopyToAsync(destinationStream, ushort.MaxValue, streamProgress).ConfigureAwait(false);
                     currentProgress += file.Length;
                 }
             }
