@@ -99,10 +99,14 @@
 			<Grid ColumnDefinitions="*" RowDefinitions="*">
 				<ContentControl Content="{Binding EmbeddedPatcherWindow}"/>
 
-				<StackPanel IsVisible="{Binding HasPatcherError}"
+				<StackPanel IsVisible="{Binding HasError}"
 							HorizontalAlignment="Center"
 							VerticalAlignment="Center">
-					<TextBlock Classes="ErrorMessage" 
+					<TextBlock Classes="ErrorMessage"
+							   IsVisible="{Binding HasAquirePatcherError}"
+							   Text="{DynamicResource PatchViewAquirePatcherErrorMessage}"/>
+					<TextBlock Classes="ErrorMessage"
+							   IsVisible="{Binding HasPatcherError}"
 							   Text="{DynamicResource PatchViewPatchingErrorMessage}"/>
 					<Button Command="{Binding EndInstallCommand}"
 							HorizontalAlignment="Center"

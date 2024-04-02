@@ -46,10 +46,17 @@ public partial class PatchViewModel : InstallationViewModelBase
     private bool _requiresPatching = false;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasError))]
     private bool _hasPatcherError = false;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasError))]
+    private bool _hasAquirePatcherError = false;
+
+    [ObservableProperty]
     private EmbeddedProcessWindow? _embeddedPatcherWindow;
+
+    public bool HasError => HasPatcherError || HasAquirePatcherError;
 
     public PatchViewModel(IFileService fileService, IInstallerService installerService, ILogger<PatchViewModel> logger) : base()
     {
@@ -79,8 +86,8 @@ public partial class PatchViewModel : InstallationViewModelBase
         }
         else
         {
-        DownloadProgressPercentage = e * 100;
-    }
+            DownloadProgressPercentage = e * 100;
+        }
     }
 
     private void ExtractionProgress_ProgressChanged(object? sender, double e)
@@ -181,9 +188,15 @@ public partial class PatchViewModel : InstallationViewModelBase
 
         if (RequiresPatching)
         {
-            await _installerService.DownloadAndExtractPatcher(CurrentInstallProcessState.DownloadMirrorUrl, CurrentInstallProcessState.EftInstallPath, _downloadProgress, _extractionProgress);
-
-            await RunPatcher();
+            bool aquiredPatcher = await _installerService.DownloadAndExtractPatcher(CurrentInstallProcessState.DownloadMirrorUrl, CurrentInstallProcessState.EftInstallPath, _downloadProgress, _extractionProgress);
+            if (aquiredPatcher)
+            {
+                await RunPatcher();
+            }
+            else
+            {
+                HasAquirePatcherError = true;
+            }
         }
         else
         {

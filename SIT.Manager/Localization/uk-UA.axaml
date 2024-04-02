@@ -363,6 +363,7 @@
 	<system:String x:Key="PatchViewDownloadingTitle">Завантаження патчера</system:String>
 	<system:String x:Key="PatchViewExtractingTitle">Розпакування патчера</system:String>
 	<system:String x:Key="PatchViewPatchingErrorMessage">Помилка при спробі патчу EFT. Деталі дивіться у журналах</system:String>
+	<system:String x:Key="PatchViewAquirePatcherErrorMessage">Error trying to aquire the patcher for EFT, please consult the logs for more details</system:String>
 	<system:String x:Key="PatchViewPatchingEndInstallButtonTitle">Завершити установку</system:String>
 
 	<!-- Install - Select View -->

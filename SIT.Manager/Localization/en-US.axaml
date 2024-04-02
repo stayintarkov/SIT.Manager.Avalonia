@@ -365,7 +365,8 @@
 	<system:String x:Key="PatchViewDownloadingTitle">Downloading Patcher</system:String>
 	<system:String x:Key="PatchViewExtractingTitle">Extracting Patcher</system:String>
 	<system:String x:Key="PatchViewPatchingErrorMessage">Error trying to patch EFT consult the logs for details</system:String>
-	<system:String x:Key="PatchViewPatchingEndInstallButtonTitle">End Install</system:String>	
+	<system:String x:Key="PatchViewAquirePatcherErrorMessage">Error trying to aquire the patcher for EFT, please consult the logs for more details</system:String>
+	<system:String x:Key="PatchViewPatchingEndInstallButtonTitle">End Install</system:String>
 
 	<!-- Install - Select View -->
 	<system:String x:Key="SelectViewInstallServerButtonTitle">Install Server + SIT Mod</system:String>

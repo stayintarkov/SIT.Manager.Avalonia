@@ -363,6 +363,7 @@
 	<system:String x:Key="PatchViewDownloadingTitle">正在下载补丁程序</system:String>
 	<system:String x:Key="PatchViewExtractingTitle">正在提取补丁程序</system:String>
 	<system:String x:Key="PatchViewPatchingErrorMessage">尝试对 EFT 进行修补时出错。请查看日志以获取详细信息</system:String>
+	<system:String x:Key="PatchViewAquirePatcherErrorMessage">Error trying to aquire the patcher for EFT, please consult the logs for more details</system:String>
 	<system:String x:Key="PatchViewPatchingEndInstallButtonTitle">完成安装</system:String>
 
 	<!-- Install - Select View -->
