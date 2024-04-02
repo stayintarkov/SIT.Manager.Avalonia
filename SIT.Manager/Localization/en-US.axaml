@@ -289,6 +289,8 @@
 	<system:String x:Key="ModServiceUnknownTitle">Unknown</system:String>
 	<system:String x:Key="ModServiceInstallModDescription">%1 was successfully installed.</system:String>
 	<system:String x:Key="ModServiceErrorInstallModDescription">%1 failed to install. Check your Launcher.log</system:String>
+	<system:String x:Key="ModServiceErrorInstallModWarningClient">%1 couldn't install client, but it may not be needed.</system:String>
+	<system:String x:Key="ModServiceErrorInstallModWarningServer">%1 couldn't install server, but it may not be needed.</system:String>
 	<system:String x:Key="ModServiceErrorUninstallModTitle">Error Uninstalling Mod</system:String>
 	<system:String x:Key="ModServiceErrorUninstallModDescription">A file was missing from the mod %1: '%2' Force remove the mod from the list of installed mods anyway?</system:String>
 	<system:String x:Key="ModServiceErrorExceptionUninstallModDescription">A file was missing from the mod %1: '%2' Force remove the mod from the list of installed mods anyway?</system:String>

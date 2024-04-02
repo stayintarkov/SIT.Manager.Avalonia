@@ -289,6 +289,8 @@ public class ModService(IBarNotificationService barNotificationService,
             string serverModPath = Path.Combine(serverPath, "user", "mods");
 
             string tempPath = Path.Combine(_configService.Config.InstallPath, "SITLauncher", "Mods", "AdditionalFiles");
+            bool installedClient, installedServer = false;
+
             try
             {
                 WebRequest request = WebRequest.Create(mod.OriginalDownloadUrl);
@@ -298,68 +300,88 @@ public class ModService(IBarNotificationService barNotificationService,
                 {
                     originalFileName = originalFileName.Replace("attachment; filename=", "");
                 }
+
                 Stream streamWithFileBody = response.GetResponseStream();
                 string pathToSave = Path.Combine(tempPath, originalFileName);
-                
+
                 Directory.CreateDirectory(Path.GetDirectoryName(pathToSave));
                 using (Stream output = File.OpenWrite(pathToSave))
                 {
                     streamWithFileBody.CopyTo(output);
                 }
-                
+
                 await _filesService.ExtractArchive(pathToSave, Path.Combine(tempPath, "Extracted"));
-                
+
                 //find directories like Path.Combine("BepInEx", "plugins") in extracted files
-                string[] bepInExDirectories = Directory.GetDirectories(Path.Combine(tempPath, "Extracted"), Path.Combine("BepInEx", "plugins"), SearchOption.AllDirectories);
-                string bepInExDirectory = bepInExDirectories.FirstOrDefault();
-                
-                //foreach file in directory copy to gamePluginsPath
-                foreach (string file in Directory.GetFiles(bepInExDirectory, "*", SearchOption.AllDirectories))
+                try
                 {
-                    if (mod.PluginFiles.Contains(Path.GetFileName(file)))
+                    string[] bepInExDirectories = Directory.GetDirectories(Path.Combine(tempPath, "Extracted"),
+                        Path.Combine("BepInEx", "plugins"), SearchOption.AllDirectories);
+                    string bepInExDirectory = bepInExDirectories.FirstOrDefault();
+
+                    //foreach file in directory copy to gamePluginsPath
+                    foreach (string file in Directory.GetFiles(bepInExDirectory, "*", SearchOption.AllDirectories))
                     {
-                        continue;
+                        if (mod.PluginFiles.Contains(Path.GetFileName(file)))
+                        {
+                            continue;
+                        }
+
+                        string relativePath = file.Replace(bepInExDirectory, "");
+                        if (relativePath.StartsWith("/") || relativePath.StartsWith("\\"))
+                            relativePath = relativePath[1..];
+
+                        string targetPath = Path.Combine(gamePluginsPath, relativePath);
+                        Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
+                        File.Copy(file, targetPath, true);
                     }
-                    
-                    string relativePath = file.Replace(bepInExDirectory, "");
-                    if (relativePath.StartsWith("/") || relativePath.StartsWith("\\"))
-                        relativePath = relativePath[1..];
-                    
-                    string targetPath = Path.Combine(gamePluginsPath, relativePath);
-                    Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
-                    File.Copy(file, targetPath, true);
+
+                    installedClient = true;
                 }
-                
-                string[] userModsDirectories = Directory.GetDirectories(Path.Combine(tempPath, "Extracted"), Path.Combine("user", "mods"), SearchOption.AllDirectories);
-                string userModsDirectory = userModsDirectories.FirstOrDefault();
-                
-                if (fixVersion)
+                catch (DirectoryNotFoundException ex)
                 {
-                    //find package.json anywhere in userModsDirectory and parse it as json, change version to x and write back
-                    string[] packageJsonFiles = Directory.GetFiles(userModsDirectory, "package.json",
-                        SearchOption.AllDirectories);
-                    string packageJsonFile = packageJsonFiles.FirstOrDefault();
-                    if (packageJsonFile != null)
-                    {
-                        string packageJson = File.ReadAllText(packageJsonFile);
-                        dynamic json = JsonConvert.DeserializeObject(packageJson);
-                        string akiVersion = _configService.Config.SptAkiVersion;
-                        string[] akiVersionParts = akiVersion.Split('.');
-                        string version = $"~{akiVersionParts[0]}.{akiVersionParts[1]}";
-                        json["version"] = version;
-                        File.WriteAllText(packageJsonFile, JsonConvert.SerializeObject(json, Formatting.Indented));
-                    }
+                    installedClient = false;
                 }
 
-                foreach (string file in Directory.GetFiles(userModsDirectory, "*", SearchOption.AllDirectories))
+                try
                 {
-                    string relativePath = file.Replace(userModsDirectory, "");
-                    if (relativePath.StartsWith("/") || relativePath.StartsWith("\\"))
-                        relativePath = relativePath[1..];
-                    
-                    string targetPath = Path.Combine(serverModPath, relativePath);
-                    Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
-                    File.Copy(file, targetPath, true);
+                    string[] userModsDirectories = Directory.GetDirectories(Path.Combine(tempPath, "Extracted"),
+                        Path.Combine("user", "mods"), SearchOption.AllDirectories);
+                    string userModsDirectory = userModsDirectories.FirstOrDefault();
+
+                    if (fixVersion)
+                    {
+                        //find package.json anywhere in userModsDirectory and parse it as json, change version to x and write back
+                        string[] packageJsonFiles = Directory.GetFiles(userModsDirectory, "package.json",
+                            SearchOption.AllDirectories);
+                        string packageJsonFile = packageJsonFiles.FirstOrDefault();
+                        if (packageJsonFile != null)
+                        {
+                            string packageJson = File.ReadAllText(packageJsonFile);
+                            dynamic json = JsonConvert.DeserializeObject(packageJson);
+                            string akiVersion = _configService.Config.SptAkiVersion;
+                            string[] akiVersionParts = akiVersion.Split('.');
+                            string version = $"~{akiVersionParts[0]}.{akiVersionParts[1]}";
+                            json["version"] = version;
+                            File.WriteAllText(packageJsonFile, JsonConvert.SerializeObject(json, Formatting.Indented));
+                        }
+                    }
+
+                    foreach (string file in Directory.GetFiles(userModsDirectory, "*", SearchOption.AllDirectories))
+                    {
+                        string relativePath = file.Replace(userModsDirectory, "");
+                        if (relativePath.StartsWith("/") || relativePath.StartsWith("\\"))
+                            relativePath = relativePath[1..];
+
+                        string targetPath = Path.Combine(serverModPath, relativePath);
+                        Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
+                        File.Copy(file, targetPath, true);
+                    }
+                    installedServer = true;
+                } 
+                catch (DirectoryNotFoundException ex)
+                {
+                    installedServer = false;
                 }
             }
             catch (Exception ex)
@@ -373,6 +395,21 @@ public class ModService(IBarNotificationService barNotificationService,
                     Directory.Delete(tempPath, true);
                 }
             }
+            
+            if (!installedClient && !installedServer)
+            {
+                throw new Exception("Error installing additional mod files");
+            }
+
+            if (!installedClient)
+            {
+                _barNotificationService.ShowWarning(_localizationService.TranslateSource("ModServiceInstallModTitle"), _localizationService.TranslateSource("ModServiceErrorInstallModWarningClient", mod.Name), 15);
+            }
+            if (!installedServer)
+            {
+                _barNotificationService.ShowWarning(_localizationService.TranslateSource("ModServiceInstallModTitle"), _localizationService.TranslateSource("ModServiceErrorInstallModWarningServer", mod.Name), 15);
+            }
+
             ManagerConfig config = _configService.Config;
             _configService.UpdateConfig(config);
             
@@ -380,7 +417,7 @@ public class ModService(IBarNotificationService barNotificationService,
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "InstallMod");
+            _logger.LogError(ex, "InstallAdditionalModFiles");
             _barNotificationService.ShowError(_localizationService.TranslateSource("ModServiceInstallModTitle"), _localizationService.TranslateSource("ModServiceErrorInstallModDescription", mod.Name));
             return false;
         }
