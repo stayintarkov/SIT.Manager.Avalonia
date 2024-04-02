@@ -125,7 +125,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         {
             releasesJsonString = await GetHttpStringWithRetryAsync(() => _httpClient.GetStringAsync(@"https://patcher.stayintarkov.com/api/v1/repos/SIT/Downgrade-Patches/releases"), TimeSpan.FromSeconds(1), 3);
         }
-        catch(AuthenticationException)
+        catch (AuthenticationException)
         {
             await blockedByISPWarning.ShowAsync();
             return [];
@@ -136,7 +136,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         {
             giteaReleases = JsonSerializer.Deserialize<List<GiteaRelease>>(releasesJsonString) ?? [];
         }
-        catch(JsonException)
+        catch (JsonException)
         {
             await blockedByISPWarning.ShowAsync();
             return [];
@@ -503,7 +503,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                 }
                 return false;
             }).ToList();
-            updateAvailable = _availableSitUpdateVersions.Any();
+            updateAvailable = _availableSitUpdateVersions.Count != 0;
         }
 
         return updateAvailable;
@@ -650,7 +650,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             {
                 internalDownloadProgress = new(progress =>
                 {
-                    internalDownloadProgressPercentage = 0.5 + (progress / downloadAndExtractionSteps);
+                    internalDownloadProgressPercentage = 50 + (progress / downloadAndExtractionSteps);
                     downloadProgress.Report(internalDownloadProgressPercentage);
                 });
                 internalExtractionProgress = new(progress =>

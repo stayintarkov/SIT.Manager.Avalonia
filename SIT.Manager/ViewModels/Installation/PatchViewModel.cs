@@ -29,9 +29,9 @@ public partial class PatchViewModel : InstallationViewModelBase
         { 15, "Patcher failed." }
     };
 
-    private readonly Progress<double> _copyProgress = new();
-    private readonly Progress<double> _downloadProgress = new();
-    private readonly Progress<double> _extractionProgress = new();
+    private readonly Progress<double> _copyProgress;
+    private readonly Progress<double> _downloadProgress;
+    private readonly Progress<double> _extractionProgress;
 
     [ObservableProperty]
     private double _copyProgressPercentage = 0;
@@ -46,10 +46,17 @@ public partial class PatchViewModel : InstallationViewModelBase
     private bool _requiresPatching = false;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasError))]
     private bool _hasPatcherError = false;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasError))]
+    private bool _hasAquirePatcherError = false;
+
+    [ObservableProperty]
     private EmbeddedProcessWindow? _embeddedPatcherWindow;
+
+    public bool HasError => HasPatcherError || HasAquirePatcherError;
 
     public PatchViewModel(IFileService fileService, IInstallerService installerService, ILogger<PatchViewModel> logger) : base()
     {
@@ -59,24 +66,9 @@ public partial class PatchViewModel : InstallationViewModelBase
 
         RequiresPatching = !string.IsNullOrEmpty(CurrentInstallProcessState.DownloadMirrorUrl);
 
-        _copyProgress.ProgressChanged += CopyProgress_ProgressChanged;
-        _downloadProgress.ProgressChanged += DownloadProgress_ProgressChanged;
-        _extractionProgress.ProgressChanged += ExtractionProgress_ProgressChanged;
-    }
-
-    private void CopyProgress_ProgressChanged(object? sender, double e)
-    {
-        CopyProgressPercentage = e;
-    }
-
-    private void DownloadProgress_ProgressChanged(object? sender, double e)
-    {
-        DownloadProgressPercentage = e * 100;
-    }
-
-    private void ExtractionProgress_ProgressChanged(object? sender, double e)
-    {
-        ExtractionProgressPercentage = e;
+        _copyProgress = new(x => CopyProgressPercentage = x);
+        _downloadProgress = new(x => DownloadProgressPercentage = x);
+        _extractionProgress = new(x => ExtractionProgressPercentage = x);
     }
 
     private async Task RunPatcher()
@@ -108,7 +100,7 @@ public partial class PatchViewModel : InstallationViewModelBase
         }
 
         _patcherResultMessages.TryGetValue(embeddedProcessWindow.ExitCode, out string? patcherResult);
-        _logger.LogInformation($"RunPatcher: {patcherResult}");
+        _logger.LogInformation("RunPatcher: {patcherResult}", patcherResult);
 
         int exitCode = embeddedProcessWindow.ExitCode;
         EmbeddedPatcherWindow = null;
@@ -172,9 +164,15 @@ public partial class PatchViewModel : InstallationViewModelBase
 
         if (RequiresPatching)
         {
-            await _installerService.DownloadAndExtractPatcher(CurrentInstallProcessState.DownloadMirrorUrl, CurrentInstallProcessState.EftInstallPath, _downloadProgress, _extractionProgress);
-
-            await RunPatcher();
+            bool aquiredPatcher = await _installerService.DownloadAndExtractPatcher(CurrentInstallProcessState.DownloadMirrorUrl, CurrentInstallProcessState.EftInstallPath, _downloadProgress, _extractionProgress);
+            if (aquiredPatcher)
+            {
+                await RunPatcher();
+            }
+            else
+            {
+                HasAquirePatcherError = true;
+            }
         }
         else
         {

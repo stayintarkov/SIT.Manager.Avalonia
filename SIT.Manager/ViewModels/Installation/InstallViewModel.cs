@@ -36,8 +36,7 @@ public partial class InstallViewModel : InstallationViewModelBase
 
     private void DownloadProgress_ProgressChanged(object? sender, double e)
     {
-        // For some reason this is 100 times smaller than expected so just x100 I guess?
-        DownloadProgressPercentage = e * 100;
+        DownloadProgressPercentage = e;
         UpdateInstallProgress();
     }
 

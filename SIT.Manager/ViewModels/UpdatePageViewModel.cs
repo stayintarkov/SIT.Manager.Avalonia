@@ -29,7 +29,7 @@ public partial class UpdatePageViewModel : ObservableObject
         _appUpdaterService = appUpdaterService;
         _localizationService = localizationService;
 
-        _updateProgress = new Progress<double>(prog => UpdateProgressPercentage = prog * 100);
+        _updateProgress = new Progress<double>(prog => UpdateProgressPercentage = prog);
 
         UpdateManagerCommand = new AsyncRelayCommand(UpdateManager);
     }
