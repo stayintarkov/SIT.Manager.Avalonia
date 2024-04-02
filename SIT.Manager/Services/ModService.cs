@@ -2,6 +2,7 @@
 using Avalonia.Layout;
 using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using SIT.Manager.Interfaces;
 using SIT.Manager.ManagedProcess;
 using SIT.Manager.Models;
@@ -9,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Services;
@@ -234,6 +236,152 @@ public class ModService(IBarNotificationService barNotificationService,
         {
             _logger.LogError(ex, "UninstallMod");
             _barNotificationService.ShowError(_localizationService.TranslateSource("ModServiceFileUninstallModTitle"), _localizationService.TranslateSource("ModServiceErrorInstallModDescription", mod.Name));
+            return false;
+        }
+
+        return true;
+    }
+    
+    public async Task<bool> InstallAdditionalModFiles(ModInfo mod)
+    {
+        bool fixVersion = true;
+        
+        if (string.IsNullOrEmpty(_configService.Config.InstallPath))
+        {
+            _barNotificationService.ShowError(_localizationService.TranslateSource("ModServiceInstallModTitle"), _localizationService.TranslateSource("ModServiceInstallErrorModDescription"));
+            return false;
+        }
+
+        if (string.IsNullOrEmpty(mod.OriginalDownloadUrl))
+        {
+            _barNotificationService.ShowError(_localizationService.TranslateSource("ModServiceInstallModTitle"), _localizationService.TranslateSource("ModServiceInstallErrorDownloadMissing"));
+            return false;
+        }
+
+        try
+        {
+            if (mod.SupportedVersion != _configService.Config.SitVersion)
+            {
+                ContentDialog contentDialog = new()
+                {
+                    Title = _localizationService.TranslateSource("ModServiceWarningTitle"),
+                    Content = _localizationService.TranslateSource("ModServiceWarningDescription", mod.SupportedVersion, $"{(string.IsNullOrEmpty(_configService.Config.SitVersion) ? _localizationService.TranslateSource("ModServiceUnknownTitle") : _configService.Config.SitVersion)}"),
+                    HorizontalContentAlignment = HorizontalAlignment.Center,
+                    IsPrimaryButtonEnabled = true,
+                    PrimaryButtonText = _localizationService.TranslateSource("ModServiceButtonYes"),
+                    CloseButtonText = _localizationService.TranslateSource("ModServiceButtonNo")
+                };
+                ContentDialogResult response = await contentDialog.ShowAsync();
+                if (response != ContentDialogResult.Primary)
+                {
+                    return false;
+                }
+            }
+
+            if (mod == null)
+            {
+                return false;
+            }
+
+            string installPath = _configService.Config.InstallPath;
+            string gamePluginsPath = Path.Combine(installPath, "BepInEx", "plugins");
+            string serverPath = _configService.Config.AkiServerPath;
+            string serverModPath = Path.Combine(serverPath, "user", "mods");
+
+            string tempPath = Path.Combine(_configService.Config.InstallPath, "SITLauncher", "Mods", "AdditionalFiles");
+            try
+            {
+                WebRequest request = WebRequest.Create(mod.OriginalDownloadUrl);
+                WebResponse response = request.GetResponse();
+                string originalFileName = response.Headers["Content-Disposition"].Trim();
+                if (originalFileName != null)
+                {
+                    originalFileName = originalFileName.Replace("attachment; filename=", "");
+                }
+                Stream streamWithFileBody = response.GetResponseStream();
+                string pathToSave = Path.Combine(tempPath, originalFileName);
+                
+                Directory.CreateDirectory(Path.GetDirectoryName(pathToSave));
+                using (Stream output = File.OpenWrite(pathToSave))
+                {
+                    streamWithFileBody.CopyTo(output);
+                }
+                
+                await _filesService.ExtractArchive(pathToSave, Path.Combine(tempPath, "Extracted"));
+                
+                //find directories like Path.Combine("BepInEx", "plugins") in extracted files
+                string[] bepInExDirectories = Directory.GetDirectories(Path.Combine(tempPath, "Extracted"), Path.Combine("BepInEx", "plugins"), SearchOption.AllDirectories);
+                string bepInExDirectory = bepInExDirectories.FirstOrDefault();
+                
+                //foreach file in directory copy to gamePluginsPath
+                foreach (string file in Directory.GetFiles(bepInExDirectory, "*", SearchOption.AllDirectories))
+                {
+                    if (mod.PluginFiles.Contains(Path.GetFileName(file)))
+                    {
+                        continue;
+                    }
+                    
+                    string relativePath = file.Replace(bepInExDirectory, "");
+                    if (relativePath.StartsWith("/") || relativePath.StartsWith("\\"))
+                        relativePath = relativePath[1..];
+                    
+                    string targetPath = Path.Combine(gamePluginsPath, relativePath);
+                    Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
+                    File.Copy(file, targetPath, true);
+                }
+                
+                string[] userModsDirectories = Directory.GetDirectories(Path.Combine(tempPath, "Extracted"), Path.Combine("user", "mods"), SearchOption.AllDirectories);
+                string userModsDirectory = userModsDirectories.FirstOrDefault();
+                
+                if (fixVersion)
+                {
+                    //find package.json anywhere in userModsDirectory and parse it as json, change version to x and write back
+                    string[] packageJsonFiles = Directory.GetFiles(userModsDirectory, "package.json",
+                        SearchOption.AllDirectories);
+                    string packageJsonFile = packageJsonFiles.FirstOrDefault();
+                    if (packageJsonFile != null)
+                    {
+                        string packageJson = File.ReadAllText(packageJsonFile);
+                        dynamic json = JsonConvert.DeserializeObject(packageJson);
+                        string akiVersion = _configService.Config.SptAkiVersion;
+                        string[] akiVersionParts = akiVersion.Split('.');
+                        string version = $"~{akiVersionParts[0]}.{akiVersionParts[1]}";
+                        json["version"] = version;
+                        File.WriteAllText(packageJsonFile, JsonConvert.SerializeObject(json, Formatting.Indented));
+                    }
+                }
+
+                foreach (string file in Directory.GetFiles(userModsDirectory, "*", SearchOption.AllDirectories))
+                {
+                    string relativePath = file.Replace(userModsDirectory, "");
+                    if (relativePath.StartsWith("/") || relativePath.StartsWith("\\"))
+                        relativePath = relativePath[1..];
+                    
+                    string targetPath = Path.Combine(serverModPath, relativePath);
+                    Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
+                    File.Copy(file, targetPath, true);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (Directory.Exists(tempPath))
+                {
+                    Directory.Delete(tempPath, true);
+                }
+            }
+            ManagerConfig config = _configService.Config;
+            _configService.UpdateConfig(config);
+            
+            _barNotificationService.ShowSuccess(_localizationService.TranslateSource("ModServiceInstallModTitle"), _localizationService.TranslateSource("ModServiceInstallModDescription", mod.Name));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "InstallMod");
+            _barNotificationService.ShowError(_localizationService.TranslateSource("ModServiceInstallModTitle"), _localizationService.TranslateSource("ModServiceErrorInstallModDescription", mod.Name));
             return false;
         }
 

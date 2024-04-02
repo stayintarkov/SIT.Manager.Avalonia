@@ -31,6 +31,9 @@ public partial class ModsPageViewModel : ObservableRecipient
 
     [ObservableProperty]
     private bool _enableInstall = false;
+    
+    [ObservableProperty]
+    private bool _enableAdditionalModFilesInstall = false;
 
     public bool ShowModInfo => SelectedMod != null;
 
@@ -39,6 +42,8 @@ public partial class ModsPageViewModel : ObservableRecipient
     public IAsyncRelayCommand DownloadModPackageCommand { get; }
 
     public IAsyncRelayCommand InstallModCommand { get; }
+    
+    public IAsyncRelayCommand InstallAdditionalModFilesCommand { get; }
 
     public IAsyncRelayCommand UninstallModCommand { get; }
 
@@ -62,6 +67,7 @@ public partial class ModsPageViewModel : ObservableRecipient
         DownloadModPackageCommand = new AsyncRelayCommand(DownloadModPackage);
         InstallModCommand = new AsyncRelayCommand(InstallMod);
         UninstallModCommand = new AsyncRelayCommand(UninstallMod);
+        InstallAdditionalModFilesCommand = new AsyncRelayCommand(InstallAdditionalModFiles);
     }
 
     private async Task LoadMasterList()
@@ -161,6 +167,8 @@ public partial class ModsPageViewModel : ObservableRecipient
 
         bool isInstalled = _managerConfigService.Config.InstalledMods.ContainsKey(value.Name);
         EnableInstall = !isInstalled;
+        EnableAdditionalModFilesInstall =
+            value.RequiresFiles && isInstalled && !String.IsNullOrEmpty(value.OriginalDownloadUrl);
     }
 
     private async Task InstallMod()
@@ -172,6 +180,8 @@ public partial class ModsPageViewModel : ObservableRecipient
 
         bool installSuccessful = await _modService.InstallMod(SelectedMod);
         EnableInstall = !installSuccessful;
+        EnableAdditionalModFilesInstall =
+            SelectedMod.RequiresFiles && installSuccessful && !String.IsNullOrEmpty(SelectedMod.OriginalDownloadUrl);
     }
 
     private async Task UninstallMod()
@@ -183,6 +193,18 @@ public partial class ModsPageViewModel : ObservableRecipient
 
         bool uninstallSuccessful = await _modService.UninstallMod(SelectedMod);
         EnableInstall = uninstallSuccessful;
+        if (uninstallSuccessful)
+            EnableAdditionalModFilesInstall = false;
+    }
+    
+    private async Task InstallAdditionalModFiles()
+    {
+        if (SelectedMod == null)
+        {
+            return;
+        }
+
+        bool installSuccessful = await _modService.InstallAdditionalModFiles(SelectedMod);
     }
 
     protected override async void OnActivated()

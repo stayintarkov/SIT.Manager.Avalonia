@@ -78,7 +78,9 @@
 	<system:String x:Key="ModInfoInstallTitle">Install</system:String>
 	<system:String x:Key="ModInfoUninstallToolTip">Uninstall the mod.</system:String>
 	<system:String x:Key="ModInfoUninstallTitle">Uninstall</system:String>
-	
+	<system:String x:Key="ModInfoAdditionalModFilesInstallTitle">Install additional files for client and server</system:String>
+	<system:String x:Key="ModInfoInstallAdditionalModFilesToolTip">Try to download the additional files and copy them. Can't be undone automatically.</system:String>
+
 	<!-- Mods Page ViewModel -->
 	<system:String x:Key="ModsPageViewModelErrorTitle">Error</system:String>
 	<system:String x:Key="ModsPageViewModelErrorInstallPathDescription">Install Path is not set. Configure it in Settings.</system:String>
@@ -281,6 +283,7 @@
 	<system:String x:Key="ModServiceUpdatedModsDescription">Updated %1 mods.</system:String>
 	<system:String x:Key="ModServiceInstallModTitle">Install Mod</system:String>
 	<system:String x:Key="ModServiceInstallErrorModDescription">Install Path is not set. Configure it in Settings.</system:String>
+	<system:String x:Key="ModServiceInstallErrorDownloadMissing">Download url is either not set or not correct.</system:String>
 	<system:String x:Key="ModServiceWarningTitle">Warning</system:String>
 	<system:String x:Key="ModServiceWarningDescription">The mod you are trying to install is not compatible with your currently installed version of SIT. Supported SIT Version: %1 Installed SIT Version: %2 Continue anyway?</system:String>
 	<system:String x:Key="ModServiceUnknownTitle">Unknown</system:String>

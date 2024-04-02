@@ -14,4 +14,5 @@ public interface IModService
     Task AutoUpdate(List<ModInfo> outdatedMods);
     Task<bool> InstallMod(ModInfo mod, bool suppressNotification = false);
     Task<bool> UninstallMod(ModInfo mod);
+    Task<bool> InstallAdditionalModFiles(ModInfo mod);
 }

@@ -66,7 +66,7 @@
 
             <Grid Name="InfoGrid" 
 				  Grid.Column="1" 
-				  RowDefinitions="Auto,*"
+				  RowDefinitions="Auto,*,*"
 				  IsVisible="{Binding ShowModInfo}">
                 <StackPanel Margin="10"
 							DataContext="{Binding SelectedMod}"
@@ -120,12 +120,12 @@
 				</StackPanel>
 
 				<StackPanel Orientation="Horizontal" 
-							Margin="10" 
-							HorizontalAlignment="Center"
-							VerticalAlignment="Top"
+							Margin="10,0,10,0" 
+							HorizontalAlignment="Left"
+							VerticalAlignment="Bottom"
 							Grid.Row="1">
 					<Button Name="InstallButton" 
-							Margin="10" 
+							Margin="10,10,10,0" 
 							ToolTip.Tip="{DynamicResource ModInfoInstallToolTip}" 
 							MinHeight="32"
 							Command="{Binding InstallModCommand}"
@@ -136,7 +136,7 @@
 						</StackPanel>
 					</Button>
 					<Button Name="UninstallButton" 
-							Margin="10" 
+							Margin="10,10,10,0" 
 							ToolTip.Tip="{DynamicResource ModInfoUninstallToolTip}" 
 							MinHeight="32"
 							Command="{Binding UninstallModCommand}"
@@ -147,6 +147,23 @@
 						</StackPanel>
 					</Button>
 				</StackPanel>
+	            <StackPanel Orientation="Horizontal" 
+	                        Margin="10,0,10,10" 
+	                        HorizontalAlignment="Left"
+	                        VerticalAlignment="Top"
+	                        Grid.Row="2">
+		            <Button Name="InstallAdditionalModFilesButton" 
+		                    Margin="10" 
+		                    ToolTip.Tip="{DynamicResource ModInfoInstallAdditionalModFilesToolTip}" 
+		                    MinHeight="32"
+		                    Command="{Binding InstallAdditionalModFilesCommand}"
+		                    IsEnabled="{Binding EnableAdditionalModFilesInstall}">
+			            <StackPanel Orientation="Horizontal">
+				            <ui:SymbolIcon Symbol="Add" Margin="0,0,5,0"/>
+				            <TextBlock Text="{DynamicResource ModInfoAdditionalModFilesInstallTitle}"/>
+			            </StackPanel>
+		            </Button>
+	            </StackPanel>
 			</Grid>
 		</Grid>
 	</Grid>
