@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using SIT.Manager.Interfaces;
 using SIT.Manager.ManagedProcess;
 using SIT.Manager.Models;
+using SIT.Manager.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -49,7 +50,7 @@ public class ModService(IBarNotificationService barNotificationService,
         await _filesService.ExtractArchive(Path.Combine(modsDirectory, "SIT.Mod.Ports.Collection.zip"), Path.Combine(modsDirectory, "Extracted"));
     }
 
-    public async Task AutoUpdate(List<ModInfo> outdatedMods)
+    public async Task AutoUpdate(List<ModInfo> outdatedMods, List<ModInfo> modList)
     {
         List<string> outdatedNames = [.. outdatedMods.Select(x => x.Name)];
         string outdatedString = string.Join("\n", outdatedNames);
@@ -80,7 +81,7 @@ public class ModService(IBarNotificationService barNotificationService,
                 config.InstalledMods.Remove(mod.Name);
                 _configService.UpdateConfig(config);
 
-                await InstallMod(mod, true);
+                await InstallMod(mod, modList, true, true);
             }
         }
         else
@@ -91,12 +92,160 @@ public class ModService(IBarNotificationService barNotificationService,
         _barNotificationService.ShowSuccess(_localizationService.TranslateSource("ModServiceUpdatedModsTitle"), _localizationService.TranslateSource("ModServiceUpdatedModsDescription", $"{outdatedMods.Count}"));
     }
 
-    public async Task<bool> InstallMod(ModInfo mod, bool suppressNotification = false)
+    public async Task<bool> InstallMod(ModInfo mod, List<ModInfo> modList, bool suppressNotification = false, bool installDependenciesWithoutConfirm = false, bool includeAdditionalFiles = false)
     {
         if (string.IsNullOrEmpty(_configService.Config.InstallPath))
         {
             _barNotificationService.ShowError(_localizationService.TranslateSource("ModServiceInstallModTitle"), _localizationService.TranslateSource("ModServiceInstallErrorModDescription"));
             return false;
+        }
+        
+        if (mod.Dependencies.Count > 0)
+        {
+            List<ModInfo> missingDependencies = [];
+            foreach (string dependency in mod.Dependencies)
+            {
+                if (!_configService.Config.InstalledMods.ContainsKey(dependency))
+                {
+                    missingDependencies.Add(modList.FirstOrDefault(x => x.Name == dependency));
+                }
+            }
+            
+            if (missingDependencies.Count > 0 && (!suppressNotification || installDependenciesWithoutConfirm))
+            {
+                //iterate through missing dependencies and check for dependencies of dependencies until no more dependencies are found (use while)
+                //if a dependency is found, add it to the missingDependencies list
+                List<ModInfo> newMissingDependencies = [];
+                do
+                {
+                    missingDependencies.AddRange(newMissingDependencies);
+                    newMissingDependencies.Clear();
+                    
+                    foreach (ModInfo missingDependency in missingDependencies)
+                    {
+                        foreach (string dependency in missingDependency.Dependencies)
+                        {
+                            if (!_configService.Config.InstalledMods.ContainsKey(dependency) && missingDependencies.All(x => x.Name != dependency))
+                            {
+                                newMissingDependencies.Add(modList.FirstOrDefault(x => x.Name == dependency));
+                            }
+                        }
+                    }
+                } while (newMissingDependencies.Count > 0);
+                
+                string missingDependenciesString = string.Join(", ", missingDependencies.Select(x => x.Name));
+                if (!installDependenciesWithoutConfirm && !suppressNotification)
+                {
+                    ContentDialog contentDialog = new()
+                    {
+                        Title = _localizationService.TranslateSource("ModServiceWarningTitle"),
+                        Content =
+                            _localizationService.TranslateSource("ModServiceInstallQuestionInstallDependencies",
+                                mod.Name, missingDependenciesString),
+                        HorizontalContentAlignment = HorizontalAlignment.Center,
+                        IsPrimaryButtonEnabled = true,
+                        PrimaryButtonText = _localizationService.TranslateSource("ModServiceButtonYes"),
+                        CloseButtonText = _localizationService.TranslateSource("ModServiceButtonNo")
+                    };
+                    ContentDialogResult response = await contentDialog.ShowAsync();
+                    // if not install dependencies, ask to abort
+                    if (response != ContentDialogResult.Primary)
+                    {
+                        contentDialog = new()
+                        {
+                            Title = _localizationService.TranslateSource("ModServiceWarningTitle"),
+                            Content =
+                                _localizationService.TranslateSource("ToolsSelectLogsCloseButtonText",
+                                    mod.Name, missingDependenciesString),
+                            HorizontalContentAlignment = HorizontalAlignment.Center,
+                            IsPrimaryButtonEnabled = true,
+                            PrimaryButtonText = _localizationService.TranslateSource("ModServiceButtonYes"),
+                            CloseButtonText = _localizationService.TranslateSource("ModServiceButtonNo")
+                        };
+                        response = await contentDialog.ShowAsync();
+                        if (response == ContentDialogResult.Primary)
+                            return false;
+                    }
+                }
+
+                if (mod.RequiresFiles || missingDependencies.Any(x => x.RequiresFiles))
+                {
+                    if (!suppressNotification)
+                    {
+                        List<string> requiresFilesMissingDependencies =
+                            missingDependencies.Where(x => x.RequiresFiles).Select(x => x.Name).ToList();
+                        if (mod.RequiresFiles)
+                            requiresFilesMissingDependencies.Add(mod.Name);
+                        string requiresFilesMissingDependenciesString =
+                            string.Join(", ", requiresFilesMissingDependencies);
+
+                        ContentDialog contentDialog = new()
+                        {
+                            Title = _localizationService.TranslateSource("ModServiceWarningTitle"),
+                            Content =
+                                _localizationService.TranslateSource("ModServiceInstallQuestionIncludeAdditionalFiles",
+                                    requiresFilesMissingDependenciesString),
+                            HorizontalContentAlignment = HorizontalAlignment.Center,
+                            IsPrimaryButtonEnabled = true,
+                            PrimaryButtonText = _localizationService.TranslateSource("ModServiceButtonYes"),
+                            CloseButtonText = _localizationService.TranslateSource("ModServiceButtonNo"),
+                        };
+                        ContentDialogResult response = await contentDialog.ShowAsync();
+                        if (response == ContentDialogResult.Primary)
+                        {
+                            includeAdditionalFiles = true;
+                        }
+                    }
+                }
+
+                try
+                {
+                    foreach (ModInfo missingMod in missingDependencies)
+                    {
+                        // don't set installDependenciesWithoutConfirm to true, as we install all dependencies at once
+                        bool installedSuccessfully = await InstallMod(missingMod, modList, true, false, includeAdditionalFiles);
+                        if (!installedSuccessfully)
+                            throw new Exception("Error installing dependency " + missingMod.Name);
+                    }
+                }
+                catch (Exception ex)
+                { 
+                    //cleanup if error
+                    try
+                    {
+                        foreach (ModInfo missingMod in missingDependencies)
+                        {
+                            await UninstallMod(missingMod);
+                        }
+                    }
+                    catch
+                    {
+                    }
+                    
+                    _logger.LogError(ex, "InstallMod");
+                    _barNotificationService.ShowError(_localizationService.TranslateSource("ModServiceInstallModTitle"), _localizationService.TranslateSource("ModServiceErrorInstallModDescription", mod.Name));
+                    return false;
+                }
+            }
+        }
+        else
+        {
+            ContentDialog contentDialog = new()
+            {
+                Title = _localizationService.TranslateSource("ModServiceWarningTitle"),
+                Content =
+                    _localizationService.TranslateSource("ModServiceInstallQuestionIncludeAdditionalFiles",
+                        mod.Name),
+                HorizontalContentAlignment = HorizontalAlignment.Center,
+                IsPrimaryButtonEnabled = true,
+                PrimaryButtonText = _localizationService.TranslateSource("ModServiceButtonYes"),
+                CloseButtonText = _localizationService.TranslateSource("ModServiceButtonNo")
+            };
+            ContentDialogResult response = await contentDialog.ShowAsync();
+            if (response == ContentDialogResult.Primary)
+            {
+                includeAdditionalFiles = true;
+            }
         }
 
         try
@@ -141,6 +290,9 @@ public class ModService(IBarNotificationService barNotificationService,
                 string targetPath = Path.Combine(gameConfigPath + configFile);
                 File.Copy(sourcePath, targetPath, true);
             }
+            
+            if (includeAdditionalFiles)
+                await InstallAdditionalModFiles(mod);
 
             ManagerConfig config = _configService.Config;
             config.InstalledMods.Add(mod.Name, mod.PortVersion);
@@ -465,22 +617,22 @@ public class ModService(IBarNotificationService barNotificationService,
 
             if (!installedClient)
             {
-                _barNotificationService.ShowWarning(_localizationService.TranslateSource("ModServiceInstallModTitle"), _localizationService.TranslateSource("ModServiceErrorInstallModWarningClient", mod.Name), 15);
+                _barNotificationService.ShowWarning(_localizationService.TranslateSource("ModServiceInstallModTitle"), _localizationService.TranslateSource("ModServiceErrorInstallAdditionalModFilesWarningClient", mod.Name), 15);
             }
             if (!installedServer)
             {
-                _barNotificationService.ShowWarning(_localizationService.TranslateSource("ModServiceInstallModTitle"), _localizationService.TranslateSource("ModServiceErrorInstallModWarningServer", mod.Name), 15);
+                _barNotificationService.ShowWarning(_localizationService.TranslateSource("ModServiceInstallModTitle"), _localizationService.TranslateSource("ModServiceErrorInstallAdditionalModFilesWarningServer", mod.Name), 15);
             }
 
             ManagerConfig config = _configService.Config;
             _configService.UpdateConfig(config);
             
-            _barNotificationService.ShowSuccess(_localizationService.TranslateSource("ModServiceInstallModTitle"), _localizationService.TranslateSource("ModServiceInstallModDescription", mod.Name));
+            _barNotificationService.ShowSuccess(_localizationService.TranslateSource("ModServiceInstallModTitle"), _localizationService.TranslateSource("ModServiceInstallAdditionalModFilesDescription", mod.Name));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "InstallAdditionalModFiles");
-            _barNotificationService.ShowError(_localizationService.TranslateSource("ModServiceInstallModTitle"), _localizationService.TranslateSource("ModServiceErrorInstallModDescription", mod.Name));
+            _barNotificationService.ShowError(_localizationService.TranslateSource("ModServiceInstallModTitle"), _localizationService.TranslateSource("ModServiceErrorInstallAdditionalModFilesDescription", mod.Name));
             return false;
         }
 

@@ -14,5 +14,6 @@ public class ModInfo
     public bool RequiresFiles { get; set; }
     public List<string> PluginFiles { get; set; } = [];
     public List<string> ConfigFiles { get; set; } = [];
+    public List<string> Dependencies { get; set; } = [];
     public string OriginalDownloadUrl { get; set; } = string.Empty;
 }

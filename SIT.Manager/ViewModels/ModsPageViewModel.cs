@@ -123,7 +123,7 @@ public partial class ModsPageViewModel : ObservableRecipient
 
         if (outdatedMods.Count > 0)
         {
-            await _modService.AutoUpdate(outdatedMods);
+            await _modService.AutoUpdate(outdatedMods, ModList.ToList());
         }
     }
 
@@ -178,7 +178,7 @@ public partial class ModsPageViewModel : ObservableRecipient
             return;
         }
 
-        bool installSuccessful = await _modService.InstallMod(SelectedMod);
+        bool installSuccessful = await _modService.InstallMod(SelectedMod, ModList.ToList());
         EnableInstall = !installSuccessful;
         EnableAdditionalModFilesInstall =
             SelectedMod.RequiresFiles && installSuccessful && !String.IsNullOrEmpty(SelectedMod.OriginalDownloadUrl);
