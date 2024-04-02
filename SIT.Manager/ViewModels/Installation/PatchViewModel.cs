@@ -71,7 +71,16 @@ public partial class PatchViewModel : InstallationViewModelBase
 
     private void DownloadProgress_ProgressChanged(object? sender, double e)
     {
+        // The normal download is 100x smaller than the mega api client outputs
+        // so we have to manually adjust it here (head -> wall)
+        if (CurrentInstallProcessState.DownloadMirrorUrl.Contains("mega.nz"))
+        {
+            DownloadProgressPercentage = e;
+        }
+        else
+        {
         DownloadProgressPercentage = e * 100;
+    }
     }
 
     private void ExtractionProgress_ProgressChanged(object? sender, double e)
