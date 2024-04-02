@@ -1,4 +1,5 @@
-﻿using SIT.Manager.Interfaces;
+﻿using Microsoft.Win32;
+using SIT.Manager.Interfaces;
 using SIT.Manager.ManagedProcess;
 using SIT.Manager.Models;
 using System;
@@ -35,7 +36,7 @@ public class DiagnosticService : IDiagnosticService
         return fileData.Replace(await _externalIP.Value, "[REDACTED]");
     }
 
-    public async Task<string?> GetLogFile(string logFilePath)
+    public async Task<string> GetLogFile(string logFilePath)
     {
         string logFileName = Path.GetFileName(logFilePath);
         if (File.Exists(logFilePath))
@@ -74,9 +75,8 @@ public class DiagnosticService : IDiagnosticService
         if (options.IncludeClientLog)
         {
             string eftLogPath = EFTLogPath;
-            string? eftLogData = await GetLogFile(eftLogPath);
-            if (eftLogData != null)
-                diagnosticLogs.Add(new(Path.GetFileName(eftLogPath), eftLogData));
+            string eftLogData = await GetLogFile(eftLogPath);
+            diagnosticLogs.Add(new(Path.GetFileName(eftLogPath), eftLogData));
         }
 
         if (!string.IsNullOrEmpty(_configService.Config.AkiServerPath))
@@ -91,9 +91,8 @@ public class DiagnosticService : IDiagnosticService
                     if (files.Any())
                     {
                         string serverLogFile = files.First().FullName;
-                        string? serverLogData = await GetLogFile(serverLogFile);
-                        if (serverLogData != null)
-                            diagnosticLogs.Add(new(Path.GetFileName(serverLogFile), serverLogData));
+                        string serverLogData = await GetLogFile(serverLogFile);
+                        diagnosticLogs.Add(new(Path.GetFileName(serverLogFile), serverLogData));
                     }
                 }
             }
@@ -101,9 +100,8 @@ public class DiagnosticService : IDiagnosticService
             if (options.IncludeHttpJson)
             {
                 string httpJsonPath = Path.Combine(_configService.Config.AkiServerPath, "Aki_Data", "Server", "configs", "http.json");
-                string? httpJsonData = await GetLogFile(httpJsonPath);
-                if (httpJsonData != null)
-                    diagnosticLogs.Add(new(Path.GetFileName(httpJsonPath), httpJsonData));
+                string httpJsonData = await GetLogFile(httpJsonPath);
+                diagnosticLogs.Add(new(Path.GetFileName(httpJsonPath), httpJsonData));
             }
         }
 
@@ -143,6 +141,18 @@ public class DiagnosticService : IDiagnosticService
                         sb.AppendLine($"Interface Type: {networkInterface.NetworkInterfaceType.ToString()}");
                         sb.AppendLine($"Address: {ip.Address}\n");
                     }
+                }
+            }
+        }
+
+        sb.AppendLine("#-- Registry Information --#");
+        using (RegistryKey? key = Registry.LocalMachine.OpenSubKey(@"Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\EscapeFromTarkov"))
+        {
+            if (key != null)
+            {
+                foreach (string valueName in key.GetValueNames())
+                {
+                    sb.Append($"{valueName}: {key.GetValue(valueName)}");
                 }
             }
         }
