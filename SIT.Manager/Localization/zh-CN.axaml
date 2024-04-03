@@ -78,6 +78,8 @@
 	<system:String x:Key="ModInfoInstallTitle">安装</system:String>
 	<system:String x:Key="ModInfoUninstallToolTip">卸载模组</system:String>
 	<system:String x:Key="ModInfoUninstallTitle">卸载</system:String>
+	<system:String x:Key="ModInfoAdditionalModFilesInstallTitle">Install additional files for client and server</system:String>
+	<system:String x:Key="ModInfoInstallAdditionalModFilesToolTip">Try to download the additional files and copy them. Can't be undone automatically.</system:String>
 
 	<!-- Mods Page ViewModel -->
 	<system:String x:Key="ModsPageViewModelErrorTitle">错误</system:String>
@@ -279,11 +281,17 @@
 	<system:String x:Key="ModServiceUpdatedModsDescription">已更新 %1 个模组！</system:String>
 	<system:String x:Key="ModServiceInstallModTitle">安装模组</system:String>
 	<system:String x:Key="ModServiceInstallErrorModDescription">EFT 安装路径未设置，请在设置中配置！</system:String>
+	<system:String x:Key="ModServiceInstallErrorDownloadMissing">Download url is either not set or not correct.</system:String>
+	<system:String x:Key="ModServiceInstallQuestionIncludeAdditionalFiles">%1 need additional files to install. Automatically install them?</system:String>
 	<system:String x:Key="ModServiceWarningTitle">警告</system:String>
 	<system:String x:Key="ModServiceWarningDescription">您正在尝试安装的模组与您当前安装的 SIT 版本不兼容！支持的 SIT 版本：%1 已安装的 SIT 版本：%2 仍要继续安装吗？</system:String>
 	<system:String x:Key="ModServiceUnknownTitle">未知</system:String>
 	<system:String x:Key="ModServiceInstallModDescription">成功安装了 %1！</system:String>
+	<system:String x:Key="ModServiceInstallAdditionalModFilesDescription">%1 additional files were successfully installed.</system:String>
 	<system:String x:Key="ModServiceErrorInstallModDescription">%1 安装失败，请检查您的 Launcher.log！</system:String>
+	<system:String x:Key="ModServiceErrorInstallAdditionalModFilesDescription">%1 failed to install additional files. Check your Launcher.log</system:String>
+	<system:String x:Key="ModServiceErrorInstallAdditionalModFilesWarningClient">%1 couldn't install client, but it may not be needed.</system:String>
+	<system:String x:Key="ModServiceErrorInstallAdditionalModFilesWarningServer">%1 couldn't install server, but it may not be needed.</system:String>
 	<system:String x:Key="ModServiceErrorUninstallModTitle">卸载模组时出错</system:String>
 	<system:String x:Key="ModServiceErrorUninstallModDescription">模组 %1 中缺少文件：'%2' ，是否强制从已安装模组列表中移除此模组？</system:String>
 	<system:String x:Key="ModServiceErrorExceptionUninstallModDescription">模组 %1 中缺少文件：'%2' ，是否强制从已安装模组列表中移除此模组？</system:String>

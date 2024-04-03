@@ -78,6 +78,8 @@
 	<system:String x:Key="ModInfoInstallTitle">Встановити</system:String>
 	<system:String x:Key="ModInfoUninstallToolTip">Видалити мод.</system:String>
 	<system:String x:Key="ModInfoUninstallTitle">Видалити</system:String>
+	<system:String x:Key="ModInfoAdditionalModFilesInstallTitle">Install additional files for client and server</system:String>
+	<system:String x:Key="ModInfoInstallAdditionalModFilesToolTip">Try to download the additional files and copy them. Can't be undone automatically.</system:String>
 
 	<!-- Mods Page ViewModel -->
 	<system:String x:Key="ModsPageViewModelErrorTitle">Помилка</system:String>
@@ -279,11 +281,17 @@
 	<system:String x:Key="ModServiceUpdatedModsDescription">Оновлено %1 модів.</system:String>
 	<system:String x:Key="ModServiceInstallModTitle">Встановити мод</system:String>
 	<system:String x:Key="ModServiceInstallErrorModDescription">Шлях встановлення не налаштований. Налаштуйте його в розділі Налаштування.</system:String>
+	<system:String x:Key="ModServiceInstallErrorDownloadMissing">Download url is either not set or not correct.</system:String>
+	<system:String x:Key="ModServiceInstallQuestionIncludeAdditionalFiles">%1 need additional files to install. Automatically install them?</system:String>
 	<system:String x:Key="ModServiceWarningTitle">Попередження</system:String>
 	<system:String x:Key="ModServiceWarningDescription">Мод, який ви намагаєтеся встановити, несумісний з вашою поточною встановленою версією SIT. Підтримувана версія SIT: %1 Встановлена версія SIT: %2 Продовжити в будь-якому випадку?</system:String>
 	<system:String x:Key="ModServiceUnknownTitle">Невідомо</system:String>
 	<system:String x:Key="ModServiceInstallModDescription">%1 було успішно встановлено.</system:String>
+	<system:String x:Key="ModServiceInstallAdditionalModFilesDescription">%1 additional files were successfully installed.</system:String>
 	<system:String x:Key="ModServiceErrorInstallModDescription">%1 не вдалося встановити. Перевірте ваш Launcher.log</system:String>
+	<system:String x:Key="ModServiceErrorInstallAdditionalModFilesDescription">%1 failed to install additional files. Check your Launcher.log</system:String>
+	<system:String x:Key="ModServiceErrorInstallAdditionalModFilesWarningClient">%1 couldn't install client, but it may not be needed.</system:String>
+	<system:String x:Key="ModServiceErrorInstallAdditionalModFilesWarningServer">%1 couldn't install server, but it may not be needed.</system:String>
 	<system:String x:Key="ModServiceErrorUninstallModTitle">Помилка видалення моду</system:String>
 	<system:String x:Key="ModServiceErrorUninstallModDescription">Файл відсутній в моду %1: '%2' Примусово видалити мод із списку встановлених модів все одно?</system:String>
 	<system:String x:Key="ModServiceErrorExceptionUninstallModDescription">Файл відсутній в моду %1: '%2' Примусово видалити мод із списку встановлених модів все одно?</system:String>
