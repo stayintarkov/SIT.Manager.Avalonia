@@ -50,6 +50,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         { 15, "Patcher failed." }
     };
 
+    private DateTime? _lastUpdateCheckTime;
     private List<SitInstallVersion>? _availableSitUpdateVersions;
 
     /// <summary>
@@ -483,14 +484,17 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
 
     public async Task<bool> IsSitUpateAvailable()
     {
-        bool updateAvailable = false;
-
-        // Get the list of available releases then check if one exists which is newer than the current and for the same Tarkov version
-        if (!string.IsNullOrEmpty(_configService.Config.SitVersion))
+        if (string.IsNullOrEmpty(_configService.Config.TarkovVersion) && string.IsNullOrEmpty(_configService.Config.SitVersion))
         {
-            // Cache this list as we will potentially use it later
+            // We need a tarkov and SIT version to be able to check for updates so return early.
+            return false;
+        }
+
+        if (DateTime.Now.AddHours(-1) < _lastUpdateCheckTime)
+        {
+            // We haven't checked for updates in the last hour so refresh the available verisons
             _availableSitUpdateVersions = await GetAvailableSitReleases(_configService.Config.TarkovVersion);
-            _availableSitUpdateVersions = _availableSitUpdateVersions.Where(x =>
+            _availableSitUpdateVersions = _availableSitUpdateVersions?.Where(x =>
             {
                 bool parsedSitVersion = Version.TryParse(x.SitVersion.Replace("StayInTarkov.Client-", ""), out Version? sitVersion);
                 if (parsedSitVersion)
@@ -503,10 +507,13 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                 }
                 return false;
             }).ToList();
-            updateAvailable = _availableSitUpdateVersions.Count != 0;
+
+            // Update the last check time so that we don't refresh this list again for an hour
+            _lastUpdateCheckTime = DateTime.Now;
+            // TODO cache this in a file somewhere
         }
 
-        return updateAvailable;
+        return _availableSitUpdateVersions?.Count != 0;
     }
 
     public async Task InstallServer(GithubRelease selectedVersion, string targetInstallDir, IProgress<double> downloadProgress, IProgress<double> extractionProgress)
