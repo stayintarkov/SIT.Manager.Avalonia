@@ -533,6 +533,8 @@ public class ModService(IBarNotificationService barNotificationService,
 
             try
             {
+                if (Directory.Exists(tempPath)) Directory.Delete(tempPath, true);
+                
                 WebRequest request = WebRequest.Create(mod.OriginalDownloadUrl);
                 WebResponse response = request.GetResponse();
                 string originalFileName = response.Headers["Content-Disposition"].Trim();
@@ -548,7 +550,17 @@ public class ModService(IBarNotificationService barNotificationService,
                     streamWithFileBody.CopyTo(output);
                 }
 
-                await _filesService.ExtractArchive(pathToSave, Path.Combine(tempPath, "Extracted"));
+                if (originalFileName.EndsWith(".dll"))
+                {
+                    //should normally not happen, but if it does, throw error
+                    throw new Exception("Download only resulted in a single dll file, which is not supported.");
+                }
+                else
+                {
+                    //unzip the file
+                    await _filesService.ExtractArchive(pathToSave, Path.Combine(tempPath, "Extracted"));
+                }
+                
 
                 //find directories like Path.Combine("BepInEx", "plugins") in extracted files
                 try
