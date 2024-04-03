@@ -421,6 +421,7 @@ public class ModService(IBarNotificationService barNotificationService,
                 {
                     // Get the newest release asset
                     downloadUrl = release.assets[0].browser_download_url;
+                    break; //break to get the newest release
                 }
             }
         }
@@ -456,6 +457,7 @@ public class ModService(IBarNotificationService barNotificationService,
                 {
                     // Get the newest release asset
                     downloadUrl = release.assets[0].browser_download_url;
+                    break; //break to get the newest release
                 }
             }
         }
@@ -519,7 +521,7 @@ public class ModService(IBarNotificationService barNotificationService,
             
             //if mod is from github and not a release, get the download url from the github api
             //write back to originalDownloadUrl to keep it for future use, until program restart
-            if (mod.OriginalDownloadUrl.Contains("github.com") && !mod.OriginalDownloadUrl.Contains("/releases/tags"))
+            if (mod.OriginalDownloadUrl.Contains("github.com") && !mod.OriginalDownloadUrl.Contains("/releases/"))
             {
                 mod.OriginalDownloadUrl = GetDownloadUrlFromGithub(mod, mod.OriginalDownloadUrl);
             }
