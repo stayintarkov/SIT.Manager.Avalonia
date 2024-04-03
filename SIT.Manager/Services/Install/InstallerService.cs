@@ -421,7 +421,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             File.Delete(patcherPath);
         }
 
-        bool downloadSuccess = await _fileService.DownloadFile("Patcher.zip", targetPath, url, downloadProgress);
+        bool downloadSuccess = await _fileService.DownloadFile("Patcher.zip", targetPath, url, downloadProgress).ConfigureAwait(false);
         if (!downloadSuccess)
         {
             _logger.LogError("Failed to download the patcher from the selected mirror.");
@@ -430,14 +430,14 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
 
         if (File.Exists(patcherPath))
         {
-            await _fileService.ExtractArchive(patcherPath, targetPath, extractionProgress);
+            await _fileService.ExtractArchive(patcherPath, targetPath, extractionProgress).ConfigureAwait(false);
             File.Delete(patcherPath);
         }
 
         var patcherDir = Directory.GetDirectories(targetPath, "Patcher*").FirstOrDefault();
         if (!string.IsNullOrEmpty(patcherDir))
         {
-            await CloneDirectoryAsync(patcherDir, _configService.Config.InstallPath);
+            await CloneDirectoryAsync(patcherDir, targetPath).ConfigureAwait(false);
             Directory.Delete(patcherDir, true);
         }
 
