@@ -1,6 +1,5 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Layout;
-using CsQuery;
 using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -111,10 +110,10 @@ public class ModService(IBarNotificationService barNotificationService,
                 }
             }
             
+            //check if any dependencies are missing and ask to install them
             if (missingDependencies.Count > 0 && (!suppressNotification || installDependenciesWithoutConfirm))
             {
-                //iterate through missing dependencies and check for dependencies of dependencies until no more dependencies are found (use while)
-                //if a dependency is found, add it to the missingDependencies list
+                //iterate through missing dependencies and check for dependencies of dependencies until no more dependencies are found
                 List<ModInfo> newMissingDependencies = [];
                 do
                 {
@@ -136,6 +135,7 @@ public class ModService(IBarNotificationService barNotificationService,
                 string missingDependenciesString = string.Join(", ", missingDependencies.Select(x => x.Name));
                 if (!installDependenciesWithoutConfirm && !suppressNotification)
                 {
+                    //ask user to install missing dependencies
                     ContentDialog contentDialog = new()
                     {
                         Title = _localizationService.TranslateSource("ModServiceWarningTitle"),
@@ -393,24 +393,6 @@ public class ModService(IBarNotificationService barNotificationService,
         }
 
         return true;
-    }
-
-    private string GetDownloadUrlFromHubSpt(ModInfo mod, string url)
-    {
-        //input url is like this: https://hub.sp-tarkov.com/files/file/1159-morecheckmarks
-        //get source code of url
-        string sourceCode = new WebClient().DownloadString(url);
-        //find download via csquery:
-        CQ dom = sourceCode;
-        // get versions box by id versions
-        CQ versionsBox = dom["#versions"];
-        // get a list of versions by a.externalURL
-        CQ versions = versionsBox["a.externalURL"];
-        // get the top most version that contains the sit version
-        IDomObject? version = versions.FirstOrDefault(x => x.InnerText.Contains(mod.ModVersion));
-        // get the download link from the version
-        string downloadUrl = version?.GetAttribute("href") ?? string.Empty;
-        return downloadUrl;
     }
 
     private string GetDownloadUrlFromGithub(ModInfo mod, string url)
