@@ -296,6 +296,42 @@ public class ModService(IBarNotificationService barNotificationService,
         }
         return downloadUrl;
     }
+    private string GetDownloadUrlFromDevSpTakrov(ModInfo mod, string url)
+    {
+        // format: https://dev.sp-tarkov.com/SamSWAT/FOV -> https://dev.sp-tarkov.com/api/v1/repos/SamSWAT/FOV/releases
+        string downloadUrl = null;
+        string apiUrl = url.Replace("https://dev.sp-tarkov.com", "https://dev.sp-tarkov.com/api/v1/repos") + "/releases";
+        
+        //get json from api
+        using (WebClient client = new WebClient())
+        {
+            // Set user-agent header to avoid being blocked by GitHub API for missing user-agent
+            client.Headers.Add("User-Agent", "request");
+
+            string json = client.DownloadString(apiUrl);
+            //parse json
+            //find the release that contains the version
+            // Parse json
+            dynamic releases = JsonConvert.DeserializeObject(json);
+
+            // Find the release that contains the version
+            foreach (var release in releases)
+            {
+                string tagName = release.tag_name;
+                if (tagName != null && tagName.ToString().Contains(mod.ModVersion))
+                {
+                    // Get the newest release asset
+                    downloadUrl = release.assets[0].browser_download_url;
+                }
+            }
+        }
+        if (downloadUrl == null)
+        {
+            throw new Exception("Download url not found");
+        }
+        return downloadUrl;
+        
+    }
 
     public async Task<bool> InstallAdditionalModFiles(ModInfo mod)
     {
@@ -348,9 +384,15 @@ public class ModService(IBarNotificationService barNotificationService,
             
             
             //if mod is from github and not a release, get the download url from the github api
+            //write back to originalDownloadUrl to keep it for future use, until program restart
             if (mod.OriginalDownloadUrl.Contains("github.com") && !mod.OriginalDownloadUrl.Contains("/releases/tags"))
             {
                 mod.OriginalDownloadUrl = GetDownloadUrlFromGithub(mod, mod.OriginalDownloadUrl);
+            }
+            else if (mod.OriginalDownloadUrl.Contains("dev.sp-tarkov.com"))
+            {
+                //if mod is from dev.sp-tarkov.com, get the download url gite api
+                mod.OriginalDownloadUrl = GetDownloadUrlFromDevSpTakrov(mod, mod.OriginalDownloadUrl);
             }
 
             try
@@ -358,10 +400,8 @@ public class ModService(IBarNotificationService barNotificationService,
                 WebRequest request = WebRequest.Create(mod.OriginalDownloadUrl);
                 WebResponse response = request.GetResponse();
                 string originalFileName = response.Headers["Content-Disposition"].Trim();
-                if (originalFileName != null)
-                {
-                    originalFileName = originalFileName.Replace("attachment; filename=", "");
-                }
+                originalFileName = System.Text.RegularExpressions.Regex.Match(originalFileName, @"filename\*?=([^;\n\r""]+|""([^""]*)"")").Groups[1].Value.Trim('"').Trim();
+
 
                 Stream streamWithFileBody = response.GetResponseStream();
                 string pathToSave = Path.Combine(tempPath, originalFileName);
