@@ -1,0 +1,396 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+					xmlns:system="clr-namespace:System;assembly=System.Runtime"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<!-- Play Page / View -->
+	<system:String x:Key="AddressBoxTitle">Адреса</system:String>
+	<system:String x:Key="UsernameBoxTitle">Нікнейм гравця</system:String>
+	<system:String x:Key="PasswordBoxTitle">Пароль</system:String>
+	<system:String x:Key="EnterUserNamePlaceholder">Введіть нікнейм гравця...</system:String>
+	<system:String x:Key="EnterPasswordPlaceholder">Введіть пароль...</system:String>
+	<system:String x:Key="EnterServerAddressPlaceholder">Введіть адресу сервера...</system:String>
+	<system:String x:Key="RememberMeCheckBoxTitle">Запам'ятати</system:String>
+	<system:String x:Key="ConnectButtonTitle">Під'єднатися</system:String>
+	<system:String x:Key="StartServerAndConnectButtonTitleToolTip">Запустіть сервер Aki та підключіться до нього</system:String>
+	<system:String x:Key="ConnectButtonTitleToolTip">Під'єднатися до сервера</system:String>
+
+	<!-- Play Page ViewModel -->
+	<system:String x:Key="PlayPageViewModelQuickPlayText">Запустити сервер і підключитися</system:String>
+	<system:String x:Key="PlayPageViewModelAccountNotFound">Аккаунт не знайдено</system:String>
+	<system:String x:Key="PlayPageViewModelAccountNotFoundDescription">Ваш аккаунт не знайдено. Хочете зареєструвати новий аккаунт з цими обліковими даними?</system:String>
+	<system:String x:Key="PlayPageViewModelButtonYes">Так</system:String>
+	<system:String x:Key="PlayPageViewModelButtonOk">OK</system:String>
+	<system:String x:Key="PlayPageViewModelButtonNo">Ні</system:String>
+	<system:String x:Key="PlayPageViewModelLoginErrorTitle">Помилка входу</system:String>
+	<system:String x:Key="PlayPageViewModelLoginErrorDescription">Неможливо зв'язатися з сервером, %1</system:String>
+	<system:String x:Key="PlayPageViewModelServerAddressTitle">Адреса сервера</system:String>
+	<system:String x:Key="PlayPageViewModelServerAddressDescription">Будь ласка, виправте адресу сервера та спробуйте знову</system:String>
+	<system:String x:Key="PlayPageViewModelInstallPathTitle">Шлях встановлення</system:String>
+	<system:String x:Key="PlayPageViewModelInstallPathDescription">'Шлях встановлення' не налаштований. Перейдіть до налаштувань і налаштуйте шлях встановлення.</system:String>
+	<system:String x:Key="PlayPageViewModelSITInstallationTitle">Встановлення SIT</system:String>
+	<system:String x:Key="PlayPageViewModelSITInstallationDescription">Не вдалося знайти '%1'. Встановіть SIT перед підключенням.</system:String>
+	<system:String x:Key="PlayPageViewModelEFTInstallationTitle">Встановлення EFT</system:String>
+	<system:String x:Key="PlayPageViewModelEFTInstallationDescription">Не вдалося знайти '%1' у шляху встановлення.</system:String>
+	<system:String x:Key="PlayPageViewModelInputValidationTitle">Перевірка введення</system:String>
+	<system:String x:Key="PlayPageViewModelInputValidationDescription">Відсутнє поле введення.</system:String>
+	<system:String x:Key="PlayPageViewModelUnhandledAkiInstanceTitle">Необроблений екземпляр Aki</system:String>
+	<system:String x:Key="PlayPageViewModelUnhandledAkiInstanceDescription">SPT-AKI в даний момент працює. Будь ласка, закрийте будь-який запущений екземпляр SPT-AKI.</system:String>
+	<system:String x:Key="PlayPageViewModelMissingAKIInstallationTitle">Відсутнє встановлення AKI</system:String>
+	<system:String x:Key="PlayPageViewModelMissingAKIInstallationDescription">Відсутній виконавчий файл сервера SPT-AKI.</system:String>
+	<system:String x:Key="PlayPageViewModelWaitingForServerTitle">Очікування сервера</system:String>
+	<system:String x:Key="PlayPageViewModelServerErrorTitle">Помилка сервера</system:String>
+	<system:String x:Key="PlayPageViewModelServerErrorDescription">Сервер не запустився. Будь ласка, перевірте журнали для отримання додаткової інформації.</system:String>
+	<system:String x:Key="PlayPageViewModelLoginIncorrectPassword">Incorrect password</system:String>
+
+	<!-- Pane View (Menu on the left also tooltip about update on top) -->
+	<system:String x:Key="UpdateNotification">Доступне оновлення менеджера SIT. Натисніть тут, щоб оновити:</system:String>
+	<system:String x:Key="UpdateButtonTitle">Оновити</system:String>
+	<system:String x:Key="SetupTitle">Налаштування</system:String>
+	<system:String x:Key="InstallPathErrorNotification">Шлях для установки клієнта ще не налаштований. Перейдіть до налаштувань, щоб налаштувати лаунчер.</system:String>
+	<system:String x:Key="PlayTitle">Грати</system:String>
+	<system:String x:Key="InstallTitle">Встановлення</system:String>
+	<system:String x:Key="ToolsTitle">Інструменти</system:String>
+	<system:String x:Key="ServerTitle">Сервер</system:String>
+	<system:String x:Key="ModsTitle">Моди</system:String>
+	<system:String x:Key="SettingsTitle">Налаштування</system:String>
+	<system:String x:Key="PlayTitleToolTip">Підключитися та грати.</system:String>
+	<system:String x:Key="InstallTitleToolTip">Встановити/оновити SIT та SIT Server</system:String>
+	<system:String x:Key="ToolsTitleToolTip">Інструменти для управління SIT та Tarkov.</system:String>
+	<system:String x:Key="ServerTitleToolTip">Управління сервером.</system:String>
+	<system:String x:Key="ModsTitleToolTip">Управління модами.</system:String>
+
+	<!-- Mods Page -->
+	<system:String x:Key="ModsWarningTitle">УВАГА</system:String>
+	<system:String x:Key="ModsWarningDescription">Використання модифікацій може вплинути на стабільність вашої гри і може спричинити її збій або неправильну роботу. Хоча модифікації можуть покращити ваш ігровий досвід та додати нові функції, вони можуть не бути офіційно підтримані SIT або протестовані на сумісність. Встановлюйте модифікації на свій ризик і завжди робіть резервні копії файлів вашої гри перед внесенням будь-яких змін. Ми не несемо відповідальності за будь-які збитки або втрати прогресу, спричинені встановленням модифікацій. Дійте обережно.</system:String>
+	<system:String x:Key="ModsWarningButtonTitle">Зрозуміло</system:String>
+	<system:String x:Key="ModsPageTitle">Модифікації</system:String>
+	<system:String x:Key="ModsDownloadCollectionButtonTitle">Завантажити колекцію модифікацій</system:String>
+	<system:String x:Key="ModsDownloadCollectionButtonToolTip">Завантажити останню збірку перенесених модифікацій.</system:String>
+	<system:String x:Key="ModInfoTitle">Інформація про Мод</system:String>
+	<system:String x:Key="ModInfoNameTitle">Назва:</system:String>
+	<system:String x:Key="ModInfoAuthorTitle">Автор:</system:String>
+	<system:String x:Key="ModInfoSupportedVersionTitle">Підтримувана версія SIT:</system:String>
+	<system:String x:Key="ModInfoModVersionTitle">Версія Моду:</system:String>
+	<system:String x:Key="ModInfoModPageTitle">Сторінка Моду:</system:String>
+	<system:String x:Key="ModInfoExtraFilesToolTip">Якщо перенесений мод вимагає додаткові файли. Натисніть посилання, щоб їх завантажити.</system:String>
+	<system:String x:Key="ModInfoRequiresExtraFilesTitle">Потребує Додаткові Файли</system:String>
+	<system:String x:Key="ModInfoDescription">Опис:</system:String>
+	<system:String x:Key="ModInfoInstallToolTip">Встановити мод.</system:String>
+	<system:String x:Key="ModInfoInstallTitle">Встановити</system:String>
+	<system:String x:Key="ModInfoUninstallToolTip">Видалити мод.</system:String>
+	<system:String x:Key="ModInfoUninstallTitle">Видалити</system:String>
+
+	<!-- Mods Page ViewModel -->
+	<system:String x:Key="ModsPageViewModelErrorTitle">Помилка</system:String>
+	<system:String x:Key="ModsPageViewModelErrorInstallPathDescription">Шлях встановлення не встановлено. Вкажіть його в налаштуваннях.</system:String>
+	<system:String x:Key="ModsPageViewModelErrorNoModsFound">Моди не знайдено</system:String>
+
+	<!-- Tools Page -->
+	<system:String x:Key="ToolsOpenEFTFolderButtonToolTip">Відкрити теку встановлення EFT.</system:String>
+	<system:String x:Key="ToolsOpenEFTFolderButtonTitle">Відкрити теку EFT</system:String>
+	<system:String x:Key="ToolsOpenBepInExFolderButtonToolTip">Відкрити теку плагінів BepInEx.</system:String>
+	<system:String x:Key="ToolsOpenBepInExFolderButtonTitle">Відкрити теку плагінів</system:String>
+	<system:String x:Key="ToolsOpenSITConfigButtonToolTip">Відкрити файл конфігурації SIT за допомогою текстового редактора за замовчуванням.</system:String>
+	<system:String x:Key="ToolsOpenSITConfigButtonTitle">Відкрити конфігурацію SIT</system:String>
+	<system:String x:Key="ToolsOpenEFTLogButtonToolTip">Відкрити 'Player.log' EFT за допомогою текстового редактора за замовчуванням.</system:String>
+	<system:String x:Key="ToolsOpenEFTLogButtonTitle">Відкрити журнал EFT</system:String>
+	<system:String x:Key="ToolsOpenLocationEditorButtonToolTip">Відкрити графічний інтерфейс редактора локацій.</system:String>
+	<system:String x:Key="ToolsOpenLocationEditorButtonTitle">Редактор локацій</system:String>
+	<system:String x:Key="ToolsClearCacheButtonToolTip">Очищення кешу локального користувача EFT.</system:String>
+	<system:String x:Key="ToolsClearCacheButtonTitle">Очистити кеш</system:String>
+	<system:String x:Key="ToolsGenerateDiagnosticReportButtonTitle">Створити журнали</system:String>
+	<system:String x:Key="ToolsClientLogCheckboxContent">Увімкнути логи EFT</system:String>
+	<system:String x:Key="ToolsServerLogCheckboxContent">Увімкнути логи сервера</system:String>
+	<system:String x:Key="ToolsDiagnosticsLogCheckboxContent">Увімкнути діагностичні логи (Містить інформацію про систему!)</system:String>
+	<system:String x:Key="ToolsHttpJsonCheckboxContent">Увімкнути файл Http.json</system:String>
+	<system:String x:Key="ToolsSelectLogsTitle">Виберіть логи для включення</system:String>
+	<system:String x:Key="ToolsSelectLogsProceedButtonText">Створити пакет логів</system:String>
+	<system:String x:Key="ToolsSelectLogsCloseButtonText">Скасувати</system:String>
+	<system:String x:Key="ToolsBugReportSaveFileTitle">Зберегти архів Zip</system:String>
+
+	<!-- Server Page -->
+	<system:String x:Key="ServerConsoleOutputTitle">Виведення консолі</system:String>
+	<system:String x:Key="ServerButtonStartToolTip">Запустити сервер.</system:String>
+	<system:String x:Key="ServerEditServerConfig">Редагувати конфігурацію сервера</system:String>
+	<system:String x:Key="ServerEditServerConfigButtonToolTip">Редагувати сервер</system:String>
+	<system:String x:Key="ServerClearServerOutputText">Очистити вивід сервера</system:String>
+	<system:String x:Key="ServerClearServerOutputTooltip">Очищає весь вивід у консолі.</system:String>
+	<system:String x:Key="ServerPageViewModelClearServerOutputTitle">Очистити вивід сервера</system:String>
+	<system:String x:Key="ServerPageViewModelClearServerOutputDescription">Ви бажаєте очистити весь текст з виводу консолі?</system:String>
+	<system:String x:Key="ServerPageViewModelClearServerOutputPrimary">Так</system:String>
+	<system:String x:Key="ServerPageViewModelClearServerOutputSecondary">Ні</system:String>
+
+	<!-- Settings Page -->
+	<system:String x:Key="SettingsLauncherSettingsTitle">Налаштування Лаунчера</system:String>
+	<system:String x:Key="SettingsCloseLauncherAfterGameLaunchTitle">Закрити лаунчер після запуску гри</system:String>
+	<system:String x:Key="SettingsCloseLauncherAfterGameLaunchToolTip">Автоматично закриває лаунчер після відкриття гри.</system:String>
+	<system:String x:Key="SettingsLookForUpdatesTitle">Перевіряти Оновлення</system:String>
+	<system:String x:Key="SettingsLookForUpdatesTitleToolTip">Автоматично перевіряє оновлення при відкритті лаунчера.</system:String>
+	<system:String x:Key="SettingsHideIpAddressTitle">Сховати IP-адресу</system:String>
+	<system:String x:Key="SettingsHideIpAddressToolTip">Приховує IP-адресу зірочками в полі IP-адреси.</system:String>
+	<system:String x:Key="SettingsLanguageTitle">Мова:</system:String>
+	<system:String x:Key="SettingsLanguageTitleToolTip">Перекладає весь лаунчер на вашу мову, оберіть свою мову!</system:String>
+	<system:String x:Key="SettingsAccentColorTitle">Колір акценту:</system:String>
+	<system:String x:Key="SettingsAccentColorToolTip">Змінює колір обраних візуальних елементів на ваш вибір!</system:String>
+	<system:String x:Key="SettingsLinuxSettingsTitle">Налаштування Linux</system:String>
+	<system:String x:Key="SettingsLinuxWinePrefixTitle">Префікс Wine:</system:String>
+	<system:String x:Key="SettingsLinuxWinePrefixPlaceholder">Шлях до префіксу Wine</system:String>
+	<system:String x:Key="SettingsLinuxWinePrefixToolTip">Змініть використаний WINEPREFIX для EFT</system:String>
+	<system:String x:Key="SettingsLinuxWineRunnerTitle">Запускач Wine:</system:String>
+	<system:String x:Key="SettingsLinuxWineRunnerPlaceholder">Шлях до запускача Wine</system:String>
+	<system:String x:Key="SettingsLinuxWineRunnerToolTip">Встановіть використовуваний запускач Wine для EFT</system:String>
+	<system:String x:Key="SettingsEFTSettingsTitle">Налаштування EFT</system:String>
+	<system:String x:Key="SettingsEFTSettingsButtonChangeTitle">Змінити</system:String>
+	<system:String x:Key="SettingsEFTInstallPathTitle">Шлях EFT:</system:String>
+	<system:String x:Key="SettingsEFTInstallPathPlaceholder">Шлях Встановлення EFT...</system:String>
+	<system:String x:Key="SettingsEFTChangeInstallPathToolTip">Змінити Шлях Встановлення EFT.</system:String>
+	<system:String x:Key="SettingsEFTVersionTitle">Версія EFT:</system:String>
+	<system:String x:Key="SettingsSITVersionTitle">Версія SIT:</system:String>
+	<system:String x:Key="SettingsSPTAKITitle">Налаштування SPT-AKI</system:String>
+	<system:String x:Key="SettingsSPTAKIPathTitle">Шлях SPT-AKI:</system:String>
+	<system:String x:Key="SettingsSPTAKIInstallPathPlaceholder">Шлях Встановлення SPT-AKI...</system:String>
+	<system:String x:Key="SettingsSPTAKIInstallPathToolTip">Змінити Шлях Встановлення SPT-AKI.</system:String>
+	<system:String x:Key="SettingsServerConsoleTitle">Консоль Сервера</system:String>
+	<system:String x:Key="SettingsServerConsoleFontFamilyTitle">Шрифт:</system:String>
+	<system:String x:Key="SettingsServerConsoleFontColorTitle">Колір Шрифту:</system:String>
+	<system:String x:Key="SettingsManagerVersionTitle">Версія Менеджера (Лаунчера):</system:String>
+	
+	<!-- Location Editor View -->
+	<system:String x:Key="LocationEditorLoadButtonTitle">Завантажити</system:String>
+	<system:String x:Key="LocationEditorSaveButtonTitle">Зберегти</system:String>
+	<system:String x:Key="LocationEditorLocationTitle">Місце</system:String>
+	<system:String x:Key="LocationEditorLocationTextBoxPlaceholder">Клацніть "Завантажити"</system:String>
+	<system:String x:Key="LocationEditorGeneralSettingsTitle">Загальні налаштування</system:String>
+	<system:String x:Key="LocationEditorBotMaxHeader">МаксБотів</system:String>
+	<system:String x:Key="LocationEditorBotMaxPlayerHeader">МаксБотівГравців</system:String>
+	<system:String x:Key="LocationEditorBotNormalHeader">ЗвичайнийБот</system:String>
+	<system:String x:Key="LocationEditorBotSpawnTimeOffMaxHeader">МаксЧасСпаунуБотаОфлайн</system:String>
+	<system:String x:Key="LocationEditorBotSpawnTimeOffMinHeader">МінЧасСпаунуБотаОфлайн</system:String>
+	<system:String x:Key="LocationEditorBotSpawnTimeOnMaxHeader">МаксЧасСпаунуБотаОнлайн</system:String>
+	<system:String x:Key="LocationEditorBotSpawnTimeOnMinHeader">МінЧасСпаунуБотаОнлайн</system:String>
+	<system:String x:Key="LocationEditorBotStartHeader">СтартБота</system:String>
+	<system:String x:Key="LocationEditorBotStopHeader">СтопБота</system:String>
+	<system:String x:Key="LocationEditorBotSpawnCountStepHeader">КрокКількостіСпаунуБота</system:String>
+	<system:String x:Key="LocationEditorBotSpawnPeriodCheckHeader">ПеріодПеревіркиСпаунуБота</system:String>
+	<system:String x:Key="LocationEditorBotMaxToolTip">Загальна максимальна кількість ботів на карті</system:String>
+	<system:String x:Key="LocationEditorBotMaxPlayerToolTip">Загальна максимальна кількість ботів, які є PMC</system:String>
+	<system:String x:Key="LocationEditorBotSpawnTimeOffMaxToolTip">Максимальний час спауну в секундах при роботі офлайн</system:String>
+	<system:String x:Key="LocationEditorBotSpawnTimeOffMinToolTip">Мінімальний час спауну в секундах при роботі офлайн</system:String>
+	<system:String x:Key="LocationEditorBotSpawnTimeOnMaxToolTip">Максимальний час спауну в секундах при роботі онлайн</system:String>
+	<system:String x:Key="LocationEditorBotSpawnTimeOnMinToolTip">Мінімальний час спауну в секундах при роботі онлайн</system:String>
+	<system:String x:Key="LocationEditorWavesSettingsTitle">Налаштування Хвиль</system:String>
+	<system:String x:Key="LocationEditorAddWaveButtonText">Додати Хвилю</system:String>
+	<system:String x:Key="LocationEditorRemoveWaveButtonText">Видалити Хвилю</system:String>
+	<system:String x:Key="LocationEditorSpawnWavesText">Хвилі Спауну</system:String>
+	<system:String x:Key="LocationEditorBotPresetText">Пресет Бота</system:String>
+	<system:String x:Key="LocationEditorBotPresetToolTip">Складність Бота</system:String>
+	<system:String x:Key="LocationEditorBotSideText">Сторона Бота</system:String>
+	<system:String x:Key="LocationEditorBotSideToolTip">Сторона Бота</system:String>
+	<system:String x:Key="LocationEditorSpawnPointsText">Точки Спауну</system:String>
+	<system:String x:Key="LocationEditorWildSpawnTypeText">Тип Дикого Спауну</system:String>
+	<system:String x:Key="LocationEditorIsPlayersContent">єГравці</system:String>
+	<system:String x:Key="LocationEditorIsPlayersToolTip">Потрібно відмітити, щоб хвилі працювали на версії >3.8</system:String>
+	<system:String x:Key="LocationEditorNumberHeader">номер</system:String>
+	<system:String x:Key="LocationEditorNumberToolTip">Номер хвилі (має бути >0)</system:String>
+	<system:String x:Key="LocationEditorSlotsMaxHeader"> макс_слоти</system:String>
+	<system:String x:Key="LocationEditorSlotsMaxToolTip">Максимальна кількість слотів для спауну</system:String>
+	<system:String x:Key="LocationEditorSlotsMinHeader">мін_слоти</system:String>
+	<system:String x:Key="LocationEditorSlotsMinToolTip">Мінімальна кількість слотів для спауну</system:String>
+	<system:String x:Key="LocationEditorTimeMaxHeader">час_макс</system:String>
+	<system:String x:Key="LocationEditorTimeMaxToolTip">Максимальний час для спауну хвилі ботів</system:String>
+	<system:String x:Key="LocationEditorTimeMinHeader">час_мін</system:String>
+	<system:String x:Key="LocationEditorTimeMinToolTip">Мінімальний час для спауну хвилі ботів</system:String>
+	<system:String x:Key="LocationEditorBossSettingsTitle">Налаштування Боса</system:String>
+	<system:String x:Key="LocationEditorAddBossButtonText">Додати Боса</system:String>
+	<system:String x:Key="LocationEditorRemoveBossButtonText">Видалити Боса</system:String>
+	<system:String x:Key="LocationEditorBossListText">Список Босів</system:String>
+	<system:String x:Key="LocationEditorBossChanceHeader">Шанс Боса</system:String>
+	<system:String x:Key="LocationEditorBossEscortAmountText">Кількість Супроводу Боса</system:String>
+	<system:String x:Key="LocationEditorBossEscortTypeText">Тип Супроводу Боса</system:String>
+	<system:String x:Key="LocationEditorBossNameText">Ім'я Боса</system:String>
+	<system:String x:Key="LocationEditorForceSpawnContent">Примусовий Спаун</system:String>
+	<system:String x:Key="LocationEditorIgnoreMaxBotsContent">Ігнорувати Максимальну Кількість Ботів</system:String>
+	<system:String x:Key="LocationEditorRandomTimeSpawnContent">Випадковий Час Спауну</system:String>
+	
+	<!-- LocationEditor ViewModel -->
+	<system:String x:Key="LocationEditorViewModelLoadErrorTitle">Помилка завантаження</system:String>
+	<system:String x:Key="LocationEditorViewModelLoadErrorDescription">Під час збереження файлу виникла помилка.</system:String>
+	<system:String x:Key="LocationEditorViewModelLoadLocationTitle">Завантажити місце</system:String>
+	<system:String x:Key="LocationEditorViewModelLoadLocationDescription">Місце %1 успішно завантажено.</system:String>
+	<system:String x:Key="LocationEditorViewModelSaveErrorTitle">Помилка збереження</system:String>
+	<system:String x:Key="LocationEditorViewModelSaveErrorDescription">Під час збереження файлу виникла помилка.</system:String>
+	<system:String x:Key="LocationEditorViewModelSaveSuccessTitle">Збережено</system:String>
+	<system:String x:Key="LocationEditorViewModelSaveSuccessDescription">Файл успішно збережено в: %1</system:String>
+
+	<!-- Select Edition Dialog -->
+	<system:String x:Key="SelectEditionDialogTitle">Виберіть Видання</system:String>
+	<system:String x:Key="SelectEditionDialogTextBlockTitle">Виберіть Видання для вашого облікового запису SIT:</system:String>
+	<system:String x:Key="SelectEditionDialogButtonCreateTitle">Створити</system:String>
+
+	<!-- Tools Page ViewModel -->
+	<system:String x:Key="ToolsPageViewModelErrorMessageTitle">Помилка</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageDescription">Не вдалося отримати релізи</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigTitle">Помилка конфігурації</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigDescription">'Шлях встановлення' не налаштований. Перейдіть до налаштувань, щоб налаштувати шлях встановлення.</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigBepInExDescription">Не вдалося знайти вказаний шлях. Чи встановлено BepInEx? Шлях: %1</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigSITDescription">Не вдалося знайти '%1'. Переконайтеся, що SIT встановлено і що ви один раз запускали гру.</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigLogDescription">Файл журналу не вдалося знайти.</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigButtonOk">ОК</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigButtonCancel">Скасувати</system:String>
+	<system:String x:Key="ToolsPageViewModelConfigClearEFTTitle">Очистити кеш</system:String>
+	<system:String x:Key="ToolsPageViewModelConfigClearEFTDescription">Бажаєте очистити локальний кеш EFT або весь кеш?</system:String>
+	<system:String x:Key="ToolsPageViewModelConfigClearEFTCache">Очистити Кеш EFT</system:String>
+	<system:String x:Key="ToolsPageViewModelConfigClearAllCache">Очистити Весь Кеш</system:String>
+	<system:String x:Key="ToolsPageViewModelUnhandledExceptionError">Сталася помилка: %1</system:String>
+
+	<!-- Settings Page ViewModel -->
+	<system:String x:Key="SettingsPageViewModelErrorTitle">Помилка</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigTitle">Конфігурація</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigErrorEFTDescription">Вибрана тека є недійсною. Переконайтеся, що це вірна тека гри EFT.</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigInformationEFTDescription">Шлях встановлення EFT встановлено на '%1'</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">Шлях встановлення SPT-AKI встановлено на '%1'</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigErrorSPTAKI">Вибрана тека є недійсною. Переконайтеся, що це вірна тека сервера SPT-AKI.</system:String>
+
+	<!-- Server Page ViewModel -->
+	<system:String x:Key="ServerPageViewModelStartingServer">Запуск сервера!</system:String>
+	<system:String x:Key="ServerPageViewModelServerStarted">Сервер запущено!</system:String>
+	<system:String x:Key="ServerPageViewModelServerStopped">Сервер зупинено!</system:String>
+	<system:String x:Key="ServerPageViewModelStopServer">Зупинити сервер</system:String>
+	<system:String x:Key="ServerPageViewModelStartServer">Запустити сервер</system:String>
+	<system:String x:Key="ServerPageViewModelServerError">Сервер несподівано зупинився! Перевірте консоль на наявність помилок.</system:String>
+	<system:String x:Key="ServerPageViewModelSPTAkiRunning">SPT-AKI в даний момент працює. Будь ласка, закрийте будь-який запущений сервер SPT-AKI.</system:String>
+	<system:String x:Key="ServerPageViewModelSPTAkiNotFound">SPT-AKI не знайдено. Будь ласка, налаштуйте шлях до SPT-AKI в вкладці Налаштування перед запуском сервера.</system:String>
+	<system:String x:Key="ServerPageViewModelStartingServerLog">Запуск сервера...</system:String>
+	<system:String x:Key="ServerPageViewModelStoppingServerLog">Зупинка сервера...</system:String>
+
+	<!-- Tarkov Client Service -->
+	<system:String x:Key="TarkovClientServiceCacheClearedTitle">Кеш очищений</system:String>
+	<system:String x:Key="TarkovClientServiceCacheClearedErrorTitle">Помилка очищення кешу</system:String>
+	<system:String x:Key="TarkovClientServiceCacheClearedDescription">Все успішно очищено!</system:String>
+	<system:String x:Key="TarkovClientServiceCacheClearedErrorDescription">Шлях встановлення не знайдено в налаштуваннях</system:String>
+	<system:String x:Key="TarkovClientServiceCacheClearedErrorEFTDescription">Локальний каталог кешу EFT не знайдено за адресою: %1</system:String>
+	<system:String x:Key="TarkovClientServiceCacheClearedEFTDescription">Локальний кеш EFT успішно очищений!</system:String>
+
+	<!-- Mod Service -->
+	<system:String x:Key="ModServiceOutdatedDescription">У вас %1 застарілих модів. Бажаєте автоматично оновити їх? Застарілі моди: %2</system:String>
+	<system:String x:Key="ModServiceOutdatedModsFoundTitle">Знайдено застарілі моди</system:String>
+	<system:String x:Key="ModServiceButtonNo">Ні</system:String>
+	<system:String x:Key="ModServiceButtonYes">Так</system:String>
+	<system:String x:Key="ModServiceUpdatedModsTitle">Оновлені моди</system:String>
+	<system:String x:Key="ModServiceUpdatedModsDescription">Оновлено %1 модів.</system:String>
+	<system:String x:Key="ModServiceInstallModTitle">Встановити мод</system:String>
+	<system:String x:Key="ModServiceInstallErrorModDescription">Шлях встановлення не налаштований. Налаштуйте його в розділі Налаштування.</system:String>
+	<system:String x:Key="ModServiceWarningTitle">Попередження</system:String>
+	<system:String x:Key="ModServiceWarningDescription">Мод, який ви намагаєтеся встановити, несумісний з вашою поточною встановленою версією SIT. Підтримувана версія SIT: %1 Встановлена версія SIT: %2 Продовжити в будь-якому випадку?</system:String>
+	<system:String x:Key="ModServiceUnknownTitle">Невідомо</system:String>
+	<system:String x:Key="ModServiceInstallModDescription">%1 було успішно встановлено.</system:String>
+	<system:String x:Key="ModServiceErrorInstallModDescription">%1 не вдалося встановити. Перевірте ваш Launcher.log</system:String>
+	<system:String x:Key="ModServiceErrorUninstallModTitle">Помилка видалення моду</system:String>
+	<system:String x:Key="ModServiceErrorUninstallModDescription">Файл відсутній в моду %1: '%2' Примусово видалити мод із списку встановлених модів все одно?</system:String>
+	<system:String x:Key="ModServiceErrorExceptionUninstallModDescription">Файл відсутній в моду %1: '%2' Примусово видалити мод із списку встановлених модів все одно?</system:String>
+	<system:String x:Key="ModServiceErrorExceptionFileUninstallModDescription">Файл відсутній в моду %1: '%2'</system:String>
+	<system:String x:Key="ModServiceFileUninstallModTitle">Видалити мод</system:String>
+	<system:String x:Key="ModServiceFileUninstallModDescription">%1 було успішно видалено.</system:String>
+
+	<!-- Install Service -->
+	<system:String x:Key="InstallServiceErrorTitle">Помилка</system:String>
+	<system:String x:Key="InstallServiceErrorInstallServerDescription">Будь ласка, налаштуйте Шлях до EFT в Налаштуваннях.</system:String>
+	<system:String x:Key="InstallServiceErrorInstallSITDescription">Шлях до EFT не встановлено. Налаштуйте його в Налаштуваннях.</system:String>
+	<system:String x:Key="InstallServiceConfigTitle">Конфігурація</system:String>
+	<system:String x:Key="InstallServiceConfigDescription">Шлях встановлення сервера встановлено на '%1'</system:String>
+	<system:String x:Key="InstallServiceInstallSuccessfulTitle">Встановлення</system:String>
+	<system:String x:Key="InstallServiceInstallSuccessfulDescription">Установка сервера пройшла успішно.</system:String>
+	<system:String x:Key="InstallServiceInstallSITSuccessfulDescription">Установка SIT пройшла успішно.</system:String>
+	<system:String x:Key="InstallerServiceNoDowngradePatcher">Для цієї версії Таркова нема доступних програм для відкату версії.</system:String>
+	<system:String x:Key="InstallServiceSSLError">Your ISP is likely blocking our connection. Please use a VPN and try again.</system:String>
+
+	<!-- File Service -->
+	<system:String x:Key="FileServiceProgressDownloading">Завантаження файлу '%1'</system:String>
+	<system:String x:Key="FileServiceProgressExtracting">Видобування файлу %1 (%2)</system:String>
+
+	<!-- Update Page -->
+	<system:String x:Key="UpdatePageUpdateButtonTitle">Почати оновлення</system:String>
+	<system:String x:Key="UpdatePageUpdateInfoTextPt1">Менеджер SIT оновлюється, будь ласка, зачекайте...</system:String>
+	<system:String x:Key="UpdatePageUpdateInfoTextPt2">Застосунок перезапуститься, як тільки завершиться оновлення</system:String>
+	<system:String x:Key="UpdatePageUpdatingTitle">Оновлення</system:String>
+	<system:String x:Key="UpdatePageErrorMessage">Виникла проблема при спробі оновлення менеджера SIT. Будь ласка, перегляньте журнал для отримання додаткової інформації</system:String>
+
+	<!-- Update Page View Model -->
+	<system:String x:Key="UpdatePageViewModelUpdateConfirmationTitle">Підтвердження оновлення</system:String>
+	<system:String x:Key="UpdatePageViewModelUpdateConfirmationDescription">Ви впевнені, що хочете оновити? Менеджер автоматично перезапуститься після оновлення</system:String>
+	<system:String x:Key="UpdatePageViewModelButtonYes">Так</system:String>
+	<system:String x:Key="UpdatePageViewModelButtonNo">Ні</system:String>
+
+	<!-- Install - Complete View -->
+	<system:String x:Key="CompleteViewInstallComplete">Установка завершена</system:String>
+	<system:String x:Key="CompleteViewResetButtonTitle">Приємної гри</system:String>
+
+	<!-- Install - Configure View -->
+	<system:String x:Key="ConfigureViewStartInstallButtonTitle">Почати установку</system:String>
+	<system:String x:Key="ConfigureViewBackButtonTitle">Назад</system:String>
+	<system:String x:Key="ConfigureViewVersionSelectionGroupTitle">Вибір версії</system:String>
+
+	<!-- Install - Configure Server View -->
+	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathToolTip">Змінити шлях установки SPT-AKI.</system:String>
+	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathTitle">Змінити</system:String>
+	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathPlaceholder">Шлях установки SPT-AKI...</system:String>
+	<system:String x:Key="ConfigureServerViewSPTAKIPathTitle">Шлях SPT-AKI:</system:String>
+	<system:String x:Key="ConfigureServerViewSPTAKIPathWarningNoPath">Не вказаний шлях установки SPT-AKI</system:String>
+	<system:String x:Key="ConfigureServerViewVersionSelectionTitle">Версія для установки:</system:String>
+
+	<!-- Install - Configure Sit View -->
+	<system:String x:Key="ConfigureSitViewLoadingVersionSelectionText">Визначення доступних версій SIT, будь ласка, зачекайте...</system:String>
+	<system:String x:Key="ConfigureSitViewEFTChangeInstallPathToolTip">Змінити шлях установки EFT.</system:String>
+	<system:String x:Key="ConfigureSitViewEFTSettingsButtonChangeTitle">Змінити</system:String>
+	<system:String x:Key="ConfigureSitViewEFTInstallPathPlaceholder">Шлях установки EFT...</system:String>
+	<system:String x:Key="ConfigureSitViewEFTInstallPathTitle">Шлях EFT:</system:String>
+	<system:String x:Key="ConfigureSitViewEFTPathWarningNoPath">Наразі використовується місце встановлення BSG EFT. Будь ласка, встановіть EFT в інше місце, щоб уникнути можливих проблем з SIT</system:String>
+	<system:String x:Key="ConfigureSitViewMirrorSelectionTitle">Виберіть дзеркало для використання:</system:String>
+	<system:String x:Key="ConfigureSitViewVersionSelectionTitle">Версія для установки:</system:String>
+
+	<!-- Install - Configure Sit View Model -->
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorTitle">Помилка вибору місця розташування</system:String>
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorDescription">Ви вибрали ту саму теку, що і встановлення BSG EFT, оберіть інше місце для встановлення SIT</system:String>
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorOk">Ok</system:String>
+
+	<!-- Install - Install View -->
+	<system:String x:Key="InstallViewDownloadingTitle">Завантаження</system:String>
+	<system:String x:Key="InstallViewExtractingTitle">Розпакування</system:String>
+	<system:String x:Key="InstallViewInstallTitle">Установка</system:String>
+
+	<!-- Install - Patch View -->
+	<system:String x:Key="PatchViewSummaryMessage">Підготовка вашого екземпляру EFT до встановлення запрошеної версії SIT</system:String>
+	<system:String x:Key="PatchViewCopyingTitle">Копіювання встановлення EFT</system:String>
+	<system:String x:Key="PatchViewDownloadingTitle">Завантаження патчера</system:String>
+	<system:String x:Key="PatchViewExtractingTitle">Розпакування патчера</system:String>
+	<system:String x:Key="PatchViewPatchingErrorMessage">Помилка при спробі патчу EFT. Деталі дивіться у журналах</system:String>
+	<system:String x:Key="PatchViewAquirePatcherErrorMessage">Error trying to aquire the patcher for EFT, please consult the logs for more details</system:String>
+	<system:String x:Key="PatchViewPatchingEndInstallButtonTitle">Завершити установку</system:String>
+
+	<!-- Install - Select View -->
+	<system:String x:Key="SelectViewInstallServerButtonTitle">Встановити сервер + мод SIT</system:String>
+	<system:String x:Key="SelectViewInstallServerButtonToolTip">Завантажити SPT-сервер + мод SIT-сервера.</system:String>
+	<system:String x:Key="SelectViewServerModVersionTitle">Версія моду SIT:</system:String>
+	<system:String x:Key="SelectViewServerVersionTitle">Версія SPT-AKI:</system:String>
+	<system:String x:Key="SelectViewSPTAKIPathTitle">Шлях SPT-AKI:</system:String>
+	<system:String x:Key="SelectViewSPTAKINoPathWarningMessage">Не вдалося знайти установку SPT-AKI. Якщо ви вже встановили AKI-SPT, перейдіть на сторінку налаштувань і встановіть шлях установки SPT-AKI. В іншому випадку вам буде запропоновано вказати порожню теку для встановлення SPT-AKI</system:String>
+	<system:String x:Key="SelectViewServerSectionHeading">SPT-AKI</system:String>
+
+	<system:String x:Key="SelectViewInstallSITButtonTitle">Встановити SIT</system:String>
+	<system:String x:Key="SelectViewInstallSITButtonToolTip">Понизити версію EFT за потреби, встановити SIT та підтримку модів.</system:String>
+	<system:String x:Key="SelectViewUpdateSITButtonTitle">Update SIT</system:String>
+	<system:String x:Key="SelectViewUpdateSITButtonToolTip">Update SIT to the latest version available for your current EFT version</system:String>
+	<system:String x:Key="SelectViewSITVersionTitle">Версія SIT:</system:String>
+	<system:String x:Key="SelectViewEFTVersionTitle">Версія EFT:</system:String>
+	<system:String x:Key="SelectViewEFTPathTitle">Шлях EFT:</system:String>
+	<system:String x:Key="SelectViewEFTNoPathWarningMessage">Не вдалося знайти установку EFT. Будь ласка, встановіть його вручну на сторінці налаштувань</system:String>
+	<system:String x:Key="SelectViewEFTUsingBSGInstallWarningMessage">Виявлено установку BSG Escape From Tarkov. Якщо ви вже встановили SIT, перейдіть на сторінку налаштувань і змініть шлях установки EFT на цю теку. В іншому випадку вам буде запропоновано вказати порожню теку для копіювання установки BSG EFT та встановлення SIT</system:String>
+	<system:String x:Key="SelectViewEFTSectionHeading">Escape From Tarkov</system:String>
+
+	<!-- Install - View Model -->
+	<system:String x:Key="InstallPageViewModelSelectText">Вибрати</system:String>
+	<system:String x:Key="InstallPageViewModelConfigureText">Налаштувати</system:String>
+	<system:String x:Key="InstallPageViewModelPatchText">Патч</system:String>
+	<system:String x:Key="InstallPageViewModelInstallText">Встановлення</system:String>
+	<system:String x:Key="InstallPageViewModelCompleteText">Завершення</system:String>
+	
+</ResourceDictionary>

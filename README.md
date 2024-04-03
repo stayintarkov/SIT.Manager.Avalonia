@@ -30,7 +30,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/stayintarkov/SIT.Manager.Avalonia">
-    <img src="SIT.Manager.Avalonia/Assets/Stay-In-Tarkov-512.png" alt="Logo" width="80" height="80">
+    <img src="SIT.Manager/Assets/Stay-In-Tarkov-512.png" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">SIT.Manager.Avalonia</h3>
@@ -79,7 +79,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Project Screen Shot][project-image]]
+![Project Screen Shot][project-image]
 
 This project is a rewrite of the [SIT.Manager](https://github.com/stayintarkov/SIT.Manager) in an attempt to create a long lasting, maintainable and helpful manager for SIT. In addition to bringing the functionality from the previous manager this project plans to bring multiple new features to improve the experience.
 
@@ -135,7 +135,7 @@ _For questions about usage please refer to the [SIT Discord](https://discord.gg/
     - [ ] Character manager
     - [ ] Character editor
 - [ ] Character backups
-- [ ] Log package generator
+- [x] Log package generator
 
 See the [open issues](https://github.com/stayintarkov/SIT.Manager.Avalonia/issues) for a full list of proposed features (and known issues).
 
@@ -170,6 +170,16 @@ Support is best found in the [SIT Discord](https://discord.gg/f4CN4n3nP2)
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+<!-- Credits -->
+## Project Credits
+* [Avalonia](https://avaloniaui.net/) for our UI framework
+* [FluentAvalonia](https://github.com/amwx/FluentAvalonia) for additional controls and themes
+* [adams85 filelogger](https://github.com/adams85/filelogger) for our file logging
+* [MegaApiClient](https://github.com/gpailler/MegaApiClient) for downloading mega files
+* [PeNet](https://github.com/secana/PeNet) for reading executable data
+* [SharpCompress](https://github.com/adamhathcock/sharpcompress) for better compression methods
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
