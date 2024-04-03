@@ -437,7 +437,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         var patcherDir = Directory.GetDirectories(targetPath, "Patcher*").FirstOrDefault();
         if (!string.IsNullOrEmpty(patcherDir))
         {
-            await CloneDirectoryAsync(patcherDir, _configService.Config.InstallPath);
+            await CloneDirectoryAsync(patcherDir, targetPath);
             Directory.Delete(patcherDir, true);
         }
 
