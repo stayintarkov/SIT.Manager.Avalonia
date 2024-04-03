@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: windows-latest
     env:
-      Solution_Name: SIT.Manager.Avalonia.Desktop
+      Solution_Name: SIT.Manager
     strategy:
       matrix:
         configuration: [Debug, Release]
