@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Services;
@@ -26,6 +27,8 @@ public class ModService(IBarNotificationService barNotificationService,
     private readonly IManagerConfigService _configService = configService;
     private readonly ILogger<ModService> _logger = logger;
     private readonly ILocalizationService _localizationService = localizationService;
+
+    public List<ModInfo> ModList { get; private set; } = [];
 
     public async Task DownloadModsCollection()
     {
@@ -156,6 +159,31 @@ public class ModService(IBarNotificationService barNotificationService,
         }
 
         return true;
+    }
+
+    /// <inheritdoc/>
+    public async Task LoadMasterModList()
+    {
+        ModList.Clear();
+
+        string modsDirectory = Path.Combine(_configService.Config.InstallPath, "SITLauncher", "Mods", "Extracted");
+        List<ModInfo> outdatedMods = [];
+
+        string modsListFile = Path.Combine(modsDirectory, "MasterList.json");
+        if (!File.Exists(modsListFile))
+        {
+            ModList.Add(new ModInfo()
+            {
+                Name = _localizationService.TranslateSource("ModsPageViewModelErrorNoModsFound")
+            });
+            return;
+        }
+
+        string masterListFile = await File.ReadAllTextAsync(modsListFile);
+        List<ModInfo> masterList = JsonSerializer.Deserialize<List<ModInfo>>(masterListFile) ?? [];
+        masterList = [.. masterList.OrderBy(x => x.Name)];
+
+        ModList.AddRange(masterList);
     }
 
     public async Task<bool> UninstallMod(ModInfo mod)

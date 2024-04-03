@@ -116,6 +116,27 @@
 						</StackPanel>
 				</Border>
 			</StackPanel>
+
+			<StackPanel>
+				<TextBlock Text="Recommended Mods" Classes="FrameHeading"/>
+				<Border Classes="StandardFrame">
+					<StackPanel>
+						<TextBlock Text="Choose from the available mods which we recommend you install alongside SIT"
+								   TextWrapping="Wrap"/>
+						<ListBox ItemsSource="{Binding Mods}"
+								 Margin="4,16,4,0"
+								 SelectionMode="Multiple">
+							<ListBox.ItemTemplate>
+								<DataTemplate>
+									<Grid>
+										<TextBlock Text="{Binding Name}"/>
+									</Grid>
+								</DataTemplate>
+							</ListBox.ItemTemplate>
+						</ListBox>
+					</StackPanel>
+				</Border>
+			</StackPanel>
 		</StackPanel>
 
 		<Grid Grid.Row="1"
