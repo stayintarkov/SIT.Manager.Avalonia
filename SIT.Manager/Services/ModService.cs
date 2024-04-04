@@ -402,76 +402,94 @@ public class ModService(IBarNotificationService barNotificationService,
         //needs to get all releases and match the version like this: https://api.github.com/repos/rails/rails/releases
         string apiUrl = url.Replace("https://github.com", "https://api.github.com/repos") + "/releases";
         //get json from api
-        using (WebClient client = new WebClient())
+        try
         {
-            // Set user-agent header to avoid being blocked by GitHub API for missing user-agent
-            client.Headers.Add("User-Agent", "request");
-
-            string json = client.DownloadString(apiUrl);
-            //parse json
-            //find the release that contains the version
-            // Parse json
-            dynamic releases = JsonConvert.DeserializeObject(json);
-
-            // Find the release that contains the version
-            foreach (var release in releases)
+            using (WebClient client = new WebClient())
             {
-                string tagName = release.tag_name;
-                if (tagName != null && tagName.ToString().Contains(mod.ModVersion))
+                // Set user-agent header to avoid being blocked by GitHub API for missing user-agent
+                client.Headers.Add("User-Agent", "request");
+
+                string json = client.DownloadString(apiUrl);
+                //parse json
+                //find the release that contains the version
+                // Parse json
+                dynamic releases = JsonConvert.DeserializeObject(json);
+
+                // Find the release that contains the version
+                foreach (var release in releases)
                 {
-                    // Get the newest release asset
-                    downloadUrl = release.assets[0].browser_download_url;
-                    break; //break to get the newest release
+                    string tagName = release.tag_name;
+                    if (tagName != null && tagName.ToString().Contains(mod.ModVersion))
+                    {
+                        // Get the newest release asset
+                        downloadUrl = release.assets[0].browser_download_url;
+                        break; //break to get the newest release
+                    }
                 }
             }
-        }
-        if (downloadUrl == null)
+
+            if (downloadUrl == null)
+            {
+                throw new Exception("Download url not found");
+            }
+            _logger.LogInformation($"GetDownloadUrlFromGithub resolved {url} to {downloadUrl}");
+            return downloadUrl;
+        } catch (Exception ex)
         {
-            throw new Exception("Download url not found");
+            _logger.LogError(ex, "GetDownloadUrlFromGithub");
+            return null;
         }
-        return downloadUrl;
     }
+
     private string GetDownloadUrlFromDevSpTakrov(ModInfo mod, string url)
     {
         // format: https://dev.sp-tarkov.com/SamSWAT/FOV -> https://dev.sp-tarkov.com/api/v1/repos/SamSWAT/FOV/releases
         string downloadUrl = null;
-        string apiUrl = url.Replace("https://dev.sp-tarkov.com", "https://dev.sp-tarkov.com/api/v1/repos") + "/releases";
-        
+        string apiUrl = url.Replace("https://dev.sp-tarkov.com", "https://dev.sp-tarkov.com/api/v1/repos") +
+                        "/releases";
+
         //get json from api
-        using (WebClient client = new WebClient())
-        {
-            // Set user-agent header to avoid being blocked by GitHub API for missing user-agent
-            client.Headers.Add("User-Agent", "request");
-
-            string json = client.DownloadString(apiUrl);
-            //parse json
-            //find the release that contains the version
-            // Parse json
-            dynamic releases = JsonConvert.DeserializeObject(json);
-
-            // Find the release that contains the version
-            foreach (var release in releases)
+        try {
+            using (WebClient client = new WebClient())
             {
-                string tagName = release.tag_name;
-                if (tagName != null && tagName.ToString().Contains(mod.ModVersion))
+                // Set user-agent header to avoid being blocked by GitHub API for missing user-agent
+                client.Headers.Add("User-Agent", "request");
+
+                string json = client.DownloadString(apiUrl);
+                //parse json
+                //find the release that contains the version
+                // Parse json
+                dynamic releases = JsonConvert.DeserializeObject(json);
+
+                // Find the release that contains the version
+                foreach (var release in releases)
                 {
-                    // Get the newest release asset
-                    downloadUrl = release.assets[0].browser_download_url;
-                    break; //break to get the newest release
+                    string tagName = release.tag_name;
+                    if (tagName != null && tagName.ToString().Contains(mod.ModVersion))
+                    {
+                        // Get the newest release asset
+                        downloadUrl = release.assets[0].browser_download_url;
+                        break; //break to get the newest release
+                    }
                 }
             }
-        }
-        if (downloadUrl == null)
+
+            if (downloadUrl == null)
+            {
+                throw new Exception("Download url not found");
+            }
+            _logger.LogInformation($"GetDownloadUrlFromSpTarkov resolved {url} to {downloadUrl}");
+            return downloadUrl;
+        } catch (Exception ex)
         {
-            throw new Exception("Download url not found");
+            _logger.LogError(ex, "GetDownloadUrlFromGithub");
+            return null;
         }
-        return downloadUrl;
-        
     }
 
     public async Task<bool> InstallAdditionalModFiles(ModInfo mod)
     {
-        bool fixVersion = true;
+        bool fixServerModVersion = true;
         
         if (string.IsNullOrEmpty(_configService.Config.InstallPath))
         {
@@ -523,12 +541,14 @@ public class ModService(IBarNotificationService barNotificationService,
             //write back to originalDownloadUrl to keep it for future use, until program restart
             if (mod.OriginalDownloadUrl.Contains("github.com") && !mod.OriginalDownloadUrl.Contains("/releases/"))
             {
-                mod.OriginalDownloadUrl = GetDownloadUrlFromGithub(mod, mod.OriginalDownloadUrl);
+                string downloadUrl = GetDownloadUrlFromGithub(mod, mod.OriginalDownloadUrl);
+                mod.OriginalDownloadUrl = downloadUrl;
             }
             else if (mod.OriginalDownloadUrl.Contains("dev.sp-tarkov.com"))
             {
-                //if mod is from dev.sp-tarkov.com, get the download url gite api
-                mod.OriginalDownloadUrl = GetDownloadUrlFromDevSpTakrov(mod, mod.OriginalDownloadUrl);
+                //if mod is from dev.sp-tarkov.com, get the download url gitea api
+                string downloadUrl = GetDownloadUrlFromDevSpTakrov(mod, mod.OriginalDownloadUrl);
+                mod.OriginalDownloadUrl = downloadUrl;
             }
 
             try
@@ -599,7 +619,7 @@ public class ModService(IBarNotificationService barNotificationService,
                         Path.Combine("user", "mods"), SearchOption.AllDirectories);
                     string userModsDirectory = userModsDirectories.FirstOrDefault();
 
-                    if (fixVersion)
+                    if (fixServerModVersion)
                     {
                         //find package.json anywhere in userModsDirectory and parse it as json, change version to x and write back
                         string[] packageJsonFiles = Directory.GetFiles(userModsDirectory, "package.json",

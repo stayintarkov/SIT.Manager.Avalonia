@@ -126,6 +126,15 @@ public partial class ModsPageViewModel : ObservableRecipient
             await _modService.AutoUpdate(outdatedMods, ModList.ToList());
         }
     }
+    
+    private void SaveMasterList()
+    {
+        // Save the master list to a file
+        string modsDirectory = Path.Combine(_managerConfigService.Config.InstallPath, "SITLauncher", "Mods", "Extracted");
+        string modsListFile = Path.Combine(modsDirectory, "MasterList.json");
+        string masterListFile = JsonSerializer.Serialize(ModList.ToList(), new JsonSerializerOptions() { WriteIndented = true });
+        File.WriteAllText(modsListFile, masterListFile);
+    }
 
     [RelayCommand]
     private void AcceptModsDisclaimer()
@@ -179,6 +188,9 @@ public partial class ModsPageViewModel : ObservableRecipient
         }
 
         bool installSuccessful = await _modService.InstallMod(SelectedMod, ModList.ToList());
+        if (installSuccessful) 
+            SaveMasterList(); //save the list to file after (also potentially) installing additional files, to cache github download urls
+        
         EnableInstall = !installSuccessful;
         EnableAdditionalModFilesInstall =
             SelectedMod.RequiresFiles && installSuccessful && !String.IsNullOrEmpty(SelectedMod.OriginalDownloadUrl);
@@ -205,6 +217,8 @@ public partial class ModsPageViewModel : ObservableRecipient
         }
 
         bool installSuccessful = await _modService.InstallAdditionalModFiles(SelectedMod);
+        if (installSuccessful)
+            SaveMasterList(); //save the list to file after installing additional files, to cache github download urls
     }
 
     protected override async void OnActivated()
