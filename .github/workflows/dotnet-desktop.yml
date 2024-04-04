@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: windows-latest
     env:
-      Solution_Name: SIT.Manager
+      Solution_Name: SIT.Manager.sln
     strategy:
       matrix:
         configuration: [Debug, Release]
