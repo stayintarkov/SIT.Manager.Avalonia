@@ -256,6 +256,12 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         {
             foreach (GithubRelease release in githubReleases)
             {
+                // If this is a prerelease build and the user hasn't eneabled developer mode then we want to skip adding this to the list.
+                if (release.Prerelease && !_configService.Config.EnableDeveloperMode)
+                {
+                    continue;
+                }
+
                 Match match = SITReleaseVersionRegex().Match(release.Body);
                 if (match.Success)
                 {
@@ -372,6 +378,12 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         {
             foreach (GithubRelease release in githubReleases)
             {
+                // If this is a prerelease build and the user hasn't eneabled developer mode then we want to skip adding this to the list.
+                if (release.Prerelease && !_configService.Config.EnableDeveloperMode)
+                {
+                    continue;
+                }
+
                 // Check there is an asset available for this OS
                 string fileExtention = ".zip";
                 if (OperatingSystem.IsLinux())
