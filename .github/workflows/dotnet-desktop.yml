@@ -23,7 +23,7 @@ jobs:
         dotnet-version: 8.0.x
     - name: Get update date
       run: |
-          now=$(date +'%Y-%m-%d %H:%M:%S')
+          now=$(date +'%time%')
           echo "timenow：$now"
           echo "::set-env name=NOW::${now}"    
     - name: Build
