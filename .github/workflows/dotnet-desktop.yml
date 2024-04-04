@@ -31,10 +31,10 @@ jobs:
         Write-Output "NOW=$CurrentTime" >> $env:GITHUB_OUTPUT
         
     - name: Buildrelease
-      run: dotnet build --configuration ${{ Release }} --property:Version ${{ steps.build.outputs.NOW }} 
+      run: dotnet build --configuration Release --property:Version ${{ steps.build.outputs.NOW }} 
       
     - name: Builddebug
-      run: dotnet build --configuration ${{ Debug }} --property:Version ${{ steps.build.outputs.NOW }} 
+      run: dotnet build --configuration Debug --property:Version ${{ steps.build.outputs.NOW }} 
       
     - name: Package releaseFile
       run: Compress-Archive -Path D:\a\SIT.Manager.Avalonia\SIT.Manager.Avalonia\SIT.Manager.Desktop\bin\${{ matrix.configuration }}\net8.0\win-x64\* -Destination ${{ matrix.configuration }}.zip
