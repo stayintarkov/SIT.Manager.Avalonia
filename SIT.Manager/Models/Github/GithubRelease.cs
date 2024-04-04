@@ -9,7 +9,7 @@ public class GithubRelease
     [JsonPropertyName("url")]
     public string? Url { get; set; }
     [JsonPropertyName("html_url")]
-    public required string HtmlUrl { get; set; }
+    public string HtmlUrl { get; set; } = string.Empty;
     [JsonPropertyName("assets_url")]
     public string? AssetsUrl { get; set; }
     [JsonPropertyName("upload_url")]
@@ -23,17 +23,17 @@ public class GithubRelease
     [JsonPropertyName("node_id")]
     public string? NodeId { get; set; }
     [JsonPropertyName("tag_name")]
-    public required string TagName { get; set; }
+    public string TagName { get; set; } = string.Empty;
     [JsonPropertyName("target_commitish")]
     public string? TargetCommitish { get; set; }
     [JsonPropertyName("name")]
-    public required string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
     [JsonPropertyName("body")]
-    public required string Body { get; set; }
+    public string Body { get; set; } = string.Empty;
     [JsonPropertyName("draft")]
     public bool Draft { get; set; }
     [JsonPropertyName("prerelease")]
-    public bool Prerelease { get; set; }
+    public bool Prerelease { get; set; } = false;
     [JsonPropertyName("created_at")]
     public DateTime CreatedAt { get; set; }
     [JsonPropertyName("published_at")]
