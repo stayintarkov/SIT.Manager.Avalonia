@@ -50,7 +50,6 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         { 15, "Patcher failed." }
     };
 
-    private DateTime? _lastUpdateCheckTime;
     private List<SitInstallVersion>? _availableSitUpdateVersions;
 
     /// <summary>
@@ -490,7 +489,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             return false;
         }
 
-        if (DateTime.Now.AddHours(-1) < _lastUpdateCheckTime)
+        if (DateTime.Now.AddHours(-1) < _configService.Config.LastSitUpdateCheckTime)
         {
             // We haven't checked for updates in the last hour so refresh the available verisons
             _availableSitUpdateVersions = await GetAvailableSitReleases(_configService.Config.TarkovVersion);
@@ -509,8 +508,8 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             }).ToList();
 
             // Update the last check time so that we don't refresh this list again for an hour
-            _lastUpdateCheckTime = DateTime.Now;
-            // TODO cache this in a file somewhere
+            _configService.Config.LastSitUpdateCheckTime = DateTime.Now;
+            _configService.UpdateConfig(_configService.Config);
         }
 
         return _availableSitUpdateVersions?.Count != 0;
