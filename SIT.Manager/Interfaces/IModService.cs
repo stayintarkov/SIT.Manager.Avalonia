@@ -6,7 +6,11 @@ namespace SIT.Manager.Interfaces;
 
 public interface IModService
 {
-    public List<ModInfo> ModList { get; }
+    /// <summary>
+    /// Array of recommended mod install names.
+    /// </summary>
+    string[] RecommendedModInstalls { get; }
+    List<ModInfo> ModList { get; }
 
     Task DownloadModsCollection();
     /// <summary>

@@ -28,6 +28,8 @@ public class ModService(IBarNotificationService barNotificationService,
     private readonly ILogger<ModService> _logger = logger;
     private readonly ILocalizationService _localizationService = localizationService;
 
+    public string[] RecommendedModInstalls => ["ConfigurationManager"];
+
     public List<ModInfo> ModList { get; private set; } = [];
 
     public async Task DownloadModsCollection()

@@ -23,11 +23,11 @@
 						<StackPanel Orientation="Horizontal">
 							<StackPanel.IsVisible>
 								<MultiBinding Converter="{x:Static BoolConverters.And}">
-									<Binding Path="!IsLoading"/>
+									<Binding Path="!IsVersionSelectionLoading"/>
 									<Binding Path="HasVersionsAvailable"/>
 								</MultiBinding>
 							</StackPanel.IsVisible>
-							
+
 							<TextBlock Text="{DynamicResource ConfigureSitViewVersionSelectionTitle}"
 									   VerticalAlignment="Center"
 									   Margin="0,0,8,0"/>
@@ -52,14 +52,14 @@
 
 						<StackPanel Orientation="Horizontal"
 									Margin="0,4,0,0"
-									IsVisible="{Binding !IsLoading}">
+									IsVisible="{Binding !IsVersionSelectionLoading}">
 							<StackPanel.IsVisible>
 								<MultiBinding Converter="{x:Static BoolConverters.And}">
-									<Binding Path="!IsLoading"/>
+									<Binding Path="!IsVersionSelectionLoading"/>
 									<Binding Path="HasMirrorsAvailable"/>
 								</MultiBinding>
 							</StackPanel.IsVisible>
-							
+
 							<TextBlock Text="{DynamicResource ConfigureSitViewMirrorSelectionTitle}"
 									   VerticalAlignment="Center"
 									   Margin="0,0,8,0"/>
@@ -80,7 +80,7 @@
 							<StackPanel.IsVisible>
 								<MultiBinding Converter="{x:Static BoolConverters.And}">
 									<Binding Path="CurrentInstallProcessState.UsingBsgInstallPath"/>
-									<Binding Path="!IsLoading"/>
+									<Binding Path="!IsVersionSelectionLoading"/>
 								</MultiBinding>
 							</StackPanel.IsVisible>
 
@@ -102,7 +102,7 @@
 							</StackPanel>
 						</StackPanel>
 
-						<StackPanel IsVisible="{Binding IsLoading}">
+						<StackPanel IsVisible="{Binding IsVersionSelectionLoading}">
 							<TextBlock HorizontalAlignment="Center"
 									   Text="{DynamicResource ConfigureSitViewLoadingVersionSelectionText}"/>
 							<controls:LoadingSpinner Width="64"
@@ -113,7 +113,7 @@
 												 Foreground="{DynamicResource TextControlForeground}"
 												 StrokeWidth="8"/>
 						</StackPanel>
-						</StackPanel>
+					</StackPanel>
 				</Border>
 			</StackPanel>
 
@@ -121,19 +121,37 @@
 				<TextBlock Text="Recommended Mods" Classes="FrameHeading"/>
 				<Border Classes="StandardFrame">
 					<StackPanel>
-						<TextBlock Text="Choose from the available mods which we recommend you install alongside SIT"
-								   TextWrapping="Wrap"/>
-						<ListBox ItemsSource="{Binding Mods}"
-								 Margin="4,16,4,0"
-								 SelectionMode="Multiple">
-							<ListBox.ItemTemplate>
-								<DataTemplate>
-									<Grid>
-										<TextBlock Text="{Binding Name}"/>
-									</Grid>
-								</DataTemplate>
-							</ListBox.ItemTemplate>
-						</ListBox>
+						<StackPanel IsVisible="{Binding !IsModsSelectionLoading}">
+							<TextBlock Text="Choose from the available mods which we recommend you install alongside SIT"
+									   TextWrapping="Wrap"/>
+							<ListBox ItemsSource="{Binding Mods}"
+									 Margin="0,4,0,0"
+									 SelectionMode="Multiple,Toggle">
+								<ListBox.ItemTemplate>
+									<DataTemplate>
+										<Grid>
+											<TextBlock>
+												<Run Text="{Binding Name}"/>
+												<Run Text=" - "/>
+												<Run Text="{Binding ModVersion}"/>
+											</TextBlock>
+										</Grid>
+									</DataTemplate>
+								</ListBox.ItemTemplate>
+							</ListBox>
+						</StackPanel>
+
+						<StackPanel IsVisible="{Binding IsModsSelectionLoading}">
+							<TextBlock HorizontalAlignment="Center"
+									   Text="{DynamicResource ConfigureSitViewLoadingVersionSelectionText}"/>
+							<controls:LoadingSpinner Width="64"
+												 Height="{Binding $self.Width}"
+												 Margin="0,8,0,0"
+												 HorizontalAlignment="Center"
+												 VerticalAlignment="Center"
+												 Foreground="{DynamicResource TextControlForeground}"
+												 StrokeWidth="8"/>
+						</StackPanel>
 					</StackPanel>
 				</Border>
 			</StackPanel>

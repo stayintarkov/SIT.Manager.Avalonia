@@ -24,7 +24,10 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
     private readonly IPickerDialogService _pickerDialogService;
 
     [ObservableProperty]
-    private bool _isLoading = false;
+    private bool _isVersionSelectionLoading = false;
+
+    [ObservableProperty]
+    private bool _isModsSelectionLoading = false;
 
     [ObservableProperty]
     private bool _overridenBsgInstallPath = false;
@@ -97,7 +100,7 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
     /// <returns></returns>
     private async Task FetchVersionAndMirrorMatrix()
     {
-        IsLoading = true;
+        IsVersionSelectionLoading = true;
 
         // Clear the collections
         HasVersionsAvailable = false;
@@ -134,7 +137,7 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
 
         // TODO add some logging here and an alert somehow in case it fails to load any versions or something
 
-        IsLoading = false;
+        IsVersionSelectionLoading = false;
     }
 
     [RelayCommand]
@@ -179,12 +182,28 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
             IsConfigurationValid = false;
             return;
         }
+
+        if (IsModsSelectionLoading || IsVersionSelectionLoading)
+        {
+            IsConfigurationValid = false;
+            return;
+        }
     }
 
     private async Task LoadAvailableModsList()
     {
+        IsModsSelectionLoading = true;
+
         await _modService.LoadMasterModList();
-        Mods.AddRange(_modService.ModList);
+        if (_modService.ModList.Count <= 1)
+        {
+            await _modService.DownloadModsCollection();
+            await _modService.LoadMasterModList();
+        }
+
+        Mods.AddRange(_modService.ModList.Where(x => _modService.RecommendedModInstalls.Contains(x.Name)));
+
+        IsModsSelectionLoading = false;
     }
 
     protected override async void OnActivated()
