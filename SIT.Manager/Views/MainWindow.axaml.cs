@@ -29,7 +29,9 @@ public partial class MainWindow : AppWindow
     {
         IAkiServerService? akiServerService = App.Current.Services.GetService<IAkiServerService>();
         IManagerConfigService? managerConfig = App.Current.Services.GetService<IManagerConfigService>();
-        if (akiServerService?.State == RunningState.Running && (!managerConfig?.Config.CloseAfterLaunch ?? true))
+
+        bool serverProcessRunning = akiServerService?.State == RunningState.Running || akiServerService?.State == RunningState.Starting;
+        if (serverProcessRunning && (!managerConfig?.Config.CloseAfterLaunch ?? true))
         {
             akiServerService?.Stop();
         }
