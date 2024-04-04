@@ -14,6 +14,7 @@ jobs:
     strategy:
       matrix:
         configuration: [Debug, Release]
+        
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -21,15 +22,20 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 8.0.x
-    - name: Get update date
+        
+    - name: Get build date
+      id: build
+      shell: pwsh
       run: |
-          now=$(date +'%time%')
-          echo "timenow：$now"
-          echo "::set-env name=NOW::${now}"    
+        $CurrentTime = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
+        Write-Output "NOW=$CurrentTime" >> $env:GITHUB_OUTPUT
+        
     - name: Build
-      run: dotnet build --configuration ${{ matrix.configuration }} --property:Version=${{ env.NOW }}
+      run: dotnet build --configuration ${{ matrix.configuration }} --property:Version=${{ steps.build.outputs.NOW }}
+      
     - name: Package File
       run: Compress-Archive -Path D:\a\SIT.Manager.Avalonia\SIT.Manager.Avalonia\SIT.Manager.Desktop\bin\${{ matrix.configuration }}\net8.0\win-x64\* -Destination ${{ matrix.configuration }}.zip
+      
     - name: Upload Built Package
       uses: actions/upload-artifact@v4
       with:
