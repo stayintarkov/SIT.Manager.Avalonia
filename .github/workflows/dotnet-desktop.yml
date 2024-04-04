@@ -22,7 +22,7 @@ jobs:
       with:
         dotnet-version: 8.0.x
     - name: Build
-      run: dotnet build --configuration ${{ matrix.configuration }}
+      run: dotnet build --configuration ${{ matrix.configuration }} --property:Version=${{ matrix.configuration }}
     - name: Package File
       run: Compress-Archive -Path D:\a\SIT.Manager.Avalonia\SIT.Manager.Avalonia\SIT.Manager.Desktop\bin\${{ matrix.configuration }}\net8.0\win-x64\* -Destination ${{ matrix.configuration }}.zip
     - name: Upload Built Package
