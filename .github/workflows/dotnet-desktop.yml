@@ -14,6 +14,7 @@ jobs:
     strategy:
       matrix:
         configuration: [Debug, Release]
+        Version: []
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -21,8 +22,13 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 8.0.x
+    - name: Get update date
+      run: |
+          now=$(date +'%Y-%m-%d %H:%M:%S')
+          echo "timenow：$now"
+          echo "::set-env name=NOW::${now}"    
     - name: Build
-      run: dotnet build --configuration ${{ matrix.configuration }} --property:Version=%Y-%m-%d %H
+      run: dotnet build --configuration ${{ matrix.configuration }} --property:Version=${{ env.NOW }}
     - name: Package File
       run: Compress-Archive -Path D:\a\SIT.Manager.Avalonia\SIT.Manager.Avalonia\SIT.Manager.Desktop\bin\${{ matrix.configuration }}\net8.0\win-x64\* -Destination ${{ matrix.configuration }}.zip
     - name: Upload Built Package
