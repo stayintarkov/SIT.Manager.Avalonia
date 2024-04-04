@@ -71,6 +71,14 @@ public partial class PatchViewModel : InstallationViewModelBase
         _extractionProgress = new(x => ExtractionProgressPercentage = x);
     }
 
+    private async Task CopyGameIfRequired()
+    {
+        if (CurrentInstallProcessState.UsingBsgInstallPath)
+        {
+            await _fileService.CopyDirectory(CurrentInstallProcessState.BsgInstallPath, CurrentInstallProcessState.EftInstallPath, _copyProgress);
+        }
+    }
+
     private async Task RunPatcher()
     {
         string[] files = Directory.GetFiles(CurrentInstallProcessState.EftInstallPath, "Patcher.exe", new EnumerationOptions() { MatchCasing = MatchCasing.CaseInsensitive, MaxRecursionDepth = 0 });
@@ -134,7 +142,7 @@ public partial class PatchViewModel : InstallationViewModelBase
     }
 
     [RelayCommand]
-    private void EndInstall()
+    private void FinishInstall()
     {
         RegressInstall();
     }
@@ -145,7 +153,16 @@ public partial class PatchViewModel : InstallationViewModelBase
 
         Messenger.Send(new InstallationRunningMessage(true));
 
-        await DownloadAndRunPatcher();
+        await Task.WhenAll(CopyGameIfRequired(), DownloadAndExtractPatcher());
+
+        if (RequiresPatching && !HasAquirePatcherError)
+        {
+            await RunPatcher();
+        }
+        else
+        {
+            ProgressInstall();
+        }
     }
 
     protected override void OnDeactivated()
@@ -155,28 +172,15 @@ public partial class PatchViewModel : InstallationViewModelBase
         Messenger.Send(new InstallationRunningMessage(false));
     }
 
-    public async Task DownloadAndRunPatcher()
+    public async Task DownloadAndExtractPatcher()
     {
-        if (CurrentInstallProcessState.UsingBsgInstallPath)
-        {
-            await _fileService.CopyDirectory(CurrentInstallProcessState.BsgInstallPath, CurrentInstallProcessState.EftInstallPath, _copyProgress);
-        }
-
         if (RequiresPatching)
         {
             bool aquiredPatcher = await _installerService.DownloadAndExtractPatcher(CurrentInstallProcessState.DownloadMirrorUrl, CurrentInstallProcessState.EftInstallPath, _downloadProgress, _extractionProgress);
-            if (aquiredPatcher)
-            {
-                await RunPatcher();
-            }
-            else
+            if (!aquiredPatcher)
             {
                 HasAquirePatcherError = true;
             }
-        }
-        else
-        {
-            ProgressInstall();
         }
     }
 }

@@ -108,7 +108,7 @@
 					<TextBlock Classes="ErrorMessage"
 							   IsVisible="{Binding HasPatcherError}"
 							   Text="{DynamicResource PatchViewPatchingErrorMessage}"/>
-					<Button Command="{Binding EndInstallCommand}"
+					<Button Command="{Binding FinishInstallCommand}"
 							HorizontalAlignment="Center"
 							Margin="8"
 							Content="{DynamicResource PatchViewPatchingEndInstallButtonTitle}"/>
