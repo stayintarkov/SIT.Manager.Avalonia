@@ -1,4 +1,4 @@
-﻿using SIT.Manager.Models;
+﻿using SIT.Manager.Models.Github;
 using SIT.Manager.Models.Installation;
 using System;
 using System.Collections.Generic;
