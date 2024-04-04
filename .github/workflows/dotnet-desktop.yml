@@ -24,7 +24,7 @@ jobs:
     - name: Build
       run: dotnet build --configuration ${{ matrix.configuration }}
     - name: Package File
-      run: Compress-Archive -Path D:\a\SIT.Manager.Avalonia\SIT.Manager.Avalonia
+      run: Compress-Archive -Path D:\a\SIT.Manager.Avalonia\SIT.Manager.Avalonia\SIT.Manager.Desktop\bin\${{ matrix.configuration }}\net8.0\win-x64\* -Destination ${{ matrix.configuration }}.zip
     - name: Upload Built Package
       uses: actions/upload-artifact@v4
       with:
