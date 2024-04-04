@@ -75,7 +75,7 @@ public partial class PatchViewModel : InstallationViewModelBase
     {
         if (CurrentInstallProcessState.UsingBsgInstallPath)
         {
-            await _fileService.CopyDirectory(CurrentInstallProcessState.BsgInstallPath, CurrentInstallProcessState.EftInstallPath, _copyProgress);
+            await _fileService.CopyAndValidateDirectory(CurrentInstallProcessState.BsgInstallPath, CurrentInstallProcessState.EftInstallPath, _copyProgress);
         }
     }
 

@@ -13,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Services;
@@ -28,6 +29,25 @@ public class FileService(IActionNotificationService actionNotificationService,
     private readonly HttpClient _httpClient = httpClient;
     private readonly ILogger<FileService> _logger = logger;
     private readonly ILocalizationService _localizationService = localizationService;
+
+    private static bool AreFilesEqual(FileStream sourceStream, string targetPath)
+    {
+        // Validate the file if it already exists
+        if (File.Exists(targetPath))
+        {
+            byte[] sourceFileHash = GenerateMd5Hash(sourceStream);
+            using (FileStream targetStream = File.Create(targetPath))
+            {
+                byte[] targetFileHash = GenerateMd5Hash(targetStream);
+                bool hashesEqual = sourceFileHash.SequenceEqual(targetFileHash);
+                if (hashesEqual)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     private static async Task<long> CalculateDirectorySize(DirectoryInfo d)
     {
@@ -46,7 +66,15 @@ public class FileService(IActionNotificationService actionNotificationService,
         return size;
     }
 
-    private static async Task<double> CopyDirectoryAsync(DirectoryInfo source, DirectoryInfo destination, double currentProgress, double totalSize, IProgress<double>? progress = null)
+    private static byte[] GenerateMd5Hash(FileStream stream)
+    {
+        using (var md5 = MD5.Create())
+        {
+            return md5.ComputeHash(stream);
+        }
+    }
+
+    private static async Task<double> CopyAndValidateDirectoryAsync(DirectoryInfo source, DirectoryInfo destination, double currentProgress, double totalSize, IProgress<double>? progress = null)
     {
         IEnumerable<DirectoryInfo> directories = source.EnumerateDirectories();
         IEnumerable<FileInfo> files = source.EnumerateFiles();
@@ -54,23 +82,38 @@ public class FileService(IActionNotificationService actionNotificationService,
         foreach (DirectoryInfo directory in directories)
         {
             DirectoryInfo newDestination = destination.CreateSubdirectory(directory.Name);
-            currentProgress = await CopyDirectoryAsync(directory, newDestination, currentProgress, totalSize, progress).ConfigureAwait(false);
+            currentProgress = await CopyAndValidateDirectoryAsync(directory, newDestination, currentProgress, totalSize, progress).ConfigureAwait(false);
         }
 
+        Progress<long> localCopyProgress = new(x =>
+        {
+            double progressPercentage = (currentProgress + x) / totalSize * 100;
+            progress?.Report(progressPercentage);
+        });
         foreach (FileInfo file in files)
         {
+            string targetPath = Path.Combine(destination.FullName, file.Name);
+
             using (FileStream sourceStream = file.OpenRead())
             {
-                using (FileStream destinationStream = File.Create(Path.Combine(destination.FullName, file.Name)))
+                // Check if the files are the same if they are then we skip to the next file
+                if (AreFilesEqual(sourceStream, targetPath))
                 {
-                    Progress<long> streamProgress = new(x =>
-                    {
-                        double progressPercentage = (currentProgress + x) / totalSize * 100;
-                        progress?.Report(progressPercentage);
-                    });
-                    await sourceStream.CopyToAsync(destinationStream, ushort.MaxValue, streamProgress).ConfigureAwait(false);
-                    currentProgress += file.Length;
+                    // Update the progress to cover the file that has just been processed
+                    progress?.Report((currentProgress + file.Length) / totalSize * 100);
                 }
+                else
+                {
+                    // Reset the steam so we can actually copy it now we know it doesn't exist correctly    
+                    sourceStream.Position = 0;
+
+                    using (FileStream destinationStream = File.Create(targetPath))
+                    {
+                        await sourceStream.CopyToAsync(destinationStream, ushort.MaxValue, localCopyProgress).ConfigureAwait(false);
+                    }
+                }
+
+                currentProgress += file.Length;
             }
         }
 
@@ -167,7 +210,7 @@ public class FileService(IActionNotificationService actionNotificationService,
         }
     }
 
-    public async Task CopyDirectory(string source, string destination, IProgress<double>? progress = null)
+    public async Task CopyAndValidateDirectory(string source, string destination, IProgress<double>? progress = null)
     {
         DirectoryInfo sourceDir = new(source);
         double totalSize = await CalculateDirectorySize(sourceDir).ConfigureAwait(false);
@@ -176,7 +219,7 @@ public class FileService(IActionNotificationService actionNotificationService,
         destinationDir.Create();
 
         double currentprogress = 0;
-        await CopyDirectoryAsync(sourceDir, destinationDir, currentprogress, totalSize, progress).ConfigureAwait(false);
+        await CopyAndValidateDirectoryAsync(sourceDir, destinationDir, currentprogress, totalSize, progress).ConfigureAwait(false);
     }
 
     // TODO unify this and the other DownloadFile function nicely - will have to do some things on the mods page for this I think.
