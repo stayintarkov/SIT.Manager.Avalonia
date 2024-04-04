@@ -10,11 +10,10 @@ jobs:
   build:
     runs-on: windows-latest
     env:
-      Solution_Name: SIT.Manager.sln
+      Solution_Name: SIT.Manager.Avalonia.Desktop
     strategy:
       matrix:
         configuration: [Debug, Release]
-        
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -22,23 +21,15 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 8.0.x
-        
-    - name: Get build date
-      id: build
-      shell: pwsh
-      run: |
-        $CurrentTime = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
-        Write-Output "NOW=$CurrentTime" >> $env:GITHUB_OUTPUT
-        
-    - name: Buildrelease
-      run: dotnet build SIT.Manager.csproj --configuration Release property:Version ${{ steps.build.outputs.NOW }} 
-      
-    - name: Package releaseFile
-      run: Compress-Archive -Path D:\a\SIT.Manager.Avalonia\SIT.Manager.Avalonia\SIT.Manager.Desktop\bin\${{ matrix.configuration }}\net8.0\win-x64\* -Destination ${{ matrix.configuration }}.zip
-
+    - name: Build
+      run: dotnet build --configuration ${{ matrix.configuration }}
+    - name: Package File
+      run: Compress-Archive -Path D:\a\SIT.Manager.Avalonia\SIT.Manager.Avalonia\SIT.Manager.Avalonia.Desktop\bin\${{ matrix.configuration }}\net8.0\win-x64\* -Destination ${{ matrix.configuration }}.zip
     - name: Upload Built Package
       uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.configuration }}
         path: |
           ${{ matrix.configuration }}.zip
+
+ 
