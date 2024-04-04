@@ -1,0 +1,33 @@
+name: .NET Core Desktop for Windows
+
+on:
+  push:
+    branches: [ "DRRD" ] #just for additional tips to CN mainland 
+  pull_request:
+    branches: [ "DRRD" ] #cuz most of them cant get correct download
+
+jobs:
+  build:
+    runs-on: windows-latest
+    env:
+      Solution_Name: SIT.Manager.sln
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup .NET 8.0
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 8.0.x
+    - name: Build
+      run: dotnet build --configuration ${{ matrix.configuration }}
+    - name: Package File
+      run: Compress-Archive -Path D:\a\SIT.Manager.Avalonia\SIT.Manager.Avalonia\SIT.Manager.Desktop\bin\${{ matrix.configuration }}\net8.0\win-x64\* -Destination ${{ matrix.configuration }}.zip
+    - name: Upload Built Package
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.configuration }}
+        path: |
+          ${{ matrix.configuration }}.zip
