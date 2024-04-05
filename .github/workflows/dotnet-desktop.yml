@@ -13,14 +13,11 @@ jobs:
       Solution_Name: SIT.Manager.sln
     strategy:
       matrix:
-        configuration: [Release]
+        configuration: [Debug, Release]
         
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-      with:
-        ref: cl
-
     - name: Setup .NET 8.0
       uses: actions/setup-dotnet@v1
       with:
@@ -35,10 +32,15 @@ jobs:
         Write-Output "NOW=$CurrentTime" >> $env:GITHUB_OUTPUT
         Write-Output "VERSION=$BuildTime" >> $env:GITHUB_OUTPUT        
         
-    - name: Build Solution
+    - name: Build Release
       run: |
-        dotnet build --configuration ${{ matrix.configuration }}
-        dotnet pack ${{ env.Solution_Name }} --configuration ${{ matrix.configuration }} /p:FileVersion=${{ steps.build.outputs.VERSION }} /p:Version=2-${{ matrix.configuration }}-${{ steps.build.outputs.NOW }}        
+        dotnet build --configuration Release
+        dotnet pack ${{ env.Solution_Name }} --configuration Release /p:FileVersion=${{ steps.build.outputs.VERSION }} /p:Version=2-${{ steps.build.outputs.NOW }}-Release
+
+    - name: Build Debug
+      run: |
+        dotnet build --configuration Debug
+        dotnet pack ${{ env.Solution_Name }} --configuration Debug /p:FileVersion=${{ steps.build.outputs.VERSION }} /p:Version=2-${{ steps.build.outputs.NOW }}-Debug
         
     - name: Package File
       run: Compress-Archive -Path ${{ github.workspace }}/SIT.Manager.Desktop/bin/${{ matrix.configuration }}/net8.0/win-x64/* -Destination ${{ matrix.configuration }}.zip
