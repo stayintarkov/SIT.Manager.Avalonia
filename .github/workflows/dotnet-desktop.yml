@@ -31,7 +31,7 @@ jobs:
         Write-Output "NOW=$CurrentTime" >> $env:GITHUB_OUTPUT
         
     - name: Build
-      run: dotnet build -c ${{ matrix.configuration }} -p:BuildNumber=${{ steps.build.outputs.NOW }}
+      run: dotnet build -c Debug -p:BuildNumber=${{ steps.build.outputs.NOW }}
     
 
     - name: Package releaseFile
