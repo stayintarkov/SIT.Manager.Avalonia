@@ -32,7 +32,7 @@ jobs:
         Write-Output "NOW=$CurrentTime" >> $env:GITHUB_OUTPUT
         Write-Output "VERSION=$BuildTime" >> $env:GITHUB_OUTPUT        
         
-    - name: Build Release
+    - name: Build Debug&Release
       run: |
         dotnet build --configuration ${{ matrix.configuration }}
         dotnet pack ${{ env.Solution_Name }} --configuration ${{ matrix.configuration }} /p:FileVersion=${{ steps.build.outputs.VERSION }} /p:Version=2-${{ steps.build.outputs.NOW }}-${{ matrix.configuration }}
