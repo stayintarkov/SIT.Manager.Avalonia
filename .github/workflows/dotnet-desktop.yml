@@ -31,7 +31,7 @@ jobs:
         Write-Output "NOW=$CurrentTime" >> $env:GITHUB_OUTPUT
         
     - name: Buildrelease
-      run: dotnet build SIT.Manager.csproj --configuration Release 
+      run: dotnet build SIT.Manager.csproj --configuration ${{ matrix.configuration }}
     - name: writeversion
       run: property:Version ${{ steps.build.outputs.NOW }} 
       
