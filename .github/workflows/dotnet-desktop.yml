@@ -27,13 +27,13 @@ jobs:
       id: build
       shell: pwsh
       run: |
-        $CurrentTime = Get-Date -Format 'yyMMddHH'
-        $BuildTime = Get-Date -Format '2.yyyy.MMdd.HHmmss'
+        $CurrentTime = Get-Date -Format 'yyMM'
+        $BuildTime = Get-Date -Format 'ddHH'
         Write-Output "NOW=$CurrentTime" >> $env:GITHUB_OUTPUT
         Write-Output "VERSION=$BuildTime" >> $env:GITHUB_OUTPUT        
         
     - name: Build Release&Debug
-      run: dotnet build --configuration ${{ matrix.configuration }} -p:BuildNumber=0 -p:RevisionNumber=${{ steps.build.outputs.NOW }}
+      run: dotnet build --configuration ${{ matrix.configuration }} -p:BuildNumber=${{ steps.build.outputs.NOW }} -p:RevisionNumber=${{ steps.build.outputs.VERSION }}
         
     - name: Package File
       run: Compress-Archive -Path ${{ github.workspace }}/SIT.Manager.Desktop/bin/${{ matrix.configuration }}/net8.0/win-x64/* -Destination ${{ matrix.configuration }}.zip
