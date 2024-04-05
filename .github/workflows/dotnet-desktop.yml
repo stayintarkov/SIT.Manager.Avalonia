@@ -2,22 +2,25 @@ name: .NET Core Desktop for Windows
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "cl" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "cl" ]
 
 jobs:
   build:
     runs-on: windows-latest
     env:
-      Solution_Name: SIT.Manager
+      Solution_Name: SIT.Manager.sln
     strategy:
       matrix:
-        configuration: [Debug, Release]
+        configuration: [Release]
         
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+      with:
+        ref: cl
+
     - name: Setup .NET 8.0
       uses: actions/setup-dotnet@v1
       with:
@@ -32,17 +35,18 @@ jobs:
         Write-Output "NOW=$CurrentTime" >> $env:GITHUB_OUTPUT
         Write-Output "VERSION=$BuildTime" >> $env:GITHUB_OUTPUT        
         
-
-    - name: Build
-      run: dotnet build --configuration ${{ matrix.configuration }} -p:BuildNumber=${{ steps.build.outputs.VERSION }} -p:RevisionNumber=${{ steps.build.outputs.NOW }}
+    - name: Build Solution
+      run: |
+        dotnet build --configuration ${{ matrix.configuration }}
+        dotnet pack ${{ env.Solution_Name }} --configuration ${{ matrix.configuration }} /p:FileVersion=${{ steps.build.outputs.VERSION }} /p:Version=2-${{ matrix.configuration }}-${{ steps.build.outputs.NOW }}        
         
     - name: Package File
       run: Compress-Archive -Path ${{ github.workspace }}/SIT.Manager.Desktop/bin/${{ matrix.configuration }}/net8.0/win-x64/* -Destination ${{ matrix.configuration }}.zip
       
-    - name: Upload Built Package
-      uses: actions/upload-artifact@v4
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v3.1.2
       with:
         name: ${{ matrix.configuration }}
-        path: |
-          ${{ matrix.configuration }}.zip
+        path: ${{ github.workspace }}/${{ matrix.configuration }}.zip
+        if-no-files-found: error
         retention-days: 3
