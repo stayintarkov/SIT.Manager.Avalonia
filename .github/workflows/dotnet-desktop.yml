@@ -35,13 +35,13 @@ jobs:
     - name: Build Release
       run: |
         dotnet build --configuration Release
-        dotnet pack ${{ env.Solution_Name }} --configuration Release /p:FileVersion=${{ steps.build.outputs.VERSION }} /p:Version=Release-2-${{ steps.build.outputs.NOW }} /p:Copyright=Copyright © StayInTarkov 2024
+        dotnet pack ${{ env.Solution_Name }} --configuration Release /p:FileVersion=${{ steps.build.outputs.VERSION }} /p:Version=2-${{ steps.build.outputs.NOW }}-Release /p:Copyright=Copyright © StayInTarkov 2024
 
 
     - name: Build Debug
       run: |
         dotnet build --configuration Debug
-        dotnet pack ${{ env.Solution_Name }} --configuration Debug /p:FileVersion=${{ steps.build.outputs.VERSION }} /p:Version=Debug-2-${{ steps.build.outputs.NOW }} /p:Copyright=Copyright © StayInTarkov 2024
+        dotnet pack ${{ env.Solution_Name }} --configuration Debug /p:FileVersion=${{ steps.build.outputs.VERSION }} /p:Version=2-${{ steps.build.outputs.NOW }}-Debug /p:Copyright=Copyright © StayInTarkov 2024
 
         
     - name: Package File
