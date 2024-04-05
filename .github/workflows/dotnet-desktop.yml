@@ -2,9 +2,9 @@ name: .NET Core Desktop for Windows
 
 on:
   push:
-    branches: [ "cl" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "cl" ]
+    branches: [ "master" ]
 
 jobs:
   build:
