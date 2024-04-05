@@ -23,12 +23,21 @@ jobs:
       with:
         dotnet-version: 8.0.x
         
-    - name: Build Debug
-      run: dotnet build -c Debug -p:BuildNumber=8859 -p:RevisionNumber=32229
-      
-    - name: Build Release
-      run: dotnet publish -c Release -p:BuildNumber=8859 -p:RevisionNumber=32229
-    
+    - name: Get build date
+      id: build
+      shell: pwsh
+      run: |
+        $CurrentTime = Get-Date -Format 'yyyyMMddHHmmss'
+        $BuildTime = Get-Date -Format '1.yyyy.MMdd.HHmmss'
+        Write-Output "NOW=$CurrentTime" >> $env:GITHUB_OUTPUT
+        Write-Output "VERSION=$BuildTime" >> $env:GITHUB_OUTPUT        
+        
+
+    - name: Build Solution
+      run: |
+        dotnet build --configuration ${{ matrix.configuration }}
+        dotnet pack ${{ env.Solution_Name }} --configuration ${{ matrix.configuration }} /p:FileVersion=1.0.0.0 /p:Version=1.0.0-${{ matrix.configuration }}-${{ steps.build.outputs.NOW }}        
+        
     - name: Package releaseFile
       run: Compress-Archive -Path D:\a\SIT.Manager.Avalonia\SIT.Manager.Avalonia\SIT.Manager.Desktop\bin\${{ matrix.configuration }}\net8.0\win-x64\* -Destination ${{ matrix.configuration }}.zip
 
@@ -38,3 +47,4 @@ jobs:
         name: ${{ matrix.configuration }}
         path: |
           ${{ matrix.configuration }}.zip
+        retention-days: 3
