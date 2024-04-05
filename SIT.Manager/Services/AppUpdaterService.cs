@@ -101,7 +101,7 @@ public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterServi
         {
             try
             {
-                Version currentVersion = Assembly.GetExecutingAssembly().GetName().Version ?? new Version("0");
+                Version currentVersion = Assembly.GetEntryAssembly()?.GetName().Version ?? new Version("0");
 
                 string versionJsonString = await _httpClient.GetStringAsync(MANAGER_VERSION_URL);
                 GithubRelease? latestRelease = JsonSerializer.Deserialize<GithubRelease>(versionJsonString);
