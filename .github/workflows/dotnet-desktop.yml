@@ -35,7 +35,7 @@ jobs:
     - name: Build Release&Debug
       run: |
         dotnet build --configuration ${{ matrix.configuration }}
-        dotnet pack ${{ env.Solution_Name }} --configuration ${{ matrix.configuration }} /p:BuildNumber=${{ steps.build.outputs.VERSION }} /p:RevisionNumber=2-${{ steps.build.outputs.NOW }}-${{ matrix.configuration }}
+        dotnet pack ${{ env.Solution_Name }} --configuration ${{ matrix.configuration }} /p:BuildNumber=${{ steps.build.outputs.VERSION }}
         
     - name: Package File
       run: Compress-Archive -Path ${{ github.workspace }}/SIT.Manager.Desktop/bin/${{ matrix.configuration }}/net8.0/win-x64/* -Destination ${{ matrix.configuration }}.zip
