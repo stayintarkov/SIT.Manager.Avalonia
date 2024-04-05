@@ -23,12 +23,20 @@ jobs:
       with:
         dotnet-version: 8.0.x
         
+    - name: Get build date
+      id: build
+      shell: pwsh
+      run: |
+        $CurrentTime = Get-Date -Format 'yyyyMMddHHmmss'
+        $BuildTime = Get-Date -Format '2.yyyy.MMdd.HHmmss'
+        Write-Output "NOW=$CurrentTime" >> $env:GITHUB_OUTPUT
+        Write-Output "VERSION=$BuildTime" >> $env:GITHUB_OUTPUT        
         
-    - name: Build Debug&Release
+    - name: Build Release&Debug
       run: |
         dotnet build --configuration ${{ matrix.configuration }}
-        dotnet pack ${{ env.Solution_Name }} --configuration ${{ matrix.configuration }}
-
+        dotnet pack ${{ env.Solution_Name }} --configuration ${{ matrix.configuration }} /p:BuildNumber=${{ steps.build.outputs.VERSION }} /p:RevisionNumber=2-${{ steps.build.outputs.NOW }}-${{ matrix.configuration }}
+        
     - name: Package File
       run: Compress-Archive -Path ${{ github.workspace }}/SIT.Manager.Desktop/bin/${{ matrix.configuration }}/net8.0/win-x64/* -Destination ${{ matrix.configuration }}.zip
       
