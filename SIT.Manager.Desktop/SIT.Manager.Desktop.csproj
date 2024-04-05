@@ -23,9 +23,9 @@
 	<!--Versioning idea taken from https://github.com/dotnet/sdk/issues/7263#issuecomment-289037065-->
 	<PropertyGroup>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
-		<BuildNumber Condition=" '$(BuildNumber)' == '' ">0</BuildNumber>
+		<BuildNumber Condition=" '$(BuildNumber)' == '123' ">0</BuildNumber>
 		<ProductVersion>$(Version)</ProductVersion>
-		<RevisionNumber Condition=" '$(RevisionNumber)' == '' ">0</RevisionNumber>
+		<RevisionNumber Condition=" '$(RevisionNumber)' == '123' ">0</RevisionNumber>
 		<Version>2.1.$(BuildNumber).$(RevisionNumber)</Version>
 	</PropertyGroup>
 
