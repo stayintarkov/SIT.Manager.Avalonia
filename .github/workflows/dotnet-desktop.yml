@@ -28,7 +28,7 @@ jobs:
       shell: pwsh
       run: |
         $CurrentTime = Get-Date -Format 'yyMM'
-        $BuildTime = Get-Date -Format 'ddHH'
+        $BuildTime = Get-Date -Format 'ddHHmmss'
         Write-Output "NOW=$CurrentTime" >> $env:GITHUB_OUTPUT
         Write-Output "VERSION=$BuildTime" >> $env:GITHUB_OUTPUT        
         
