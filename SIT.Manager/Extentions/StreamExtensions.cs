@@ -30,10 +30,10 @@ public static class StreamExtensions
         }
     }
 
-    public static async Task<Stream> InflateAsync(this Stream zlibDataSource, CancellationToken cancellationToken = default)
+    public static async Task<MemoryStream> InflateAsync(this Stream zlibDataSource, CancellationToken cancellationToken = default)
     {
         MemoryStream ms = new();
-        using ZLibStream inflateStream = new(ms, CompressionMode.Decompress);
+        using ZLibStream inflateStream = new(zlibDataSource, CompressionMode.Decompress);
         await inflateStream.CopyToAsync(ms, cancellationToken);
         ms.Seek(0, SeekOrigin.Begin);
         return ms;
