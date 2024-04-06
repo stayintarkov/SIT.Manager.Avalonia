@@ -326,6 +326,7 @@
 	<system:String x:Key="ConfigureViewStartInstallButtonTitle">Почати установку</system:String>
 	<system:String x:Key="ConfigureViewBackButtonTitle">Назад</system:String>
 	<system:String x:Key="ConfigureViewVersionSelectionGroupTitle">Вибір версії</system:String>
+	<system:String x:Key="ConfigureViewPersonalizationOptions">Personalization and Import Options</system:String>
 
 	<!-- Install - Configure Server View -->
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathToolTip">Змінити шлях установки SPT-AKI.</system:String>
@@ -344,6 +345,8 @@
 	<system:String x:Key="ConfigureSitViewEFTPathWarningNoPath">Наразі використовується місце встановлення BSG EFT. Будь ласка, встановіть EFT в інше місце, щоб уникнути можливих проблем з SIT</system:String>
 	<system:String x:Key="ConfigureSitViewMirrorSelectionTitle">Виберіть дзеркало для використання:</system:String>
 	<system:String x:Key="ConfigureSitViewVersionSelectionTitle">Версія для установки:</system:String>
+	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTip">Import EFT Graphics, Audio and Control settings to SIT.</system:String>
+	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTitle">Import EFT Settings to SIT</system:String>
 
 	<!-- Install - Configure Sit View Model -->
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorTitle">Помилка вибору місця розташування</system:String>

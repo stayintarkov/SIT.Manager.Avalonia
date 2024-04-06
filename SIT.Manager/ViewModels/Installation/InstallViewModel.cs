@@ -66,6 +66,11 @@ public partial class InstallViewModel : InstallationViewModelBase
             else if (IsSitInstall)
             {
                 await _installerService.InstallSit(CurrentInstallProcessState.RequestedVersion, CurrentInstallProcessState.EftInstallPath, _downloadProgress, _extractionProgress);
+
+                if (CurrentInstallProcessState.CopyEftSettings)
+                {
+                    _installerService.CopyEftSettings(CurrentInstallProcessState.EftInstallPath);
+                }
             }
         }
         catch (Exception ex)

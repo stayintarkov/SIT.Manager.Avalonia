@@ -23,6 +23,8 @@ public partial class InstallProcessState : ObservableObject
     private string _sitVersion = string.Empty;
     [ObservableProperty]
     private string _downloadMirrorUrl = string.Empty;
+    [ObservableProperty]
+    private bool _copyEftSettings = true;
 
     // SPT-AKI Install Settings
     [ObservableProperty]

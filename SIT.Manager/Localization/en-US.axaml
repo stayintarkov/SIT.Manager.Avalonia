@@ -328,8 +328,9 @@
 	<system:String x:Key="ConfigureViewStartInstallButtonTitle">Start Install</system:String>
 	<system:String x:Key="ConfigureViewBackButtonTitle">Back</system:String>
 	<system:String x:Key="ConfigureViewVersionSelectionGroupTitle">Version Selection</system:String>
-
-	<!-- Install - Configure Server View -->
+	<system:String x:Key="ConfigureViewPersonalizationOptions">Personalization and Import Options</system:String>
+	
+		<!-- Install - Configure Server View -->
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathToolTip">Change the SPT-AKI Install Path.</system:String>
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathTitle">Change</system:String>
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathPlaceholder">SPT-AKI Install Path...</system:String>
@@ -346,6 +347,8 @@
 	<system:String x:Key="ConfigureSitViewEFTPathWarningNoPath">Currently using the BSG EFT install location please install EFT to a different location to avoid any possible issues with SIT</system:String>
 	<system:String x:Key="ConfigureSitViewMirrorSelectionTitle">Select the mirror to use:</system:String>
 	<system:String x:Key="ConfigureSitViewVersionSelectionTitle">Version to install:</system:String>
+	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTip">Import EFT Graphics, Audio and Control settings to SIT.</system:String>
+	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTitle">Import EFT Settings to SIT</system:String>
 
 	<!-- Install - Configure Sit View Model -->
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorTitle">Location Selection Error</system:String>
