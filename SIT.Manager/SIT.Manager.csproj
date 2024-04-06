@@ -35,6 +35,7 @@
         <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="8.0.0" />
         <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="8.0.0" />
         <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="PeNet" Version="4.0.4" />
         <PackageReference Include="SharpCompress" Version="0.36.0" />
         <PackageReference Include="SkiaSharp" Version="2.88.7" />

@@ -39,6 +39,7 @@
 	<system:String x:Key="PlayPageViewModelWaitingForServerTitle">Ожидание сервера</system:String>
 	<system:String x:Key="PlayPageViewModelServerErrorTitle">Ошибка сервера</system:String>
 	<system:String x:Key="PlayPageViewModelServerErrorDescription">Сервер не запустился. Пожалуйста, проверьте журналы для получения дополнительной информации.</system:String>
+	<system:String x:Key="PlayPageViewModelLoginIncorrectPassword">Incorrect password</system:String>
 
 	<!-- Pane View (Menu on the left also tooltip about update on top) -->
 	<system:String x:Key="UpdateNotification">Доступно обновление менеджера SIT. Нажмите здесь, чтобы обновить:</system:String>
@@ -300,6 +301,7 @@
 	<system:String x:Key="InstallServiceInstallSuccessfulDescription">Установка сервера прошла успешно.</system:String>
 	<system:String x:Key="InstallServiceInstallSITSuccessfulDescription">Установка SIT прошла успешно.</system:String>
 	<system:String x:Key="InstallerServiceNoDowngradePatcher">Для этой версии Таркова нет доступных программ для отката.</system:String>
+	<system:String x:Key="InstallServiceSSLError">Your ISP is likely blocking our connection. Please use a VPN and try again.</system:String>
 
 	<!-- File Service -->
 	<system:String x:Key="FileServiceProgressDownloading">Загрузка файла '%1'</system:String>
@@ -364,6 +366,7 @@
 	<system:String x:Key="PatchViewDownloadingTitle">Загрузка патчера</system:String>
 	<system:String x:Key="PatchViewExtractingTitle">Распаковка патчера</system:String>
 	<system:String x:Key="PatchViewPatchingErrorMessage">Ошибка при попытке патча EFT. Подробности смотрите в журналах</system:String>
+	<system:String x:Key="PatchViewAquirePatcherErrorMessage">Error trying to aquire the patcher for EFT, please consult the logs for more details</system:String>
 	<system:String x:Key="PatchViewPatchingEndInstallButtonTitle">Завершить установку</system:String>
 
 	<!-- Install - Select View -->
@@ -377,6 +380,8 @@
 
 	<system:String x:Key="SelectViewInstallSITButtonTitle">Установить SIT</system:String>
 	<system:String x:Key="SelectViewInstallSITButtonToolTip">Понизить версию EFT при необходимости, установить SIT и поддержку модов.</system:String>
+	<system:String x:Key="SelectViewUpdateSITButtonTitle">Update SIT</system:String>
+	<system:String x:Key="SelectViewUpdateSITButtonToolTip">Update SIT to the latest version available for your current EFT version</system:String>
 	<system:String x:Key="SelectViewSITVersionTitle">Версия SIT:</system:String>
 	<system:String x:Key="SelectViewEFTVersionTitle">Версия EFT:</system:String>
 	<system:String x:Key="SelectViewEFTPathTitle">Путь EFT:</system:String>

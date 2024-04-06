@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using FluentAvalonia.UI.Controls;
+using Microsoft.Extensions.Logging;
 using SIT.Manager.Interfaces;
 using SIT.Manager.ManagedProcess;
 using SIT.Manager.Models;
@@ -10,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
+using System.Security.Authentication;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -47,6 +49,8 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         { 14, "Install folder is missing a folder." },
         { 15, "Patcher failed." }
     };
+
+    private List<SitInstallVersion>? _availableSitUpdateVersions;
 
     /// <summary>
     /// Cleans up the EFT directory
@@ -109,8 +113,35 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             return sitVersions;
         }
 
-        string releasesJsonString = await GetHttpStringWithRetryAsync(() => _httpClient.GetStringAsync(@"https://sitcoop.publicvm.com/api/v1/repos/SIT/Downgrade-Patches/releases"), TimeSpan.FromSeconds(1), 3);
-        List<GiteaRelease> giteaReleases = JsonSerializer.Deserialize<List<GiteaRelease>>(releasesJsonString) ?? [];
+        ContentDialog blockedByISPWarning = new()
+        {
+            Title = _localizationService.TranslateSource("InstallServiceErrorTitle"),
+            Content = _localizationService.TranslateSource("InstallServiceSSLError"),
+            PrimaryButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonOk")
+        };
+
+        string releasesJsonString;
+        try
+        {
+            releasesJsonString = await GetHttpStringWithRetryAsync(() => _httpClient.GetStringAsync(@"https://patcher.stayintarkov.com/api/v1/repos/SIT/Downgrade-Patches/releases"), TimeSpan.FromSeconds(1), 3);
+        }
+        catch (AuthenticationException)
+        {
+            await blockedByISPWarning.ShowAsync();
+            return [];
+        }
+
+        List<GiteaRelease> giteaReleases;
+        try
+        {
+            giteaReleases = JsonSerializer.Deserialize<List<GiteaRelease>>(releasesJsonString) ?? [];
+        }
+        catch (JsonException)
+        {
+            await blockedByISPWarning.ShowAsync();
+            return [];
+        }
+
         if (giteaReleases.Count == 0)
         {
             _logger.LogError("Found no available mirrors to use as a downgrade patcher");
@@ -390,7 +421,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             File.Delete(patcherPath);
         }
 
-        bool downloadSuccess = await _fileService.DownloadFile("Patcher.zip", targetPath, url, downloadProgress);
+        bool downloadSuccess = await _fileService.DownloadFile("Patcher.zip", targetPath, url, downloadProgress).ConfigureAwait(false);
         if (!downloadSuccess)
         {
             _logger.LogError("Failed to download the patcher from the selected mirror.");
@@ -399,14 +430,14 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
 
         if (File.Exists(patcherPath))
         {
-            await _fileService.ExtractArchive(patcherPath, targetPath, extractionProgress);
+            await _fileService.ExtractArchive(patcherPath, targetPath, extractionProgress).ConfigureAwait(false);
             File.Delete(patcherPath);
         }
 
         var patcherDir = Directory.GetDirectories(targetPath, "Patcher*").FirstOrDefault();
         if (!string.IsNullOrEmpty(patcherDir))
         {
-            await CloneDirectoryAsync(patcherDir, _configService.Config.InstallPath);
+            await CloneDirectoryAsync(patcherDir, targetPath).ConfigureAwait(false);
             Directory.Delete(patcherDir, true);
         }
 
@@ -443,6 +474,45 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             return string.Empty;
         }
         return EFTGameFinder.FindOfficialGamePath();
+    }
+
+    public SitInstallVersion? GetLatestAvailableSitRelease()
+    {
+        return _availableSitUpdateVersions?.MaxBy(x => x.SitVersion);
+    }
+
+    public async Task<bool> IsSitUpateAvailable()
+    {
+        if (string.IsNullOrEmpty(_configService.Config.TarkovVersion) && string.IsNullOrEmpty(_configService.Config.SitVersion))
+        {
+            // We need a tarkov and SIT version to be able to check for updates so return early.
+            return false;
+        }
+
+        if (DateTime.Now.AddHours(-1) < _configService.Config.LastSitUpdateCheckTime)
+        {
+            // We haven't checked for updates in the last hour so refresh the available verisons
+            _availableSitUpdateVersions = await GetAvailableSitReleases(_configService.Config.TarkovVersion);
+            _availableSitUpdateVersions = _availableSitUpdateVersions?.Where(x =>
+            {
+                bool parsedSitVersion = Version.TryParse(x.SitVersion.Replace("StayInTarkov.Client-", ""), out Version? sitVersion);
+                if (parsedSitVersion)
+                {
+                    Version installedSit = Version.Parse(_configService.Config.SitVersion);
+                    if (sitVersion > installedSit && _configService.Config.TarkovVersion == x.EftVersion)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }).ToList();
+
+            // Update the last check time so that we don't refresh this list again for an hour
+            _configService.Config.LastSitUpdateCheckTime = DateTime.Now;
+            _configService.UpdateConfig(_configService.Config);
+        }
+
+        return _availableSitUpdateVersions?.Count != 0;
     }
 
     public async Task InstallServer(GithubRelease selectedVersion, string targetInstallDir, IProgress<double> downloadProgress, IProgress<double> extractionProgress)
@@ -588,7 +658,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             {
                 internalDownloadProgress = new(progress =>
                 {
-                    internalDownloadProgressPercentage = 0.5 + (progress / downloadAndExtractionSteps);
+                    internalDownloadProgressPercentage = 50 + (progress / downloadAndExtractionSteps);
                     downloadProgress.Report(internalDownloadProgressPercentage);
                 });
                 internalExtractionProgress = new(progress =>

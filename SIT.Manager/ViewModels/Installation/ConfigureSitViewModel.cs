@@ -25,6 +25,9 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
     private bool _isLoading = false;
 
     [ObservableProperty]
+    private bool _overridenBsgInstallPath = false;
+
+    [ObservableProperty]
     private SitInstallVersion? _selectedVersion;
 
     [ObservableProperty]
@@ -76,6 +79,7 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
             else
             {
                 CurrentInstallProcessState.EftInstallPath = directorySelected.Path.LocalPath;
+                OverridenBsgInstallPath = true;
                 ValidateConfiguration();
             }
         }
@@ -175,6 +179,19 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
     protected override async void OnActivated()
     {
         base.OnActivated();
+
+        if (CurrentInstallProcessState.RequestedInstallOperation == RequestedInstallOperation.UpdateSit)
+        {
+            SitInstallVersion? availableVersion = _installerService.GetLatestAvailableSitRelease();
+            if (availableVersion != null)
+            {
+                CurrentInstallProcessState.RequestedVersion = availableVersion.Release;
+                ProgressInstall();
+                return;
+            }
+        }
+
+        OverridenBsgInstallPath = CurrentInstallProcessState.BsgInstallPath != CurrentInstallProcessState.EftInstallPath;
         await FetchVersionAndMirrorMatrix();
     }
 

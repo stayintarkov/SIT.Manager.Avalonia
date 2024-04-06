@@ -88,11 +88,11 @@ public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterServi
         }
     }
 
-    private void ExtractUpdatedManager(string zipPath, string destination)
+    private async Task ExtractUpdatedManager(string zipPath, string destination)
     {
         DirectoryInfo releasePath = new(destination);
         releasePath.Create();
-        _fileService.ExtractArchive(zipPath, releasePath.FullName);
+        await _fileService.ExtractArchive(zipPath, releasePath.FullName);
     }
 
     public async Task<bool> CheckForUpdate()
@@ -150,7 +150,7 @@ public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterServi
 
         _logger.LogInformation("Download complete; Extracting new version..");
         string releasePath = Path.Combine(tempPath, "Release");
-        ExtractUpdatedManager(zipPath, releasePath);
+        await ExtractUpdatedManager(zipPath, releasePath);
 
         // Set the permissions for the executable now that we have extracted it
         // this has the added bonus of making sure that Process.dll tm is loaded 

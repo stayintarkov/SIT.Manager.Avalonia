@@ -71,7 +71,14 @@
 
 			<ui:NavigationView.MenuItems>
 				<ui:NavigationViewItem IconSource="Play" Content="{DynamicResource PlayTitle}" Tag="SIT.Manager.Views.PlayPage" ToolTip.Tip="{DynamicResource PlayTitleToolTip}"/>
-				<ui:NavigationViewItem IconSource="Sync" Content="{DynamicResource InstallTitle}" Tag="SIT.Manager.Views.InstallPage" ToolTip.Tip="{DynamicResource InstallTitleToolTip}"/>
+
+				<ui:NavigationViewItem IconSource="Sync" Content="{DynamicResource InstallTitle}" Tag="SIT.Manager.Views.InstallPage" ToolTip.Tip="{DynamicResource InstallTitleToolTip}">
+					<ui:NavigationViewItem.InfoBadge>
+						<ui:InfoBadge IconSource="ChevronUp"
+									  IsVisible="{Binding SitUpdateAvailable}"/>
+					</ui:NavigationViewItem.InfoBadge>
+				</ui:NavigationViewItem>
+
 				<ui:NavigationViewItem IconSource="AllApps" Content="{DynamicResource ToolsTitle}" Tag="SIT.Manager.Views.ToolsPage" ToolTip.Tip="{DynamicResource ToolsTitleToolTip}"/>
 				<ui:NavigationViewItem IconSource="MapDrive" Content="{DynamicResource ServerTitle}" Tag="SIT.Manager.Views.ServerPage" ToolTip.Tip="{DynamicResource ServerTitleToolTip}"/>
 				<ui:NavigationViewItem IconSource="Library" Content="{DynamicResource ModsTitle}" Tag="SIT.Manager.Views.ModsPage" ToolTip.Tip="{DynamicResource ModsTitleToolTip}"/>

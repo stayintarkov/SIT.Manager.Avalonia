@@ -39,6 +39,7 @@
 	<system:String x:Key="PlayPageViewModelWaitingForServerTitle">等待伺服器</system:String>
 	<system:String x:Key="PlayPageViewModelServerErrorTitle">伺服器錯誤</system:String>
 	<system:String x:Key="PlayPageViewModelServerErrorDescription">伺服器從未啟動，請查看日誌以獲取更多資訊！</system:String>
+	<system:String x:Key="PlayPageViewModelLoginIncorrectPassword">Incorrect password</system:String>
 
 	<!-- Pane View (Menu on the left also tooltip about update on top) -->
 	<system:String x:Key="UpdateNotification">SIT 管理器有新版本可用。按此處更新：</system:String>
@@ -300,6 +301,7 @@
 	<system:String x:Key="InstallServiceInstallSuccessfulDescription">伺服器端安裝成功</system:String>
 	<system:String x:Key="InstallServiceInstallSITSuccessfulDescription">SIT 安裝成功</system:String>
 	<system:String x:Key="InstallerServiceNoDowngradePatcher">《逃離塔科夫》這些版本沒有可用的降級補丁。</system:String>
+	<system:String x:Key="InstallServiceSSLError">Your ISP is likely blocking our connection. Please use a VPN and try again.</system:String>
 
 	<!-- File Service -->
 	<system:String x:Key="FileServiceProgressDownloading">下載檔案 '%1'</system:String>
@@ -366,6 +368,7 @@
 	<system:String x:Key="PatchViewDownloadingTitle">正在下載補丁</system:String>
 	<system:String x:Key="PatchViewExtractingTitle">正在解壓縮補丁</system:String>
 	<system:String x:Key="PatchViewPatchingErrorMessage">嘗試對 EFT 進行補丁時出錯。請查看日誌以獲取詳細信息</system:String>
+	<system:String x:Key="PatchViewAquirePatcherErrorMessage">Error trying to aquire the patcher for EFT, please consult the logs for more details</system:String>
 	<system:String x:Key="PatchViewPatchingEndInstallButtonTitle">完成安裝</system:String>
 
 	<!-- Install - Select View -->
@@ -379,6 +382,8 @@
 
 	<system:String x:Key="SelectViewInstallSITButtonTitle">安裝 SIT</system:String>
 	<system:String x:Key="SelectViewInstallSITButtonToolTip">根據需要降級 EFT 版本，並安裝 SIT 和模組支援。</system:String>
+	<system:String x:Key="SelectViewUpdateSITButtonTitle">Update SIT</system:String>
+	<system:String x:Key="SelectViewUpdateSITButtonToolTip">Update SIT to the latest version available for your current EFT version</system:String>
 	<system:String x:Key="SelectViewSITVersionTitle">SIT 版本：</system:String>
 	<system:String x:Key="SelectViewEFTVersionTitle">EFT 版本：</system:String>
 	<system:String x:Key="SelectViewEFTPathTitle">EFT 路徑：</system:String>

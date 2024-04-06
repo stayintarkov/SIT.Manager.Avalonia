@@ -166,7 +166,12 @@ public partial class PlayPageViewModel : ObservableObject
         catch (IncorrectServerPasswordException)
         {
             Debug.WriteLine("DEBUG: Incorrect password");
-            //TODO: Utils.ShowInfoBar("Connect", $"Invalid password!", InfoBarSeverity.Error);
+            await new ContentDialog()
+            {
+                Title = _localizationService.TranslateSource("PlayPageViewModelLoginErrorTitle"),
+                Content = _localizationService.TranslateSource("PlayPageViewModelLoginIncorrectPassword"),
+                CloseButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonOk")
+            }.ShowAsync();
         }
         catch (Exception ex)
         {
@@ -332,7 +337,11 @@ public partial class PlayPageViewModel : ObservableObject
         if (string.IsNullOrEmpty(token))
             return;
 
-        Version SITVersion = new(_configService.Config.SitVersion);
+        Version SITVersion;
+        if (_configService.Config.SitVersion == null)
+            SITVersion = new();
+        else
+            SITVersion = new(_configService.Config.SitVersion);
         string backendUrl = serverAddress.AbsoluteUri[..^(SITVersion >= standardUriFormatSupportedVersion ? 0 : 1)];
 
         // Launch game
