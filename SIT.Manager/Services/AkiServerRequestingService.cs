@@ -55,13 +55,14 @@ public class AkiServerRequestingService(HttpClient httpClient, ResiliencePipelin
     public async Task<AkiServer> GetAkiServerAsync(Uri serverAddresss, bool fetchInformation = true)
     {
         AkiServer ret;
-        if(fetchInformation)
+        if (fetchInformation)
         {
             var strategy = resiliencePipelineProvider.GetPipeline<HttpResponseMessage>("ping-pipeline");
             using MemoryStream respStream = await SendAsync(serverAddresss, "/launcher/server/connect", strategy: strategy);
-            string json = Encoding.UTF8.GetString(respStream.ToArray());
+            string json;
+            using (StreamReader sr = new(respStream)) { json = sr.ReadToEnd(); }
             JObject connectInfo = JObject.Parse(json);
-            string? serverName = (string?)connectInfo.GetValue("name");
+            string? serverName = (string?) connectInfo.GetValue("name");
             ret = new(serverAddresss)
             {
                 Name = serverName ?? string.Empty
