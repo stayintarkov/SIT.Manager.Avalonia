@@ -6,10 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Models.Aki;
-public class AkiServer : ObservableObject
+public class AkiServer(Uri address) : ObservableObject
 {
     public string Name { get; internal set; } = string.Empty;
-    public Uri? Address { get; set; } = null;
+    public Uri Address { get; } = address;
     public int Players { get; internal set; } = 0;
     public int Ping { get; internal set; } = -1;
 }

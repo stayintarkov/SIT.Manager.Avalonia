@@ -93,7 +93,9 @@ public sealed partial class App : Application
                         { "User-Agent", "request" }
                     }
                 })
-                .AddSingleton<ILocalizationService, LocalizationService>();
+                .AddSingleton<ILocalizationService, LocalizationService>()
+                .AddSingleton<IAkiServerRequestingService, AkiServerRequestingService>()
+                .AddSingleton<IAppUpdaterService, AppUpdaterService>();
 
             #endregion Services
 
@@ -119,7 +121,8 @@ public sealed partial class App : Application
             }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler()
             {
                 SslProtocols = System.Security.Authentication.SslProtocols.Tls12,
-                ServerCertificateCustomValidationCallback = delegate { return true; }
+                ServerCertificateCustomValidationCallback = delegate { return true; },
+                MaxConnectionsPerServer = 10
             });
 
             services.AddResiliencePipeline("default-pipeline", builder =>
@@ -134,9 +137,9 @@ public sealed partial class App : Application
             {
                 builder.AddRetry(new RetryStrategyOptions<HttpResponseMessage>()
                 {
-                    MaxRetryAttempts = 10,
+                    MaxRetryAttempts = 6,
                     BackoffType = DelayBackoffType.Exponential,
-                    MaxDelay = TimeSpan.FromSeconds(45),
+                    MaxDelay = TimeSpan.FromSeconds(30),
                     OnRetry = static args =>
                     {
                         Debug.WriteLine("Retrying ping. Attempt: {0}", args.AttemptNumber);
