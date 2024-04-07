@@ -153,7 +153,7 @@ public partial class ModsPageViewModel : ObservableRecipient
             return;
         }
 
-        bool installSuccessful = await _modService.InstallMod(SelectedMod);
+        bool installSuccessful = await _modService.InstallMod(_managerConfigService.Config.InstallPath, SelectedMod);
         EnableInstall = !installSuccessful;
     }
 
@@ -164,7 +164,7 @@ public partial class ModsPageViewModel : ObservableRecipient
             return;
         }
 
-        bool uninstallSuccessful = await _modService.UninstallMod(SelectedMod);
+        bool uninstallSuccessful = await _modService.UninstallMod(_managerConfigService.Config.InstallPath, SelectedMod);
         EnableInstall = uninstallSuccessful;
     }
 

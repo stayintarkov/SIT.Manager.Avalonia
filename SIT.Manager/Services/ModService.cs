@@ -32,6 +32,45 @@ public class ModService(IBarNotificationService barNotificationService,
 
     public List<ModInfo> ModList { get; private set; } = [];
 
+    private async Task InstallFiles(string baseSourceDirectory, string baseTargetDirectory, List<string> files)
+    {
+        foreach (string file in files)
+        {
+            string sourcePath = Path.Combine(baseSourceDirectory, file);
+            string targetPath = Path.Combine(baseTargetDirectory, file);
+            await _filesService.CopyFileAsync(sourcePath, targetPath).ConfigureAwait(false);
+        }
+    }
+
+    private async Task UninstallFiles(string baseInstallDirectory, List<string> files, string modName)
+    {
+        foreach (string file in files)
+        {
+            string targetPath = Path.Combine(baseInstallDirectory, file);
+            if (File.Exists(targetPath))
+            {
+                File.Delete(targetPath);
+            }
+            else
+            {
+                ContentDialog dialog = new()
+                {
+                    Title = _localizationService.TranslateSource("ModServiceErrorUninstallModTitle"),
+                    Content = _localizationService.TranslateSource("ModServiceErrorUninstallModDescription", modName, file),
+                    CloseButtonText = _localizationService.TranslateSource("ModServiceButtonNo"),
+                    IsPrimaryButtonEnabled = true,
+                    PrimaryButtonText = _localizationService.TranslateSource("ModServiceButtonYes")
+                };
+
+                ContentDialogResult result = await dialog.ShowAsync();
+                if (result != ContentDialogResult.Primary)
+                {
+                    throw new FileNotFoundException(_localizationService.TranslateSource("ModServiceErrorExceptionUninstallModDescription", modName, modName));
+                }
+            }
+        }
+    }
+
     public async Task DownloadModsCollection()
     {
         string modsDirectory = Path.Combine(_configService.Config.InstallPath, "SITLauncher", "Mods");
@@ -81,8 +120,7 @@ public class ModService(IBarNotificationService barNotificationService,
                 ManagerConfig config = _configService.Config;
                 config.InstalledMods.Remove(mod.Name);
                 _configService.UpdateConfig(config);
-
-                await InstallMod(mod, true);
+                await InstallMod(_configService.Config.InstallPath, mod, true).ConfigureAwait(false);
             }
         }
         else
@@ -93,9 +131,9 @@ public class ModService(IBarNotificationService barNotificationService,
         _barNotificationService.ShowSuccess(_localizationService.TranslateSource("ModServiceUpdatedModsTitle"), _localizationService.TranslateSource("ModServiceUpdatedModsDescription", $"{outdatedMods.Count}"));
     }
 
-    public async Task<bool> InstallMod(ModInfo mod, bool suppressNotification = false)
+    public async Task<bool> InstallMod(string targetPath, ModInfo mod, bool suppressNotification = false)
     {
-        if (string.IsNullOrEmpty(_configService.Config.InstallPath))
+        if (string.IsNullOrEmpty(targetPath))
         {
             _barNotificationService.ShowError(_localizationService.TranslateSource("ModServiceInstallModTitle"), _localizationService.TranslateSource("ModServiceInstallErrorModDescription"));
             return false;
@@ -126,31 +164,15 @@ public class ModService(IBarNotificationService barNotificationService,
                 return false;
             }
 
-            string installPath = _configService.Config.InstallPath;
-            string gamePluginsPath = Path.Combine(installPath, "BepInEx", "plugins");
-            string gameConfigPath = Path.Combine(installPath, "BepInEx", "config");
-            string gamePatchersPath = Path.Combine(installPath, "BepInEx", "patchers");
+            // TODO cache these with the manager?????
+            string baseModSourcePath = Path.Combine(targetPath, "SITLauncher", "Mods", "Extracted");
 
-            foreach (string pluginFile in mod.PluginFiles)
-            {
-                string sourcePath = Path.Combine(installPath, "SITLauncher", "Mods", "Extracted", "plugins", pluginFile);
-                string targetPath = Path.Combine(gamePluginsPath, pluginFile);
-                File.Copy(sourcePath, targetPath, true);
-            }
-
-            foreach (string? configFile in mod.ConfigFiles)
-            {
-                string sourcePath = Path.Combine(installPath, "SITLauncher", "Mods", "Extracted", "config", configFile);
-                string targetPath = Path.Combine(gameConfigPath, configFile);
-                File.Copy(sourcePath, targetPath, true);
-            }
-
-            foreach (string? patcherFile in mod.PatcherFiles)
-            {
-                string sourcePath = Path.Combine(installPath, "SITLauncher", "Mods", "Extracted", "patchers", patcherFile);
-                string targetPath = Path.Combine(gamePatchersPath, patcherFile);
-                File.Copy(sourcePath, targetPath, true);
-            }
+            // Install any plugin files
+            await InstallFiles(Path.Combine(baseModSourcePath, "plugins"), Path.Combine(targetPath, "BepInEx", "plugins"), mod.PluginFiles).ConfigureAwait(false);
+            // Install any config files
+            await InstallFiles(Path.Combine(baseModSourcePath, "config"), Path.Combine(targetPath, "BepInEx", "config"), mod.ConfigFiles).ConfigureAwait(false);
+            // Install any patcher files
+            await InstallFiles(Path.Combine(baseModSourcePath, "patchers"), Path.Combine(targetPath, "BepInEx", "patchers"), mod.ConfigFiles).ConfigureAwait(false);
 
             ManagerConfig config = _configService.Config;
             config.InstalledMods.Add(mod.Name, mod.PortVersion);
@@ -196,99 +218,21 @@ public class ModService(IBarNotificationService barNotificationService,
         ModList.AddRange(masterList);
     }
 
-    public async Task<bool> UninstallMod(ModInfo mod)
+    public async Task<bool> UninstallMod(string targetPath, ModInfo mod)
     {
         try
         {
-            if (mod == null || string.IsNullOrEmpty(_configService.Config.InstallPath))
+            if (mod == null || string.IsNullOrEmpty(targetPath))
             {
                 return false;
             }
 
-            string installPath = _configService.Config.InstallPath;
-            string gamePluginsPath = Path.Combine(installPath, "BepInEx", "plugins");
-            string gameConfigPath = Path.Combine(installPath, "BepInEx", "config");
-            string gamePatchersPath = Path.Combine(installPath, "BepInEx", "patchers");
-
-            foreach (string pluginFile in mod.PluginFiles)
-            {
-                string targetPath = Path.Combine(gamePluginsPath, pluginFile);
-                if (File.Exists(targetPath))
-                {
-                    File.Delete(targetPath);
-                }
-                else
-                {
-                    ContentDialog dialog = new()
-                    {
-                        Title = _localizationService.TranslateSource("ModServiceErrorUninstallModTitle"),
-                        Content = _localizationService.TranslateSource("ModServiceErrorUninstallModDescription", mod.Name, pluginFile),
-                        CloseButtonText = _localizationService.TranslateSource("ModServiceButtonNo"),
-                        IsPrimaryButtonEnabled = true,
-                        PrimaryButtonText = _localizationService.TranslateSource("ModServiceButtonYes")
-                    };
-
-                    ContentDialogResult result = await dialog.ShowAsync();
-                    if (result != ContentDialogResult.Primary)
-                    {
-                        throw new FileNotFoundException(_localizationService.TranslateSource("ModServiceErrorExceptionUninstallModDescription", mod.Name, pluginFile));
-                    }
-                }
-            }
-
-            foreach (var configFile in mod.ConfigFiles)
-            {
-                string targetPath = Path.Combine(gameConfigPath, configFile);
-                if (File.Exists(targetPath))
-                {
-                    File.Delete(targetPath);
-                }
-                else
-                {
-                    ContentDialog dialog = new()
-                    {
-                        Title = _localizationService.TranslateSource("ModServiceErrorUninstallModTitle"),
-                        Content = _localizationService.TranslateSource("ModServiceErrorExceptionUninstallModDescription", mod.Name, configFile),
-                        CloseButtonText = _localizationService.TranslateSource("ModServiceButtonNo"),
-                        IsPrimaryButtonEnabled = true,
-                        PrimaryButtonText = _localizationService.TranslateSource("ModServiceButtonYes")
-                    };
-
-                    ContentDialogResult result = await dialog.ShowAsync();
-
-                    if (result != ContentDialogResult.Primary)
-                    {
-                        throw new FileNotFoundException(_localizationService.TranslateSource("ModServiceErrorExceptionFileUninstallModDescription", mod.Name, configFile));
-                    }
-                }
-            }
-
-            foreach (var patcherFile in mod.PatcherFiles)
-            {
-                string targetPath = Path.Combine(gamePatchersPath, patcherFile);
-                if (File.Exists(targetPath))
-                {
-                    File.Delete(targetPath);
-                }
-                else
-                {
-                    ContentDialog dialog = new()
-                    {
-                        Title = _localizationService.TranslateSource("ModServiceErrorUninstallModTitle"),
-                        Content = _localizationService.TranslateSource("ModServiceErrorExceptionUninstallModDescription", mod.Name, patcherFile),
-                        CloseButtonText = _localizationService.TranslateSource("ModServiceButtonNo"),
-                        IsPrimaryButtonEnabled = true,
-                        PrimaryButtonText = _localizationService.TranslateSource("ModServiceButtonYes")
-                    };
-
-                    ContentDialogResult result = await dialog.ShowAsync();
-
-                    if (result != ContentDialogResult.Primary)
-                    {
-                        throw new FileNotFoundException(_localizationService.TranslateSource("ModServiceErrorExceptionFileUninstallModDescription", mod.Name, patcherFile));
-                    }
-                }
-            }
+            // Uninstall any plugin files
+            await UninstallFiles(Path.Combine(targetPath, "BepInEx", "plugins"), mod.PluginFiles, mod.Name).ConfigureAwait(false);
+            // Uninstall any config files
+            await UninstallFiles(Path.Combine(targetPath, "BepInEx", "config"), mod.ConfigFiles, mod.Name).ConfigureAwait(false);
+            // Uninstall any patcher files
+            await UninstallFiles(Path.Combine(targetPath, "BepInEx", "patchers"), mod.ConfigFiles, mod.Name).ConfigureAwait(false);
 
             ManagerConfig config = _configService.Config;
             config.InstalledMods.Remove(mod.Name);

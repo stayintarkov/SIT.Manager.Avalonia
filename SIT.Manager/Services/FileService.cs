@@ -13,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Services;
@@ -177,6 +178,19 @@ public class FileService(IActionNotificationService actionNotificationService,
 
         double currentprogress = 0;
         await CopyDirectoryAsync(sourceDir, destinationDir, currentprogress, totalSize, progress).ConfigureAwait(false);
+    }
+
+    public async Task CopyFileAsync(string sourceFile, string destinationFile, CancellationToken cancellationToken = default)
+    {
+        FileOptions fileOptions = FileOptions.Asynchronous | FileOptions.SequentialScan;
+        int bufferSize = 4096;
+        using (FileStream sourceStream = new(sourceFile, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize, fileOptions))
+        {
+            using (FileStream destinationStream = new(destinationFile, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize, fileOptions))
+            {
+                await sourceStream.CopyToAsync(destinationStream, bufferSize, cancellationToken).ConfigureAwait(false);
+            }
+        }
     }
 
     // TODO unify this and the other DownloadFile function nicely - will have to do some things on the mods page for this I think.
