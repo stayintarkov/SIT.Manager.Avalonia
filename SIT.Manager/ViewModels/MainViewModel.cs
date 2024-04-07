@@ -34,6 +34,9 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
     private ActionNotification? _actionPanelNotification = new(string.Empty, 0, false);
 
     [ObservableProperty]
+    private bool _isDevloperModeEnabled = false;
+
+    [ObservableProperty]
     private bool _updateAvailable = false;
 
     [ObservableProperty]
@@ -70,7 +73,14 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
 
         CloseButtonCommand = new RelayCommand(() => { UpdateAvailable = false; });
 
-        _managerConfigService.ConfigChanged += async (o, c) => await CheckForUpdate();
+        _managerConfigService.ConfigChanged += ManagerConfigService_ConfigChanged;
+    }
+
+    private async void ManagerConfigService_ConfigChanged(object? sender, ManagerConfig e)
+    {
+        IsDevloperModeEnabled = e.EnableDeveloperMode;
+
+        await CheckForUpdate();
     }
 
     private async Task CheckForUpdate()
