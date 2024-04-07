@@ -123,6 +123,8 @@
 	<system:String x:Key="SettingsLookForUpdatesTitleToolTip">打开启动器时自动检查更新</system:String>
 	<system:String x:Key="SettingsHideIpAddressTitle">隐藏 IP 地址</system:String>
 	<system:String x:Key="SettingsHideIpAddressToolTip">在 IP 地址框中用星号隐藏 IP 地址。</system:String>
+	<system:String x:Key="SettingsEnableDeveloperMode">Enable Developer Mode</system:String>
+	<system:String x:Key="SettingsEnableDeveloperModeToolTip">Enables developer/test releases of SIT and SIT server for testing purposes</system:String>
 	<system:String x:Key="SettingsLanguageTitle">语言:</system:String>
 	<system:String x:Key="SettingsLanguageTitleToolTip">将整个启动器翻译为您的语言，选择其中一种!</system:String>
 	<system:String x:Key="SettingsAccentColorTitle">强调颜色:</system:String>

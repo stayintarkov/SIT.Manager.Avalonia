@@ -80,7 +80,7 @@ public partial class SettingsPageViewModel : ObservableObject
 
         _selectedConsoleFontFamily = InstalledFonts.FirstOrDefault(x => x.Name == _config.ConsoleFontFamily, FontFamily.Parse("Bender"));
 
-        _managerVersionString = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "N/A";
+        _managerVersionString = Assembly.GetEntryAssembly()?.GetName().Version?.ToString() ?? "N/A";
 
         ChangeInstallLocationCommand = new AsyncRelayCommand(ChangeInstallLocation);
         ChangeAkiServerLocationCommand = new AsyncRelayCommand(ChangeAkiServerLocation);
