@@ -115,25 +115,22 @@
 						</StackPanel>
 						</StackPanel>
 				</Border>
-			</StackPanel>
-			<StackPanel>
 				<TextBlock Text="{DynamicResource ConfigureViewPersonalizationOptions}" Classes="FrameHeading"/>
 				<Border Classes="StandardFrame">
-		<CheckBox HorizontalAlignment="Left"
-				  Margin="0,0,0,0"
-				  ToolTip.Tip="{DynamicResource ConfigureSitViewEFTSettingsCheckboxTip}"
-			      IsChecked="{Binding CurrentInstallProcessState.CopyEftSettings}">
-			<CheckBox.Content>
-				<Grid ColumnDefinitions="Auto,*">
-					<ui:SymbolIcon Grid.Column="0" Symbol="Settings" Margin="0,0,0,0"/>
-					<TextBlock Grid.Column="1" Text="{DynamicResource ConfigureSitViewEFTSettingsCheckboxTitle}" Margin="5,0,0,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
-				</Grid>
-			</CheckBox.Content>
-		</CheckBox>
+					<CheckBox HorizontalAlignment="Left"
+							  Margin="8,0,0,0"
+							  ToolTip.Tip="{DynamicResource ConfigureSitViewEFTSettingsCheckboxTip}"
+							  IsChecked="{Binding CurrentInstallProcessState.CopyEftSettings}">
+						<CheckBox.Content>
+							<Grid ColumnDefinitions="Auto,*">
+								<ui:SymbolIcon Grid.Column="0" Symbol="Settings" Margin="0,0,0,0"/>
+								<TextBlock Grid.Column="1" Text="{DynamicResource ConfigureSitViewEFTSettingsCheckboxTitle}" Margin="5,0,0,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+							</Grid>
+						</CheckBox.Content>
+					</CheckBox>
 				</Border>
 			</StackPanel>
 		</StackPanel>
-		
 		<Grid Grid.Row="1"
 			  ColumnDefinitions="*, *"
 			  Margin="4,4,4,8">

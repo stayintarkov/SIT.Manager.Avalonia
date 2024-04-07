@@ -739,7 +739,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                 }
             }
 
-            _logger.LogInformation($"Successfully copied EFT settings to '{destinationPath}'.");
+            _logger.LogInformation("Successfully copied EFT settings to '{destinationPath}'.", destinationPath);
         }
         catch (Exception ex)
         {
