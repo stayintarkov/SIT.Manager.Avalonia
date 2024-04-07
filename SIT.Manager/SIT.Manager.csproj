@@ -4,16 +4,20 @@
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-		<Deterministic>false</Deterministic>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
 		<TargetFramework>net8.0</TargetFramework>
+	</PropertyGroup>
+
+	<PropertyGroup>
 		<AssemblyName>SIT.Manager.ASM</AssemblyName>
+		<Company>StayInTarkov</Company>
+		<Product>SIT.Manager</Product>
 	</PropertyGroup>
   
 	<ItemGroup>
 		<AvaloniaResource Include="Assets\**" />
+		<Compile Include="..\SIT.Manager.Desktop\AssemblyInfo.cs" Link="AssemblyInfo.cs" />
 		<EmbeddedResource Include="Localization\*.axaml" />
 		<EmbeddedResource Include="Resources\Aki.Common.dll" />
 		<EmbeddedResource Include="Resources\Aki.Reflection.dll" />

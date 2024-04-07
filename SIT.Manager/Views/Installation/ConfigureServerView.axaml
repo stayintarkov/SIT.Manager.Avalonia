@@ -32,7 +32,7 @@
 									  ItemsSource="{Binding AvailableVersions}">
 								<ComboBox.ItemTemplate>
 									<DataTemplate>
-										<TextBlock Text="{Binding tag_name}"/>
+										<TextBlock Text="{Binding TagName}"/>
 									</DataTemplate>
 								</ComboBox.ItemTemplate>
 							</ComboBox>

@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SIT.Manager.Extentions;
 using SIT.Manager.Interfaces;
-using SIT.Manager.Models;
+using SIT.Manager.Models.Github;
 using SIT.Manager.Models.Installation;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

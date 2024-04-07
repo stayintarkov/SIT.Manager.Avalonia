@@ -23,6 +23,8 @@ public partial class ManagerConfig : ObservableObject
     [ObservableProperty]
     public bool _closeAfterLaunch = false;
     [ObservableProperty]
+    public bool _enableDeveloperMode = false;
+    [ObservableProperty]
     public string _winePrefix = string.Empty;
     [ObservableProperty]
     public string _wineRunner = string.Empty;
