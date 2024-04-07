@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using SIT.Manager.Interfaces;
 using SIT.Manager.ManagedProcess;
 using SIT.Manager.Models;
+using SIT.Manager.Models.Github;
 using SIT.Manager.Models.Installation;
 using System;
 using System.Collections.Generic;
@@ -153,7 +154,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
 
         for (int i = 0; i < sitVersions.Count; i++)
         {
-            string sitVersionTargetBuild = sitVersions[i].Release.body.Split(".").Last();
+            string sitVersionTargetBuild = sitVersions[i].Release.Body.Split(".").Last();
             if (tarkovBuild == sitVersionTargetBuild)
             {
                 sitVersions[i].DownloadMirrors = [];
@@ -255,25 +256,31 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         {
             foreach (GithubRelease release in githubReleases)
             {
-                Match match = SITReleaseVersionRegex().Match(release.body);
+                // If this is a prerelease build and the user hasn't eneabled developer mode then we want to skip adding this to the list.
+                if (release.Prerelease && !_configService.Config.EnableDeveloperMode)
+                {
+                    continue;
+                }
+
+                Match match = SITReleaseVersionRegex().Match(release.Body);
                 if (match.Success)
                 {
                     string releasePatch = match.Value.Replace("This version works with version ", "");
-                    release.tag_name = $"{release.name} - Tarkov Version: {releasePatch}";
-                    release.body = releasePatch;
+                    release.TagName = $"{release.Name} - Tarkov Version: {releasePatch}";
+                    release.Body = releasePatch;
 
                     SitInstallVersion sitVersion = new()
                     {
                         Release = release,
                         EftVersion = releasePatch,
-                        SitVersion = release.name,
+                        SitVersion = release.Name,
                     };
 
                     result.Add(sitVersion);
                 }
                 else
                 {
-                    _logger.LogWarning($"FetchReleases: There was a SIT release without a version defined: {release.html_url}");
+                    _logger.LogWarning($"FetchReleases: There was a SIT release without a version defined: {release.HtmlUrl}");
                 }
             }
         }
@@ -371,6 +378,12 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         {
             foreach (GithubRelease release in githubReleases)
             {
+                // If this is a prerelease build and the user hasn't eneabled developer mode then we want to skip adding this to the list.
+                if (release.Prerelease && !_configService.Config.EnableDeveloperMode)
+                {
+                    continue;
+                }
+
                 // Check there is an asset available for this OS
                 string fileExtention = ".zip";
                 if (OperatingSystem.IsLinux())
@@ -378,20 +391,20 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                     fileExtention = ".tar.gz";
                 }
 
-                GithubRelease.Asset? releaseAsset = release.assets.Find(asset => asset.name.EndsWith(fileExtention));
+                Asset? releaseAsset = release.Assets.Find(asset => asset.Name.EndsWith(fileExtention));
                 if (releaseAsset != null)
                 {
-                    Match match = ServerReleaseVersionRegex().Match(release.body);
+                    Match match = ServerReleaseVersionRegex().Match(release.Body);
                     if (match.Success)
                     {
                         string releasePatch = match.Value.Replace("This server version works with version ", "");
-                        release.tag_name = $"{release.name} - Tarkov Version: {releasePatch}";
-                        release.body = releasePatch;
+                        release.TagName = $"{release.Name} - Tarkov Version: {releasePatch}";
+                        release.Body = releasePatch;
                         result.Add(release);
                     }
                     else
                     {
-                        _logger.LogWarning($"FetchReleases: There was a server release without a version defined: {release.html_url}");
+                        _logger.LogWarning($"FetchReleases: There was a server release without a version defined: {release.HtmlUrl}");
                     }
                 }
             }
@@ -532,14 +545,14 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             fileExtention = ".tar.gz";
         }
 
-        GithubRelease.Asset? releaseAsset = selectedVersion.assets.FirstOrDefault(a => a.name.StartsWith("SITCoop") && a.name.EndsWith(fileExtention));
+        Asset? releaseAsset = selectedVersion.Assets.FirstOrDefault(a => a.Name.StartsWith("SITCoop") && a.Name.EndsWith(fileExtention));
         if (releaseAsset == null)
         {
             _barNotificationService.ShowError("Error", "No server release found to download");
             _logger.LogError("No matching release asset found.");
             return;
         }
-        string releaseZipUrl = releaseAsset.browser_download_url;
+        string releaseZipUrl = releaseAsset.BrowserDownloadUrl;
 
         if (string.IsNullOrEmpty(targetInstallDir))
         {
@@ -555,12 +568,12 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         }
 
         // Define the paths for download target directory
-        string downloadLocation = Path.Combine(targetInstallDir, releaseAsset.name);
+        string downloadLocation = Path.Combine(targetInstallDir, releaseAsset.Name);
 
         try
         {
             // Download and extract the file into the target directory
-            await _fileService.DownloadFile(releaseAsset.name, targetInstallDir, releaseZipUrl, downloadProgress);
+            await _fileService.DownloadFile(releaseAsset.Name, targetInstallDir, releaseZipUrl, downloadProgress);
             await _fileService.ExtractArchive(downloadLocation, targetInstallDir, extractionProgress);
         }
         catch (Exception ex)
@@ -651,7 +664,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             await _fileService.ExtractArchive(Path.Combine(bepinexPath, "BepInEx5.zip"), targetInstallDir, internalExtractionProgress);
 
             // We don't use index as they might be different from version to version
-            string? releaseZipUrl = selectedVersion.assets.Find(q => q.name == "StayInTarkov-Release.zip")?.browser_download_url;
+            string? releaseZipUrl = selectedVersion.Assets.Find(q => q.Name == "StayInTarkov-Release.zip")?.BrowserDownloadUrl;
             if (!string.IsNullOrEmpty(releaseZipUrl))
             {
                 internalDownloadProgress = new(progress =>

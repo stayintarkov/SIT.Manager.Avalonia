@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using SIT.Manager.Extentions;
 using SIT.Manager.Interfaces;
 using SIT.Manager.ManagedProcess;
-using SIT.Manager.Models;
+using SIT.Manager.Models.Github;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -107,7 +107,7 @@ public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterServi
                 GithubRelease? latestRelease = JsonSerializer.Deserialize<GithubRelease>(versionJsonString);
                 if (latestRelease != null)
                 {
-                    Version latestVersion = new(latestRelease.name);
+                    Version latestVersion = new(latestRelease.Name);
                     return latestVersion > currentVersion;
                 }
             }
