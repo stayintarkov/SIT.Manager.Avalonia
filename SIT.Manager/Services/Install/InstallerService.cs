@@ -663,6 +663,8 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             await _fileService.DownloadFile("BepInEx5.zip", bepinexPath, "https://github.com/BepInEx/BepInEx/releases/download/v5.4.22/BepInEx_x64_5.4.22.0.zip", internalDownloadProgress);
             await _fileService.ExtractArchive(Path.Combine(bepinexPath, "BepInEx5.zip"), targetInstallDir, internalExtractionProgress);
 
+            CopyEftSettings(targetInstallDir);
+
             // We don't use index as they might be different from version to version
             string? releaseZipUrl = selectedVersion.Assets.Find(q => q.Name == "StayInTarkov-Release.zip")?.BrowserDownloadUrl;
             if (!string.IsNullOrEmpty(releaseZipUrl))
@@ -725,6 +727,36 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         {
             _logger.LogError(ex, "Install SIT");
             throw;
+        }
+    }
+    public void CopyEftSettings(string targetInstallDir)
+    {
+        var sourcePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Battlestate Games", "Escape from Tarkov", "Settings");
+        var destinationPath = Path.Combine(targetInstallDir, "user", "sptSettings");
+
+        var filesToCopy = new[] { "Control.ini", "Game.ini", "Graphics.ini", "PostFx.ini", "Sound.ini" };
+        try
+        {
+            if (!Directory.Exists(destinationPath))
+            {
+                Directory.CreateDirectory(destinationPath);
+            }
+
+            foreach (var fileName in filesToCopy)
+            {
+                var sourceFile = Path.Combine(sourcePath, fileName);
+                if (File.Exists(sourceFile))
+                {
+                    var destFile = Path.Combine(destinationPath, fileName);
+                    File.Copy(sourceFile, destFile, overwrite: true);
+                }
+            }
+
+            _logger.LogInformation("Successfully copied EFT settings to '{destinationPath}'.", destinationPath);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to copy EFT settings.");
         }
     }
 }
