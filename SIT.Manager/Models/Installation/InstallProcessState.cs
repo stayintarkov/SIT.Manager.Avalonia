@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using SIT.Manager.Models.Github;
 using System.Collections.Generic;
 
 namespace SIT.Manager.Models.Installation;

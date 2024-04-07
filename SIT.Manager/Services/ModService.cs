@@ -129,6 +129,7 @@ public class ModService(IBarNotificationService barNotificationService,
             string installPath = _configService.Config.InstallPath;
             string gamePluginsPath = Path.Combine(installPath, "BepInEx", "plugins");
             string gameConfigPath = Path.Combine(installPath, "BepInEx", "config");
+            string gamePatchersPath = Path.Combine(installPath, "BepInEx", "patchers");
 
             foreach (string pluginFile in mod.PluginFiles)
             {
@@ -140,7 +141,14 @@ public class ModService(IBarNotificationService barNotificationService,
             foreach (string? configFile in mod.ConfigFiles)
             {
                 string sourcePath = Path.Combine(installPath, "SITLauncher", "Mods", "Extracted", "config", configFile);
-                string targetPath = Path.Combine(gameConfigPath + configFile);
+                string targetPath = Path.Combine(gameConfigPath, configFile);
+                File.Copy(sourcePath, targetPath, true);
+            }
+
+            foreach (string? patcherFile in mod.PatcherFiles)
+            {
+                string sourcePath = Path.Combine(installPath, "SITLauncher", "Mods", "Extracted", "patchers", patcherFile);
+                string targetPath = Path.Combine(gamePatchersPath, patcherFile);
                 File.Copy(sourcePath, targetPath, true);
             }
 
@@ -200,6 +208,7 @@ public class ModService(IBarNotificationService barNotificationService,
             string installPath = _configService.Config.InstallPath;
             string gamePluginsPath = Path.Combine(installPath, "BepInEx", "plugins");
             string gameConfigPath = Path.Combine(installPath, "BepInEx", "config");
+            string gamePatchersPath = Path.Combine(installPath, "BepInEx", "patchers");
 
             foreach (string pluginFile in mod.PluginFiles)
             {
@@ -229,7 +238,7 @@ public class ModService(IBarNotificationService barNotificationService,
 
             foreach (var configFile in mod.ConfigFiles)
             {
-                string targetPath = Path.Combine(gamePluginsPath, configFile);
+                string targetPath = Path.Combine(gameConfigPath, configFile);
                 if (File.Exists(targetPath))
                 {
                     File.Delete(targetPath);
@@ -250,6 +259,33 @@ public class ModService(IBarNotificationService barNotificationService,
                     if (result != ContentDialogResult.Primary)
                     {
                         throw new FileNotFoundException(_localizationService.TranslateSource("ModServiceErrorExceptionFileUninstallModDescription", mod.Name, configFile));
+                    }
+                }
+            }
+
+            foreach (var patcherFile in mod.PatcherFiles)
+            {
+                string targetPath = Path.Combine(gamePatchersPath, patcherFile);
+                if (File.Exists(targetPath))
+                {
+                    File.Delete(targetPath);
+                }
+                else
+                {
+                    ContentDialog dialog = new()
+                    {
+                        Title = _localizationService.TranslateSource("ModServiceErrorUninstallModTitle"),
+                        Content = _localizationService.TranslateSource("ModServiceErrorExceptionUninstallModDescription", mod.Name, patcherFile),
+                        CloseButtonText = _localizationService.TranslateSource("ModServiceButtonNo"),
+                        IsPrimaryButtonEnabled = true,
+                        PrimaryButtonText = _localizationService.TranslateSource("ModServiceButtonYes")
+                    };
+
+                    ContentDialogResult result = await dialog.ShowAsync();
+
+                    if (result != ContentDialogResult.Primary)
+                    {
+                        throw new FileNotFoundException(_localizationService.TranslateSource("ModServiceErrorExceptionFileUninstallModDescription", mod.Name, patcherFile));
                     }
                 }
             }
