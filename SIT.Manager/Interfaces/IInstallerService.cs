@@ -67,4 +67,10 @@ public interface IInstallerService
     /// <param name="extractionProgress"></param>
     /// <returns></returns>
     Task InstallSit(GithubRelease selectedVersion, string targetInstallDir, IProgress<double> downloadProgress, IProgress<double> extractionProgress);
+    /// <summary>
+    /// Imports over the EFT Settings from Live to SIT
+    /// </summary>
+    /// <param name="targetInstallDir"></param>
+    /// <returns></returns>
+    void CopyEftSettings(string targetInstallDir);
 }
