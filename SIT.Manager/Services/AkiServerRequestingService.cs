@@ -6,6 +6,7 @@ using SIT.Manager.Interfaces;
 using SIT.Manager.Models.Aki;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -16,15 +17,28 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Services;
-public class AkiServerRequestingService(HttpClient httpClient, ResiliencePipelineProvider<string> resiliencePipelineProvider) : IAkiServerRequestingService
+public class AkiServerRequestingService : IAkiServerRequestingService
 {
     private static readonly MediaTypeHeaderValue _contentHeaderType = new("application/json");
-    private readonly HttpClient _httpClient = httpClient;
-    private readonly ResiliencePipelineProvider<string> resiliencePipelineProvider = resiliencePipelineProvider;
+    private readonly HttpClient _httpClient;
+    private readonly ResiliencePipelineProvider<string> _resiliencePipelineProvider;
+    private readonly Dictionary<Uri, List<AkiCharacter>> _storedCharacters = new();
+
+    public AkiServerRequestingService(HttpClient httpClient, ResiliencePipelineProvider<string> resiliencePipelineProvider)
+    {
+        _httpClient = httpClient;
+        _resiliencePipelineProvider = resiliencePipelineProvider;
+
+        _storedCharacters.Clear();
+        if (File.Exists(""))
+        {
+
+        }
+    }
 
     private async Task<MemoryStream> SendAsync(Uri remoteAddress, string path, HttpMethod? method = null, string? data = null, ResiliencePipeline<HttpResponseMessage>? strategy = null, CancellationToken cancellationToken = default)
     {
-        if (strategy == null && !resiliencePipelineProvider.TryGetPipeline("default-pipeline", out strategy))
+        if (strategy == null && !_resiliencePipelineProvider.TryGetPipeline("default-pipeline", out strategy))
             throw new ArgumentNullException(nameof(strategy), "No default pipeline was specified and argument was null.");
 
         UriBuilder endpoint = new(remoteAddress) { Path = path };
@@ -48,6 +62,7 @@ public class AkiServerRequestingService(HttpClient httpClient, ResiliencePipelin
 
             return await _httpClient.SendAsync(req, cancellationToken: ct);
         }, cancellationToken);
+        reqResp.EnsureSuccessStatusCode();
         Stream respStream = await reqResp.Content.ReadAsStreamAsync(cancellationToken);
         return await respStream.InflateAsync(cancellationToken);
     }
@@ -57,7 +72,7 @@ public class AkiServerRequestingService(HttpClient httpClient, ResiliencePipelin
         AkiServer ret;
         if (fetchInformation)
         {
-            var strategy = resiliencePipelineProvider.GetPipeline<HttpResponseMessage>("ping-pipeline");
+            var strategy = _resiliencePipelineProvider.GetPipeline<HttpResponseMessage>("ping-pipeline");
             using MemoryStream respStream = await SendAsync(serverAddresss, "/launcher/server/connect", strategy: strategy);
             string json;
             using (StreamReader sr = new(respStream)) { json = sr.ReadToEnd(); }
@@ -72,5 +87,34 @@ public class AkiServerRequestingService(HttpClient httpClient, ResiliencePipelin
             ret = new(serverAddresss);
 
         return ret;
+    }
+
+    public async Task<int> PingAsync(AkiServer akiServer, CancellationToken cancellationToken = default)
+    {
+        var strategy = _resiliencePipelineProvider.GetPipeline<HttpResponseMessage>("ping-pipeline");
+        Stopwatch stopwatch = Stopwatch.StartNew();
+        using MemoryStream respStream = await SendAsync(akiServer.Address, "/launcher/ping", strategy: strategy, cancellationToken: cancellationToken);
+        stopwatch.Stop();
+
+        using (StreamReader streamReader = new(respStream))
+        {
+            if (streamReader.ReadToEnd().Equals("\"pong!\"", StringComparison.InvariantCultureIgnoreCase))
+                return Convert.ToInt32(stopwatch.ElapsedMilliseconds);
+            else
+                return -1;
+        }
+    }
+
+    public async Task PingByReferenceAsync(AkiServer akiServer, CancellationToken cancellationToken = default)
+    {
+        var strategy = _resiliencePipelineProvider.GetPipeline<HttpResponseMessage>("ping-pipeline");
+        Stopwatch stopwatch = Stopwatch.StartNew();
+        using MemoryStream respStream = await SendAsync(akiServer.Address, "/launcher/ping", strategy: strategy, cancellationToken: cancellationToken);
+        stopwatch.Stop();
+
+        using (StreamReader streamReader = new(respStream))
+        {
+            akiServer.Ping = streamReader.ReadToEnd().Equals("\"pong!\"", StringComparison.InvariantCultureIgnoreCase) ? Convert.ToInt32(stopwatch.ElapsedMilliseconds) : -1;
+        }
     }
 }
