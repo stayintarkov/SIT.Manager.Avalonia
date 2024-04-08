@@ -59,7 +59,7 @@ public sealed partial class App : Application
         services.AddTransient<IFileService, FileService>();
         services.AddSingleton<IInstallerService, InstallerService>();
         services.AddSingleton<IManagerConfigService, ManagerConfigService>();
-        services.AddTransient<IModService, ModService>();
+        services.AddSingleton<IModService, ModService>();
         services.AddTransient<IPickerDialogService>(x =>
         {
             if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop || desktop.MainWindow?.StorageProvider is not { } provider)

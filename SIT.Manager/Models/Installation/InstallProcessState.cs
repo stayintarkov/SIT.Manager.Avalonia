@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using SIT.Manager.Models.Github;
+using System.Collections.Generic;
 
 namespace SIT.Manager.Models.Installation;
 
@@ -10,6 +11,8 @@ public partial class InstallProcessState : ObservableObject
     private RequestedInstallOperation _requestedInstallOperation = RequestedInstallOperation.None;
     [ObservableProperty]
     private GithubRelease _requestedVersion = new();
+    [ObservableProperty]
+    public List<ModInfo> _requestedMods = [];
 
     // EFT Install Settings
     [ObservableProperty]

@@ -7,9 +7,7 @@ using SIT.Manager.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.ViewModels;
@@ -72,26 +70,11 @@ public partial class ModsPageViewModel : ObservableRecipient
             return;
         }
 
+        await _modService.LoadMasterModList();
+
         ModList.Clear();
-
-        string modsDirectory = Path.Combine(_managerConfigService.Config.InstallPath, "SITLauncher", "Mods", "Extracted");
         List<ModInfo> outdatedMods = [];
-
-        string modsListFile = Path.Combine(modsDirectory, "MasterList.json");
-        if (!File.Exists(modsListFile))
-        {
-            ModList.Add(new ModInfo()
-            {
-                Name = _localizationService.TranslateSource("ModsPageViewModelErrorNoModsFound")
-            });
-            return;
-        }
-
-        string masterListFile = await File.ReadAllTextAsync(modsListFile);
-        List<ModInfo> masterList = JsonSerializer.Deserialize<List<ModInfo>>(masterListFile) ?? [];
-        masterList = [.. masterList.OrderBy(x => x.Name)];
-
-        foreach (ModInfo mod in masterList)
+        foreach (ModInfo mod in _modService.ModList)
         {
             ModList.Add(mod);
 
@@ -170,7 +153,7 @@ public partial class ModsPageViewModel : ObservableRecipient
             return;
         }
 
-        bool installSuccessful = await _modService.InstallMod(SelectedMod);
+        bool installSuccessful = await _modService.InstallMod(_managerConfigService.Config.InstallPath, SelectedMod);
         EnableInstall = !installSuccessful;
     }
 
@@ -181,7 +164,7 @@ public partial class ModsPageViewModel : ObservableRecipient
             return;
         }
 
-        bool uninstallSuccessful = await _modService.UninstallMod(SelectedMod);
+        bool uninstallSuccessful = await _modService.UninstallMod(_managerConfigService.Config.InstallPath, SelectedMod);
         EnableInstall = uninstallSuccessful;
     }
 
