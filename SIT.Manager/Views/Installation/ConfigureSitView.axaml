@@ -126,6 +126,7 @@
 									   TextWrapping="Wrap"/>
 							<ListBox ItemsSource="{Binding Mods}"
 									 Margin="0,4,0,0"
+									 SelectedItems="{Binding CurrentInstallProcessState.RequestedMods}"
 									 SelectionMode="Multiple,Toggle">
 								<ListBox.ItemTemplate>
 									<DataTemplate>

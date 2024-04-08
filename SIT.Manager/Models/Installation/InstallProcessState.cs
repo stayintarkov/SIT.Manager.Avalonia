@@ -11,7 +11,8 @@ public partial class InstallProcessState : ObservableObject
     private RequestedInstallOperation _requestedInstallOperation = RequestedInstallOperation.None;
     [ObservableProperty]
     private GithubRelease _requestedVersion = new();
-    private List<ModInfo> _requestedMods = [];
+    [ObservableProperty]
+    public List<ModInfo> _requestedMods = [];
 
     // EFT Install Settings
     [ObservableProperty]
