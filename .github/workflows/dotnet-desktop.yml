@@ -52,14 +52,11 @@ jobs:
         
     - name: Build Debug
       run: dotnet build $env:Exe_Project_Path --configuration Debug -p:BuildNumber=${{ steps.build.outputs.NOW }} -p:RevisionNumber=${{ steps.build.outputs.VERSION }}
-        
-    - name: Package File
-      run: Compress-Archive -Path ${{ github.workspace }}/SIT.Manager.Desktop/bin/Debug/net8.0/${{ matrix.os }}/* -Destination ${{ matrix.os }}.zip
       
     - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v4.3.1
       with:
         name: ${{ matrix.os }}
-        path: ${{ github.workspace }}/${{ matrix.os }}.zip
+        path: ${{ github.workspace }}/SIT.Manager.Desktop/bin/Debug/net8.0/${{ matrix.os }}/*
         if-no-files-found: error
         retention-days: 3
