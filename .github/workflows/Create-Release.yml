@@ -38,4 +38,4 @@ jobs:
         Write-Output "VERSION=$BuildTime" >> $env:GITHUB_OUTPUT 
         
     - name: Build Published Version
-      run: dotnet publish -c Release -r ${{ matrix.os }} -p:BuildNumber=${{ steps.build.outputs.NOW }} -p:RevisionNumber=${{ steps.build.outputs.VERSION }}
+      run: dotnet publish SIT.Manager.Desktop/SIT.Manager.Desktop.csproj -c Release -r ${{ matrix.os }} -p:BuildNumber=${{ steps.build.outputs.NOW }} -p:RevisionNumber=${{ steps.build.outputs.VERSION }}

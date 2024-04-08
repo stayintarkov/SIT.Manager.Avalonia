@@ -36,7 +36,7 @@ jobs:
         Write-Output "VERSION=$BuildTime" >> $env:GITHUB_OUTPUT              
         
     - name: Build Debug
-      run: dotnet build --configuration Debug -r ${{ matrix.os }} -p:BuildNumber=${{ steps.build.outputs.NOW }} -p:RevisionNumber=${{ steps.build.outputs.VERSION }}
+      run: dotnet build SIT.Manager.Desktop/SIT.Manager.Desktop.csproj --configuration Debug -r ${{ matrix.os }} -p:BuildNumber=${{ steps.build.outputs.NOW }} -p:RevisionNumber=${{ steps.build.outputs.VERSION }}
       
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v4.3.1
