@@ -1,0 +1,56 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ "win-x64", "linux-x64" ]
+
+    runs-on: ubuntu-latest
+
+    env:
+      Solution_Name: SIT.Manager.sln
+      Exe_Project_Path: SIT.Manager.Desktop\SIT.Manager.Desktop.csproj 
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup .NET 8.0
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 8.0.x
+
+    # Install the .NET Core workload
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v2    
+
+    - name: Get build date
+      id: build
+      shell: pwsh
+      run: |
+        $CurrentTime = Get-Date -Format 'yyMM'
+        $BuildTime = Get-Date -Format 'ddHH'
+        Write-Output "NOW=$CurrentTime" >> $env:GITHUB_OUTPUT
+        Write-Output "VERSION=$BuildTime" >> $env:GITHUB_OUTPUT 
+
+    # Restore the application to populate the obj folder with RuntimeIdentifiers
+    - name: Restore the application
+      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=Release
+
+    - name: Build Published Version
+      run: dotnet publish $env:Exe_Project_Path -c Release -r ${{ matrix.os }} -p:BuildNumber=${{ steps.build.outputs.NOW }} -p:RevisionNumber=${{ steps.build.outputs.VERSION }}

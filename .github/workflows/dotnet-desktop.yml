@@ -8,20 +8,34 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
-    env:
-      Solution_Name: SIT.Manager.sln
     strategy:
       matrix:
-        configuration: [Debug, Release]
+        os: [ "win-x64", "linux-x64" ]
+
+    runs-on: ubuntu-latest
+
+    env:
+      Solution_Name: SIT.Manager.sln
+      Exe_Project_Path: SIT.Manager.Desktop\SIT.Manager.Desktop.csproj 
         
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
+
     - name: Setup .NET 8.0
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 8.0.x
+
+    # Install the .NET Core workload
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    # Add MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v2    
         
     - name: Get build date
       id: build
@@ -30,18 +44,22 @@ jobs:
         $CurrentTime = Get-Date -Format 'yyMM'
         $BuildTime = Get-Date -Format 'ddHH'
         Write-Output "NOW=$CurrentTime" >> $env:GITHUB_OUTPUT
-        Write-Output "VERSION=$BuildTime" >> $env:GITHUB_OUTPUT        
+        Write-Output "VERSION=$BuildTime" >> $env:GITHUB_OUTPUT              
+
+    # Restore the application to populate the obj folder with RuntimeIdentifiers
+    - name: Restore the application
+      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=Debug
         
-    - name: Build Release&Debug
-      run: dotnet build --configuration ${{ matrix.configuration }} -p:BuildNumber=${{ steps.build.outputs.NOW }} -p:RevisionNumber=${{ steps.build.outputs.VERSION }}
+    - name: Build Debug
+      run: dotnet build $env:Exe_Project_Path --configuration Debug -p:BuildNumber=${{ steps.build.outputs.NOW }} -p:RevisionNumber=${{ steps.build.outputs.VERSION }}
         
     - name: Package File
-      run: Compress-Archive -Path ${{ github.workspace }}/SIT.Manager.Desktop/bin/${{ matrix.configuration }}/net8.0/win-x64/* -Destination ${{ matrix.configuration }}.zip
+      run: Compress-Archive -Path ${{ github.workspace }}/SIT.Manager.Desktop/bin/Debug/net8.0/${{ matrix.os }}/* -Destination ${{ matrix.os }}.zip
       
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v3.1.2
       with:
-        name: ${{ matrix.configuration }}
-        path: ${{ github.workspace }}/${{ matrix.configuration }}.zip
+        name: ${{ matrix.os }}
+        path: ${{ github.workspace }}/${{ matrix.os }}.zip
         if-no-files-found: error
         retention-days: 3
