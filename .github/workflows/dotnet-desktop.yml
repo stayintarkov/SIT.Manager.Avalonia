@@ -41,10 +41,6 @@ jobs:
         $BuildTime = Get-Date -Format 'ddHH'
         Write-Output "NOW=$CurrentTime" >> $env:GITHUB_OUTPUT
         Write-Output "VERSION=$BuildTime" >> $env:GITHUB_OUTPUT              
-
-    # Restore the application to populate the obj folder with RuntimeIdentifiers
-    - name: Restore the application
-      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=Debug
         
     - name: Build Debug
       run: dotnet build $env:Exe_Project_Path --configuration Debug -p:BuildNumber=${{ steps.build.outputs.NOW }} -p:RevisionNumber=${{ steps.build.outputs.VERSION }}
