@@ -29,6 +29,9 @@ public partial class SettingsPageViewModel : ObservableObject
     private ManagerConfig _config;
 
     [ObservableProperty]
+    private bool _isDeveloperModeEnabled;
+
+    [ObservableProperty]
     private FontFamily _selectedConsoleFontFamily;
 
     [ObservableProperty]
@@ -62,6 +65,7 @@ public partial class SettingsPageViewModel : ObservableObject
         _localizationService = localizationService;
 
         _config = _configsService.Config;
+        _isDeveloperModeEnabled = _config.EnableDeveloperMode;
 
         _configsService.ConfigChanged += (o, e) =>
         {
@@ -134,6 +138,17 @@ public partial class SettingsPageViewModel : ObservableObject
         {
             _barNotificationService.ShowError(_localizationService.TranslateSource("SettingsPageViewModelErrorTitle"), _localizationService.TranslateSource("SettingsPageViewModelConfigErrorSPTAKI"));
         }
+    }
+
+    partial void OnIsDeveloperModeEnabledChanged(bool value)
+    {
+        // If developer mode is enabled then we want to check that there's no mods currently installed.
+        if (value)
+        {
+            // TODO
+        }
+
+        Config.EnableDeveloperMode = value;
     }
 
     partial void OnSelectedConsoleFontFamilyChanged(FontFamily value)
