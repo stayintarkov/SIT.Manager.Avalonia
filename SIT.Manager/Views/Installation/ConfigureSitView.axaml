@@ -118,11 +118,11 @@
 			</StackPanel>
 
 			<StackPanel>
-				<TextBlock Text="Recommended Mods" Classes="FrameHeading"/>
+				<TextBlock Text="{DynamicResource ConfigureSitViewRecommendedModsTitle}" Classes="FrameHeading"/>
 				<Border Classes="StandardFrame">
 					<StackPanel>
 						<StackPanel IsVisible="{Binding !IsModsSelectionLoading}">
-							<TextBlock Text="Choose from the available mods which we recommend you install alongside SIT"
+							<TextBlock Text="{DynamicResource ConfigureSitViewRecommendedModsDescription}"
 									   TextWrapping="Wrap"/>
 							<ListBox ItemsSource="{Binding Mods}"
 									 Margin="0,4,0,0"
