@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Services;
@@ -6,6 +7,7 @@ namespace SIT.Manager.Services;
 public interface IFileService
 {
     Task CopyDirectory(string source, string destination, IProgress<double>? progress = null);
+    Task CopyFileAsync(string source, string destination, CancellationToken cancellationToken = default);
     /// <summary>
     /// Downloads a file and report progress if enabled
     /// </summary>
