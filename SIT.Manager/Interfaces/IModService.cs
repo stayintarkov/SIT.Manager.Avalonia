@@ -16,15 +16,19 @@ public interface IModService
     List<ModInfo> ModList { get; }
 
     /// <summary>
-    /// Download the collection of ported and compatible (probably) SIT mods.
-    /// </summary>
-    /// <returns></returns>
-    Task DownloadModsCollection();
-    /// <summary>
     /// Automatically updates installed mods that are outdated.
     /// </summary>
     /// <param name="outdatedMods"><see cref="List{T}"/> of <see cref="ModInfo"/> that are outdated.</param>
     Task AutoUpdate(List<ModInfo> outdatedMods);
+    /// <summary>
+    /// Clears the locally downloaded cache of mods which will force a refresh of available mods.
+    /// </summary>
+    void ClearCache();
+    /// <summary>
+    /// Download the collection of ported and compatible (probably) SIT mods.
+    /// </summary>
+    /// <returns></returns>
+    Task DownloadModsCollection();
     /// <summary>
     /// Install a mod into the given target location
     /// </summary>

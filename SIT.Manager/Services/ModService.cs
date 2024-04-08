@@ -28,6 +28,9 @@ public class ModService(IBarNotificationService barNotificationService,
     private readonly ILogger<ModService> _logger = logger;
     private readonly ILocalizationService _localizationService = localizationService;
 
+    // Stores the downloaded mods and caches it in the manager's directory
+    private readonly string _localModCache = Path.Combine(AppContext.BaseDirectory, "Mods");
+
     public string[] RecommendedModInstalls => ["ConfigurationManager"];
 
     public List<ModInfo> ModList { get; private set; } = [];
@@ -71,23 +74,29 @@ public class ModService(IBarNotificationService barNotificationService,
         }
     }
 
-    public async Task DownloadModsCollection()
+    public void ClearCache()
     {
-        string modsDirectory = Path.Combine(_configService.Config.InstallPath, "SITLauncher", "Mods");
-        if (!Directory.Exists(modsDirectory))
-        {
-            Directory.CreateDirectory(modsDirectory);
-        }
-
-        string[] subDirs = Directory.GetDirectories(modsDirectory);
+        string[] subDirs = Directory.GetDirectories(_localModCache);
         foreach (string subDir in subDirs)
         {
             Directory.Delete(subDir, true);
         }
-        Directory.CreateDirectory(Path.Combine(modsDirectory, "Extracted"));
+    }
 
-        await _filesService.DownloadFile("SIT.Mod.Ports.Collection.zip", modsDirectory, MOD_COLLECTION_URL, true);
-        await _filesService.ExtractArchive(Path.Combine(modsDirectory, "SIT.Mod.Ports.Collection.zip"), Path.Combine(modsDirectory, "Extracted"));
+    public async Task DownloadModsCollection()
+    {
+        if (!Directory.Exists(_localModCache))
+        {
+            Directory.CreateDirectory(_localModCache);
+        }
+
+        await Task.Run(ClearCache).ConfigureAwait(false);
+
+        string extractedModsDir = Path.Combine(_localModCache, "Extracted");
+        Directory.CreateDirectory(extractedModsDir);
+
+        await _filesService.DownloadFile("SIT.Mod.Ports.Collection.zip", _localModCache, MOD_COLLECTION_URL, true).ConfigureAwait(false);
+        await _filesService.ExtractArchive(Path.Combine(_localModCache, "SIT.Mod.Ports.Collection.zip"), extractedModsDir).ConfigureAwait(false);
     }
 
     public async Task AutoUpdate(List<ModInfo> outdatedMods)
@@ -164,8 +173,7 @@ public class ModService(IBarNotificationService barNotificationService,
                 return false;
             }
 
-            // TODO cache these with the manager?????
-            string baseModSourcePath = Path.Combine(targetPath, "SITLauncher", "Mods", "Extracted");
+            string baseModSourcePath = Path.Combine(_localModCache, "Extracted");
 
             // Install any plugin files
             await InstallFiles(Path.Combine(baseModSourcePath, "plugins"), Path.Combine(targetPath, "BepInEx", "plugins"), mod.PluginFiles).ConfigureAwait(false);
@@ -198,7 +206,7 @@ public class ModService(IBarNotificationService barNotificationService,
     {
         ModList.Clear();
 
-        string modsDirectory = Path.Combine(_configService.Config.InstallPath, "SITLauncher", "Mods", "Extracted");
+        string modsDirectory = Path.Combine(_localModCache, "Extracted");
         List<ModInfo> outdatedMods = [];
 
         string modsListFile = Path.Combine(modsDirectory, "MasterList.json");
