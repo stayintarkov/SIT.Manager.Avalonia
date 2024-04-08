@@ -85,11 +85,7 @@ public class ModService(IBarNotificationService barNotificationService,
 
     public async Task DownloadModsCollection()
     {
-        if (!Directory.Exists(_localModCache))
-        {
-            Directory.CreateDirectory(_localModCache);
-        }
-
+        Directory.CreateDirectory(_localModCache);
         await Task.Run(ClearCache).ConfigureAwait(false);
 
         string extractedModsDir = Path.Combine(_localModCache, "Extracted");

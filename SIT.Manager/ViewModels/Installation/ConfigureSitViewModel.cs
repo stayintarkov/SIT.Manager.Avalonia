@@ -203,16 +203,8 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
 
         Mods.AddRange(_modService.ModList.Where(x => _modService.RecommendedModInstalls.Contains(x.Name)));
 
-        // Make sure that all the recommended mods are selected to start with - this isn't the best way of doing it but it works ¯\_(ツ)_/¯
-        List<ModInfo> selectedMods = [];
-        foreach (ModInfo mod in Mods)
-        {
-            if (_modService.RecommendedModInstalls.Contains(mod.Name))
-            {
-                selectedMods.Add(mod);
-            }
-        }
-        CurrentInstallProcessState.RequestedMods = selectedMods;
+        // Make sure that all the recommended mods are selected to start with
+        CurrentInstallProcessState.RequestedMods = Mods.ToList();
 
         IsModsSelectionLoading = false;
     }
