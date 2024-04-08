@@ -13,7 +13,7 @@ jobs:
 
     env:
       Solution_Name: SIT.Manager.sln
-      Exe_Project_Path: SIT.Manager.Desktop\SIT.Manager.Desktop.csproj 
+      Exe_Project_Path: SIT.Manager.Desktop/SIT.Manager.Desktop.csproj 
 
     steps:
     - name: Checkout
