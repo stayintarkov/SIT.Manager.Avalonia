@@ -247,6 +247,9 @@
 	<system:String x:Key="SettingsPageViewModelConfigInformationEFTDescription">EFT 安裝路徑已設置為 '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">SPT-AKI 伺服器安裝路徑已設置為 '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigErrorSPTAKI">所選文件夾無效，請確保它是正確的 SPT-AKI 伺服器文件夾！</system:String>
+	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">Enable Developer Mod Failure</system:String>
+	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">Can't enable developer mode as you have %1 incompatible mods still enabled</system:String>
+	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorButtonOk">Ok</system:String>
 
 	<!-- Server Page ViewModel -->
 	<system:String x:Key="ServerPageViewModelStartingServer">正在啟動伺服器！</system:String>

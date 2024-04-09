@@ -4,6 +4,7 @@ using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.Styling;
+using FluentAvalonia.UI.Controls;
 using SIT.Manager.Interfaces;
 using SIT.Manager.ManagedProcess;
 using SIT.Manager.Models;
@@ -22,6 +23,7 @@ public partial class SettingsPageViewModel : ObservableObject
     private readonly IManagerConfigService _configsService;
     private readonly ILocalizationService _localizationService;
     private readonly IBarNotificationService _barNotificationService;
+    private readonly IModService _modService;
     private readonly IPickerDialogService _pickerDialogService;
     private readonly IVersionService _versionService;
 
@@ -55,6 +57,7 @@ public partial class SettingsPageViewModel : ObservableObject
     public SettingsPageViewModel(IManagerConfigService configService,
                                  ILocalizationService localizationService,
                                  IBarNotificationService barNotificationService,
+                                 IModService modService,
                                  IPickerDialogService pickerDialogService,
                                  IVersionService versionService)
     {
@@ -63,6 +66,7 @@ public partial class SettingsPageViewModel : ObservableObject
         _barNotificationService = barNotificationService;
         _versionService = versionService;
         _localizationService = localizationService;
+        _modService = modService;
 
         _config = _configsService.Config;
         _isDeveloperModeEnabled = _config.EnableDeveloperMode;
@@ -140,15 +144,32 @@ public partial class SettingsPageViewModel : ObservableObject
         }
     }
 
-    partial void OnIsDeveloperModeEnabledChanged(bool value)
+    async partial void OnIsDeveloperModeEnabledChanged(bool value)
     {
-        // If developer mode is enabled then we want to check that there's no mods currently installed.
+        // If developer mode is enabled then we want to check that there's no mods we don't approve of currently installed.
         if (value)
         {
-            // TODO
+            List<string> installedMods = _configsService.Config.InstalledMods.Keys.ToList();
+            int compatibleModCount = installedMods.Count(x => _modService.RecommendedModInstalls.Contains(x));
+            int totalIncompatibleMods = installedMods.Count - compatibleModCount;
+            if (totalIncompatibleMods == 0)
+            {
+                await new ContentDialog()
+                {
+                    Title = _localizationService.TranslateSource("SettingsPageViewModelEnableDevModeErrorTitle"),
+                    Content = _localizationService.TranslateSource("SettingsPageViewModelEnableDevModeErrorDescription", totalIncompatibleMods.ToString()),
+                    CloseButtonText = _localizationService.TranslateSource("SettingsPageViewModelEnableDevModeErrorButtonOk")
+                }.ShowAsync();
+            }
+            else
+            {
+                Config.EnableDeveloperMode = value;
+            }
         }
-
-        Config.EnableDeveloperMode = value;
+        else
+        {
+            Config.EnableDeveloperMode = value;
+        }
     }
 
     partial void OnSelectedConsoleFontFamilyChanged(FontFamily value)
