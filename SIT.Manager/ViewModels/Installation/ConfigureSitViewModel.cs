@@ -201,10 +201,11 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
             await _modService.LoadMasterModList();
         }
 
+        Mods.Clear();
         Mods.AddRange(_modService.ModList.Where(x => _modService.RecommendedModInstalls.Contains(x.Name)));
 
         // Make sure that all the recommended mods are selected to start with
-        CurrentInstallProcessState.RequestedMods = Mods.ToList();
+        CurrentInstallProcessState.RequestedMods = [.. Mods];
 
         IsModsSelectionLoading = false;
     }

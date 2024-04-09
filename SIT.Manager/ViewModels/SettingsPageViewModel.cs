@@ -152,7 +152,7 @@ public partial class SettingsPageViewModel : ObservableObject
             List<string> installedMods = _configsService.Config.InstalledMods.Keys.ToList();
             int compatibleModCount = installedMods.Count(x => _modService.RecommendedModInstalls.Contains(x));
             int totalIncompatibleMods = installedMods.Count - compatibleModCount;
-            if (totalIncompatibleMods == 0)
+            if (totalIncompatibleMods > 0)
             {
                 await new ContentDialog()
                 {
