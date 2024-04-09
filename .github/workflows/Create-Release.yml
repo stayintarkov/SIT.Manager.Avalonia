@@ -62,8 +62,10 @@ jobs:
     # Create release as draft from the compressed output
     - name: Create Release
       uses: softprops/action-gh-release@v2
+      env:
+          Version: $RELEASE_VERSION
       with:
           draft: true
           generate_release_notes: true
           files: ${{ github.workspace }}/SIT.Manager.Desktop/bin/Release/net8.0/${{ matrix.os }}/publish/${{ matrix.os }}.*
-          tag_name: $RELEASE_VERSION
+          tag_name: $Version
