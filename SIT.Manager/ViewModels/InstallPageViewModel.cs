@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using SIT.Manager.Interfaces;
-using SIT.Manager.ManagedProcess;
 using SIT.Manager.Models.Installation;
 using SIT.Manager.Views.Installation;
 using System;
@@ -65,7 +64,7 @@ public partial class InstallPageViewModel : ObservableRecipient,
             new(typeof(InstallView), _localizationService.TranslateSource("InstallPageViewModelInstallText")),
             new(typeof(CompleteView), _localizationService.TranslateSource("InstallPageViewModelCompleteText"))
         ];
-        _serverInstallSteps = 
+        _serverInstallSteps =
         [
             new(typeof(SelectView), _localizationService.TranslateSource("InstallPageViewModelSelectText")),
             new(typeof(ConfigureServerView), _localizationService.TranslateSource("InstallPageViewModelConfigureText")),
