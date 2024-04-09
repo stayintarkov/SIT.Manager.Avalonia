@@ -48,16 +48,16 @@ jobs:
         zip -r ${{ matrix.os }}.zip * 
 
     # Get the build version for both Windows and Linux
-    - name: Get build version
+    - name: Get Release Version
       if: ${{ matrix.os == 'linux-x64' }}
       run: |
         VersionString=`strings ${{ github.workspace }}/SIT.Manager.Desktop/bin/Release/net8.0/${{ matrix.os }}/publish/SIT.Manager | egrep -m 1 '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'`
-        echo "BUILD_VERSION=$VersionString" >> "$GITHUB_ENV"
-    - name: Get build version
+        echo "RELEASE_VERSION=$VersionString" >> "$GITHUB_ENV"
+    - name: Get Release Version
       if: ${{ matrix.os == 'win-x64' }}
       run: |
         VersionString=`strings ${{ github.workspace }}/SIT.Manager.Desktop/bin/Release/net8.0/${{ matrix.os }}/publish/SIT.Manager.exe | egrep -m 1 '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'`
-        echo "BUILD_VERSION=$VersionString" >> "$GITHUB_ENV"
+        echo "RELEASE_VERSION=$VersionString" >> "$GITHUB_ENV"
 
     # Create release as draft from the compressed output
     - name: Create Release
@@ -66,4 +66,5 @@ jobs:
           draft: true
           generate_release_notes: true
           files: ${{ github.workspace }}/SIT.Manager.Desktop/bin/Release/net8.0/${{ matrix.os }}/publish/${{ matrix.os }}.*
-          tag_name: ${{ steps.build.outputs.BUILD_VERSION }}
+          name: ${{ steps.build.outputs.RELEASE_VERSION }}
+          tag_name: ${{ steps.build.outputs.RELEASE_VERSION }}
