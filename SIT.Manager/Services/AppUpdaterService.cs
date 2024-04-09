@@ -51,7 +51,7 @@ public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterServi
             }
             else if (OperatingSystem.IsLinux())
             {
-                return @"https://github.com/stayintarkov/SIT.Manager.Avalonia/releases/latest/download/linux-x64.tar";
+                return @"https://github.com/stayintarkov/SIT.Manager.Avalonia/releases/latest/download/linux-x64.tar.gz";
             }
             throw new NotImplementedException("No Release URL found for this platform");
         }
