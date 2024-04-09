@@ -35,21 +35,35 @@ jobs:
     - name: Build Published Version
       run: dotnet publish SIT.Manager.Desktop/SIT.Manager.Desktop.csproj -c Release -r ${{ matrix.os }} -p:BuildNumber=${{ steps.build.outputs.NOW }} -p:RevisionNumber=${{ steps.build.outputs.VERSION }}
 
-    - name: Compress on Windows
-      if: ${{ matrix.os == 'win-x64' }}
-      run: |
-        zip -r ${{ matrix.os }}.zip ${{ github.workspace }}/SIT.Manager.Desktop/bin/Release/net8.0/${{ matrix.os }}/publish/*
-  
+    # Compress the published output for both Windows and Linux
     - name: Compress on Linux
       if: ${{ matrix.os == 'linux-x64' }}
       run: |
-        tar -czvf ${{ matrix.os }}.tar.gz ${{ github.workspace }}/SIT.Manager.Desktop/bin/Release/net8.0/${{ matrix.os }}/publish/*
+        cd ${{ github.workspace }}/SIT.Manager.Desktop/bin/Release/net8.0/${{ matrix.os }}/publish/
+        tar -czvf ${{ matrix.os }}.tar.gz *
+    - name: Compress on Windows
+      if: ${{ matrix.os == 'win-x64' }}
+      run: |
+        cd ${{ github.workspace }}/SIT.Manager.Desktop/bin/Release/net8.0/${{ matrix.os }}/publish/
+        zip -r ${{ matrix.os }}.zip * 
 
-    # Create release as draft from the compressed file(s)
+    # Get the build version for both Windows and Linux
+    - name: Get build version
+      if: ${{ matrix.os == 'linux-x64' }}
+      run: |
+        $VersionString = strings ${{ github.workspace }}/SIT.Manager.Desktop/bin/Release/net8.0/${{ matrix.os }}/publish/SIT.Manager | egrep -m 1 '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'
+        echo "BUILD_VERSION=$VersionString" >> "$GITHUB_ENV"
+    - name: Get build version
+      if: ${{ matrix.os == 'win-x64' }}
+      run: |
+        $VersionString = strings ${{ github.workspace }}/SIT.Manager.Desktop/bin/Release/net8.0/${{ matrix.os }}/publish/SIT.Manager.exe | egrep -m 1 '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'
+        echo "BUILD_VERSION=$VersionString" >> "$GITHUB_ENV"
+
+    # Create release as draft from the compressed output
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
           draft: true
           generate_release_notes: true
-          files: ${{ github.workspace }}/${{ matrix.os }}.*
-          tag_name: ManagerReleaseTest3
+          files: ${{ github.workspace }}/SIT.Manager.Desktop/bin/Release/net8.0/${{ matrix.os }}/publish/${{ matrix.os }}.*
+          tag_name: ${{ steps.build.outputs.BUILD_VERSION }}
