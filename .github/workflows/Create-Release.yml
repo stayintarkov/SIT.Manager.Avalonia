@@ -51,5 +51,5 @@ jobs:
       with:
           draft: true
           generate_release_notes: true
-          files: ${{ github.workspace }}/SIT.Manager.Desktop/bin/Release/net8.0/${{ matrix.os }}/publish/${{ matrix.os }}.*
-          tag_name: ManagerReleaseTest2
+          files: ${{ github.workspace }}/${{ matrix.os }}.*
+          tag_name: ManagerReleaseTest3
