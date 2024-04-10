@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SIT.Manager.Avalonia.Models.Aki;
+namespace SIT.Manager.Models.Aki;
 public class AkiProfile(AkiServer parentServer, string profileID)
 {
     public string ProfileID { get; internal set; } = profileID;

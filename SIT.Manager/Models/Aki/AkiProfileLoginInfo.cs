@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace SIT.Manager.Avalonia.Models.Aki;
+namespace SIT.Manager.Models.Aki;
 public class AkiProfileLoginInfo(AkiProfile akiProfile)
 {
     [JsonPropertyName("username")]
