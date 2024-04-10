@@ -40,13 +40,21 @@ public partial class PlayPageViewModel : ObservableObject
             List<AkiMiniProfile> miniProfiles = await _serverService.GetMiniProfilesAsync(localServer);
             Debug.WriteLine($"{miniProfiles.Count} mini profiles retrieved from {localServer.Name}");
 
-            AkiCharacter testCharacter = new AkiCharacter(localServer, "nnn", "nnn");
+            AkiCharacter testCharacter = new AkiCharacter(localServer, "nnn", "nna");
 
-            string ProfileID;
+            string? ProfileID = null;
             if(miniProfiles.Select(x => x.Username == testCharacter.Username).Any())
             {
-                Debug.WriteLine($"Username {testCharacter.Username} was already found on server. Attempting to login...");
-                ProfileID = await _serverService.LoginAsync(testCharacter);
+                try
+                {
+                    Debug.WriteLine($"Username {testCharacter.Username} was already found on server. Attempting to login...");
+                    ProfileID = await _serverService.LoginAsync(testCharacter);
+                }
+                catch(IncorrectAccountPasswordException)
+                {
+                    Debug.WriteLine($"Password {testCharacter.Password} was incorrect for username {testCharacter.Username}");
+                }
+                
             }
             else
             {
@@ -54,10 +62,12 @@ public partial class PlayPageViewModel : ObservableObject
                 ProfileID = await _serverService.RegisterCharacterAsync(testCharacter);
             }
 
-            testCharacter.ProfileID = ProfileID;
-            Debug.WriteLine($"{testCharacter.Username}'s ProfileID is {testCharacter.ProfileID}");
-
-            localServer.Characters.Add(testCharacter);
+            if (ProfileID != null)
+            {
+                testCharacter.ProfileID = ProfileID;
+                Debug.WriteLine($"{testCharacter.Username}'s ProfileID is {testCharacter.ProfileID}");
+                localServer.Characters.Add(testCharacter);
+            }
         });
     }
 }

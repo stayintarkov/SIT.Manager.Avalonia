@@ -130,7 +130,7 @@ public class AkiServerRequestingService(
             string response = await streamReader.ReadToEndAsync(cancellationToken);
             return response.ToLowerInvariant() switch
             {
-                "invalid_password" => throw new IncorrectAccountPasswordException(),
+                "invalid_password" => throw new IncorrectAccountPasswordException(), //Should these really be exceptions?...
                 "failed" => throw new AccountNotFoundException(),
                 _ => response,
             };
