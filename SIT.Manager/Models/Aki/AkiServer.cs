@@ -18,7 +18,5 @@ public partial class AkiServer(Uri address) : ObservableObject
     [JsonIgnore]
     public string Name { get; internal set; } = string.Empty;
     [JsonIgnore]
-    public int Players { get; internal set; } = 0;
-    [JsonIgnore]
     public int Ping { get; internal set; } = -1;
 }
