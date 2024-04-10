@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Polly;
+﻿using Polly;
 using Polly.Registry;
 using SIT.Manager.Exceptions;
 using SIT.Manager.Extentions;
@@ -18,6 +16,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
@@ -117,8 +116,7 @@ public class AkiServerRequestingService(
     public async Task<List<AkiMiniProfile>> GetMiniProfilesAsync(AkiServer server, CancellationToken cancellationToken = default)
     {
         using MemoryStream respStream = await SendAsync(server, "/launcher/profiles", cancellationToken: cancellationToken);
-        using StreamReader streamReader = new(respStream);
-        return JsonConvert.DeserializeObject<List<AkiMiniProfile>>(await streamReader.ReadToEndAsync(cancellationToken)) ?? [];
+        return await JsonSerializer.DeserializeAsync<List<AkiMiniProfile>>(respStream, cancellationToken: cancellationToken) ?? [];
     }
 
     private string CreateLoginData(AkiCharacter character)
@@ -175,7 +173,7 @@ public class AkiServerRequestingService(
         using MemoryStream respStream = await SendAsync(server.Address, "/launcher/server/connect", cancellationToken: cancellationToken);
         using (StreamReader sr = new(respStream))
         {
-            return JsonConvert.DeserializeObject<AkiServerInfo>(await sr.ReadToEndAsync(cancellationToken));
+            return await JsonSerializer.DeserializeAsync<AkiServerInfo>(respStream, cancellationToken: cancellationToken);
         }
     }
 

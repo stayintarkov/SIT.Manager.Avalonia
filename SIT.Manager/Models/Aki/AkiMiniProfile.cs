@@ -1,27 +1,27 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Models.Aki;
 public class AkiMiniProfile
 {
-    [JsonProperty("username")]
+    [JsonPropertyName("username")]
     public string Username { get; init; } = string.Empty;
-    [JsonProperty("nickname")]
+    [JsonPropertyName("nickname")]
     public string Nickname { get; init; } = string.Empty;
-    [JsonProperty("side")]
+    [JsonPropertyName("side")]
     public string Side { get; init; } = string.Empty;
-    [JsonProperty("currlvl")]
+    [JsonPropertyName("currlvl")]
     public int CurrentLevel { get; init; } = -1;
-    [JsonProperty("currexp")]
+    [JsonPropertyName("currexp")]
     public int CurrentExperience { get; init; } = -1;
-    [JsonProperty("prevexp")]
+    [JsonPropertyName("prevexp")]
     public int PreviousExperience { get; init; } = -1;
-    [JsonProperty("nextlvl")]
+    [JsonPropertyName("nextlvl")]
     public int NextExperience { get; init; } = -1;
-    [JsonProperty("maxlvl")]
+    [JsonPropertyName("maxlvl")]
     public int MaxLevel { get; init; } = -1;
 }
