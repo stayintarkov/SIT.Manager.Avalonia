@@ -159,7 +159,7 @@ public class AkiServerService(IBarNotificationService barNotificationService,
                 }
             }
 
-            TarkovRequesting requesting = ActivatorUtilities.CreateInstance<TarkovRequesting>(_serviceProvider, serverUri);
+            // requesting = ActivatorUtilities.CreateInstance<TarkovRequesting>(_serviceProvider, serverUri);
             try
             {
                 using (CancellationTokenSource cts = new(TimeSpan.FromSeconds(120)))
@@ -169,7 +169,8 @@ public class AkiServerService(IBarNotificationService barNotificationService,
                     {
                         try
                         {
-                            pingReponse = await requesting.PingServer(cts.Token);
+                            //TODO: REPLACE THIS. COMMENTED OUT FOR BUILDING
+                            pingReponse = true; //await requesting.PingServer(cts.Token);
                         }
                         catch (HttpRequestException) { }
 
