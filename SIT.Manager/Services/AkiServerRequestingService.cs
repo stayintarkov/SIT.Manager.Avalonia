@@ -127,28 +127,33 @@ public class AkiServerRequestingService(
         using (MemoryStream ms = await SendAsync(character.ParentServer, Path.Combine("/launcher/profile", operation), HttpMethod.Post, CreateLoginData(character), cancellationToken: cancellationToken))
         using (StreamReader streamReader = new StreamReader(ms))
         {
-            string response = await streamReader.ReadToEndAsync(cancellationToken);
-            return response.ToLowerInvariant() switch
-            {
-                "invalid_password" => throw new IncorrectAccountPasswordException(), //Should these really be exceptions?...
-                "failed" => throw new AccountNotFoundException(),
-                _ => response,
-            };
+            return await streamReader.ReadToEndAsync(cancellationToken);
         }
     }
 
-    public Task<string> LoginAsync(AkiCharacter character, CancellationToken cancellationToken = default)
-        => LoginOrRegisterAsync(character, "login", cancellationToken);
+    public async Task<(string, AkiLoginStatus)> LoginAsync(AkiCharacter character, CancellationToken cancellationToken = default)
+    {
+        string resp = await LoginOrRegisterAsync(character, "login", cancellationToken);
+        AkiLoginStatus status = resp.ToLowerInvariant() switch
+        {
+            "invalid_password" => AkiLoginStatus.IncorrectPassword,
+            "failed" => AkiLoginStatus.AccountNotFound,
+            _ => AkiLoginStatus.Success
+        };
+        return (resp, status);
+    }
 
-    public async Task<string> RegisterCharacterAsync(AkiCharacter character, CancellationToken cancellationToken = default)
+    public async Task<(string, AkiLoginStatus)> RegisterCharacterAsync(AkiCharacter character, CancellationToken cancellationToken = default)
     {
         string resp = await LoginOrRegisterAsync(character, "register", cancellationToken);
-        return resp.ToLowerInvariant() switch
+        AkiLoginStatus status = resp.ToLowerInvariant() switch
         {
-            "ok" => await LoginAsync(character, cancellationToken),
-            "failed" => throw new UsernameTakenException(),
+            "ok" => AkiLoginStatus.Success,
+            "failed" => AkiLoginStatus.UsernameTaken,
             _ => throw new Exception("Uh oh...")
         };
+
+        return status == AkiLoginStatus.Success ? await LoginAsync(character, cancellationToken) : (string.Empty, status);
     }
 
     public async Task<AkiServerInfo?> GetAkiServerInfoAsync(AkiServer server, CancellationToken cancellationToken = default)
@@ -159,4 +164,12 @@ public class AkiServerRequestingService(
             return JsonConvert.DeserializeObject<AkiServerInfo>(await sr.ReadToEndAsync(cancellationToken));
         }
     }
+}
+
+public enum AkiLoginStatus
+{
+    Success,
+    AccountNotFound,
+    UsernameTaken,
+    IncorrectPassword
 }
