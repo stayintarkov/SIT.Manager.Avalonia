@@ -39,7 +39,14 @@
 								<ComboBox.ItemTemplate>
 									<DataTemplate>
 										<StackPanel>
-											<TextBlock Text="{Binding SitVersion}"/>
+											<TextBlock IsVisible="{Binding IsDeveloperVersion}">
+												<Run Text="[DEV]"/>
+												<Run Text="{Binding SitVersion}"/>
+											</TextBlock>
+											<TextBlock IsVisible="{Binding !IsDeveloperVersion}"
+													   Text="{Binding SitVersion}">
+											</TextBlock>
+
 											<TextBlock>
 												<Run Text="EFT Version: "/>
 												<Run Text="{Binding EftVersion}"/>
