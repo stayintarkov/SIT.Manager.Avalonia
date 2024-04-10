@@ -19,10 +19,6 @@
 		<AvaloniaResource Include="Assets\**" />
 		<Compile Include="..\SIT.Manager.Desktop\AssemblyInfo.cs" Link="AssemblyInfo.cs" />
 		<EmbeddedResource Include="Localization\*.axaml" />
-		<AvaloniaXaml Remove="Classes\**" />
-		<Compile Remove="Classes\**" />
-		<EmbeddedResource Remove="Classes\**" />
-		<None Remove="Classes\**" />
 		<EmbeddedResource Include="Resources\Aki.Common.dll" />
 		<EmbeddedResource Include="Resources\Aki.Reflection.dll" />
 	</ItemGroup>
