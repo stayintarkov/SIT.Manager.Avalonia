@@ -124,10 +124,16 @@ public class AkiServerRequestingService(
 
     private async Task<string> LoginOrRegisterAsync(AkiCharacter character, string operation, CancellationToken cancellationToken = default)
     {
-        using (MemoryStream ms = await SendAsync(character.ParentServer, Path.Combine("/launcher/profile", operation), HttpMethod.Post, CreateLoginData(character)))
+        using (MemoryStream ms = await SendAsync(character.ParentServer, Path.Combine("/launcher/profile", operation), HttpMethod.Post, CreateLoginData(character), cancellationToken: cancellationToken))
         using (StreamReader streamReader = new StreamReader(ms))
         {
-            return streamReader.ReadToEnd();
+            string response = await streamReader.ReadToEndAsync(cancellationToken);
+            return response.ToLowerInvariant() switch
+            {
+                "invalid_password" => throw new IncorrectAccountPasswordException(),
+                "failed" => throw new AccountNotFoundException(),
+                _ => response,
+            };
         }
     }
 

@@ -32,29 +32,32 @@ public partial class PlayPageViewModel : ObservableObject
         Task.Run(async () =>
         {
             AkiServer localServer = await _serverService.GetAkiServerAsync(new Uri("http://127.0.0.1:6969"));
+            Debug.WriteLine($"{localServer.Address.AbsoluteUri} found with name {localServer.Name}");
 
             localServer.Ping = await _serverService.GetPingAsync(localServer);
+            Debug.WriteLine($"{localServer.Name}'s ping is {localServer.Ping}ms");
 
             List<AkiMiniProfile> miniProfiles = await _serverService.GetMiniProfilesAsync(localServer);
+            Debug.WriteLine($"{miniProfiles.Count} mini profiles retrieved from {localServer.Name}");
 
             AkiCharacter testCharacter = new AkiCharacter(localServer, "nnn", "nnn");
 
             string ProfileID;
-            try
+            if(miniProfiles.Select(x => x.Username == testCharacter.Username).Any())
             {
-                 ProfileID = await _serverService.RegisterCharacterAsync(testCharacter);
-            }
-            catch (UsernameTakenException)
-            {
+                Debug.WriteLine($"Username {testCharacter.Username} was already found on server. Attempting to login...");
                 ProfileID = await _serverService.LoginAsync(testCharacter);
+            }
+            else
+            {
+                Debug.WriteLine($"Username {testCharacter.Username} not found. Registering...");
+                ProfileID = await _serverService.RegisterCharacterAsync(testCharacter);
             }
 
             testCharacter.ProfileID = ProfileID;
+            Debug.WriteLine($"{testCharacter.Username}'s ProfileID is {testCharacter.ProfileID}");
 
             localServer.Characters.Add(testCharacter);
-
-            Debug.WriteLine($"{localServer.Name}'s ping is {localServer.Ping}ms");
-            Debug.WriteLine($"{testCharacter.Username}'s ID is {testCharacter.ProfileID}");
         });
     }
 }
