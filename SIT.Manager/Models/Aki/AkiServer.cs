@@ -1,22 +1,15 @@
-﻿using Avalonia.Animation;
-using CommunityToolkit.Mvvm.ComponentModel;
-using Newtonsoft.Json;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace SIT.Manager.Models.Aki;
-public partial class AkiServer(Uri address) : ObservableObject
+namespace SIT.Manager.Avalonia.Models.Aki;
+public class AkiServer(Uri address) : ObservableObject
 {
-    [JsonProperty(nameof(Address))]
-    public Uri Address { get; } = address;
-    [JsonProperty(nameof(Characters))]
-    public List<AkiCharacter> Characters { get; init; } = [];
-    [JsonIgnore]
+    public Uri Address = address;
     public string Name { get; internal set; } = string.Empty;
-    [JsonIgnore]
+    public int Players { get; internal set; } = 0;
     public int Ping { get; internal set; } = -1;
 }

@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using SIT.Manager.Exceptions;
 using SIT.Manager.Interfaces;
 using SIT.Manager.ManagedProcess;
@@ -48,8 +49,14 @@ public partial class PlayPageViewModel : ObservableObject
                 ProfileID = await _serverService.LoginAsync(testCharacter);
             }
 
-            Debugger.Break();
+            testCharacter.ProfileID = ProfileID;
+
+            localServer.Characters.Add(testCharacter);
+
             Debug.WriteLine($"{localServer.Name}'s ping is {localServer.Ping}ms");
+            Debug.WriteLine($"{testCharacter.Username}'s ID is {testCharacter.ProfileID}");
+
+            File.WriteAllText("debug.json", JsonConvert.SerializeObject(localServer));
         });
     }
 }
