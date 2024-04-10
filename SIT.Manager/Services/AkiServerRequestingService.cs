@@ -179,9 +179,9 @@ public class AkiServerRequestingService(
         }
     }
 
-    public Task<MemoryStream> GetAkiServerBackground(AkiServer server, CancellationToken cancellationToken = default)
+    public Task<MemoryStream> GetAkiServerImage(AkiServer server, string assetPath, CancellationToken cancellationToken = default)
     {
-        return SendAsync(server.Address, "/files/launcher/bg.png", cancellationToken: cancellationToken);
+        return SendAsync(server.Address, Path.Combine("/files/", assetPath), cancellationToken: cancellationToken);
     }
 }
 
