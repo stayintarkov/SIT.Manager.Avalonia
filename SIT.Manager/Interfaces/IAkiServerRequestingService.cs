@@ -14,4 +14,5 @@ public interface IAkiServerRequestingService
     public Task<AkiServer> GetAkiServerAsync(AkiServer server, bool fetchInformation = true);
     public Task<List<AkiMiniProfile>> GetMiniProfilesAsync(AkiServer server, CancellationToken cancellationToken = default);
     public Task<string> LoginAsync(AkiCharacter character);
+    public Task<string> RegisterCharacterAsync(AkiCharacter character);
 }

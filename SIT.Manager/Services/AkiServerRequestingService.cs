@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using Polly;
 using Polly.Registry;
+using SIT.Manager.Exceptions;
 using SIT.Manager.Extentions;
 using SIT.Manager.Interfaces;
 using SIT.Manager.ManagedProcess;
@@ -10,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -115,23 +117,41 @@ public class AkiServerRequestingService(
         return JsonConvert.DeserializeObject<List<AkiMiniProfile>>(await streamReader.ReadToEndAsync(cancellationToken)) ?? [];
     }
 
-    public async Task<string> LoginAsync(AkiCharacter character)
+    private string CreateLoginData(AkiCharacter character)
     {
         Version SITVersion = new(_configService.Config.SitVersion);
         string compatibleUri = character.ParentServer.Address.AbsoluteUri[..^(SITVersion >= standardUriFormatSupportedVersion ? 0 : 1)];
         JsonObject loginData = new()
         {
-            ["username"]    = character.Username,
-            ["email"]       = character.Username,
-            ["edition"]     = character.Edition,
-            ["password"]    = character.Password,
-            ["backendUrl"]  = compatibleUri
+            ["username"] = character.Username,
+            ["email"] = character.Username,
+            ["edition"] = character.Edition,
+            ["password"] = character.Password,
+            ["backendUrl"] = compatibleUri
         };
+        return loginData.ToJsonString();
+    }
 
-        using (MemoryStream ms = await SendAsync(character.ParentServer, "/launcher/profile/login", HttpMethod.Post, loginData.ToJsonString()))
+    private async Task<string> LoginOrRegisterAsync(AkiCharacter character, string operation)
+    {
+        using (MemoryStream ms = await SendAsync(character.ParentServer, Path.Combine("/launcher/profile", operation), HttpMethod.Post, CreateLoginData(character)))
         using (StreamReader streamReader = new StreamReader(ms))
         {
             return streamReader.ReadToEnd();
         }
+    }
+
+    public Task<string> LoginAsync(AkiCharacter character)
+        => LoginOrRegisterAsync(character, "login");
+
+    public async Task<string> RegisterCharacterAsync(AkiCharacter character)
+    {
+        string resp = await LoginOrRegisterAsync(character, "register");
+        return resp.ToLowerInvariant() switch
+        {
+            "ok" => await LoginAsync(character),
+            "failed" => throw new UsernameTakenException(),
+            _ => throw new Exception("Uh oh...")
+        };
     }
 }

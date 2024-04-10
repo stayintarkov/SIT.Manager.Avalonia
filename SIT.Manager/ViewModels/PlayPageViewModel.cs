@@ -36,9 +36,17 @@ public partial class PlayPageViewModel : ObservableObject
 
             List<AkiMiniProfile> miniProfiles = await _serverService.GetMiniProfilesAsync(localServer);
 
-            AkiCharacter testCharacter = new AkiCharacter(localServer, "aaa", "aaa");
+            AkiCharacter testCharacter = new AkiCharacter(localServer, "nnn", "nnn");
 
-            string ProfileID = await _serverService.LoginAsync(testCharacter);
+            string ProfileID;
+            try
+            {
+                 ProfileID = await _serverService.RegisterCharacterAsync(testCharacter);
+            }
+            catch (UsernameTakenException)
+            {
+                ProfileID = await _serverService.LoginAsync(testCharacter);
+            }
 
             Debugger.Break();
             Debug.WriteLine($"{localServer.Name}'s ping is {localServer.Ping}ms");
