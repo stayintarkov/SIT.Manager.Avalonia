@@ -4,9 +4,11 @@ using Polly;
 using Polly.Registry;
 using SIT.Manager.Extentions;
 using SIT.Manager.Interfaces;
+using SIT.Manager.ManagedProcess;
 using SIT.Manager.Models.Aki;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -14,15 +16,21 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Services;
-public class AkiServerRequestingService(HttpClient httpClient, ResiliencePipelineProvider<string> resiliencePipelineProvider) : IAkiServerRequestingService
+public class AkiServerRequestingService(
+    HttpClient httpClient, 
+    ResiliencePipelineProvider<string> resiliencePipelineProvider,
+    IManagerConfigService configService) : IAkiServerRequestingService
 {
     private static readonly MediaTypeHeaderValue _contentHeaderType = new("application/json");
+    private static readonly Version standardUriFormatSupportedVersion = new Version("1.10.8827.30098");
     private readonly HttpClient _httpClient = httpClient;
     private readonly ResiliencePipelineProvider<string> _resiliencePipelineProvider = resiliencePipelineProvider;
+    private readonly IManagerConfigService _configService = configService;
 
     private async Task<MemoryStream> SendAsync(Uri remoteAddress, string path, HttpMethod? method = null, string? data = null, ResiliencePipeline<HttpResponseMessage>? strategy = null, CancellationToken cancellationToken = default)
     {
@@ -105,5 +113,25 @@ public class AkiServerRequestingService(HttpClient httpClient, ResiliencePipelin
         using MemoryStream respStream = await SendAsync(server, "/launcher/profiles", cancellationToken: cancellationToken);
         using StreamReader streamReader = new(respStream);
         return JsonConvert.DeserializeObject<List<AkiMiniProfile>>(await streamReader.ReadToEndAsync(cancellationToken)) ?? [];
+    }
+
+    public async Task<string> LoginAsync(AkiCharacter character)
+    {
+        Version SITVersion = new(_configService.Config.SitVersion);
+        string compatibleUri = character.ParentServer.Address.AbsoluteUri[..^(SITVersion >= standardUriFormatSupportedVersion ? 0 : 1)];
+        JsonObject loginData = new()
+        {
+            ["username"]    = character.Username,
+            ["email"]       = character.Username,
+            ["edition"]     = character.Edition,
+            ["password"]    = character.Password,
+            ["backendUrl"]  = compatibleUri
+        };
+
+        using (MemoryStream ms = await SendAsync(character.ParentServer, "/launcher/profile/login", HttpMethod.Post, loginData.ToJsonString()))
+        using (StreamReader streamReader = new StreamReader(ms))
+        {
+            return streamReader.ReadToEnd();
+        }
     }
 }
