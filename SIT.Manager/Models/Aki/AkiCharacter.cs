@@ -9,14 +9,16 @@ using System.Threading.Tasks;
 namespace SIT.Manager.Models.Aki;
 public class AkiCharacter(AkiServer parent, string username, string password) : ObservableObject
 {
-    [JsonProperty("Name")]
-    public string Username = username;
+#pragma warning disable CA1507 // Use nameof to express symbol names
+    [JsonProperty("Username")]
+    public string Username { get; init; } = username;
     [JsonProperty("Password")]
-    public string Password = password;
+    public string Password { get; init; } = password;
     [JsonProperty("ProfileID")]
-    public string ProfileID = "";
+    public string ProfileID { get; internal set; } = "";
     [JsonProperty("Edition")]
-    public string Edition = "Edge of Darkness";
+#pragma warning restore CA1507 // Use nameof to express symbol names
+    public string Edition { get; internal set; } = "Edge of Darkness";
     [JsonIgnore]
     public AkiServer ParentServer = parent;
 }
