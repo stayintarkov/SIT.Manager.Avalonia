@@ -33,11 +33,11 @@ public partial class PlayPageViewModel : ObservableObject
             AkiServer localServer = await _serverService.GetAkiServerAsync(new Uri("http://127.0.0.1:6969"));
 
             //Ping int return
-            localServer.Ping = await _serverService.PingAsync(localServer);
+            localServer.Ping = await _serverService.GetPingAsync(localServer);
 
-            //Ping reference (#AkiServer.Ping will be updated in the method)
-            await _serverService.PingByReferenceAsync(localServer);
+            List<AkiMiniProfile> miniProfiles = await _serverService.GetMiniProfilesAsync(localServer);
 
+            Debugger.Break();
             Debug.WriteLine($"{localServer.Name}'s ping is {localServer.Ping}ms");
         });
     }

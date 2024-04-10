@@ -125,9 +125,9 @@ public sealed partial class App : Application
                 MaxConnectionsPerServer = 10
             });
 
-            services.AddResiliencePipeline("default-pipeline", builder =>
+            services.AddResiliencePipeline<string, HttpResponseMessage>("default-pipeline", builder =>
             {
-                builder.AddRetry(new RetryStrategyOptions()
+                builder.AddRetry(new RetryStrategyOptions<HttpResponseMessage>()
                 {
                     MaxRetryAttempts = 3,
                     Delay = TimeSpan.FromSeconds(3)

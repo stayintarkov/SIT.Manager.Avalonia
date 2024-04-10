@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 namespace SIT.Manager.Interfaces;
 public interface IAkiServerRequestingService
 {
-    public Task<int> PingAsync(AkiServer akiServer, CancellationToken cancellationToken = default);
+    public Task<int> GetPingAsync(AkiServer akiServer, CancellationToken cancellationToken = default);
     public Task<AkiServer> GetAkiServerAsync(Uri serverAddresss, bool fetchInformation = true);
-    public Task PingByReferenceAsync(AkiServer akiServer, CancellationToken cancellationToken = default);
+    public Task<AkiServer> GetAkiServerAsync(AkiServer server, bool fetchInformation = true);
+    public Task<List<AkiMiniProfile>> GetMiniProfilesAsync(AkiServer server, CancellationToken cancellationToken = default);
 }
