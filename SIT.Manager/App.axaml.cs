@@ -95,7 +95,8 @@ public sealed partial class App : Application
                 })
                 .AddSingleton<ILocalizationService, LocalizationService>()
                 .AddSingleton<IAkiServerRequestingService, AkiServerRequestingService>()
-                .AddSingleton<IAppUpdaterService, AppUpdaterService>();
+                .AddSingleton<IAppUpdaterService, AppUpdaterService>()
+                .AddSingleton<IDiagnosticService, DiagnosticService>();
 
             #endregion Services
 
