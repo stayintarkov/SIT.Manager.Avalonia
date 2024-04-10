@@ -13,7 +13,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		LICENSE = LICENSE
-		VERSION = VERSION
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{54A55723-88D1-42F4-B737-AFF0EBB7BA66}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\Create-Release.yml = .github\workflows\Create-Release.yml
+		.github\workflows\dotnet-desktop.yml = .github\workflows\dotnet-desktop.yml
 	EndProjectSection
 EndProject
 Global
@@ -33,6 +39,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{54A55723-88D1-42F4-B737-AFF0EBB7BA66} = {AEF8FAE3-A8D1-43BA-B5B2-8C4CF98FCFD1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6991F7CC-2839-4976-8BE4-548D13A42A22}

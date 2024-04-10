@@ -30,6 +30,9 @@
 						<CheckBox Content="{DynamicResource SettingsHideIpAddressTitle}"
 								  ToolTip.Tip="{DynamicResource SettingsHideIpAddressToolTip}"
 								  IsChecked="{Binding Config.HideIpAddress, Mode=TwoWay}"/>
+						<CheckBox Content="{DynamicResource SettingsEnableDeveloperMode}"
+								  ToolTip.Tip="{DynamicResource SettingsEnableDeveloperModeToolTip}"
+								  IsChecked="{Binding Config.EnableDeveloperMode, Mode=TwoWay}"/>
 						<Grid ColumnDefinitions="auto, *">
 							<TextBlock Text="{DynamicResource SettingsLanguageTitle}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
 							<ComboBox Margin="5,0,0,0" Grid.Column="1" ToolTip.Tip="{DynamicResource SettingsLanguageTitleToolTip}" ItemsSource="{Binding AvailableLocalization}" SelectedItem="{Binding CurrentLocalization}">

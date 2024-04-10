@@ -5,6 +5,7 @@ using FluentAvalonia.UI.Controls;
 using SIT.Manager.Extentions;
 using SIT.Manager.Interfaces;
 using SIT.Manager.ManagedProcess;
+using SIT.Manager.Models;
 using SIT.Manager.Models.Installation;
 using System;
 using System.Collections.Generic;
@@ -19,10 +20,17 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
     private readonly IManagerConfigService _configService;
     private readonly IInstallerService _installerService;
     private readonly ILocalizationService _localizationService;
+    private readonly IModService _modService;
     private readonly IPickerDialogService _pickerDialogService;
 
     [ObservableProperty]
-    private bool _isLoading = false;
+    private bool _isVersionSelectionLoading = false;
+
+    [ObservableProperty]
+    private bool _isModsSelectionLoading = false;
+
+    [ObservableProperty]
+    private bool _overridenBsgInstallPath = false;
 
     [ObservableProperty]
     private SitInstallVersion? _selectedVersion;
@@ -41,6 +49,7 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
 
     public ObservableCollection<SitInstallVersion> AvailableVersions { get; } = [];
     public ObservableCollection<KeyValuePair<string, string>> AvailableMirrors { get; } = [];
+    public ObservableCollection<ModInfo> Mods { get; } = [];
 
     public IAsyncRelayCommand ChangeEftInstallLocationCommand { get; }
 
@@ -48,11 +57,13 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
         IManagerConfigService configService,
         IInstallerService installerService,
         ILocalizationService localizationService,
+        IModService modService,
         IPickerDialogService pickerDialogService) : base()
     {
         _configService = configService;
         _installerService = installerService;
         _localizationService = localizationService;
+        _modService = modService;
         _pickerDialogService = pickerDialogService;
 
         ChangeEftInstallLocationCommand = new AsyncRelayCommand(ChangeEftInstallLocation);
@@ -76,6 +87,7 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
             else
             {
                 CurrentInstallProcessState.EftInstallPath = directorySelected.Path.LocalPath;
+                OverridenBsgInstallPath = true;
                 ValidateConfiguration();
             }
         }
@@ -88,7 +100,7 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
     /// <returns></returns>
     private async Task FetchVersionAndMirrorMatrix()
     {
-        IsLoading = true;
+        IsVersionSelectionLoading = true;
 
         // Clear the collections
         HasVersionsAvailable = false;
@@ -125,7 +137,7 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
 
         // TODO add some logging here and an alert somehow in case it fails to load any versions or something
 
-        IsLoading = false;
+        IsVersionSelectionLoading = false;
     }
 
     [RelayCommand]
@@ -170,12 +182,50 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
             IsConfigurationValid = false;
             return;
         }
+
+        if (IsModsSelectionLoading || IsVersionSelectionLoading)
+        {
+            IsConfigurationValid = false;
+            return;
+        }
+    }
+
+    private async Task LoadAvailableModsList()
+    {
+        IsModsSelectionLoading = true;
+
+        await _modService.LoadMasterModList();
+        if (_modService.ModList.Count <= 1)
+        {
+            await _modService.DownloadModsCollection();
+            await _modService.LoadMasterModList();
+        }
+
+        Mods.AddRange(_modService.ModList.Where(x => _modService.RecommendedModInstalls.Contains(x.Name)));
+
+        // Make sure that all the recommended mods are selected to start with
+        CurrentInstallProcessState.RequestedMods = Mods.ToList();
+
+        IsModsSelectionLoading = false;
     }
 
     protected override async void OnActivated()
     {
         base.OnActivated();
-        await FetchVersionAndMirrorMatrix();
+
+        if (CurrentInstallProcessState.RequestedInstallOperation == RequestedInstallOperation.UpdateSit)
+        {
+            SitInstallVersion? availableVersion = _installerService.GetLatestAvailableSitRelease();
+            if (availableVersion != null)
+            {
+                CurrentInstallProcessState.RequestedVersion = availableVersion.Release;
+                ProgressInstall();
+                return;
+            }
+        }
+
+        OverridenBsgInstallPath = CurrentInstallProcessState.BsgInstallPath != CurrentInstallProcessState.EftInstallPath;
+        await Task.WhenAll(LoadAvailableModsList(), FetchVersionAndMirrorMatrix());
     }
 
     partial void OnSelectedVersionChanged(SitInstallVersion? value)

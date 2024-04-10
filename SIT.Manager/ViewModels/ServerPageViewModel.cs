@@ -183,11 +183,19 @@ public partial class ServerPageViewModel : ObservableRecipient
     [RelayCommand]
     private void StartServer()
     {
-        if (_akiServerService.State == RunningState.Starting)
+        if (_akiServerService.State == RunningState.Starting || _akiServerService.State == RunningState.Running)
         {
-            return;
+            AddConsole(_localizationService.TranslateSource("ServerPageViewModelStoppingServerLog"));
+            try
+            {
+                _akiServerService.Stop();
+            }
+            catch (Exception ex)
+            {
+                AddConsole(ex.Message);
+            }
         }
-        else if (_akiServerService.State != RunningState.Running)
+        else
         {
             if (_akiServerService.IsUnhandledInstanceRunning())
             {
@@ -205,18 +213,6 @@ public partial class ServerPageViewModel : ObservableRecipient
             try
             {
                 _akiServerService.Start();
-            }
-            catch (Exception ex)
-            {
-                AddConsole(ex.Message);
-            }
-        }
-        else
-        {
-            AddConsole(_localizationService.TranslateSource("ServerPageViewModelStoppingServerLog"));
-            try
-            {
-                _akiServerService.Stop();
             }
             catch (Exception ex)
             {

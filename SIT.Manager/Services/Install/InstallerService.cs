@@ -1,7 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using FluentAvalonia.UI.Controls;
+using Microsoft.Extensions.Logging;
 using SIT.Manager.Interfaces;
 using SIT.Manager.ManagedProcess;
 using SIT.Manager.Models;
+using SIT.Manager.Models.Github;
 using SIT.Manager.Models.Installation;
 using System;
 using System.Collections.Generic;
@@ -10,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
+using System.Security.Authentication;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -47,6 +50,8 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         { 14, "Install folder is missing a folder." },
         { 15, "Patcher failed." }
     };
+
+    private List<SitInstallVersion>? _availableSitUpdateVersions;
 
     /// <summary>
     /// Cleans up the EFT directory
@@ -109,8 +114,35 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             return sitVersions;
         }
 
-        string releasesJsonString = await GetHttpStringWithRetryAsync(() => _httpClient.GetStringAsync(@"https://sitcoop.publicvm.com/api/v1/repos/SIT/Downgrade-Patches/releases"), TimeSpan.FromSeconds(1), 3);
-        List<GiteaRelease> giteaReleases = JsonSerializer.Deserialize<List<GiteaRelease>>(releasesJsonString) ?? [];
+        ContentDialog blockedByISPWarning = new()
+        {
+            Title = _localizationService.TranslateSource("InstallServiceErrorTitle"),
+            Content = _localizationService.TranslateSource("InstallServiceSSLError"),
+            PrimaryButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonOk")
+        };
+
+        string releasesJsonString;
+        try
+        {
+            releasesJsonString = await GetHttpStringWithRetryAsync(() => _httpClient.GetStringAsync(@"https://patcher.stayintarkov.com/api/v1/repos/SIT/Downgrade-Patches/releases"), TimeSpan.FromSeconds(1), 3);
+        }
+        catch (AuthenticationException)
+        {
+            await blockedByISPWarning.ShowAsync();
+            return [];
+        }
+
+        List<GiteaRelease> giteaReleases;
+        try
+        {
+            giteaReleases = JsonSerializer.Deserialize<List<GiteaRelease>>(releasesJsonString) ?? [];
+        }
+        catch (JsonException)
+        {
+            await blockedByISPWarning.ShowAsync();
+            return [];
+        }
+
         if (giteaReleases.Count == 0)
         {
             _logger.LogError("Found no available mirrors to use as a downgrade patcher");
@@ -122,7 +154,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
 
         for (int i = 0; i < sitVersions.Count; i++)
         {
-            string sitVersionTargetBuild = sitVersions[i].Release.body.Split(".").Last();
+            string sitVersionTargetBuild = sitVersions[i].Release.Body.Split(".").Last();
             if (tarkovBuild == sitVersionTargetBuild)
             {
                 sitVersions[i].DownloadMirrors = [];
@@ -224,25 +256,31 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         {
             foreach (GithubRelease release in githubReleases)
             {
-                Match match = SITReleaseVersionRegex().Match(release.body);
+                // If this is a prerelease build and the user hasn't eneabled developer mode then we want to skip adding this to the list.
+                if (release.Prerelease && !_configService.Config.EnableDeveloperMode)
+                {
+                    continue;
+                }
+
+                Match match = SITReleaseVersionRegex().Match(release.Body);
                 if (match.Success)
                 {
                     string releasePatch = match.Value.Replace("This version works with version ", "");
-                    release.tag_name = $"{release.name} - Tarkov Version: {releasePatch}";
-                    release.body = releasePatch;
+                    release.TagName = $"{release.Name} - Tarkov Version: {releasePatch}";
+                    release.Body = releasePatch;
 
                     SitInstallVersion sitVersion = new()
                     {
                         Release = release,
                         EftVersion = releasePatch,
-                        SitVersion = release.name,
+                        SitVersion = release.Name,
                     };
 
                     result.Add(sitVersion);
                 }
                 else
                 {
-                    _logger.LogWarning($"FetchReleases: There was a SIT release without a version defined: {release.html_url}");
+                    _logger.LogWarning($"FetchReleases: There was a SIT release without a version defined: {release.HtmlUrl}");
                 }
             }
         }
@@ -340,6 +378,12 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         {
             foreach (GithubRelease release in githubReleases)
             {
+                // If this is a prerelease build and the user hasn't eneabled developer mode then we want to skip adding this to the list.
+                if (release.Prerelease && !_configService.Config.EnableDeveloperMode)
+                {
+                    continue;
+                }
+
                 // Check there is an asset available for this OS
                 string fileExtention = ".zip";
                 if (OperatingSystem.IsLinux())
@@ -347,20 +391,20 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                     fileExtention = ".tar.gz";
                 }
 
-                GithubRelease.Asset? releaseAsset = release.assets.Find(asset => asset.name.EndsWith(fileExtention));
+                Asset? releaseAsset = release.Assets.Find(asset => asset.Name.EndsWith(fileExtention));
                 if (releaseAsset != null)
                 {
-                    Match match = ServerReleaseVersionRegex().Match(release.body);
+                    Match match = ServerReleaseVersionRegex().Match(release.Body);
                     if (match.Success)
                     {
                         string releasePatch = match.Value.Replace("This server version works with version ", "");
-                        release.tag_name = $"{release.name} - Tarkov Version: {releasePatch}";
-                        release.body = releasePatch;
+                        release.TagName = $"{release.Name} - Tarkov Version: {releasePatch}";
+                        release.Body = releasePatch;
                         result.Add(release);
                     }
                     else
                     {
-                        _logger.LogWarning($"FetchReleases: There was a server release without a version defined: {release.html_url}");
+                        _logger.LogWarning($"FetchReleases: There was a server release without a version defined: {release.HtmlUrl}");
                     }
                 }
             }
@@ -390,7 +434,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             File.Delete(patcherPath);
         }
 
-        bool downloadSuccess = await _fileService.DownloadFile("Patcher.zip", targetPath, url, downloadProgress);
+        bool downloadSuccess = await _fileService.DownloadFile("Patcher.zip", targetPath, url, downloadProgress).ConfigureAwait(false);
         if (!downloadSuccess)
         {
             _logger.LogError("Failed to download the patcher from the selected mirror.");
@@ -399,14 +443,14 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
 
         if (File.Exists(patcherPath))
         {
-            await _fileService.ExtractArchive(patcherPath, targetPath, extractionProgress);
+            await _fileService.ExtractArchive(patcherPath, targetPath, extractionProgress).ConfigureAwait(false);
             File.Delete(patcherPath);
         }
 
         var patcherDir = Directory.GetDirectories(targetPath, "Patcher*").FirstOrDefault();
         if (!string.IsNullOrEmpty(patcherDir))
         {
-            await CloneDirectoryAsync(patcherDir, _configService.Config.InstallPath);
+            await CloneDirectoryAsync(patcherDir, targetPath).ConfigureAwait(false);
             Directory.Delete(patcherDir, true);
         }
 
@@ -445,6 +489,45 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         return EFTGameFinder.FindOfficialGamePath();
     }
 
+    public SitInstallVersion? GetLatestAvailableSitRelease()
+    {
+        return _availableSitUpdateVersions?.MaxBy(x => x.SitVersion);
+    }
+
+    public async Task<bool> IsSitUpateAvailable()
+    {
+        if (string.IsNullOrEmpty(_configService.Config.TarkovVersion) && string.IsNullOrEmpty(_configService.Config.SitVersion))
+        {
+            // We need a tarkov and SIT version to be able to check for updates so return early.
+            return false;
+        }
+
+        if (DateTime.Now.AddHours(-1) < _configService.Config.LastSitUpdateCheckTime)
+        {
+            // We haven't checked for updates in the last hour so refresh the available verisons
+            _availableSitUpdateVersions = await GetAvailableSitReleases(_configService.Config.TarkovVersion);
+            _availableSitUpdateVersions = _availableSitUpdateVersions?.Where(x =>
+            {
+                bool parsedSitVersion = Version.TryParse(x.SitVersion.Replace("StayInTarkov.Client-", ""), out Version? sitVersion);
+                if (parsedSitVersion)
+                {
+                    Version installedSit = Version.Parse(_configService.Config.SitVersion);
+                    if (sitVersion > installedSit && _configService.Config.TarkovVersion == x.EftVersion)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }).ToList();
+
+            // Update the last check time so that we don't refresh this list again for an hour
+            _configService.Config.LastSitUpdateCheckTime = DateTime.Now;
+            _configService.UpdateConfig(_configService.Config);
+        }
+
+        return _availableSitUpdateVersions?.Count != 0;
+    }
+
     public async Task InstallServer(GithubRelease selectedVersion, string targetInstallDir, IProgress<double> downloadProgress, IProgress<double> extractionProgress)
     {
         if (selectedVersion == null)
@@ -462,14 +545,14 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             fileExtention = ".tar.gz";
         }
 
-        GithubRelease.Asset? releaseAsset = selectedVersion.assets.FirstOrDefault(a => a.name.StartsWith("SITCoop") && a.name.EndsWith(fileExtention));
+        Asset? releaseAsset = selectedVersion.Assets.FirstOrDefault(a => a.Name.StartsWith("SITCoop") && a.Name.EndsWith(fileExtention));
         if (releaseAsset == null)
         {
             _barNotificationService.ShowError("Error", "No server release found to download");
             _logger.LogError("No matching release asset found.");
             return;
         }
-        string releaseZipUrl = releaseAsset.browser_download_url;
+        string releaseZipUrl = releaseAsset.BrowserDownloadUrl;
 
         if (string.IsNullOrEmpty(targetInstallDir))
         {
@@ -485,12 +568,12 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         }
 
         // Define the paths for download target directory
-        string downloadLocation = Path.Combine(targetInstallDir, releaseAsset.name);
+        string downloadLocation = Path.Combine(targetInstallDir, releaseAsset.Name);
 
         try
         {
             // Download and extract the file into the target directory
-            await _fileService.DownloadFile(releaseAsset.name, targetInstallDir, releaseZipUrl, downloadProgress);
+            await _fileService.DownloadFile(releaseAsset.Name, targetInstallDir, releaseZipUrl, downloadProgress);
             await _fileService.ExtractArchive(downloadLocation, targetInstallDir, extractionProgress);
         }
         catch (Exception ex)
@@ -580,13 +663,15 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             await _fileService.DownloadFile("BepInEx5.zip", bepinexPath, "https://github.com/BepInEx/BepInEx/releases/download/v5.4.22/BepInEx_x64_5.4.22.0.zip", internalDownloadProgress);
             await _fileService.ExtractArchive(Path.Combine(bepinexPath, "BepInEx5.zip"), targetInstallDir, internalExtractionProgress);
 
+            CopyEftSettings(targetInstallDir);
+
             // We don't use index as they might be different from version to version
-            string? releaseZipUrl = selectedVersion.assets.Find(q => q.name == "StayInTarkov-Release.zip")?.browser_download_url;
+            string? releaseZipUrl = selectedVersion.Assets.Find(q => q.Name == "StayInTarkov-Release.zip")?.BrowserDownloadUrl;
             if (!string.IsNullOrEmpty(releaseZipUrl))
             {
                 internalDownloadProgress = new(progress =>
                 {
-                    internalDownloadProgressPercentage = 0.5 + (progress / downloadAndExtractionSteps);
+                    internalDownloadProgressPercentage = 50 + (progress / downloadAndExtractionSteps);
                     downloadProgress.Report(internalDownloadProgressPercentage);
                 });
                 internalExtractionProgress = new(progress =>
@@ -642,6 +727,36 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         {
             _logger.LogError(ex, "Install SIT");
             throw;
+        }
+    }
+    public void CopyEftSettings(string targetInstallDir)
+    {
+        var sourcePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Battlestate Games", "Escape from Tarkov", "Settings");
+        var destinationPath = Path.Combine(targetInstallDir, "user", "sptSettings");
+
+        var filesToCopy = new[] { "Control.ini", "Game.ini", "Graphics.ini", "PostFx.ini", "Sound.ini" };
+        try
+        {
+            if (!Directory.Exists(destinationPath))
+            {
+                Directory.CreateDirectory(destinationPath);
+            }
+
+            foreach (var fileName in filesToCopy)
+            {
+                var sourceFile = Path.Combine(sourcePath, fileName);
+                if (File.Exists(sourceFile))
+                {
+                    var destFile = Path.Combine(destinationPath, fileName);
+                    File.Copy(sourceFile, destFile, overwrite: true);
+                }
+            }
+
+            _logger.LogInformation("Successfully copied EFT settings to '{destinationPath}'.", destinationPath);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to copy EFT settings.");
         }
     }
 }

@@ -14,4 +14,5 @@ public class ModInfo
     public bool RequiresFiles { get; set; }
     public List<string> PluginFiles { get; set; } = [];
     public List<string> ConfigFiles { get; set; } = [];
+    public List<string> PatcherFiles { get; set; } = [];
 }

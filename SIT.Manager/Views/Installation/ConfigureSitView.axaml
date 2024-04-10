@@ -14,8 +14,8 @@
 		</Style>
 	</UserControl.Styles>
 
-	<Grid RowDefinitions="*, Auto">
-		<StackPanel Grid.Row="0">
+	<ScrollViewer>
+		<StackPanel Margin="0,0,16,0">
 			<StackPanel>
 				<TextBlock Text="{DynamicResource ConfigureViewVersionSelectionGroupTitle}" Classes="FrameHeading"/>
 				<Border Classes="StandardFrame">
@@ -23,11 +23,11 @@
 						<StackPanel Orientation="Horizontal">
 							<StackPanel.IsVisible>
 								<MultiBinding Converter="{x:Static BoolConverters.And}">
-									<Binding Path="!IsLoading"/>
+									<Binding Path="!IsVersionSelectionLoading"/>
 									<Binding Path="HasVersionsAvailable"/>
 								</MultiBinding>
 							</StackPanel.IsVisible>
-							
+
 							<TextBlock Text="{DynamicResource ConfigureSitViewVersionSelectionTitle}"
 									   VerticalAlignment="Center"
 									   Margin="0,0,8,0"/>
@@ -52,14 +52,14 @@
 
 						<StackPanel Orientation="Horizontal"
 									Margin="0,4,0,0"
-									IsVisible="{Binding !IsLoading}">
+									IsVisible="{Binding !IsVersionSelectionLoading}">
 							<StackPanel.IsVisible>
 								<MultiBinding Converter="{x:Static BoolConverters.And}">
-									<Binding Path="!IsLoading"/>
+									<Binding Path="!IsVersionSelectionLoading"/>
 									<Binding Path="HasMirrorsAvailable"/>
 								</MultiBinding>
 							</StackPanel.IsVisible>
-							
+
 							<TextBlock Text="{DynamicResource ConfigureSitViewMirrorSelectionTitle}"
 									   VerticalAlignment="Center"
 									   Margin="0,0,8,0"/>
@@ -80,11 +80,12 @@
 							<StackPanel.IsVisible>
 								<MultiBinding Converter="{x:Static BoolConverters.And}">
 									<Binding Path="CurrentInstallProcessState.UsingBsgInstallPath"/>
-									<Binding Path="!IsLoading"/>
+									<Binding Path="!IsVersionSelectionLoading"/>
 								</MultiBinding>
 							</StackPanel.IsVisible>
 
 							<TextBlock Text="{DynamicResource ConfigureSitViewEFTPathWarningNoPath}"
+									   IsVisible="{Binding !OverridenBsgInstallPath}"
 									   Classes="WarningMessage"/>
 							<StackPanel Orientation="Horizontal" Margin="0,8,0,0">
 								<StackPanel Orientation="Horizontal" >
@@ -101,7 +102,7 @@
 							</StackPanel>
 						</StackPanel>
 
-						<StackPanel IsVisible="{Binding IsLoading}">
+						<StackPanel IsVisible="{Binding IsVersionSelectionLoading}">
 							<TextBlock HorizontalAlignment="Center"
 									   Text="{DynamicResource ConfigureSitViewLoadingVersionSelectionText}"/>
 							<controls:LoadingSpinner Width="64"
@@ -112,36 +113,89 @@
 												 Foreground="{DynamicResource TextControlForeground}"
 												 StrokeWidth="8"/>
 						</StackPanel>
-						</StackPanel>
+					</StackPanel>
 				</Border>
 			</StackPanel>
+
+			<StackPanel>
+				<TextBlock Text="{DynamicResource ConfigureSitViewRecommendedModsTitle}" Classes="FrameHeading"/>
+				<Border Classes="StandardFrame">
+					<StackPanel>
+						<StackPanel IsVisible="{Binding !IsModsSelectionLoading}">
+							<TextBlock Text="{DynamicResource ConfigureSitViewRecommendedModsDescription}"
+									   TextWrapping="Wrap"/>
+							<ListBox ItemsSource="{Binding Mods}"
+									 Margin="0,4,0,0"
+									 SelectedItems="{Binding CurrentInstallProcessState.RequestedMods}"
+									 SelectionMode="Multiple,Toggle">
+								<ListBox.ItemTemplate>
+									<DataTemplate>
+										<Grid>
+											<TextBlock>
+												<Run Text="{Binding Name}"/>
+												<Run Text=" - "/>
+												<Run Text="{Binding ModVersion}"/>
+											</TextBlock>
+										</Grid>
+									</DataTemplate>
+								</ListBox.ItemTemplate>
+							</ListBox>
+						</StackPanel>
+
+						<StackPanel IsVisible="{Binding IsModsSelectionLoading}">
+							<TextBlock HorizontalAlignment="Center"
+									   Text="{DynamicResource ConfigureSitViewLoadingVersionSelectionText}"/>
+							<controls:LoadingSpinner Width="64"
+												 Height="{Binding $self.Width}"
+												 Margin="0,8,0,0"
+												 HorizontalAlignment="Center"
+												 VerticalAlignment="Center"
+												 Foreground="{DynamicResource TextControlForeground}"
+												 StrokeWidth="8"/>
+						</StackPanel>
+					</StackPanel>
+				</Border>
+				<TextBlock Text="{DynamicResource ConfigureViewPersonalizationOptions}" Classes="FrameHeading"/>
+				<Border Classes="StandardFrame">
+					<CheckBox HorizontalAlignment="Left"
+							  Margin="8,0,0,0"
+							  ToolTip.Tip="{DynamicResource ConfigureSitViewEFTSettingsCheckboxTip}"
+							  IsChecked="{Binding CurrentInstallProcessState.CopyEftSettings}">
+						<CheckBox.Content>
+							<Grid ColumnDefinitions="Auto,*">
+								<ui:SymbolIcon Grid.Column="0" Symbol="Settings" Margin="0,0,0,0"/>
+								<TextBlock Grid.Column="1" Text="{DynamicResource ConfigureSitViewEFTSettingsCheckboxTitle}" Margin="5,0,0,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+							</Grid>
+						</CheckBox.Content>
+					</CheckBox>
+				</Border>
+			</StackPanel>
+
+			<Grid ColumnDefinitions="*, *"
+				  Margin="4,8">
+				<Button Grid.Column="0"
+						Height="50"
+						HorizontalAlignment="Center"
+						HorizontalContentAlignment="Stretch"
+						Command="{Binding BackCommand}">
+					<StackPanel Orientation="Horizontal">
+						<ui:SymbolIcon Symbol="Back"/>
+						<TextBlock Text="{DynamicResource ConfigureViewBackButtonTitle}"/>
+					</StackPanel>
+				</Button>
+
+				<Button Grid.Column="1"
+						Height="50"
+						HorizontalAlignment="Center"
+						HorizontalContentAlignment="Stretch"
+						IsEnabled="{Binding IsConfigurationValid}"
+						Command="{Binding StartCommand}">
+					<StackPanel Orientation="Horizontal">
+						<ui:SymbolIcon Symbol="PlayFilled"/>
+						<TextBlock Text="{DynamicResource ConfigureViewStartInstallButtonTitle}"/>
+					</StackPanel>
+				</Button>
+			</Grid>
 		</StackPanel>
-
-		<Grid Grid.Row="1"
-			  ColumnDefinitions="*, *"
-			  Margin="4,4,4,8">
-			<Button Grid.Column="0"
-					Height="50"
-					HorizontalAlignment="Center"
-					HorizontalContentAlignment="Stretch"
-					Command="{Binding BackCommand}">
-				<StackPanel Orientation="Horizontal">
-					<ui:SymbolIcon Symbol="Back"/>
-					<TextBlock Text="{DynamicResource ConfigureViewBackButtonTitle}"/>
-				</StackPanel>
-			</Button>
-
-			<Button Grid.Column="1"
-					Height="50"
-					HorizontalAlignment="Center"
-					HorizontalContentAlignment="Stretch"
-					IsEnabled="{Binding IsConfigurationValid}"
-					Command="{Binding StartCommand}">
-				<StackPanel Orientation="Horizontal">
-					<ui:SymbolIcon Symbol="PlayFilled"/>
-					<TextBlock Text="{DynamicResource ConfigureViewStartInstallButtonTitle}"/>
-				</StackPanel>
-			</Button>
-		</Grid>
-	</Grid>
+	</ScrollViewer>
 </UserControl>

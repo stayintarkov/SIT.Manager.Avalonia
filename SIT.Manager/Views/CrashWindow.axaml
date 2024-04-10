@@ -1,0 +1,37 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:vm="clr-namespace:SIT.Manager.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="SIT.Manager.Views.CrashWindow"
+		x:DataType="vm:CrashWindowViewModel"
+        MaxHeight="240"
+		MaxWidth="450"
+		Title="Uh oh!"
+		Icon="/Assets/Stay-In-Tarkov-512.png"
+		WindowStartupLocation="CenterScreen">
+	<Grid RowDefinitions="auto, *, auto">
+		<TextBlock
+			HorizontalAlignment="Center"
+			FontFamily="Cascadia Mono"
+			FontSize="20"
+			Margin="0 10 0 0">
+			Something crashed your launcher :/
+		</TextBlock>
+		<TextBlock Grid.Row="1"
+			HorizontalAlignment="Center"
+			FontFamily="Cascadia Mono"
+			FontSize="16"
+			VerticalAlignment="Center">
+			We've created a log called "crash.log" <LineBreak/>
+			if you wish to report this issue to us
+		</TextBlock>
+		<Button
+			Content="Ok"
+			Command="{Binding ExitLauncherCommand}"
+			Grid.Row="2" 
+			HorizontalAlignment="Center"
+			Margin="0 0 0 30"/>
+	</Grid>
+</Window>

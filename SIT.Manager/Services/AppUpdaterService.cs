@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using SIT.Manager.Extentions;
 using SIT.Manager.Interfaces;
 using SIT.Manager.ManagedProcess;
-using SIT.Manager.Models;
+using SIT.Manager.Models.Github;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -51,7 +51,7 @@ public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterServi
             }
             else if (OperatingSystem.IsLinux())
             {
-                return @"https://github.com/stayintarkov/SIT.Manager.Avalonia/releases/latest/download/linux-x64.tar";
+                return @"https://github.com/stayintarkov/SIT.Manager.Avalonia/releases/latest/download/linux-x64.tar.gz";
             }
             throw new NotImplementedException("No Release URL found for this platform");
         }
@@ -88,11 +88,11 @@ public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterServi
         }
     }
 
-    private void ExtractUpdatedManager(string zipPath, string destination)
+    private async Task ExtractUpdatedManager(string zipPath, string destination)
     {
         DirectoryInfo releasePath = new(destination);
         releasePath.Create();
-        _fileService.ExtractArchive(zipPath, releasePath.FullName);
+        await _fileService.ExtractArchive(zipPath, releasePath.FullName);
     }
 
     public async Task<bool> CheckForUpdate()
@@ -101,13 +101,13 @@ public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterServi
         {
             try
             {
-                Version currentVersion = Assembly.GetExecutingAssembly().GetName().Version ?? new Version("0");
+                Version currentVersion = Assembly.GetEntryAssembly()?.GetName().Version ?? new Version("0");
 
                 string versionJsonString = await _httpClient.GetStringAsync(MANAGER_VERSION_URL);
                 GithubRelease? latestRelease = JsonSerializer.Deserialize<GithubRelease>(versionJsonString);
                 if (latestRelease != null)
                 {
-                    Version latestVersion = new(latestRelease.name);
+                    Version latestVersion = new(latestRelease.Name);
                     return latestVersion > currentVersion;
                 }
             }
@@ -150,7 +150,7 @@ public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterServi
 
         _logger.LogInformation("Download complete; Extracting new version..");
         string releasePath = Path.Combine(tempPath, "Release");
-        ExtractUpdatedManager(zipPath, releasePath);
+        await ExtractUpdatedManager(zipPath, releasePath);
 
         // Set the permissions for the executable now that we have extracted it
         // this has the added bonus of making sure that Process.dll tm is loaded 

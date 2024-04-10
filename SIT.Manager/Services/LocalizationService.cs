@@ -11,6 +11,7 @@ namespace SIT.Manager.Services;
 public partial class LocalizationService : ILocalizationService
 {
     private const string DEFAULT_LANGUAGE = "en-US";
+    private const string ASSEMBLY_NAME = "SIT.Manager";
 
     private readonly IManagerConfigService _configService;
 
@@ -105,7 +106,7 @@ public partial class LocalizationService : ILocalizationService
     {
         List<CultureInfo?> result = [];
         var assembly = typeof(LocalizationService).Assembly;
-        string folderName = string.Format("{0}.Localization", assembly.GetName().Name);
+        string folderName = string.Format("{0}.Localization", ASSEMBLY_NAME);
         result = assembly.GetManifestResourceNames()
             .Where(r => r.StartsWith(folderName) && r.EndsWith(".axaml"))
             .Select(r =>

@@ -1,0 +1,47 @@
+name: Build
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ "win-x64", "linux-x64" ]
+
+    runs-on: ubuntu-latest
+
+    env:
+      Solution_Name: SIT.Manager.sln
+        
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET 8.0
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+        
+    - name: Get build date
+      id: build
+      shell: pwsh
+      run: |
+        $CurrentTime = Get-Date -Format 'yyMM'
+        $BuildTime = Get-Date -Format 'ddHH'
+        Write-Output "NOW=$CurrentTime" >> $env:GITHUB_OUTPUT
+        Write-Output "VERSION=$BuildTime" >> $env:GITHUB_OUTPUT              
+        
+    - name: Build Debug
+      run: dotnet build SIT.Manager.Desktop/SIT.Manager.Desktop.csproj --configuration Debug -r ${{ matrix.os }} -p:BuildNumber=${{ steps.build.outputs.NOW }} -p:RevisionNumber=${{ steps.build.outputs.VERSION }}
+      
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v4.3.1
+      with:
+        name: ${{ matrix.os }}
+        path: ${{ github.workspace }}/SIT.Manager.Desktop/bin/Debug/net8.0/${{ matrix.os }}/*
+        if-no-files-found: error
+        retention-days: 3

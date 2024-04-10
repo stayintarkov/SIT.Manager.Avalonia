@@ -52,10 +52,6 @@ public sealed partial class App : Application
                 .AddJsonFile("appsettings.json", true, true)
                 .Build();
             services.AddLogging(builder =>
-            {
-                builder.AddConfiguration(configuration.GetSection("Logging"));
-                builder.AddJsonFile(o => o.RootPath = AppContext.BaseDirectory);
-            });
 
             #endregion Logging
 

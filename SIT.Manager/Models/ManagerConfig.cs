@@ -1,5 +1,6 @@
 ﻿using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 
@@ -22,6 +23,8 @@ public partial class ManagerConfig : ObservableObject
     [ObservableProperty]
     public bool _closeAfterLaunch = false;
     [ObservableProperty]
+    public bool _enableDeveloperMode = false;
+    [ObservableProperty]
     public string _winePrefix = string.Empty;
     [ObservableProperty]
     public string _wineRunner = string.Empty;
@@ -29,6 +32,8 @@ public partial class ManagerConfig : ObservableObject
     public string _tarkovVersion = string.Empty;
     [ObservableProperty]
     public string _sitVersion = string.Empty;
+    [ObservableProperty]
+    private DateTime _lastSitUpdateCheckTime = DateTime.MinValue;
     [ObservableProperty]
     public string _sptAkiVersion = string.Empty;
     [ObservableProperty]

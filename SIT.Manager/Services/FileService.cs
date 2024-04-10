@@ -13,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Services;
@@ -54,7 +55,7 @@ public class FileService(IActionNotificationService actionNotificationService,
         foreach (DirectoryInfo directory in directories)
         {
             DirectoryInfo newDestination = destination.CreateSubdirectory(directory.Name);
-            currentProgress = await CopyDirectoryAsync(directory, newDestination, currentProgress, totalSize, progress);
+            currentProgress = await CopyDirectoryAsync(directory, newDestination, currentProgress, totalSize, progress).ConfigureAwait(false);
         }
 
         foreach (FileInfo file in files)
@@ -68,7 +69,7 @@ public class FileService(IActionNotificationService actionNotificationService,
                         double progressPercentage = (currentProgress + x) / totalSize * 100;
                         progress?.Report(progressPercentage);
                     });
-                    await sourceStream.CopyToAsync(destinationStream, ushort.MaxValue, streamProgress);
+                    await sourceStream.CopyToAsync(destinationStream, ushort.MaxValue, streamProgress).ConfigureAwait(false);
                     currentProgress += file.Length;
                 }
             }
@@ -101,37 +102,37 @@ public class FileService(IActionNotificationService actionNotificationService,
         }
     }
 
-    private async Task<bool> DownloadMegaFile(string fileName, string fileUrl, IProgress<double> progress)
+    private async Task<bool> DownloadMegaFile(string fileName, string filePath, string fileUrl, IProgress<double> progress)
     {
         _logger.LogInformation("Attempting to use Mega API.");
         try
         {
             MegaApiClient megaApiClient = new();
-            await megaApiClient.LoginAnonymousAsync();
+            await megaApiClient.LoginAnonymousAsync().ConfigureAwait(false);
 
-            // TODO: Add proper error handling below
             if (!megaApiClient.IsLoggedIn)
             {
+                _logger.LogWarning("Failed to login user as anonymous to Mega");
                 return false;
             }
 
-            _logger.LogInformation($"Starting download of '{fileName}' from '{fileUrl}'");
+            _logger.LogInformation("Starting download of '{fileName}' from '{fileUrl}'", fileName, fileUrl);
 
             Uri fileLink = new(fileUrl);
             INode fileNode = await megaApiClient.GetNodeFromLinkAsync(fileLink);
 
-            string targetPath = Path.Combine(_configService.Config.InstallPath, fileName);
-            await megaApiClient.DownloadFileAsync(fileNode, targetPath, progress);
-
-            return true;
+            await megaApiClient.DownloadFileAsync(fileNode, filePath, progress).ConfigureAwait(false);
         }
-        catch
+        catch (Exception ex)
         {
+            _logger.LogError(ex, "Failed to download file '{fileName}' from Mega at url '{fileUrl}'", fileName, fileUrl);
             return false;
         }
+
+        return true;
     }
 
-    // TODO unify this and the other DownloadMegaFile function nicely
+    // TODO unify this and the other DownloadMegaFile function nicely - will have to do some things on the mods page for this I think.
     private async Task<bool> DownloadMegaFile(string fileName, string fileUrl, bool showProgress)
     {
         _logger.LogInformation("Attempting to use Mega API.");
@@ -176,32 +177,45 @@ public class FileService(IActionNotificationService actionNotificationService,
         destinationDir.Create();
 
         double currentprogress = 0;
-
-        await CopyDirectoryAsync(sourceDir, destinationDir, currentprogress, totalSize, progress);
+        await CopyDirectoryAsync(sourceDir, destinationDir, currentprogress, totalSize, progress).ConfigureAwait(false);
     }
 
-    // TODO unify this and the other DownloadFile function nicely
+    public async Task CopyFileAsync(string sourceFile, string destinationFile, CancellationToken cancellationToken = default)
+    {
+        FileOptions fileOptions = FileOptions.Asynchronous | FileOptions.SequentialScan;
+        int bufferSize = 4096;
+        using (FileStream sourceStream = new(sourceFile, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize, fileOptions))
+        {
+            using (FileStream destinationStream = new(destinationFile, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize, fileOptions))
+            {
+                await sourceStream.CopyToAsync(destinationStream, bufferSize, cancellationToken).ConfigureAwait(false);
+            }
+        }
+    }
+
+    // TODO unify this and the other DownloadFile function nicely - will have to do some things on the mods page for this I think.
     public async Task<bool> DownloadFile(string fileName, string filePath, string fileUrl, IProgress<double> progress)
     {
         bool result = false;
+
+        filePath = Path.Combine(filePath, fileName);
+        if (File.Exists(filePath))
+        {
+            File.Delete(filePath);
+        }
+
         if (fileUrl.Contains("mega.nz"))
         {
-            result = await DownloadMegaFile(fileName, fileUrl, progress);
+            result = await DownloadMegaFile(fileName, filePath, fileUrl, progress).ConfigureAwait(false);
         }
         else
         {
-            _logger.LogInformation($"Starting download of '{fileName}' from '{fileUrl}'");
-            filePath = Path.Combine(filePath, fileName);
-            if (File.Exists(filePath))
-            {
-                File.Delete(filePath);
-            }
-
+            _logger.LogInformation("Starting download of '{fileName}' from '{fileUrl}'", fileName, fileUrl);
             try
             {
                 using (FileStream file = new(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
                 {
-                    await _httpClient.DownloadAsync(file, fileUrl, progress);
+                    await _httpClient.DownloadAsync(file, fileUrl, progress).ConfigureAwait(false);
                 }
                 result = true;
             }

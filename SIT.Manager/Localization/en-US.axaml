@@ -39,6 +39,7 @@
 	<system:String x:Key="PlayPageViewModelWaitingForServerTitle">Waiting for server</system:String>
 	<system:String x:Key="PlayPageViewModelServerErrorTitle">Server Error</system:String>
 	<system:String x:Key="PlayPageViewModelServerErrorDescription">The server never started. Please check the logs for more information.</system:String>
+	<system:String x:Key="PlayPageViewModelLoginIncorrectPassword">Incorrect password</system:String>
 	
 	<!-- Pane View (Menu on the left also tooltip about update on top) -->
 	<system:String x:Key="UpdateNotification">An update to the SIT Manager is available click here to update:</system:String>
@@ -122,6 +123,8 @@
 	<system:String x:Key="SettingsLookForUpdatesTitleToolTip">Automatically look for updates when opening the launcher.</system:String>
 	<system:String x:Key="SettingsHideIpAddressTitle">Hide Ip Address</system:String>
 	<system:String x:Key="SettingsHideIpAddressToolTip">Hides the Ip Address with the star symbols in Ip Address Box.</system:String>
+	<system:String x:Key="SettingsEnableDeveloperMode">Enable Developer Mode</system:String>
+	<system:String x:Key="SettingsEnableDeveloperModeToolTip">Enables developer/test releases of SIT and SIT server for testing purposes</system:String>
 	<system:String x:Key="SettingsLanguageTitle">Language:</system:String>
 	<system:String x:Key="SettingsLanguageTitleToolTip">Translates entire launcher to your language, select one!</system:String>
 	<system:String x:Key="SettingsAccentColorTitle">Accent Color:</system:String>
@@ -302,6 +305,7 @@
 	<system:String x:Key="InstallServiceInstallSuccessfulDescription">Installation of Server was successful.</system:String>
 	<system:String x:Key="InstallServiceInstallSITSuccessfulDescription">Installation of SIT was successful.</system:String>
 	<system:String x:Key="InstallerServiceNoDowngradePatcher">No downgrader is available for these versions of Tarkov.</system:String>
+	<system:String x:Key="InstallServiceSSLError">Your ISP is likely blocking our connection. Please use a VPN and try again.</system:String>
 	
 	<!-- File Service -->
 	<system:String x:Key="FileServiceProgressDownloading">Downloading '%1'</system:String>
@@ -320,7 +324,7 @@
 	<system:String x:Key="UpdatePageViewModelButtonYes">Yes</system:String>
 	<system:String x:Key="UpdatePageViewModelButtonNo">No</system:String>
 
-		<!-- Install - Complete View -->
+	<!-- Install - Complete View -->
 	<system:String x:Key="CompleteViewInstallComplete">Install Completed</system:String>
 	<system:String x:Key="CompleteViewResetButtonTitle">Happy Playing</system:String>
 
@@ -328,8 +332,9 @@
 	<system:String x:Key="ConfigureViewStartInstallButtonTitle">Start Install</system:String>
 	<system:String x:Key="ConfigureViewBackButtonTitle">Back</system:String>
 	<system:String x:Key="ConfigureViewVersionSelectionGroupTitle">Version Selection</system:String>
-
-	<!-- Install - Configure Server View -->
+	<system:String x:Key="ConfigureViewPersonalizationOptions">Personalization and Import Options</system:String>
+	
+		<!-- Install - Configure Server View -->
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathToolTip">Change the SPT-AKI Install Path.</system:String>
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathTitle">Change</system:String>
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathPlaceholder">SPT-AKI Install Path...</system:String>
@@ -346,6 +351,10 @@
 	<system:String x:Key="ConfigureSitViewEFTPathWarningNoPath">Currently using the BSG EFT install location please install EFT to a different location to avoid any possible issues with SIT</system:String>
 	<system:String x:Key="ConfigureSitViewMirrorSelectionTitle">Select the mirror to use:</system:String>
 	<system:String x:Key="ConfigureSitViewVersionSelectionTitle">Version to install:</system:String>
+	<system:String x:Key="ConfigureSitViewRecommendedModsTitle">Recommended Mods</system:String>
+	<system:String x:Key="ConfigureSitViewRecommendedModsDescription">Choose from the available mods which we recommend you install alongside SIT</system:String>
+	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTip">Import Live Game Graphic, Audio, and Control settings to SIT</system:String>
+	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTitle">Import EFT Settings to SIT</system:String>
 
 	<!-- Install - Configure Sit View Model -->
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorTitle">Location Selection Error</system:String>
@@ -363,7 +372,8 @@
 	<system:String x:Key="PatchViewDownloadingTitle">Downloading Patcher</system:String>
 	<system:String x:Key="PatchViewExtractingTitle">Extracting Patcher</system:String>
 	<system:String x:Key="PatchViewPatchingErrorMessage">Error trying to patch EFT consult the logs for details</system:String>
-	<system:String x:Key="PatchViewPatchingEndInstallButtonTitle">End Install</system:String>	
+	<system:String x:Key="PatchViewAquirePatcherErrorMessage">Error trying to aquire the patcher for EFT, please consult the logs for more details</system:String>
+	<system:String x:Key="PatchViewPatchingEndInstallButtonTitle">End Install</system:String>
 
 	<!-- Install - Select View -->
 	<system:String x:Key="SelectViewInstallServerButtonTitle">Install Server + SIT Mod</system:String>
@@ -375,6 +385,8 @@
 	<system:String x:Key="SelectViewServerSectionHeading">SPT-AKI</system:String>
 	<system:String x:Key="SelectViewInstallSITButtonTitle">Install SIT</system:String>
 	<system:String x:Key="SelectViewInstallSITButtonToolTip">Downgrade EFT if needed, install SIT and mod support.</system:String>
+	<system:String x:Key="SelectViewUpdateSITButtonTitle">Update SIT</system:String>
+	<system:String x:Key="SelectViewUpdateSITButtonToolTip">Update SIT to the latest version available for your current EFT version</system:String>
 	<system:String x:Key="SelectViewSITVersionTitle">SIT Version:</system:String>
 	<system:String x:Key="SelectViewEFTVersionTitle">EFT Version:</system:String>
 	<system:String x:Key="SelectViewEFTPathTitle">EFT Path:</system:String>

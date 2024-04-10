@@ -15,13 +15,7 @@ using SIT.Manager.Views.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.NetworkInformation;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.ViewModels;
@@ -32,6 +26,7 @@ public partial class ToolsPageViewModel : ObservableObject
     private readonly IBarNotificationService _barNotificationService;
     private readonly IManagerConfigService _configService;
     private readonly IFileService _fileService;
+    private readonly IModService _modService;
     private readonly ITarkovClientService _tarkovClientService;
     private readonly ILocalizationService _localizationService;
     private readonly IDiagnosticService _diagnosticService;
@@ -57,6 +52,7 @@ public partial class ToolsPageViewModel : ObservableObject
                               IManagerConfigService configService,
                               IFileService fileService,
                               ILocalizationService localizationService,
+                              IModService modService,
                               ITarkovClientService tarkovClientService,
                               IDiagnosticService diagnosticService)
     {
@@ -66,6 +62,7 @@ public partial class ToolsPageViewModel : ObservableObject
         _fileService = fileService;
         _tarkovClientService = tarkovClientService;
         _localizationService = localizationService;
+        _modService = modService;
         _diagnosticService = diagnosticService;
 
         OpenEFTFolderCommand = new AsyncRelayCommand(OpenEFTFolder);
@@ -228,6 +225,7 @@ public partial class ToolsPageViewModel : ObservableObject
             {
                 _akiServerService.ClearCache();
                 _tarkovClientService.ClearCache();
+                _modService.ClearCache();
             }
             catch (Exception ex)
             {
@@ -255,7 +253,7 @@ public partial class ToolsPageViewModel : ObservableObject
                 });
                 if (pickedPath != null)
                 {
-                    savePath = pickedPath.Path.AbsolutePath;
+                    savePath = pickedPath.Path.LocalPath;
                 }
                 else
                 {

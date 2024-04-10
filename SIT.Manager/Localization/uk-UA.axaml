@@ -39,6 +39,7 @@
 	<system:String x:Key="PlayPageViewModelWaitingForServerTitle">Очікування сервера</system:String>
 	<system:String x:Key="PlayPageViewModelServerErrorTitle">Помилка сервера</system:String>
 	<system:String x:Key="PlayPageViewModelServerErrorDescription">Сервер не запустився. Будь ласка, перевірте журнали для отримання додаткової інформації.</system:String>
+	<system:String x:Key="PlayPageViewModelLoginIncorrectPassword">Incorrect password</system:String>
 
 	<!-- Pane View (Menu on the left also tooltip about update on top) -->
 	<system:String x:Key="UpdateNotification">Доступне оновлення менеджера SIT. Натисніть тут, щоб оновити:</system:String>
@@ -126,6 +127,8 @@
 	<system:String x:Key="SettingsLookForUpdatesTitleToolTip">Автоматично перевіряє оновлення при відкритті лаунчера.</system:String>
 	<system:String x:Key="SettingsHideIpAddressTitle">Сховати IP-адресу</system:String>
 	<system:String x:Key="SettingsHideIpAddressToolTip">Приховує IP-адресу зірочками в полі IP-адреси.</system:String>
+	<system:String x:Key="SettingsEnableDeveloperMode">Enable Developer Mode</system:String>
+	<system:String x:Key="SettingsEnableDeveloperModeToolTip">Enables developer/test releases of SIT and SIT server for testing purposes</system:String>
 	<system:String x:Key="SettingsLanguageTitle">Мова:</system:String>
 	<system:String x:Key="SettingsLanguageTitleToolTip">Перекладає весь лаунчер на вашу мову, оберіть свою мову!</system:String>
 	<system:String x:Key="SettingsAccentColorTitle">Колір акценту:</system:String>
@@ -300,6 +303,7 @@
 	<system:String x:Key="InstallServiceInstallSuccessfulDescription">Установка сервера пройшла успішно.</system:String>
 	<system:String x:Key="InstallServiceInstallSITSuccessfulDescription">Установка SIT пройшла успішно.</system:String>
 	<system:String x:Key="InstallerServiceNoDowngradePatcher">Для цієї версії Таркова нема доступних програм для відкату версії.</system:String>
+	<system:String x:Key="InstallServiceSSLError">Your ISP is likely blocking our connection. Please use a VPN and try again.</system:String>
 
 	<!-- File Service -->
 	<system:String x:Key="FileServiceProgressDownloading">Завантаження файлу '%1'</system:String>
@@ -326,6 +330,7 @@
 	<system:String x:Key="ConfigureViewStartInstallButtonTitle">Почати установку</system:String>
 	<system:String x:Key="ConfigureViewBackButtonTitle">Назад</system:String>
 	<system:String x:Key="ConfigureViewVersionSelectionGroupTitle">Вибір версії</system:String>
+	<system:String x:Key="ConfigureViewPersonalizationOptions">Personalization and Import Options</system:String>
 
 	<!-- Install - Configure Server View -->
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathToolTip">Змінити шлях установки SPT-AKI.</system:String>
@@ -344,6 +349,10 @@
 	<system:String x:Key="ConfigureSitViewEFTPathWarningNoPath">Наразі використовується місце встановлення BSG EFT. Будь ласка, встановіть EFT в інше місце, щоб уникнути можливих проблем з SIT</system:String>
 	<system:String x:Key="ConfigureSitViewMirrorSelectionTitle">Виберіть дзеркало для використання:</system:String>
 	<system:String x:Key="ConfigureSitViewVersionSelectionTitle">Версія для установки:</system:String>
+	<system:String x:Key="ConfigureSitViewRecommendedModsTitle">Recommended Mods</system:String>
+	<system:String x:Key="ConfigureSitViewRecommendedModsDescription">Choose from the available mods which we recommend you install alongside SIT</system:String>
+	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTip">Import Live Game Graphic, Audio, and Control settings to SIT</system:String>
+	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTitle">Import EFT Settings to SIT</system:String>
 
 	<!-- Install - Configure Sit View Model -->
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorTitle">Помилка вибору місця розташування</system:String>
@@ -361,6 +370,7 @@
 	<system:String x:Key="PatchViewDownloadingTitle">Завантаження патчера</system:String>
 	<system:String x:Key="PatchViewExtractingTitle">Розпакування патчера</system:String>
 	<system:String x:Key="PatchViewPatchingErrorMessage">Помилка при спробі патчу EFT. Деталі дивіться у журналах</system:String>
+	<system:String x:Key="PatchViewAquirePatcherErrorMessage">Error trying to aquire the patcher for EFT, please consult the logs for more details</system:String>
 	<system:String x:Key="PatchViewPatchingEndInstallButtonTitle">Завершити установку</system:String>
 
 	<!-- Install - Select View -->
@@ -374,6 +384,8 @@
 
 	<system:String x:Key="SelectViewInstallSITButtonTitle">Встановити SIT</system:String>
 	<system:String x:Key="SelectViewInstallSITButtonToolTip">Понизити версію EFT за потреби, встановити SIT та підтримку модів.</system:String>
+	<system:String x:Key="SelectViewUpdateSITButtonTitle">Update SIT</system:String>
+	<system:String x:Key="SelectViewUpdateSITButtonToolTip">Update SIT to the latest version available for your current EFT version</system:String>
 	<system:String x:Key="SelectViewSITVersionTitle">Версія SIT:</system:String>
 	<system:String x:Key="SelectViewEFTVersionTitle">Версія EFT:</system:String>
 	<system:String x:Key="SelectViewEFTPathTitle">Шлях EFT:</system:String>

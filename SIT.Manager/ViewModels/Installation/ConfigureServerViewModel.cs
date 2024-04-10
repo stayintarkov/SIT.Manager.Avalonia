@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SIT.Manager.Extentions;
 using SIT.Manager.Interfaces;
-using SIT.Manager.Models;
+using SIT.Manager.Models.Github;
 using SIT.Manager.Models.Installation;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -87,16 +87,19 @@ public partial class ConfigureServerViewModel : InstallationViewModelBase
 
     private void ValidateConfiguration()
     {
+        IsConfigurationValid = true;
+
         if (string.IsNullOrEmpty(CurrentInstallProcessState.SptAkiInstallPath))
         {
             IsConfigurationValid = false;
             return;
         }
-        if (SelectedVersion == null)
+
+        if (SelectedVersion == null || AvailableVersions.Count == 0)
         {
             IsConfigurationValid = false;
+            return;
         }
-        IsConfigurationValid = true;
     }
 
     protected override async void OnActivated()
