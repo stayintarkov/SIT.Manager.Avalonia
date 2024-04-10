@@ -14,7 +14,7 @@ public partial class AkiServer(Uri address) : ObservableObject
     [JsonProperty(nameof(Address))]
     public Uri Address { get; } = address;
     [JsonProperty(nameof(Characters))]
-    public readonly List<AkiCharacter> Characters = [];
+    public List<AkiCharacter> Characters { get; init; } = [];
     [JsonIgnore]
     public string Name { get; internal set; } = string.Empty;
     [JsonIgnore]
