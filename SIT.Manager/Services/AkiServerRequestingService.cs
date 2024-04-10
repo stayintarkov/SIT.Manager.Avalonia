@@ -30,6 +30,7 @@ public class AkiServerRequestingService(
 {
     private static readonly MediaTypeHeaderValue _contentHeaderType = new("application/json");
     private static readonly Version standardUriFormatSupportedVersion = new Version("1.10.8827.30098");
+    private static readonly byte[] zlibMagicBytes = new byte[] { 0x01, 0x5E, 0x9C, 0xDA };
     private readonly HttpClient _httpClient = httpClient;
     private readonly ResiliencePipelineProvider<string> _resiliencePipelineProvider = resiliencePipelineProvider;
     private readonly IManagerConfigService _configService = configService;
@@ -62,7 +63,20 @@ public class AkiServerRequestingService(
         }, cancellationToken);
         reqResp.EnsureSuccessStatusCode();
         Stream respStream = await reqResp.Content.ReadAsStreamAsync(cancellationToken);
-        return await respStream.InflateAsync(cancellationToken);
+
+        byte[] magicNumber = new byte[2];
+        int debug = await respStream.ReadAsync(magicNumber.AsMemory(0, 2), cancellationToken);
+        respStream.Seek(0, SeekOrigin.Begin);
+
+        if (magicNumber[0] == 0x78 && zlibMagicBytes.Contains(magicNumber[1]))
+        {
+            return await respStream.InflateAsync(cancellationToken);
+        }
+        else
+        {
+            return respStream as MemoryStream ?? new MemoryStream();
+        }
+
     }
 
     private Task<MemoryStream> SendAsync(AkiServer server, string path, HttpMethod? method = null, string? data = null, ResiliencePipeline<HttpResponseMessage>? strategy = null, CancellationToken cancellationToken = default)
@@ -164,8 +178,14 @@ public class AkiServerRequestingService(
             return JsonConvert.DeserializeObject<AkiServerInfo>(await sr.ReadToEndAsync(cancellationToken));
         }
     }
+
+    public Task<MemoryStream> GetAkiServerBackground(AkiServer server, CancellationToken cancellationToken = default)
+    {
+        return SendAsync(server.Address, "/files/launcher/bg.png", cancellationToken: cancellationToken);
+    }
 }
 
+//TODO: Rename this and move it. This is more of a general request status
 public enum AkiLoginStatus
 {
     Success,
