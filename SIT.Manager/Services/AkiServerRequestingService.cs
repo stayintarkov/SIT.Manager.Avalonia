@@ -69,30 +69,20 @@ public class AkiServerRequestingService(
         => SendAsync(server.Address, path, method, data, strategy, cancellationToken);
 
     //TODO: Add error handling
-    public async Task<AkiServer> GetAkiServerAsync(Uri serverAddresss, bool fetchInformation = true)
+    public async Task<AkiServer> GetAkiServerAsync(Uri serverAddresss, bool fetchInformation = true, CancellationToken cancellationToken = default)
     {
-        AkiServer ret;
+        AkiServer ret = new(serverAddresss);
         if (fetchInformation)
         {
-            var strategy = _resiliencePipelineProvider.GetPipeline<HttpResponseMessage>("ping-pipeline");
-            using MemoryStream respStream = await SendAsync(serverAddresss, "/launcher/server/connect", strategy: strategy);
-            string json;
-            using (StreamReader sr = new(respStream)) { json = sr.ReadToEnd(); }
-            JObject connectInfo = JObject.Parse(json);
-            string? serverName = (string?) connectInfo.GetValue("name");
-            ret = new(serverAddresss)
+            AkiServerInfo? serverInfo = await GetAkiServerInfoAsync(ret, cancellationToken);
+            if(serverInfo != null)
             {
-                Name = serverName ?? string.Empty
-            };
+                ret.Name = serverInfo.Name;
+            }
         }
-        else
-            ret = new(serverAddresss);
 
         return ret;
     }
-
-    public Task<AkiServer> GetAkiServerAsync(AkiServer server, bool fetchInformation = true)
-        => GetAkiServerAsync(server.Address, fetchInformation);
 
     public async Task<int> GetPingAsync(AkiServer akiServer, CancellationToken cancellationToken = default)
     {
@@ -132,7 +122,7 @@ public class AkiServerRequestingService(
         return loginData.ToJsonString();
     }
 
-    private async Task<string> LoginOrRegisterAsync(AkiCharacter character, string operation)
+    private async Task<string> LoginOrRegisterAsync(AkiCharacter character, string operation, CancellationToken cancellationToken = default)
     {
         using (MemoryStream ms = await SendAsync(character.ParentServer, Path.Combine("/launcher/profile", operation), HttpMethod.Post, CreateLoginData(character)))
         using (StreamReader streamReader = new StreamReader(ms))
@@ -141,17 +131,26 @@ public class AkiServerRequestingService(
         }
     }
 
-    public Task<string> LoginAsync(AkiCharacter character)
-        => LoginOrRegisterAsync(character, "login");
+    public Task<string> LoginAsync(AkiCharacter character, CancellationToken cancellationToken = default)
+        => LoginOrRegisterAsync(character, "login", cancellationToken);
 
-    public async Task<string> RegisterCharacterAsync(AkiCharacter character)
+    public async Task<string> RegisterCharacterAsync(AkiCharacter character, CancellationToken cancellationToken = default)
     {
-        string resp = await LoginOrRegisterAsync(character, "register");
+        string resp = await LoginOrRegisterAsync(character, "register", cancellationToken);
         return resp.ToLowerInvariant() switch
         {
-            "ok" => await LoginAsync(character),
+            "ok" => await LoginAsync(character, cancellationToken),
             "failed" => throw new UsernameTakenException(),
             _ => throw new Exception("Uh oh...")
         };
+    }
+
+    public async Task<AkiServerInfo?> GetAkiServerInfoAsync(AkiServer server, CancellationToken cancellationToken = default)
+    {
+        using MemoryStream respStream = await SendAsync(server.Address, "/launcher/server/connect", cancellationToken: cancellationToken);
+        using (StreamReader sr = new(respStream))
+        {
+            return JsonConvert.DeserializeObject<AkiServerInfo>(await sr.ReadToEndAsync(cancellationToken));
+        }
     }
 }

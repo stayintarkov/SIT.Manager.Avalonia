@@ -55,8 +55,6 @@ public partial class PlayPageViewModel : ObservableObject
 
             Debug.WriteLine($"{localServer.Name}'s ping is {localServer.Ping}ms");
             Debug.WriteLine($"{testCharacter.Username}'s ID is {testCharacter.ProfileID}");
-
-            File.WriteAllText("debug.json", JsonConvert.SerializeObject(localServer));
         });
     }
 }
