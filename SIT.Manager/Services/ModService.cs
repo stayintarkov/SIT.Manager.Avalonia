@@ -169,18 +169,21 @@ public class ModService(IBarNotificationService barNotificationService,
                 return false;
             }
 
-            string baseModSourcePath = Path.Combine(_localModCache, "Extracted");
-
-            // Install any plugin files
-            await InstallFiles(Path.Combine(baseModSourcePath, "plugins"), Path.Combine(targetPath, "BepInEx", "plugins"), mod.PluginFiles).ConfigureAwait(false);
-            // Install any config files
-            await InstallFiles(Path.Combine(baseModSourcePath, "config"), Path.Combine(targetPath, "BepInEx", "config"), mod.ConfigFiles).ConfigureAwait(false);
-            // Install any patcher files
-            await InstallFiles(Path.Combine(baseModSourcePath, "patchers"), Path.Combine(targetPath, "BepInEx", "patchers"), mod.ConfigFiles).ConfigureAwait(false);
-
             ManagerConfig config = _configService.Config;
-            config.InstalledMods.Add(mod.Name, mod.PortVersion);
-            _configService.UpdateConfig(config);
+            if (!config.InstalledMods.ContainsKey(mod.Name))
+            {
+                string baseModSourcePath = Path.Combine(_localModCache, "Extracted");
+
+                // Install any plugin files
+                await InstallFiles(Path.Combine(baseModSourcePath, "plugins"), Path.Combine(targetPath, "BepInEx", "plugins"), mod.PluginFiles).ConfigureAwait(false);
+                // Install any config files
+                await InstallFiles(Path.Combine(baseModSourcePath, "config"), Path.Combine(targetPath, "BepInEx", "config"), mod.ConfigFiles).ConfigureAwait(false);
+                // Install any patcher files
+                await InstallFiles(Path.Combine(baseModSourcePath, "patchers"), Path.Combine(targetPath, "BepInEx", "patchers"), mod.ConfigFiles).ConfigureAwait(false);
+
+                config.InstalledMods.Add(mod.Name, mod.PortVersion);
+                _configService.UpdateConfig(config);
+            }
 
             if (!suppressNotification)
             {
