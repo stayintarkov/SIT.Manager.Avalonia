@@ -39,24 +39,24 @@ jobs:
     - name: Compress on Linux
       if: ${{ matrix.os == 'linux-x64' }}
       run: |
-        cd ${{ github.workspace }}/SIT.Manager.Desktop/bin/Release/net8.0/${{ matrix.os }}/publish/
+        cd ${{ env.DeploymentDirectory }}
         tar -czvf ${{ matrix.os }}.tar.gz *
     - name: Compress on Windows
       if: ${{ matrix.os == 'win-x64' }}
       run: |
-        cd ${{ github.workspace }}/SIT.Manager.Desktop/bin/Release/net8.0/${{ matrix.os }}/publish/
+        cd ${{ env.DeploymentDirectory }}
         zip -r ${{ matrix.os }}.zip * 
 
     # Get the build version for both Windows and Linux
     - name: Get Release Version
       if: ${{ matrix.os == 'linux-x64' }}
       run: |
-        VersionString=`strings ${{ github.workspace }}/SIT.Manager.Desktop/bin/Release/net8.0/${{ matrix.os }}/publish/SIT.Manager | egrep -m 1 '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'`
+        VersionString=`strings ${{ env.DeploymentDirectory }}/SIT.Manager | egrep -m 1 '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'`
         echo "RELEASE_VERSION=$VersionString" >> "$GITHUB_ENV"
     - name: Get Release Version
       if: ${{ matrix.os == 'win-x64' }}
       run: |
-        VersionString=`strings ${{ github.workspace }}/SIT.Manager.Desktop/bin/Release/net8.0/${{ matrix.os }}/publish/SIT.Manager.exe | egrep -m 1 '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'`
+        VersionString=`strings ${{ env.DeploymentDirectory }}/SIT.Manager.exe | egrep -m 1 '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'`
         echo "RELEASE_VERSION=$VersionString" >> "$GITHUB_ENV"
 
     - name: Output Release Version
