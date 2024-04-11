@@ -41,9 +41,8 @@ jobs:
       with:
         name: ${{ matrix.os }}
         path: ${{ env.DeploymentDirectory }}
-          
-    - name: Output Artifact
-      run: echo "${{ matrix.os }}=${{ steps.artifact-upload.outputs.download-url }}" >> "$GITHUB_OUTPUT"
+        if-no-files-found: error
+        retention-days: 3
 
   release:
     needs: build
