@@ -35,37 +35,6 @@ jobs:
     - name: Build Published Version
       run: dotnet publish SIT.Manager.Desktop/SIT.Manager.Desktop.csproj -c Release -r ${{ matrix.os }} -p:BuildNumber=${{ steps.build.outputs.NOW }} -p:RevisionNumber=${{ steps.build.outputs.VERSION }} -o ${{ env.DeploymentDirectory }}
 
-    # Compress the published output for both Windows and Linux
-    - name: Compress on Linux
-      if: ${{ matrix.os == 'linux-x64' }}
-      run: |
-        cd ${{ env.DeploymentDirectory }}
-        tar -czvf ${{ matrix.os }}.tar.gz *
-    - name: Compress on Windows
-      if: ${{ matrix.os == 'win-x64' }}
-      run: |
-        cd ${{ env.DeploymentDirectory }}
-        zip -r ${{ matrix.os }}.zip * 
-
-    # Get the build version for both Windows and Linux
-    - name: Get Release Version
-      if: ${{ matrix.os == 'linux-x64' }}
-      run: |
-        VersionString=`strings ${{ env.DeploymentDirectory }}/SIT.Manager | egrep -m 1 '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'`
-        echo "RELEASE_VERSION=$VersionString" >> "$GITHUB_ENV"
-    - name: Get Release Version
-      if: ${{ matrix.os == 'win-x64' }}
-      run: |
-        VersionString=`strings ${{ env.DeploymentDirectory }}/SIT.Manager.exe | egrep -m 1 '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'`
-        echo "RELEASE_VERSION=$VersionString" >> "$GITHUB_ENV"
-
-    - name: Output Release Version
-      id: tag
-      run: |
-          TAG=$RELEASE_VERSION
-          echo "$TAG"
-          echo "MANAGER_VERSION=$TAG" >> $GITHUB_OUTPUT
-          
     - name: Upload Artifact
       id: artifact-upload
       uses: actions/upload-artifact@v4
@@ -95,11 +64,24 @@ jobs:
           path: linux_extracted
 
       - name: Tar Linux Artifact
-        run: find linux_extracted -printf "%P\n" | tar -czf linux-x64.tar.gz --no-recursion -C linux_extracted -T -
+        run: |
+          cd linux_extracted
+          tar -czvf linux-x64.tar.gz -C ../linux_extracted *
+          cd ..
 
       - name: Zip Windows Artifact
-        run: (cd win_extracted && zip -r ../win-x64.zip . && cd ..)
+        run: |
+          cd win_extracted
+          zip -r ../win-x64.zip *
+          cd ..
 
+     # Get the build version for tagging the release
+      - name: Get Release Version
+        id: tag
+        run: |
+          VersionString=`strings win_extracted/SIT.Manager.exe | egrep -m 1 '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'`
+          echo "MANAGER_VERSION=$VersionString" >> $GITHUB_OUTPUT
+                              
       - name: Generate Release Draft
         uses: softprops/action-gh-release@v2
         with:
@@ -108,4 +90,4 @@ jobs:
           files: |
             win-x64.zip
             linux-x64.tar.gz
-          tag_name: ${{ needs.build.outputs.MANAGER_VERSION }}
+          tag_name: ${{ steps.tag.outputs.MANAGER_VERSION }}
