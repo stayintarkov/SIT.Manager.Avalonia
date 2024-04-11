@@ -41,6 +41,7 @@ public class ModService(IBarNotificationService barNotificationService,
         {
             string sourcePath = Path.Combine(baseSourceDirectory, file);
             string targetPath = Path.Combine(baseTargetDirectory, file);
+            Directory.CreateDirectory(targetPath);
             await _filesService.CopyFileAsync(sourcePath, targetPath).ConfigureAwait(false);
         }
     }
