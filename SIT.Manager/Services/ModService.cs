@@ -179,7 +179,7 @@ public class ModService(IBarNotificationService barNotificationService,
                 // Install any config files
                 await InstallFiles(Path.Combine(baseModSourcePath, "config"), Path.Combine(targetPath, "BepInEx", "config"), mod.ConfigFiles).ConfigureAwait(false);
                 // Install any patcher files
-                await InstallFiles(Path.Combine(baseModSourcePath, "patchers"), Path.Combine(targetPath, "BepInEx", "patchers"), mod.ConfigFiles).ConfigureAwait(false);
+                await InstallFiles(Path.Combine(baseModSourcePath, "patchers"), Path.Combine(targetPath, "BepInEx", "patchers"), mod.PatcherFiles).ConfigureAwait(false);
 
                 config.InstalledMods.Add(mod.Name, mod.PortVersion);
                 _configService.UpdateConfig(config);
