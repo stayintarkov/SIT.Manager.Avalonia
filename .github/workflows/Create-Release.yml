@@ -64,10 +64,7 @@ jobs:
           path: linux_extracted
 
       - name: Tar Linux Artifact
-        run: |
-          cd linux_extracted
-          tar -czvf linux-x64.tar.gz -C ../linux_extracted *
-          cd ..
+        run: find linux_extracted -printf "%P\n" | tar -czf linux-x64.tar.gz --no-recursion -C linux_extracted -T -
 
       - name: Zip Windows Artifact
         run: |
