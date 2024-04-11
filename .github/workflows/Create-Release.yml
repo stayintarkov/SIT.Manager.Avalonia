@@ -74,7 +74,7 @@ jobs:
         path: ${{ env.DeploymentDirectory }}
           
     - name: Output Artifact
-      run: echo "${{ matrix.platform }}=${{ steps.artifact-upload.outputs.download-url }}" >> "$GITHUB_OUTPUT"
+      run: echo "${{ matrix.os }}=${{ steps.artifact-upload.outputs.download-url }}" >> "$GITHUB_OUTPUT"
 
   release:
     needs: build
