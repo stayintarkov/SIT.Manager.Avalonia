@@ -502,7 +502,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             return false;
         }
 
-        if (DateTime.Now.AddHours(-1) > _configService.Config.LastSitUpdateCheckTime)
+        if (DateTime.Now.AddHours(-1) < _configService.Config.LastSitUpdateCheckTime)
         {
             // We haven't checked for updates in the last hour so refresh the available verisons
             _availableSitUpdateVersions = await GetAvailableSitReleases(_configService.Config.TarkovVersion);
