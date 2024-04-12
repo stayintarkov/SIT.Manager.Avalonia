@@ -138,6 +138,10 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
         // TODO add some logging here and an alert somehow in case it fails to load any versions or something
 
         IsVersionSelectionLoading = false;
+        
+        // Validate the configuration to allow the user to start the installation without having to change the mirror
+        // This way the user is able to use the first available mirror without having to change it
+        ValidateConfiguration();
     }
 
     [RelayCommand]
@@ -201,10 +205,11 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
             await _modService.LoadMasterModList();
         }
 
+        Mods.Clear();
         Mods.AddRange(_modService.ModList.Where(x => _modService.RecommendedModInstalls.Contains(x.Name)));
 
         // Make sure that all the recommended mods are selected to start with
-        CurrentInstallProcessState.RequestedMods = Mods.ToList();
+        CurrentInstallProcessState.RequestedMods = [.. Mods];
 
         IsModsSelectionLoading = false;
     }

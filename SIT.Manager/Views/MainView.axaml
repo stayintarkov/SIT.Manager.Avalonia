@@ -56,6 +56,7 @@
 
 		<ui:NavigationView PaneDisplayMode="Left"
 						   IsBackButtonVisible="False"
+						   IsBackEnabled="False"
 						   IsSettingsVisible="False"
 						   IsPaneToggleButtonVisible="False"
 						   OpenPaneLength="166"
@@ -81,7 +82,11 @@
 
 				<ui:NavigationViewItem IconSource="AllApps" Content="{DynamicResource ToolsTitle}" Tag="SIT.Manager.Views.ToolsPage" ToolTip.Tip="{DynamicResource ToolsTitleToolTip}"/>
 				<ui:NavigationViewItem IconSource="MapDrive" Content="{DynamicResource ServerTitle}" Tag="SIT.Manager.Views.ServerPage" ToolTip.Tip="{DynamicResource ServerTitleToolTip}"/>
-				<ui:NavigationViewItem IconSource="Library" Content="{DynamicResource ModsTitle}" Tag="SIT.Manager.Views.ModsPage" ToolTip.Tip="{DynamicResource ModsTitleToolTip}"/>
+				<ui:NavigationViewItem IconSource="Library" 
+									   IsVisible="{Binding !IsDevloperModeEnabled}"
+									   Content="{DynamicResource ModsTitle}" 
+									   Tag="SIT.Manager.Views.ModsPage" 
+									   ToolTip.Tip="{DynamicResource ModsTitleToolTip}"/>
 			</ui:NavigationView.MenuItems>
 
 			<ui:NavigationView.FooterMenuItems>

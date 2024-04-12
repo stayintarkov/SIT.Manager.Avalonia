@@ -525,7 +525,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             _configService.UpdateConfig(_configService.Config);
         }
 
-        return _availableSitUpdateVersions?.Count != 0;
+        return _availableSitUpdateVersions != null && _availableSitUpdateVersions.Count != 0;
     }
 
     public async Task InstallServer(GithubRelease selectedVersion, string targetInstallDir, IProgress<double> downloadProgress, IProgress<double> extractionProgress)

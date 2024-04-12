@@ -1,9 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Logging;
 using SIT.Manager.Interfaces;
 using SIT.Manager.ManagedProcess;
 using SIT.Manager.Models;
+using SIT.Manager.Models.Messages;
+using SIT.Manager.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -170,6 +173,14 @@ public partial class ModsPageViewModel : ObservableRecipient
 
     protected override async void OnActivated()
     {
+        // Developer mod enabled but we are still trying to go to the mods page so 
+        // force them to a different page
+        if (_managerConfigService.Config.EnableDeveloperMode)
+        {
+            PageNavigation pageNavigation = new(typeof(PlayPage), false);
+            WeakReferenceMessenger.Default.Send(new PageNavigationMessage(pageNavigation));
+        }
+
         await LoadMasterList();
     }
 }
