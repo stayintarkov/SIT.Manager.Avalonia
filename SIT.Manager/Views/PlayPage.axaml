@@ -4,9 +4,33 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:controls="clr-namespace:SIT.Manager.Controls"
 			 xmlns:vm="clr-namespace:SIT.Manager.ViewModels"
+			 xmlns:pv="clr-namespace:SIT.Manager.Views.Play"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:DataType="vm:PlayPageViewModel"
 			 x:CompileBindings="True"
              x:Class="SIT.Manager.Views.PlayPage">
+	<Grid RowDefinitions="Auto, *"
+		  Margin="8">
+		<Border Grid.Row="0"
+				Margin="4,0,4,8"
+				Background="Black"
+				Classes="StandardFrame">
+			<Grid ColumnDefinitions="Auto, *, Auto">
+				<Button Grid.Column="0"
+						VerticalAlignment="Center"
+						Content="Create New Server"/>
+				<Button Grid.Column="2" 
+						VerticalAlignment="Center"
+						Command="{Binding DirectConnectCommand}"
+						Content="Direct Connect"/>
+			</Grid>
+		</Border>
 	
+		<ScrollViewer Grid.Row="1"
+					  Margin="0,8,0,0">
+			<StackPanel>
+				<pv:ServerSummaryView/>
+			</StackPanel>
+		</ScrollViewer>		
+	</Grid>
 </UserControl>

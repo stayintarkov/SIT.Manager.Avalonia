@@ -12,11 +12,12 @@ using SIT.Manager.ManagedProcess;
 using SIT.Manager.Services;
 using SIT.Manager.Services.Install;
 using SIT.Manager.ViewModels;
+using SIT.Manager.ViewModels.Installation;
+using SIT.Manager.ViewModels.Play;
 using SIT.Manager.Views;
 using System;
 using System.Diagnostics;
 using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace SIT.Manager;
 
@@ -102,13 +103,27 @@ public sealed partial class App : Application
 
             #region ViewModels
 
-            services.AddTransient<LocationEditorViewModel>()
+            // Page Viewmodels
+            services.AddTransient<InstallPageViewModel>()
+                .AddTransient<LocationEditorViewModel>()
                 .AddTransient<MainViewModel>()
                 .AddTransient<ModsPageViewModel>()
                 .AddTransient<PlayPageViewModel>()
                 .AddTransient<SettingsPageViewModel>()
                 .AddTransient<ServerPageViewModel>()
-                .AddTransient<ToolsPageViewModel>();
+                .AddTransient<ToolsPageViewModel>()
+                .AddTransient<UpdatePageViewModel>();
+
+            // Installation View Models
+            services.AddTransient<CompleteViewModel>()
+                .AddTransient<ConfigureSitViewModel>()
+                .AddTransient<ConfigureServerViewModel>()
+                .AddTransient<InstallViewModel>()
+                .AddTransient<PatchViewModel>()
+                .AddTransient<SelectViewModel>();
+
+            // Play View Models
+            services.AddTransient<DirectConnectViewModel>();
 
             #endregion ViewModels
 

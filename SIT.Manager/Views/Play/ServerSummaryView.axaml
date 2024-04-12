@@ -1,0 +1,43 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+             mc:Ignorable="d"
+			 d:DesignWidth="800" 
+			 d:DesignHeight="450"			 
+             x:Class="SIT.Manager.Views.Play.ServerSummaryView">
+	<UserControl.Resources>
+		<Geometry x:Key="CellularDataIcon">M16 8c.552 0 1 .446 1 .995v10.01c0 .55-.448.995-1 .995s-1-.446-1-.995V8.995c0-.55.448-.995 1-.995Zm-4 3a1 1 0 0 1 1 1v7a1 1 0 1 1-2 0v-7a1 1 0 0 1 1-1Zm-4 3c.552 0 1 .445 1 .994v4.012c0 .549-.448.994-1 .994s-1-.445-1-.994v-4.012c0-.549.448-.994 1-.994Zm-4 3c.552 0 1 .44 1 .984v1.032A.992.992 0 0 1 4 20c-.552 0-1-.44-1-.984v-1.032A.992.992 0 0 1 4 17Z</Geometry>
+	</UserControl.Resources>
+	
+	<Border Classes="StandardFrame"
+			Background="Black">
+		<Grid ColumnDefinitions="Auto, *, Auto"
+			  VerticalAlignment="Center">
+			<TextBlock Grid.Column="0"
+					   VerticalAlignment="Center"
+					   Text="Image Placeholder"/>
+
+			<StackPanel Grid.Column="1"
+						Margin="8,0">
+				<TextBlock Text="Ploot's Testing Server"
+						   FontSize="24"
+						   FontWeight="Bold"/>
+				<TextBlock Text="http://127.0.0.1/"/>
+			</StackPanel>
+
+			<StackPanel Grid.Column="2"
+						VerticalAlignment="Center">
+				<Viewbox Width="24"
+						 Height="24">
+					<Path Data="{StaticResource CellularDataIcon}"
+						  Fill="White"
+						  Stretch="Uniform"/>
+				</Viewbox>
+				<TextBlock HorizontalAlignment="Center" 
+						   Text="5 ms"/>
+			</StackPanel>
+		</Grid>
+	</Border>
+</UserControl>

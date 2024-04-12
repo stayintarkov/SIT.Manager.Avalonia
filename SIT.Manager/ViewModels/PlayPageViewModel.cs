@@ -1,24 +1,16 @@
-﻿using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Threading;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using FluentAvalonia.UI.Controls;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using SIT.Manager.Exceptions;
+using CommunityToolkit.Mvvm.Messaging;
 using SIT.Manager.Interfaces;
-using SIT.Manager.ManagedProcess;
 using SIT.Manager.Models;
 using SIT.Manager.Models.Aki;
+using SIT.Manager.Models.Messages;
 using SIT.Manager.Services;
-using SIT.Manager.Views.Dialogs;
+using SIT.Manager.Views.Play;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.ViewModels;
@@ -26,6 +18,7 @@ namespace SIT.Manager.ViewModels;
 public partial class PlayPageViewModel : ObservableObject
 {
     private readonly IAkiServerRequestingService _serverService;
+
     public PlayPageViewModel(IAkiServerRequestingService serverService)
     {
         _serverService = serverService;
@@ -44,7 +37,7 @@ public partial class PlayPageViewModel : ObservableObject
             AkiCharacter testCharacter = new AkiCharacter(localServer, "nnn", "nnn");
 
             string? ProfileID = null;
-            if(miniProfiles.Select(x => x.Username == testCharacter.Username).Any())
+            if (miniProfiles.Select(x => x.Username == testCharacter.Username).Any())
             {
                 Debug.WriteLine($"Username {testCharacter.Username} was already found on server. Attempting to login...");
                 (string loginRespStr, AkiLoginStatus status) = await _serverService.LoginAsync(testCharacter);
@@ -77,5 +70,12 @@ public partial class PlayPageViewModel : ObservableObject
                 localServer.Characters.Add(testCharacter);
             }
         });
+    }
+
+    [RelayCommand]
+    private void DirectConnect()
+    {
+        PageNavigation pageNavigation = new(typeof(DirectConnectView), false);
+        WeakReferenceMessenger.Default.Send(new PageNavigationMessage(pageNavigation));
     }
 }
