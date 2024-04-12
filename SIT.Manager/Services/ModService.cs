@@ -37,11 +37,13 @@ public class ModService(IBarNotificationService barNotificationService,
 
     private async Task InstallFiles(string baseSourceDirectory, string baseTargetDirectory, List<string> files)
     {
+        // Ensure that the directory that we are trying to copy to exists
+        Directory.CreateDirectory(baseTargetDirectory);
+
         foreach (string file in files)
         {
             string sourcePath = Path.Combine(baseSourceDirectory, file);
             string targetPath = Path.Combine(baseTargetDirectory, file);
-            Directory.CreateDirectory(targetPath);
             await _filesService.CopyFileAsync(sourcePath, targetPath).ConfigureAwait(false);
         }
     }
