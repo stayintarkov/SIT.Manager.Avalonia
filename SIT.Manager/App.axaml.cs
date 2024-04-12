@@ -92,6 +92,7 @@ public sealed partial class App : Application
         services.AddTransient<MainViewModel>();
         services.AddTransient<ModsPageViewModel>();
         services.AddTransient<PlayPageViewModel>();
+        services.AddTransient<LinuxSettingsPageViewModel>();
         services.AddTransient<SettingsPageViewModel>();
         services.AddTransient<ServerPageViewModel>();
         services.AddTransient<ToolsPageViewModel>();

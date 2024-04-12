@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls.ApplicationLifetimes;
 using SIT.Manager.Interfaces;
 using SIT.Manager.ManagedProcess;
+using SIT.Manager.Models;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -77,8 +78,36 @@ public class TarkovClientService(IBarNotificationService barNotificationService,
         };
         if (OperatingSystem.IsLinux())
         {
-            _process.StartInfo.FileName = _configService.Config.WineRunner;
-            _process.StartInfo.Arguments = $"\"{ExecutableFilePath}\" {arguments}";
+            LinuxConfig config = (LinuxConfig)_configService.Config;
+
+            // Check if either mangohud or gamemode is enabled.
+            if (config.IsGameModeEnabled)
+            {
+                _process.StartInfo.FileName = "gamemoderun";
+                _process.StartInfo.Arguments = string.Empty;
+                if (config.IsMangoHudEnabled)
+                {
+                    _process.StartInfo.Arguments += "\"mangohud\"";
+                }
+                _process.StartInfo.Arguments += $"\"{config.WineRunner}\"";
+            }
+            else if (config.IsMangoHudEnabled) // only mangohud is enabled
+            {
+                _process.StartInfo.FileName = "mangohud";
+                _process.StartInfo.Arguments = $"\"{config.WineRunner}\"";
+            }
+            else
+            {
+                _process.StartInfo.FileName = config.WineRunner;
+                _process.StartInfo.Arguments = string.Empty;
+            }
+            
+            
+            //_process.StartInfo.FileName = config.IsGameModeEnabled ? "gamemoderun" : config.IsMangoHudEnabled ? "mangohud" : _configService.Config.WineRunner;
+            
+            // force-gfx-jobs native is a workaround for the Unity bug that causes the game to crash on startup.
+            // Taken from SPT Aki.Launcher.Base/Controllers/GameStarter.cs
+            _process.StartInfo.Arguments += $"\"{ExecutableFilePath}\" -force-gfx-jobs native {arguments}"; 
             _process.StartInfo.UseShellExecute = false;
 
             string winePrefix = Path.GetFullPath(_configService.Config.WinePrefix);
@@ -86,7 +115,21 @@ public class TarkovClientService(IBarNotificationService barNotificationService,
             {
                 winePrefix = $"{winePrefix}{Path.DirectorySeparatorChar}";
             }
+            // TODO: Add these settings to a linux settings page.
             _process.StartInfo.EnvironmentVariables.Add("WINEPREFIX", winePrefix);
+            _process.StartInfo.EnvironmentVariables.Add("WINEESYNC", config.IsEsyncEnabled ? "1" : "0");
+            _process.StartInfo.EnvironmentVariables.Add("WINEFSYNC", config.IsFsyncEnabled ? "1" : "0");
+            _process.StartInfo.EnvironmentVariables.Add("WINE_FULLSCREEN_FSR", config.IsWineFsrEnabled ? "1" : "0");
+            _process.StartInfo.EnvironmentVariables.Add("DXVK_NVAPIHACK", config.IsDXVK_NVAPIEnabled ? "1" : "0");
+            _process.StartInfo.EnvironmentVariables.Add("DXVK_ENABLE_NVAPI", config.IsDXVK_NVAPIEnabled ? "1" : "0");
+            _process.StartInfo.EnvironmentVariables.Add("WINEARCH", "win64");
+            _process.StartInfo.EnvironmentVariables.Add("MANGOHUD", config.IsMangoHudEnabled ? "1" : "0");
+            _process.StartInfo.EnvironmentVariables.Add("MANGOHUD_DLSYM", config.IsMangoHudEnabled ? "1" : "0");
+            _process.StartInfo.EnvironmentVariables.Add("__GL_SHADER_DISK_CACHE", "1");
+            _process.StartInfo.EnvironmentVariables.Add("__GL_SHADER_DISK_CACHE_PATH", winePrefix);
+            _process.StartInfo.EnvironmentVariables.Add("DXVK_STATE_CACHE_PATH", winePrefix);
+            // TODO: configure these with the DLLManager and add the ability to add custom DLL overrides.
+            _process.StartInfo.EnvironmentVariables.Add("WINEDLLOVERRIDES", "\"d3d10core,d3d11,d3d12,d3d12core,d3d9,d3dcompiler_33,d3dcompiler_34,d3dcompiler_35,d3dcompiler_36,d3dcompiler_37,d3dcompiler_38,d3dcompiler_39,d3dcompiler_40,d3dcompiler_41,d3dcompiler_42,d3dcompiler_43,d3dcompiler_46,d3dcompiler_47,d3dx10,d3dx10_33,d3dx10_34,d3dx10_35,d3dx10_36,d3dx10_37,d3dx10_38,d3dx10_39,d3dx10_40,d3dx10_41,d3dx10_42,d3dx10_43,d3dx11_42,d3dx11_43,d3dx9_24,d3dx9_25,d3dx9_26,d3dx9_27,d3dx9_28,d3dx9_29,d3dx9_30,d3dx9_31,d3dx9_32,d3dx9_33,d3dx9_34,d3dx9_35,d3dx9_36,d3dx9_37,d3dx9_38,d3dx9_39,d3dx9_40,d3dx9_41,d3dx9_42,d3dx9_43,dxgi,nvapi,nvapi64=n;winemenubuilder=");
         }
         else
         {

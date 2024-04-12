@@ -90,6 +90,7 @@
 			</ui:NavigationView.MenuItems>
 
 			<ui:NavigationView.FooterMenuItems>
+				<ui:NavigationViewItem IconSource="Settings" Content="{DynamicResource SettingsLinuxSettingsTitle}" Tag="SIT.Manager.Views.LinuxSettingsPage" IsVisible="{OnPlatform Default=False, Linux=True}"/>
 				<ui:NavigationViewItem IconSource="Settings" Content="{DynamicResource SettingsTitle}" Tag="SIT.Manager.Views.SettingsPage"/>
 			</ui:NavigationView.FooterMenuItems>		
 

@@ -1,0 +1,64 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:SIT.Manager.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="550"
+             x:Class="SIT.Manager.Views.LinuxSettingsPage"
+             x:CompileBindings="True"
+             Background="{DynamicResource ApplicationPageBackgroundThemeBrush}"	 
+             x:DataType="vm:LinuxSettingsPageViewModel">
+    <Grid RowDefinitions="*,Auto">
+        <ScrollViewer Grid.Row="0">
+            <StackPanel Margin="10">
+                <TextBlock Text="{DynamicResource LinuxSettingsGraphicsTitle}" Classes="FrameHeading"/>
+                <Border Classes="StandardFrame">
+                    <StackPanel>
+                        <!-- Graphics -->
+                        <CheckBox Content="{DynamicResource LinuxSettingsEnableDxvkTitle}" 
+                                  ToolTip.Tip="{DynamicResource LinuxSettingsEnableDxvkToolTip}"
+                                  IsChecked="{Binding Config.IsDXVKEnabled, Mode=TwoWay}"/>
+                        <!-- TODO: Add versions in the future, for now I'll keep it simple
+                        <ComboBox Items="{Binding DxvkVersions}" 
+                                  SelectedIndex="{Binding DxvkVersions[0], Mode=TwoWay}"
+                                  ToolTip.Tip="{DynamicResource LinuxSettingsDxvkVersionToolTip}"
+                                  IsEnabled="{Binding Config.IsDXVKEnabled}"/>
+                        -->
+                        <CheckBox Content="{DynamicResource LinuxSettingsEnableVkd3DTitle}"
+                                  ToolTip.Tip="{DynamicResource LinuxSettingsEnableVkd3DToolTip}"
+                                  IsChecked="{Binding Config.IsVKD3DEnabled, Mode=TwoWay}"/>
+                        <CheckBox Content="{DynamicResource LinuxSettingsEnableD3DExtrasTitle}"
+                                  ToolTip.Tip="{DynamicResource LinuxSettingsEnableD3DExtrasToolTip}"
+                                  IsChecked="{Binding Config.IsD3DExtrasEnabled, Mode=TwoWay}"/>
+                        <CheckBox Content="{DynamicResource LinuxSettingsEnableDxvkNvapiTitle}"
+                                  ToolTip.Tip="{DynamicResource LinuxSettingsEnableDxvkNvapiToolTip}"
+                                  IsChecked="{Binding Config.IsDXVK_NVAPIEnabled, Mode=TwoWay}"/>
+                        <CheckBox Content="{DynamicResource LinuxSettingsEnableDgVoodoo2Title}"
+                                  ToolTip.Tip="{DynamicResource LinuxSettingsEnableDgVoodoo2ToolTip}"
+                                  IsChecked="{Binding Config.IsDGVoodoo2Enabled, Mode=TwoWay}"/>
+                    </StackPanel>
+                </Border>
+                <TextBlock Text="{DynamicResource LinuxSettingsLaunchOptionsTitle}" Classes="FrameHeading"/>
+                <Border Classes="StandardFrame">
+                    <StackPanel>
+                        <CheckBox Content="{DynamicResource LinuxSettingsEnableEsyncTitle}"
+                                  ToolTip.Tip="{DynamicResource LinuxSettingsEnableEsyncToolTip}"
+                                  IsChecked="{Binding Config.IsEsyncEnabled, Mode=TwoWay}"/>
+                        <CheckBox Content="{DynamicResource LinuxSettingsEnableFsyncTitle}"
+                                  ToolTip.Tip="{DynamicResource LinuxSettingsEnableFsyncToolTip}"
+                                  IsChecked="{Binding Config.IsFsyncEnabled, Mode=TwoWay}"/>
+                        <CheckBox Content="{DynamicResource LinuxSettingsEnableFsrTitle}"
+                                  ToolTip.Tip="{DynamicResource LinuxSettingsEnableFsrToolTip}"
+                                  IsChecked="{Binding Config.IsWineFsrEnabled, Mode=TwoWay}"/>
+                        <CheckBox Content="{DynamicResource LinuxSettingsEnableMangoHudTitle}"
+                                  ToolTip.Tip="{DynamicResource LinuxSettingsEnableMangoHudToolTip}"
+                                  IsChecked="{Binding Config.IsMangoHudEnabled, Mode=TwoWay}"/>
+                        <CheckBox Content="{DynamicResource LinuxSettingsEnableGameModeTitle}"
+                                  ToolTip.Tip="{DynamicResource LinuxSettingsEnableGameModeToolTip}"
+                                  IsChecked="{Binding Config.IsGameModeEnabled, Mode=TwoWay}"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

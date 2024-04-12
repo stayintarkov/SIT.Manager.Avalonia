@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using SIT.Manager.Models.Installation;
+using System;
 
 namespace SIT.Manager.ViewModels.Installation;
 

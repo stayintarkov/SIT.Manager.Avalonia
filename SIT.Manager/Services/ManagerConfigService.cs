@@ -12,14 +12,19 @@ internal sealed class ManagerConfigService : IManagerConfigService
 {
     private readonly ILogger<ManagerConfigService> _logger;
 
-    private ManagerConfig _config = new();
-    public ManagerConfig Config
-    {
-        get => _config;
-        private set { _config = value; }
-    }
+    public ManagerConfig Config { get; private set; } = OperatingSystem.IsLinux()
+        ? new LinuxConfig()
+        : new ManagerConfig();
 
     public event EventHandler<ManagerConfig>? ConfigChanged;
+
+    private static readonly JsonSerializerOptions Options = new ()
+    {
+        Converters = {
+            new ColorJsonConverter()
+        },
+        WriteIndented = true
+    };
 
     public ManagerConfigService(ILogger<ManagerConfigService> logger)
     {
@@ -29,21 +34,18 @@ internal sealed class ManagerConfigService : IManagerConfigService
 
     private void Load()
     {
-        var options = new JsonSerializerOptions()
-        {
-            Converters = {
-                new ColorJsonConverter()
-            }
-        };
-
         try
         {
             string managerConfigPath = Path.Combine(AppContext.BaseDirectory, "ManagerConfig.json");
-            if (File.Exists(managerConfigPath))
+            if (!File.Exists(managerConfigPath))
             {
-                string json = File.ReadAllText(managerConfigPath);
-                _config = JsonSerializer.Deserialize<ManagerConfig>(json, options) ?? new();
+                return;
             }
+
+            string json = File.ReadAllText(managerConfigPath);
+            Config = OperatingSystem.IsLinux()
+                ? JsonSerializer.Deserialize<LinuxConfig>(json, Options) ?? new LinuxConfig()
+                : JsonSerializer.Deserialize<ManagerConfig>(json, Options) ?? new ManagerConfig();
         }
         catch (Exception ex)
         {
@@ -52,32 +54,39 @@ internal sealed class ManagerConfigService : IManagerConfigService
     }
 
 
-    public void UpdateConfig(ManagerConfig config, bool ShouldSave = true, bool? SaveAccount = null)
+    public void UpdateConfig(ManagerConfig config, bool shouldSave = true, bool? saveAccount = null)
     {
-        _config = config;
-        SaveAccount ??= config.RememberLogin;
-
-        var options = new JsonSerializerOptions()
+        Config = config;
+        saveAccount ??= config.RememberLogin;
+        
+        if (shouldSave)
         {
-            Converters = {
-                new ColorJsonConverter()
-            },
-            WriteIndented = true
-        };
-
-        if (ShouldSave)
-        {
-            ManagerConfig newLauncherConfig = _config;
-            if (!SaveAccount.Value)
+            if (OperatingSystem.IsLinux())
             {
-                newLauncherConfig.Username = string.Empty;
-                newLauncherConfig.Password = string.Empty;
+                LinuxConfig newLauncherConfig = (LinuxConfig) Config;
+                if (!saveAccount.Value)
+                {
+                    newLauncherConfig.Username = string.Empty;
+                    newLauncherConfig.Password = string.Empty;
+                }
+                
+                string managerConfigPath = Path.Combine(AppContext.BaseDirectory, "ManagerConfig.json");
+                File.WriteAllText(managerConfigPath, JsonSerializer.Serialize(newLauncherConfig, Options));
             }
+            else
+            {
+                ManagerConfig newLauncherConfig = Config;
+                if (!saveAccount.Value)
+                {
+                    newLauncherConfig.Username = string.Empty;
+                    newLauncherConfig.Password = string.Empty;
+                }
 
-            string managerConfigPath = Path.Combine(AppContext.BaseDirectory, "ManagerConfig.json");
-            File.WriteAllText(managerConfigPath, JsonSerializer.Serialize(newLauncherConfig, options));
+                string managerConfigPath = Path.Combine(AppContext.BaseDirectory, "ManagerConfig.json");
+                File.WriteAllText(managerConfigPath, JsonSerializer.Serialize(newLauncherConfig, Options));
+            }
         }
 
-        ConfigChanged?.Invoke(this, _config);
+        ConfigChanged?.Invoke(this, Config);
     }
 }
