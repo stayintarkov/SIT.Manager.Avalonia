@@ -186,6 +186,10 @@
 	<system:String x:Key="LinuxSettingsEnableGameModeTitle">Enable Feral GameMode</system:String>
 	<system:String x:Key="LinuxSettingsEnableGameModeToolTip">GameMode is a daemon/lib combo for Linux that allows games to request a set of optimisations be temporarily applied to the host OS</system:String>
 	
+	<!-- Linux Settings View Model -->
+	<system:String x:Key="LinuxSettingsPageViewModelConfigErrorRunner">The selected folder was invalid. Make sure it's a proper wine binary folder</system:String>
+	<system:String x:Key="LinuxSettingsPageViewModelConfigErrorPrefix">The selected folder was invalid. Make sure the folder exists</system:String>
+	
 	<!-- Location Editor View -->
 	<system:String x:Key="LocationEditorLoadButtonTitle">Load</system:String>
 	<system:String x:Key="LocationEditorSaveButtonTitle">Save</system:String>

@@ -89,7 +89,7 @@ public class TarkovClientService(IBarNotificationService barNotificationService,
                 {
                     _process.StartInfo.Arguments += "\"mangohud\"";
                 }
-                _process.StartInfo.Arguments += $"\"{config.WineRunner}\"";
+                _process.StartInfo.Arguments += $" \"{config.WineRunner}\"";
             }
             else if (config.IsMangoHudEnabled) // only mangohud is enabled
             {
@@ -107,7 +107,7 @@ public class TarkovClientService(IBarNotificationService barNotificationService,
             
             // force-gfx-jobs native is a workaround for the Unity bug that causes the game to crash on startup.
             // Taken from SPT Aki.Launcher.Base/Controllers/GameStarter.cs
-            _process.StartInfo.Arguments += $"\"{ExecutableFilePath}\" -force-gfx-jobs native {arguments}"; 
+            _process.StartInfo.Arguments += $" \"{ExecutableFilePath}\" -force-gfx-jobs native {arguments}"; 
             _process.StartInfo.UseShellExecute = false;
 
             string winePrefix = Path.GetFullPath(_configService.Config.WinePrefix);
@@ -129,6 +129,7 @@ public class TarkovClientService(IBarNotificationService barNotificationService,
             _process.StartInfo.EnvironmentVariables.Add("__GL_SHADER_DISK_CACHE_PATH", winePrefix);
             _process.StartInfo.EnvironmentVariables.Add("DXVK_STATE_CACHE_PATH", winePrefix);
             // TODO: configure these with the DLLManager and add the ability to add custom DLL overrides.
+            // TODO: Something in these DLL overrieds fixes the graphical issues with the game. Time to figure out which ones
             _process.StartInfo.EnvironmentVariables.Add("WINEDLLOVERRIDES", "\"d3d10core,d3d11,d3d12,d3d12core,d3d9,d3dcompiler_33,d3dcompiler_34,d3dcompiler_35,d3dcompiler_36,d3dcompiler_37,d3dcompiler_38,d3dcompiler_39,d3dcompiler_40,d3dcompiler_41,d3dcompiler_42,d3dcompiler_43,d3dcompiler_46,d3dcompiler_47,d3dx10,d3dx10_33,d3dx10_34,d3dx10_35,d3dx10_36,d3dx10_37,d3dx10_38,d3dx10_39,d3dx10_40,d3dx10_41,d3dx10_42,d3dx10_43,d3dx11_42,d3dx11_43,d3dx9_24,d3dx9_25,d3dx9_26,d3dx9_27,d3dx9_28,d3dx9_29,d3dx9_30,d3dx9_31,d3dx9_32,d3dx9_33,d3dx9_34,d3dx9_35,d3dx9_36,d3dx9_37,d3dx9_38,d3dx9_39,d3dx9_40,d3dx9_41,d3dx9_42,d3dx9_43,dxgi,nvapi,nvapi64=n;winemenubuilder=");
         }
         else
