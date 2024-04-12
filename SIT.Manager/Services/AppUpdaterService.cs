@@ -97,26 +97,31 @@ public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterServi
 
     public async Task<bool> CheckForUpdate()
     {
-        if (_managerConfigService.Config.LookForUpdates)
+        Version currentVersion = Assembly.GetEntryAssembly()?.GetName().Version ?? new Version("0");
+        Version latestVersion = new();
+
+        if (_managerConfigService.Config.LookForUpdates && DateTime.Now.AddHours(-1) > _managerConfigService.Config.LastManagerUpdateCheckTime)
         {
             try
             {
-                Version currentVersion = Assembly.GetEntryAssembly()?.GetName().Version ?? new Version("0");
-
                 string versionJsonString = await _httpClient.GetStringAsync(MANAGER_VERSION_URL);
                 GithubRelease? latestRelease = JsonSerializer.Deserialize<GithubRelease>(versionJsonString);
                 if (latestRelease != null)
                 {
-                    Version latestVersion = new(latestRelease.Name);
-                    return latestVersion > currentVersion;
+                    latestVersion = new(latestRelease.Name);
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "CheckForUpdate");
             }
+
+            // Update the last check time so that we don't refresh this for at least an hour
+            _managerConfigService.Config.LastManagerUpdateCheckTime = DateTime.Now;
+            _managerConfigService.UpdateConfig(_managerConfigService.Config);
         }
-        return false;
+
+        return latestVersion > currentVersion;
     }
 
     public async Task<bool> Update(IProgress<double> progress)
