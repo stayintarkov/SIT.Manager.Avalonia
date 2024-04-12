@@ -340,11 +340,14 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         };
         if (OperatingSystem.IsLinux())
         {
+            string winePrefix = Path.GetFullPath(_configService.Config.WinePrefix);
+            // Update the wine prefix and install any required components
+            UpdateWinePrefix(winePrefix);
+            
             patcherProcess.StartInfo.FileName = _configService.Config.WineRunner;
             patcherProcess.StartInfo.Arguments = $"\"{patcherPath}\" autoclose";
             patcherProcess.StartInfo.UseShellExecute = false;
-
-            string winePrefix = Path.GetFullPath(_configService.Config.WinePrefix);
+            
             if (!Path.EndsInDirectorySeparator(winePrefix))
             {
                 winePrefix = $"{winePrefix}{Path.DirectorySeparatorChar}";
@@ -357,6 +360,25 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         }
 
         return patcherProcess;
+    }
+
+    private void UpdateWinePrefix(string configWinePrefix)
+    {
+        try
+        {
+            using Process process = new();
+            process.StartInfo.FileName = "/bin/bash";
+            process.StartInfo.Arguments = "-c \"WINEPREFIX=" + configWinePrefix + " winetricks -q arial times dotnetdesktop6 dotnetdesktop8 win81\"";
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.UseShellExecute = false;
+            process.Start();
+
+            process.WaitForExit();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while installing .NET Desktop Runtime 6.0");
+        }
     }
 
     public async Task<List<GithubRelease>> GetServerReleases()
@@ -758,5 +780,17 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         {
             _logger.LogError(ex, "Failed to copy EFT settings.");
         }
+    }
+    
+    public async Task InstallBsgLauncher()
+    {
+        string bsgLauncherPath = Path.Combine(_configService.Config.InstallPath, "BSGLauncher.exe");
+        if (File.Exists(bsgLauncherPath))
+        {
+            return;
+        }
+
+        string bsgLauncherUrl = "https://prod.escapefromtarkov.com/launcher/download";
+        await _fileService.DownloadFile("BsgLauncher.exe", _configService.Config.InstallPath, bsgLauncherUrl, null);
     }
 }

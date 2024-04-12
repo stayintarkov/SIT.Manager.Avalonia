@@ -16,6 +16,7 @@ public partial class InstallPageViewModel : ObservableRecipient,
                                             IRecipient<InstallProcessStateRequestMessage>
 {
     private List<InstallStep> _sitInstallSteps;
+    private List<InstallStep> _linuxSitInstallSteps;
     private List<InstallStep> _serverInstallSteps;
     private readonly ILocalizationService _localizationService;
 
@@ -46,6 +47,15 @@ public partial class InstallPageViewModel : ObservableRecipient,
                 new(typeof(InstallView), _localizationService.TranslateSource("InstallPageViewModelInstallText")),
                 new(typeof(CompleteView), _localizationService.TranslateSource("InstallPageViewModelCompleteText"))
             ];
+            _linuxSitInstallSteps =
+            [
+                new(typeof(SelectView), _localizationService.TranslateSource("InstallPageViewModelSelectText")),
+                new(typeof(EftView), _localizationService.TranslateSource("InstallPageViewModelEftText")),
+                new(typeof(ConfigureSitView), _localizationService.TranslateSource("InstallPageViewModelConfigureText")),
+                new(typeof(PatchView), _localizationService.TranslateSource("InstallPageViewModelPatchText")),
+                new(typeof(InstallView), _localizationService.TranslateSource("InstallPageViewModelInstallText")),
+                new(typeof(CompleteView), _localizationService.TranslateSource("InstallPageViewModelCompleteText"))
+            ];
             _serverInstallSteps =
             [
                 new(typeof(SelectView), _localizationService.TranslateSource("InstallPageViewModelSelectText")),
@@ -64,6 +74,15 @@ public partial class InstallPageViewModel : ObservableRecipient,
             new(typeof(InstallView), _localizationService.TranslateSource("InstallPageViewModelInstallText")),
             new(typeof(CompleteView), _localizationService.TranslateSource("InstallPageViewModelCompleteText"))
         ];
+        _linuxSitInstallSteps =
+        [
+            new(typeof(SelectView), _localizationService.TranslateSource("InstallPageViewModelSelectText")),
+            new(typeof(EftView), _localizationService.TranslateSource("InstallPageViewModelEftText")),
+            new(typeof(ConfigureSitView), _localizationService.TranslateSource("InstallPageViewModelConfigureText")),
+            new(typeof(PatchView), _localizationService.TranslateSource("InstallPageViewModelPatchText")),
+            new(typeof(InstallView), _localizationService.TranslateSource("InstallPageViewModelInstallText")),
+            new(typeof(CompleteView), _localizationService.TranslateSource("InstallPageViewModelCompleteText"))
+        ];
         _serverInstallSteps =
         [
             new(typeof(SelectView), _localizationService.TranslateSource("InstallPageViewModelSelectText")),
@@ -71,7 +90,9 @@ public partial class InstallPageViewModel : ObservableRecipient,
             new(typeof(InstallView), _localizationService.TranslateSource("InstallPageViewModelInstallText")),
             new(typeof(CompleteView), _localizationService.TranslateSource("InstallPageViewModelCompleteText"))
         ];
-        InstallationSteps = _sitInstallSteps.AsReadOnly();
+        
+        InstallationSteps = OperatingSystem.IsLinux() ? _linuxSitInstallSteps.AsReadOnly() : _sitInstallSteps.AsReadOnly();
+        
         ResetInstallState();
     }
 
@@ -79,7 +100,15 @@ public partial class InstallPageViewModel : ObservableRecipient,
     {
         // Cache the current install steps just in case we update the steps we want to go back to what we displayed before
         int currentInstallStep = CurrentInstallStep;
-        if (_installProcessState.RequestedInstallOperation == RequestedInstallOperation.InstallSit || _installProcessState.RequestedInstallOperation == RequestedInstallOperation.UpdateSit)
+        if (_installProcessState.RequestedInstallOperation == RequestedInstallOperation.InstallEft)
+        {
+            if (!_usingSitInstallSteps)
+            {
+                InstallationSteps = _linuxSitInstallSteps.AsReadOnly();
+                _usingSitInstallSteps = true;
+            }
+        }
+        else if (_installProcessState.RequestedInstallOperation == RequestedInstallOperation.InstallSit || _installProcessState.RequestedInstallOperation == RequestedInstallOperation.UpdateSit)
         {
             if (!_usingSitInstallSteps)
             {
