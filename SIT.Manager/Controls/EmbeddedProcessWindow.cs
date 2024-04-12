@@ -102,6 +102,11 @@ public class EmbeddedProcessWindow(Process p) : NativeControlHost
                 // Set ProcessWindowHandle to the MainWindowHandle of the process
                 ProcessWindowHandle = _p.MainWindowHandle;
             }
+            else // linux
+            {
+                // Wait until the process has exited
+                await _p.WaitForExitAsync();
+            }
         }
         catch
         {
