@@ -79,6 +79,15 @@
 									 ToolTip.Tip="{DynamicResource SettingsLinuxWineRunnerToolTip}"
 									 Text="{Binding Config.WineRunner}"/>
 						</StackPanel>
+						
+						<StackPanel Orientation="Horizontal" Margin="0,10,1,0">
+							<TextBlock Text="{DynamicResource SettingsLinuxWineEnvTitle}"/>
+							<TextBox Watermark="{DynamicResource SettingsLinuxWineEnvPlaceholder}"
+									 MinWidth="425"
+									 MaxWidth="425"
+									 ToolTip.Tip="{DynamicResource SettingsLinuxWineEnvToolTip}"
+									 Text="{Binding Config.WineEnv}"/>
+						</StackPanel>
 					</StackPanel>
 				</Border>
 				

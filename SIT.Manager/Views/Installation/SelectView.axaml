@@ -61,7 +61,8 @@
 							<Run Text="{Binding CurrentInstallProcessState.SitVersion}"/>
 						</TextBlock>
 
-						<Grid ColumnDefinitions="*, *">
+						<!-- TODO: Fix the sizing? must have something to do with the initial window size -->
+						<Grid ColumnDefinitions="*,*,*">
 							<Button Grid.Column="0"
 									HorizontalAlignment="Left"
 									ToolTip.Tip="{DynamicResource SelectViewInstallSITButtonToolTip}"
@@ -94,6 +95,25 @@
 								<Grid ColumnDefinitions="*,*">
 									<ui:SymbolIcon Grid.Column="0" Symbol="Up"/>
 									<TextBlock Grid.Column="1" Text="{DynamicResource SelectViewUpdateSITButtonTitle}" TextTrimming="CharacterEllipsis"/>
+								</Grid>
+							</Button>
+							
+							<!-- Linux only: install EFT using BSG launcher -->
+							<Button Grid.Column="2"
+									HorizontalAlignment="Left"
+									ToolTip.Tip="{DynamicResource SelectViewInstallEFTButtonToolTip}"
+									Command="{Binding ProgressInstallCommand}"
+									CommandParameter="{x:Static im:RequestedInstallOperation.InstallEft}"
+									IsVisible="{OnPlatform Default=False, Linux=True}">
+								<Button.IsEnabled>
+									<MultiBinding Converter="{x:Static BoolConverters.And}">
+										<Binding Path="CurrentInstallProcessState.EftInstallPath" Converter="{x:Static StringConverters.IsNullOrEmpty}"/>
+										<Binding Path="CurrentInstallProcessState.EftVersion" Converter="{x:Static StringConverters.IsNullOrEmpty}"/>
+									</MultiBinding>
+								</Button.IsEnabled>
+								<Grid ColumnDefinitions="*,*">
+									<ui:SymbolIcon Grid.Column="0" Symbol="Add"/>
+									<TextBlock Grid.Column="1" Text="{DynamicResource SelectViewInstallEFTButtonTitle}" TextTrimming="CharacterEllipsis"/>
 								</Grid>
 							</Button>
 						</Grid>
