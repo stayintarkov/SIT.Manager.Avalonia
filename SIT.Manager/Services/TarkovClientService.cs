@@ -115,7 +115,7 @@ public class TarkovClientService(IBarNotificationService barNotificationService,
             {
                 winePrefix = $"{winePrefix}{Path.DirectorySeparatorChar}";
             }
-            // TODO: Add these settings to a linux settings page.
+            
             _process.StartInfo.EnvironmentVariables.Add("WINEPREFIX", winePrefix);
             _process.StartInfo.EnvironmentVariables.Add("WINEESYNC", config.IsEsyncEnabled ? "1" : "0");
             _process.StartInfo.EnvironmentVariables.Add("WINEFSYNC", config.IsFsyncEnabled ? "1" : "0");

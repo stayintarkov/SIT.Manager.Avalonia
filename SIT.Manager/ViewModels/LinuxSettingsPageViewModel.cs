@@ -1,5 +1,4 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using SIT.Manager.Interfaces;
 using SIT.Manager.ManagedProcess;
 using SIT.Manager.Models;
 using System.Collections.Generic;
@@ -19,11 +18,9 @@ public partial class LinuxSettingsPageViewModel : ObservableObject
     [ObservableProperty] 
     private List<string> _dxvkVersions;
     
-    public LinuxSettingsPageViewModel(IManagerConfigService configService,
-                                      List<string> dxvkVersions)
+    public LinuxSettingsPageViewModel(IManagerConfigService configService)
     {
         _configsService = configService;
-        _dxvkVersions = dxvkVersions;
 
         _config = (LinuxConfig) _configsService.Config;
         

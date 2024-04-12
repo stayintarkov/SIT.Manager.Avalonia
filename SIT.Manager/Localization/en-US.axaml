@@ -182,9 +182,9 @@
 	<system:String x:Key="LinuxSettingsEnableFsrTitle">Enable AMD FidelityFX Super Resolution (FSR)</system:String>
 	<system:String x:Key="LinuxSettingsEnableFsrToolTip">Use FSR to improve performance in games</system:String>
 	<system:String x:Key="LinuxSettingsEnableMangoHudTitle">Enable MangoHud</system:String>
-	<system:String x:Key="LinuxSettingsEnableMangoHudToolTip">MangoHud is a modification of the Mesa Vulkan overlay that includes GUI improvements, temperature monitoring, and more.</system:String>
+	<system:String x:Key="LinuxSettingsEnableMangoHudToolTip">MangoHud is a modification of the Mesa Vulkan overlay that includes GUI improvements, temperature monitoring, and more</system:String>
 	<system:String x:Key="LinuxSettingsEnableGameModeTitle">Enable Feral GameMode</system:String>
-	<system:String x:Key="LinuxSettingsEnableGameModeToolTip">GameMode is a daemon/lib combo for Linux that allows games to request a set of optimisations be temporarily applied to the host OS.</system:String>
+	<system:String x:Key="LinuxSettingsEnableGameModeToolTip">GameMode is a daemon/lib combo for Linux that allows games to request a set of optimisations be temporarily applied to the host OS</system:String>
 	
 	<!-- Location Editor View -->
 	<system:String x:Key="LocationEditorLoadButtonTitle">Load</system:String>
