@@ -11,13 +11,19 @@ public partial class LinuxConfig : ManagerConfig
     public static readonly string RuntimeDir = Path.Combine(BaseDir, "runtime");
     
     [ObservableProperty]
+    public string _winePrefix = string.Empty;
+    [ObservableProperty]
+    public string _wineRunner = string.Empty;
+    [ObservableProperty]
+    public Dictionary<string, string> _wineEnv = [];
+    [ObservableProperty]
     public bool _isDXVKEnabled = true;
     [ObservableProperty]
-    public bool _isVKD3DEnabled = true;
+    public bool _isVKD3DEnabled = false;
     [ObservableProperty]
-    public bool _isD3DExtrasEnabled = true;
+    public bool _isD3DExtrasEnabled = false;
     [ObservableProperty]
-    public bool _isDXVK_NVAPIEnabled = true;
+    public bool _isDXVK_NVAPIEnabled = false;
     [ObservableProperty]
     public bool _isDGVoodoo2Enabled = false;
     [ObservableProperty]
