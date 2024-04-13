@@ -340,11 +340,13 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         };
         if (OperatingSystem.IsLinux())
         {
-            string winePrefix = Path.GetFullPath(_configService.Config.WinePrefix);
+            // TODO: actually improve this (will probably be done after fixing launching problems)
+            LinuxConfig config = (LinuxConfig) _configService.Config;
+            string winePrefix = Path.GetFullPath(config.WinePrefix);
             // Update the wine prefix and install any required components
             UpdateWinePrefix(winePrefix);
             
-            patcherProcess.StartInfo.FileName = _configService.Config.WineRunner;
+            patcherProcess.StartInfo.FileName = config.WineRunner;
             patcherProcess.StartInfo.Arguments = $"\"{patcherPath}\" autoclose";
             patcherProcess.StartInfo.UseShellExecute = false;
             
