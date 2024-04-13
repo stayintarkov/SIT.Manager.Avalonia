@@ -130,6 +130,7 @@
 	<system:String x:Key="SettingsAccentColorTitle">Accent Color:</system:String>
 	<system:String x:Key="SettingsAccentColorToolTip">Changes color of selected visuals to your choice!</system:String>
 	<system:String x:Key="SettingsLinuxSettingsTitle">Linux Settings</system:String>
+	<system:String x:Key="LinuxSettingsExperimentalWarning">Experimental Linux settings. Some might not work or are not implemented yet. Use at your own risk.</system:String>
 	<system:String x:Key="SettingsLinuxWinePrefixTitle">Wine Prefix:</system:String>
 	<system:String x:Key="SettingsLinuxWinePrefixPlaceholder">Wine Prefix Path</system:String>
 	<system:String x:Key="SettingsLinuxWinePrefixToolTip">Change the WINEPREFIX used for EFT</system:String>
@@ -169,8 +170,8 @@
 	<system:String x:Key="LinuxSettingsEnableVkd3DToolTip">Use VKD3D to translate Direct3D 12 to Vulkan</system:String>
 	<system:String x:Key="LinuxSettingsEnableD3DExtrasTitle">Enable D3D Extras</system:String>
 	<system:String x:Key="LinuxSettingsEnableD3DExtrasToolTip">Enable additional Direct3D features</system:String>
-	<system:String x:Key="LinuxSettingsEnableDxvkNvapiTitle">Enable DXVK NVAPI / DLSS</system:String>
-	<system:String x:Key="LinuxSettingsEnableDxvkNvapiToolTip">Enable NVAPI support in DXVK</system:String>
+	<system:String x:Key="LinuxSettingsEnableDxvkNvapiTitle">Enable DXVK NVAPI / DLSS [TO BE IMPLEMENTED]</system:String>
+	<system:String x:Key="LinuxSettingsEnableDxvkNvapiToolTip">Enable NVAPI support in DXVK [TO BE IMPLEMENTED/DOES NOT WORK]</system:String>
 	<system:String x:Key="LinuxSettingsEnableDgVoodoo2Title">Enable dgvoodoo2</system:String>
 	<system:String x:Key="LinuxSettingsEnableDgVoodoo2ToolTip">Use dgvoodoo2 to translate Direct3D 1-11 to OpenGL</system:String>
 	

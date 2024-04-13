@@ -11,16 +11,21 @@
     <Grid RowDefinitions="*,Auto">
         <ScrollViewer Grid.Row="0">
             <StackPanel Margin="10">
+                <!-- TODO: Make the boxes responsive with the selected language -->
                 <!-- Wine Settings-->
                 <TextBlock Text="{DynamicResource SettingsLinuxSettingsTitle}"
                            Classes="FrameHeading"
                            IsVisible="{OnPlatform Default=False, Linux=True}"/>
+                <TextBlock Text="{DynamicResource LinuxSettingsExperimentalWarning}"
+                           TextTrimming="CharacterEllipsis"
+                           Margin="8,0,0,0"
+                           Classes="WarningMessage"/>
                 <Border Classes="StandardFrame">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="{DynamicResource SettingsLinuxWinePrefixTitle}" Margin="0,0,10,0" VerticalAlignment="Center"/>
                             <TextBox Watermark="{DynamicResource SettingsLinuxWinePrefixPlaceholder}"
-                                     Margin="0,0,10,0"
+                                     Margin="10,0,10,0"
                                      MinWidth="425"
                                      MaxWidth="425"
                                      ToolTip.Tip="{DynamicResource SettingsLinuxWinePrefixToolTip}"
@@ -41,7 +46,7 @@
                                      Text="{Binding Config.WineRunner}"/>
                             <Button Name="ChangeRunnerButton" 
                                     Content="{DynamicResource SettingsEFTSettingsButtonChangeTitle}"
-                                    Margin="0,0,10,0" 
+                                    Margin="10,0,10,0" 
                                     ToolTip.Tip="{DynamicResource SettingsEFTChangeInstallPathToolTip}"
                                     Command="{Binding ChangeRunnerLocationCommand}"/>
                         </StackPanel>
@@ -49,6 +54,7 @@
                         <StackPanel Orientation="Horizontal" Margin="0,10,1,0">
                             <TextBlock Text="{DynamicResource SettingsLinuxWineEnvTitle}"/>
                             <TextBox Watermark="{DynamicResource SettingsLinuxWineEnvPlaceholder}"
+                                     Margin="7,0,10,0"
                                      MinWidth="425"
                                      MaxWidth="425"
                                      ToolTip.Tip="{DynamicResource SettingsLinuxWineEnvToolTip}"
@@ -78,7 +84,8 @@
                                   IsChecked="{Binding Config.IsD3DExtrasEnabled, Mode=TwoWay}"/>
                         <CheckBox Content="{DynamicResource LinuxSettingsEnableDxvkNvapiTitle}"
                                   ToolTip.Tip="{DynamicResource LinuxSettingsEnableDxvkNvapiToolTip}"
-                                  IsChecked="{Binding Config.IsDXVK_NVAPIEnabled, Mode=TwoWay}"/>
+                                  IsChecked="{Binding Config.IsDXVK_NVAPIEnabled, Mode=TwoWay}"
+                                  IsEnabled="False"/> <!-- TODO: Implement this, see SIT.Manager.Linux.Managers.DxvkNvapiManager -->
                         <CheckBox Content="{DynamicResource LinuxSettingsEnableDgVoodoo2Title}"
                                   ToolTip.Tip="{DynamicResource LinuxSettingsEnableDgVoodoo2ToolTip}"
                                   IsChecked="{Binding Config.IsDGVoodoo2Enabled, Mode=TwoWay}"/>
