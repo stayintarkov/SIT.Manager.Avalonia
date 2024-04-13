@@ -129,17 +129,6 @@
 	<system:String x:Key="SettingsLanguageTitleToolTip">Translates entire launcher to your language, select one!</system:String>
 	<system:String x:Key="SettingsAccentColorTitle">Accent Color:</system:String>
 	<system:String x:Key="SettingsAccentColorToolTip">Changes color of selected visuals to your choice!</system:String>
-	<system:String x:Key="SettingsLinuxSettingsTitle">Linux Settings</system:String>
-	<system:String x:Key="LinuxSettingsExperimentalWarning">Experimental Linux settings. Some might not work or are not implemented yet. Use at your own risk.</system:String>
-	<system:String x:Key="SettingsLinuxWinePrefixTitle">Wine Prefix:</system:String>
-	<system:String x:Key="SettingsLinuxWinePrefixPlaceholder">Wine Prefix Path</system:String>
-	<system:String x:Key="SettingsLinuxWinePrefixToolTip">Change the WINEPREFIX used for EFT</system:String>
-	<system:String x:Key="SettingsLinuxWineRunnerTitle">Wine Runner:</system:String>
-	<system:String x:Key="SettingsLinuxWineRunnerPlaceholder">Wine Runner Path</system:String>
-	<system:String x:Key="SettingsLinuxWineRunnerToolTip">Set the wine runner used for EFT. Leave blank to download the recommended SPT wine runner into the same folder as the bottle</system:String>
-	<system:String x:Key="SettingsLinuxWineEnvTitle">Environment: </system:String>
-	<system:String x:Key="SettingsLinuxWineEnvPlaceholder">Wine Environment Variables</system:String>
-	<system:String x:Key="SettingsLinuxWineEnvToolTip">Set custom environment variables used for wine</system:String>
 	<system:String x:Key="SettingsEFTSettingsTitle">EFT Settings</system:String>
 	<system:String x:Key="SettingsEFTSettingsButtonChangeTitle">Change</system:String>
 	<system:String x:Key="SettingsEFTInstallPathTitle">EFT Path:</system:String>
@@ -160,7 +149,23 @@
 	
 	
 	<!-- Linux Settings Page -->
+	<system:String x:Key="Key">Key</system:String>
+	<system:String x:Key="Value">Value</system:String>
 	<system:String x:Key="LinuxSettingsPageTitle">Linux Settings</system:String>
+	<system:String x:Key="LinuxSettingsExperimentalWarning">Experimental Linux settings. Some might not work or are not implemented yet. Use at your own risk.</system:String>
+	
+	<system:String x:Key="LinuxSettingsWinePrefixTitle">Wine Prefix:</system:String>
+	<system:String x:Key="LinuxSettingsWinePrefixPlaceholder">Wine Prefix Path</system:String>
+	<system:String x:Key="LinuxSettingsWinePrefixToolTip">Change the WINEPREFIX used for EFT</system:String>
+	<system:String x:Key="LinuxSettingsWineRunnerTitle">Wine Runner:</system:String>
+	<system:String x:Key="LinuxSettingsWineRunnerPlaceholder">Wine Runner Path</system:String>
+	<system:String x:Key="LinuxSettingsWineRunnerToolTip">Set the wine runner used for EFT. Leave blank to download the recommended SPT wine runner into the same folder as the bottle</system:String>
+	<system:String x:Key="LinuxSettingsWineEnvTitle">Environment: </system:String>
+	<system:String x:Key="LinuxSettingsWineEnvPlaceholder">Wine Environment Variables</system:String>
+	<system:String x:Key="LinuxSettingsWineEnvToolTip">Set custom environment variables used for wine</system:String>
+	<system:String x:Key="LinuxSettingsWineEnvAddButton">Add</system:String>
+	<system:String x:Key="LinuxSettingsWineEnvDeleteButton">Delete</system:String>
+	
 	<system:String x:Key="LinuxSettingsGraphicsTitle">Graphics</system:String>
 	<system:String x:Key="LinuxSettingsEnableDxvkTitle">Enable DXVK</system:String>
 	<system:String x:Key="LinuxSettingsEnableDxvkToolTip">Use DXVK to increase compatibility and performance in Direct3D 11, 10 and 9 applications by translating their calls to Vulkan.</system:String>

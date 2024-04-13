@@ -25,12 +25,6 @@ public partial class ManagerConfig : ObservableObject
     [ObservableProperty]
     public bool _enableDeveloperMode = false;
     [ObservableProperty]
-    public string _winePrefix = string.Empty;
-    [ObservableProperty]
-    public string _wineRunner = string.Empty;
-    [ObservableProperty]
-    public string _wineEnv = string.Empty;
-    [ObservableProperty]
     public string _tarkovVersion = string.Empty;
     [ObservableProperty]
     public string _sitVersion = string.Empty;

@@ -21,13 +21,15 @@ public partial class LinuxSettingsPageViewModel : ObservableObject
     
     [ObservableProperty]
     private LinuxConfig _config;
-    // DXVK Versions
+    // DXVK Versions TODO
     [ObservableProperty] 
     private List<string> _dxvkVersions;
     
     public IAsyncRelayCommand ChangePrefixLocationCommand { get; }
     public IAsyncRelayCommand ChangeRunnerLocationCommand { get; }
-    
+    public IRelayCommand AddEnvCommand { get; }
+    public IRelayCommand DeleteEnvCommand { get; }
+
     public LinuxSettingsPageViewModel(IManagerConfigService configService,
                                       IPickerDialogService pickerDialogService,
                                       IBarNotificationService barNotificationService,
@@ -47,8 +49,21 @@ public partial class LinuxSettingsPageViewModel : ObservableObject
         
         ChangePrefixLocationCommand = new AsyncRelayCommand(ChangePrefixLocation);
         ChangeRunnerLocationCommand = new AsyncRelayCommand(ChangeRunnerLocation);
+        
+        AddEnvCommand = new RelayCommand(AddEnv);
+        DeleteEnvCommand = new RelayCommand(DeleteEnv);
     }
-    
+
+    private void DeleteEnv()
+    {
+        // TODO: get the selected item and remove it from the dictionary
+    }
+
+    private void AddEnv()
+    {
+        Config.WineEnv.Add("", "");
+    }
+
     protected override void OnPropertyChanged(PropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
