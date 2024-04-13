@@ -783,16 +783,4 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             _logger.LogError(ex, "Failed to copy EFT settings.");
         }
     }
-    
-    public async Task InstallBsgLauncher()
-    {
-        string bsgLauncherPath = Path.Combine(_configService.Config.InstallPath, "BSGLauncher.exe");
-        if (File.Exists(bsgLauncherPath))
-        {
-            return;
-        }
-
-        string bsgLauncherUrl = "https://prod.escapefromtarkov.com/launcher/download";
-        await _fileService.DownloadFile("BsgLauncher.exe", _configService.Config.InstallPath, bsgLauncherUrl, null);
-    }
 }

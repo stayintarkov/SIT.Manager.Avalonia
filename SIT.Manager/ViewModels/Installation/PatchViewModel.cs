@@ -96,7 +96,8 @@ public partial class PatchViewModel : InstallationViewModelBase
         }
         else
         {
-            await embeddedProcessWindow.StartProcess();
+            await embeddedProcessWindow.StartProcess(); // TODO: remove this away since it doesn't do too much?
+            await embeddedProcessWindow.WaitForExit();
         }
 
         _patcherResultMessages.TryGetValue(embeddedProcessWindow.ExitCode, out string? patcherResult);

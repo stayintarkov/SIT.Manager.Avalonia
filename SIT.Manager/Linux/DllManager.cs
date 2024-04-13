@@ -2,6 +2,7 @@ using SIT.Manager.Linux.Managers;
 using SIT.Manager.Models;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace SIT.Manager.Linux;
 
@@ -11,18 +12,16 @@ public abstract class DllManager(string component, IEnumerable<string> dlls, str
     protected string BaseDir = baseDir;
     protected IEnumerable<string>? ManagedAppDataFiles = managedAppDataFiles; // TODO: implement this
     protected string ReleaseUrl = releaseUrl; // TODO: do something with this
-    
-    private static readonly Dictionary<string, DllManager> Managers = [];
-    
-    static DllManager()
+
+    private static readonly Dictionary<string, DllManager> Managers = new()
     {
-        Managers.Add("DXVK", new DxvkManager());
-        Managers.Add("VKD3D", new Vkd3DManager());
-        Managers.Add("D3DExtras", new D3DExtrasManager());
+        { "IsDXVKEnabled", new DxvkManager() },
+        { "IsVKD3DEnabled", new Vkd3DManager() },
+        { "IsD3DExtrasEnabled", new D3DExtrasManager() },
         // // TODO: implement these \/ \/ \/
-        Managers.Add("DXVK-NVAPI", new DxvkNvapiManager());
-        Managers.Add("dgvoodoo2", new Dgvoodoo2Manager());
-    }
+        { "IsDXVK_NVAPIEnabled", new DxvkNvapiManager() },
+        { "IsDGVoodoo2Enabled", new Dgvoodoo2Manager() }
+    };
 
     private string GetDllOverrideString()
     {
@@ -35,28 +34,13 @@ public abstract class DllManager(string component, IEnumerable<string> dlls, str
         // Then all dlls with the same mode are grouped together and separated by a comma with the last one ending with an = sign and then the mode and a semicolon
         // Example: "d3d9=,d3d10,d3d10core,d3d11,d3d12,dxgi=n;other_dlls,...,="
         // If no DLLs are enabled for a mode, it will be omitted
-        string result = "";
-        // TODO: There must be a better way to do this, right?
-        if (config.IsDXVKEnabled)
+        StringBuilder sb = new();
+        foreach (KeyValuePair<string, DllManager> manager in Managers.Where(manager =>
+                     config.GetType().GetProperty(manager.Key)?.GetValue(config) is true))
         {
-            result += Managers["DXVK"].GetDllOverrideString();
+            sb.Append(manager.Value.GetDllOverrideString());
         }
-        if (config.IsVKD3DEnabled)
-        {
-            result += Managers["VKD3D"].GetDllOverrideString();
-        }
-        if (config.IsD3DExtrasEnabled)
-        {
-            result += Managers["D3DExtras"].GetDllOverrideString();
-        }
-        if (config.IsDXVK_NVAPIEnabled)
-        {
-            result += Managers["DXVK-NVAPI"].GetDllOverrideString();
-        }
-        if (config.IsDGVoodoo2Enabled)
-        {
-            result += Managers["dgvoodoo2"].GetDllOverrideString();
-        }
+        string result = sb.ToString();
         
         return string.IsNullOrEmpty(result) ? "winemenubuilder=" : result + "=n;winemenubuilder=" ;
     }
