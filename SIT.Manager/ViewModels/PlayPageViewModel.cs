@@ -10,6 +10,7 @@ using SIT.Manager.Exceptions;
 using SIT.Manager.Interfaces;
 using SIT.Manager.ManagedProcess;
 using SIT.Manager.Models;
+using SIT.Manager.Services.Caching;
 using SIT.Manager.Views.Dialogs;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.ViewModels;
@@ -62,7 +64,8 @@ public partial class PlayPageViewModel : ObservableObject
         IAkiServerService akiServerService,
         ILocalizationService localizationService,
         ILogger<PlayPageViewModel> logger,
-        IServiceProvider serviceProvider)
+        IServiceProvider serviceProvider,
+        CachingService cachingService)
     {
         _configService = configService;
         _managerConfig = _configService.Config;
@@ -87,6 +90,13 @@ public partial class PlayPageViewModel : ObservableObject
 
         ConnectToServerCommand = new AsyncRelayCommand(async () => await ConnectToServer());
         QuickPlayCommand = new AsyncRelayCommand(async () => await ConnectToServer(true));
+
+        for(int i = 0; i < 10; i++)
+        {
+            Debug.WriteLine($"interation {i}");
+            Debug.WriteLine(cachingService.GetOrComputeMemoryItem("test key", (pk) => { return $" was cached on iteration {i}"; }, TimeSpan.FromSeconds(1)));
+            Thread.Sleep((i % 2 == 0) ? 1500 : 500);
+        }
     }
 
     private string CreateLaunchArguments(TarkovLaunchConfig launchConfig, string token)

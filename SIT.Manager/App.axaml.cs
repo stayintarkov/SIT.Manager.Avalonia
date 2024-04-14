@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using SIT.Manager.Interfaces;
 using SIT.Manager.ManagedProcess;
 using SIT.Manager.Services;
+using SIT.Manager.Services.Caching;
 using SIT.Manager.Services.Install;
 using SIT.Manager.ViewModels;
 using SIT.Manager.ViewModels.Installation;
@@ -85,6 +86,7 @@ public sealed partial class App : Application
         services.AddSingleton<IZlibService, ZlibService>();
         services.AddSingleton<ILocalizationService, LocalizationService>();
         services.AddSingleton<IDiagnosticService, DiagnosticService>();
+        services.AddSingleton<CachingService>();
 
         // Page Viewmodels
         services.AddTransient<InstallPageViewModel>();

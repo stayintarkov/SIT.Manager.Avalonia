@@ -30,18 +30,24 @@ public class CachingService
         }
     }
 
-    public TValue GetOrCompute<TValue>(string key, Func<string, TValue> computer, TimeSpan expiration)
+    public TValue GetOrComputeMemoryItem<TValue>(string key, Func<string, TValue> computer, TimeSpan expiration)
     {
         if(_cache.TryGetValue(key, out ICachedItem? cachedItem))
         {
-            if(!cachedItem.Spoilt)
-                return (TValue)cachedItem;
+            if(cachedItem.Spoilt)
+            {
+                _cache.Remove(key, out ICachedItem? _);
+            }
+            else
+            {
+                return (TValue) cachedItem.CachedObject;
+            }
         }
 
-        object? newValue = computer(key) ?? throw new ArgumentNullException(nameof(computer), "A null value was generated.");
-        if (_cache.TryAdd(key, new CachedItem(newValue, DateTime.UtcNow + expiration)))
+        TValue newValue = computer(key) ?? throw new ArgumentNullException(nameof(computer), "A null value was generated.");
+        if (_cache.TryAdd(key, new MemoryCachedItem(newValue, DateTime.UtcNow + expiration)))
         {
-            return (TValue) newValue;
+            return newValue;
         }
         else
         {
@@ -58,7 +64,7 @@ public interface ICachedItem
 
 }
 
-readonly struct CachedItem(object cachedObject, DateTime expirationDate) : ICachedItem
+readonly struct MemoryCachedItem(object cachedObject, DateTime expirationDate) : ICachedItem
 {
     private readonly object _cachedObject = cachedObject;
     private readonly DateTime _expirationDate = expirationDate;
