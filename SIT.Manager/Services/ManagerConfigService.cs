@@ -12,6 +12,14 @@ internal sealed class ManagerConfigService : IManagerConfigService
 {
     private readonly ILogger<ManagerConfigService> _logger;
 
+    private readonly JsonSerializerOptions _jsonSerializationOptions = new()
+    {
+        Converters = {
+            new ColorJsonConverter()
+        },
+        WriteIndented = true
+    };
+
     private ManagerConfig _config = new();
     public ManagerConfig Config
     {
@@ -29,20 +37,13 @@ internal sealed class ManagerConfigService : IManagerConfigService
 
     private void Load()
     {
-        var options = new JsonSerializerOptions()
-        {
-            Converters = {
-                new ColorJsonConverter()
-            }
-        };
-
         try
         {
             string managerConfigPath = Path.Combine(AppContext.BaseDirectory, "ManagerConfig.json");
             if (File.Exists(managerConfigPath))
             {
                 string json = File.ReadAllText(managerConfigPath);
-                _config = JsonSerializer.Deserialize<ManagerConfig>(json, options) ?? new();
+                _config = JsonSerializer.Deserialize<ManagerConfig>(json, _jsonSerializationOptions) ?? new();
             }
         }
         catch (Exception ex)
@@ -57,14 +58,6 @@ internal sealed class ManagerConfigService : IManagerConfigService
         _config = config;
         SaveAccount ??= config.RememberLogin;
 
-        var options = new JsonSerializerOptions()
-        {
-            Converters = {
-                new ColorJsonConverter()
-            },
-            WriteIndented = true
-        };
-
         if (ShouldSave)
         {
             ManagerConfig newLauncherConfig = _config;
@@ -75,7 +68,7 @@ internal sealed class ManagerConfigService : IManagerConfigService
             }
 
             string managerConfigPath = Path.Combine(AppContext.BaseDirectory, "ManagerConfig.json");
-            File.WriteAllText(managerConfigPath, JsonSerializer.Serialize(newLauncherConfig, options));
+            File.WriteAllText(managerConfigPath, JsonSerializer.Serialize(newLauncherConfig, _jsonSerializationOptions));
         }
 
         ConfigChanged?.Invoke(this, _config);
