@@ -48,7 +48,7 @@ public class DiagnosticService : IDiagnosticService
                 {
                     using(StreamReader  sr = new(fs))
                     {
-                        fileData = await sr.ReadToEndAsync();
+                        fileData = await CleanseLogFile(await sr.ReadToEndAsync());
                     }
                 }
                 return fileData;
