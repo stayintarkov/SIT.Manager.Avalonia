@@ -18,19 +18,32 @@
 			<Grid ColumnDefinitions="Auto, *, Auto">
 				<Button Grid.Column="0"
 						VerticalAlignment="Center"
-						Content="Create New Server"/>
+						Content="Create New Server"
+						Command="{Binding CreateServerCommand}"/>
 				<Button Grid.Column="2" 
 						VerticalAlignment="Center"
 						Command="{Binding DirectConnectCommand}"
 						Content="Direct Connect"/>
 			</Grid>
 		</Border>
-	
+
 		<ScrollViewer Grid.Row="1"
+					  HorizontalScrollBarVisibility="Disabled"
 					  Margin="0,8,0,0">
-			<StackPanel>
-				<pv:ServerSummaryView/>
-			</StackPanel>
-		</ScrollViewer>		
+			<ItemsControl Name="ConsoleLogItemsControl"
+						  ItemsSource="{Binding ServerList}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<VirtualizingStackPanel Orientation="Vertical"/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<pv:ServerSummaryView/>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</ScrollViewer>
 	</Grid>
 </UserControl>

@@ -9,6 +9,7 @@ using SIT.Manager.Services;
 using SIT.Manager.Views.Play;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,9 +20,17 @@ public partial class PlayPageViewModel : ObservableObject
 {
     private readonly IAkiServerRequestingService _serverService;
 
+    public ObservableCollection<string> ServerList { get; } = [];
+
+    public IAsyncRelayCommand CreateServerCommand { get; }
+
     public PlayPageViewModel(IAkiServerRequestingService serverService)
     {
         _serverService = serverService;
+
+        CreateServerCommand = new AsyncRelayCommand(CreateServer);
+
+        ServerList.Add(string.Empty);
 
         Task.Run(async () =>
         {
@@ -77,5 +86,15 @@ public partial class PlayPageViewModel : ObservableObject
     {
         PageNavigation pageNavigation = new(typeof(DirectConnectView), false);
         WeakReferenceMessenger.Default.Send(new PageNavigationMessage(pageNavigation));
+    }
+
+    private async Task CreateServer()
+    {
+        CreateServerDialogView dialog = new();
+        string result = await dialog.ShowAsync();
+        if (!string.IsNullOrEmpty(result))
+        {
+            ServerList.Add(result);
+        }
     }
 }
