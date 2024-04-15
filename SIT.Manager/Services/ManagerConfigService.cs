@@ -12,7 +12,20 @@ internal sealed class ManagerConfigService : IManagerConfigService
 {
     private readonly ILogger<ManagerConfigService> _logger;
 
-    public ManagerConfig Config { get; private set; } = new();
+    private readonly JsonSerializerOptions _jsonSerializationOptions = new()
+    {
+        Converters = {
+            new ColorJsonConverter()
+        },
+        WriteIndented = true
+    };
+
+    private ManagerConfig _config = new();
+    public ManagerConfig Config
+    {
+        get => _config;
+        private set { _config = value; }
+    }
 
     public event EventHandler<ManagerConfig>? ConfigChanged;
 
@@ -39,9 +52,8 @@ internal sealed class ManagerConfigService : IManagerConfigService
             {
                 return;
             }
-
             string json = File.ReadAllText(managerConfigPath);
-            Config = JsonSerializer.Deserialize<ManagerConfig>(json, Options) ?? new ManagerConfig();
+            Config = JsonSerializer.Deserialize<ManagerConfig>(json, _jsonSerializationOptions) ?? new ManagerConfig();
         }
         catch (Exception ex)
         {
@@ -65,7 +77,7 @@ internal sealed class ManagerConfigService : IManagerConfigService
             }
 
             string managerConfigPath = Path.Combine(AppContext.BaseDirectory, "ManagerConfig.json");
-            File.WriteAllText(managerConfigPath, JsonSerializer.Serialize(newLauncherConfig, Options));
+            File.WriteAllText(managerConfigPath, JsonSerializer.Serialize(newLauncherConfig, _jsonSerializationOptions));
         }
 
         ConfigChanged?.Invoke(this, Config);
