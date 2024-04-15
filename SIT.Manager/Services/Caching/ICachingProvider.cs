@@ -13,6 +13,8 @@ public interface ICachingProvider
     CacheValue<T> Get<T>(string key);
     IEnumerable<string> GetAllKeys(string prefix);
     int GetCount(string prefix = "");
+    CacheValue<T> GetOrCompute<T>(string key, Func<string, T> computor, TimeSpan? expiaryTime = null);
     bool Remove(string key);
     int RemoveByPrefix(string prefix);
+    bool TryGet<T>(string key, out CacheValue<T> cacheValue);
 }

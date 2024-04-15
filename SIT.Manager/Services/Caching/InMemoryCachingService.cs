@@ -6,15 +6,12 @@ using System.Threading;
 
 namespace SIT.Manager.Services.Caching;
 
-public class InMemoryCachingService : ICachingProvider
+public class InMemoryCachingService(InMemoryCachingOptions? cachingOptions = null) : ICachingProvider
 {
     private readonly ConcurrentDictionary<string, CacheEntry> _memoryCache = new();
-    private readonly InMemoryCachingOptions _options;
+    //TODO Implement this properly
+    private readonly InMemoryCachingOptions _options = cachingOptions ?? new();
     public event EventHandler<EvictedEventArgs>? Evicted;
-    public InMemoryCachingService(InMemoryCachingOptions cachingOptions)
-    {
-        _options = cachingOptions;
-    }
 
     public void Clear(string prefix = "")
     {
@@ -98,6 +95,31 @@ public class InMemoryCachingService : ICachingProvider
             //TODO: log exception
             return null;
         }
+    }
+
+    public bool TryGet<T>(string key, out CacheValue<T> cacheValue)
+    {
+        cacheValue = Get<T>(key);
+        if (cacheValue == CacheValue<T>.NoValue || cacheValue == CacheValue<T>.Null)
+            return false;
+        return true;
+    }
+
+    public CacheValue<T> GetOrCompute<T>(string key, Func<string, T> computor, TimeSpan? expiaryTime = null)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
+
+        bool success = TryGet(key, out CacheValue<T> valOut);
+        if (success)
+            return valOut;
+
+        T computedValue = computor(key);
+        bool addSuccess = Add(key, computedValue, expiaryTime);
+
+        if (!addSuccess)
+            throw new Exception("Cached value did not exist but could not be added to the cache");
+
+        return Get<T>(key);
     }
 
     public bool Add<T>(string key, T value, TimeSpan? expiryTime = null)
