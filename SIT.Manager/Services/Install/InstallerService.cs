@@ -341,7 +341,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         if (OperatingSystem.IsLinux())
         {
             // TODO: actually improve this (will probably be done after fixing launching problems)
-            LinuxConfig config = (LinuxConfig) _configService.Config;
+            LinuxConfig config = _configService.Config.LinuxConfig;
             string winePrefix = Path.GetFullPath(config.WinePrefix);
             // Update the wine prefix and install any required components
             UpdateWinePrefix(winePrefix);

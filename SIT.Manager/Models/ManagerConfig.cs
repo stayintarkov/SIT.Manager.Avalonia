@@ -50,4 +50,8 @@ public partial class ManagerConfig : ObservableObject
     private Color? _accentColor = Color.FromRgb(0x7f, 0x7f, 0x7f); // 7f7f7f 
     [ObservableProperty]
     public string _consoleFontFamily = "Consolas";
+    
+    // Linux specific settings
+    [ObservableProperty]
+    public LinuxConfig _linuxConfig = new();
 }

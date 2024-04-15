@@ -12,9 +12,7 @@ internal sealed class ManagerConfigService : IManagerConfigService
 {
     private readonly ILogger<ManagerConfigService> _logger;
 
-    public ManagerConfig Config { get; private set; } = OperatingSystem.IsLinux()
-        ? new LinuxConfig()
-        : new ManagerConfig();
+    public ManagerConfig Config { get; private set; } = new();
 
     public event EventHandler<ManagerConfig>? ConfigChanged;
 
@@ -43,9 +41,7 @@ internal sealed class ManagerConfigService : IManagerConfigService
             }
 
             string json = File.ReadAllText(managerConfigPath);
-            Config = OperatingSystem.IsLinux()
-                ? JsonSerializer.Deserialize<LinuxConfig>(json, Options) ?? new LinuxConfig()
-                : JsonSerializer.Deserialize<ManagerConfig>(json, Options) ?? new ManagerConfig();
+            Config = JsonSerializer.Deserialize<ManagerConfig>(json, Options) ?? new ManagerConfig();
         }
         catch (Exception ex)
         {
@@ -58,33 +54,18 @@ internal sealed class ManagerConfigService : IManagerConfigService
     {
         Config = config;
         saveAccount ??= config.RememberLogin;
-        
+
         if (shouldSave)
         {
-            if (OperatingSystem.IsLinux())
+            ManagerConfig newLauncherConfig = Config;
+            if (!saveAccount.Value)
             {
-                LinuxConfig newLauncherConfig = (LinuxConfig) Config;
-                if (!saveAccount.Value)
-                {
-                    newLauncherConfig.Username = string.Empty;
-                    newLauncherConfig.Password = string.Empty;
-                }
-                
-                string managerConfigPath = Path.Combine(AppContext.BaseDirectory, "ManagerConfig.json");
-                File.WriteAllText(managerConfigPath, JsonSerializer.Serialize(newLauncherConfig, Options));
+                newLauncherConfig.Username = string.Empty;
+                newLauncherConfig.Password = string.Empty;
             }
-            else
-            {
-                ManagerConfig newLauncherConfig = Config;
-                if (!saveAccount.Value)
-                {
-                    newLauncherConfig.Username = string.Empty;
-                    newLauncherConfig.Password = string.Empty;
-                }
 
-                string managerConfigPath = Path.Combine(AppContext.BaseDirectory, "ManagerConfig.json");
-                File.WriteAllText(managerConfigPath, JsonSerializer.Serialize(newLauncherConfig, Options));
-            }
+            string managerConfigPath = Path.Combine(AppContext.BaseDirectory, "ManagerConfig.json");
+            File.WriteAllText(managerConfigPath, JsonSerializer.Serialize(newLauncherConfig, Options));
         }
 
         ConfigChanged?.Invoke(this, Config);

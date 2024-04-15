@@ -20,7 +20,8 @@ public partial class LinuxSettingsPageViewModel : ObservableObject
     private readonly ILocalizationService _localizationService;
     
     [ObservableProperty]
-    private LinuxConfig _config;
+    private LinuxConfig _linuxConfig;
+    
     // DXVK Versions TODO
     [ObservableProperty] 
     private List<string> _dxvkVersions;
@@ -40,9 +41,9 @@ public partial class LinuxSettingsPageViewModel : ObservableObject
         _barNotificationService = barNotificationService;
         _localizationService = localizationService;
         
-        _config = (LinuxConfig) _configsService.Config;
+        _linuxConfig = _configsService.Config.LinuxConfig;
         
-        _config.PropertyChanged += (o, e) => OnPropertyChanged(e);
+        _linuxConfig.PropertyChanged += (o, e) => OnPropertyChanged(e);
         
         // Find dxvk versions
         //_dxvkVersions = _versionService.GetDXVKVersions();
@@ -61,13 +62,13 @@ public partial class LinuxSettingsPageViewModel : ObservableObject
 
     private void AddEnv()
     {
-        Config.WineEnv.Add("", "");
+        LinuxConfig.WineEnv.Add("", "");
     }
 
     protected override void OnPropertyChanged(PropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        _configsService.UpdateConfig(Config);
+        _configsService.UpdateConfig(_configsService.Config);
     }
 
     private async Task ChangePrefixLocation()
@@ -75,7 +76,7 @@ public partial class LinuxSettingsPageViewModel : ObservableObject
         IStorageFolder? newPath = await _pickerDialogService.GetDirectoryFromPickerAsync();
         if (newPath != null)
         {
-            Config.WinePrefix = newPath.Path.AbsolutePath;
+            LinuxConfig.WinePrefix = newPath.Path.AbsolutePath;
         }
         else
         {
@@ -101,10 +102,10 @@ public partial class LinuxSettingsPageViewModel : ObservableObject
     
     private async Task ChangeRunnerLocation()
     {
-        string newPath = await GetPathLocation("wine");
+        string newPath = await GetPathLocation(Path.Combine("bin", "wine"));
         if (!string.IsNullOrEmpty(newPath))
         {
-            Config.WineRunner = Path.Combine(newPath, "wine");
+            LinuxConfig.WineRunner = Path.Combine(newPath, "bin", "wine");
         }
         else
         {

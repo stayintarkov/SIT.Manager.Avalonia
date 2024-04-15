@@ -79,27 +79,27 @@ public class TarkovClientService(IBarNotificationService barNotificationService,
         };
         if (OperatingSystem.IsLinux())
         {
-            LinuxConfig config = (LinuxConfig)_configService.Config;
+            LinuxConfig linuxConfig = _configService.Config.LinuxConfig;
 
             // Check if either mangohud or gamemode is enabled.
-            if (config.IsGameModeEnabled)
+            if (linuxConfig.IsGameModeEnabled)
             {
                 _process.StartInfo.FileName = "gamemoderun";
                 _process.StartInfo.Arguments = string.Empty;
-                if (config.IsMangoHudEnabled)
+                if (linuxConfig.IsMangoHudEnabled)
                 {
                     _process.StartInfo.Arguments += "\"mangohud\"";
                 }
-                _process.StartInfo.Arguments += $" \"{config.WineRunner}\"";
+                _process.StartInfo.Arguments += $" \"{linuxConfig.WineRunner}\"";
             }
-            else if (config.IsMangoHudEnabled) // only mangohud is enabled
+            else if (linuxConfig.IsMangoHudEnabled) // only mangohud is enabled
             {
                 _process.StartInfo.FileName = "mangohud";
-                _process.StartInfo.Arguments = $"\"{config.WineRunner}\"";
+                _process.StartInfo.Arguments = $"\"{linuxConfig.WineRunner}\"";
             }
             else
             {
-                _process.StartInfo.FileName = config.WineRunner;
+                _process.StartInfo.FileName = linuxConfig.WineRunner;
                 _process.StartInfo.Arguments = string.Empty;
             }
             
@@ -108,26 +108,26 @@ public class TarkovClientService(IBarNotificationService barNotificationService,
             _process.StartInfo.Arguments += $" \"{ExecutableFilePath}\" -force-gfx-jobs native {arguments}"; 
             _process.StartInfo.UseShellExecute = false;
 
-            string winePrefix = Path.GetFullPath(config.WinePrefix);
+            string winePrefix = Path.GetFullPath(linuxConfig.WinePrefix);
             if (!Path.EndsInDirectorySeparator(winePrefix))
             {
                 winePrefix = $"{winePrefix}{Path.DirectorySeparatorChar}";
             }
             
             _process.StartInfo.EnvironmentVariables.Add("WINEPREFIX", winePrefix);
-            _process.StartInfo.EnvironmentVariables.Add("WINEESYNC", config.IsEsyncEnabled ? "1" : "0");
-            _process.StartInfo.EnvironmentVariables.Add("WINEFSYNC", config.IsFsyncEnabled ? "1" : "0");
-            _process.StartInfo.EnvironmentVariables.Add("WINE_FULLSCREEN_FSR", config.IsWineFsrEnabled ? "1" : "0");
+            _process.StartInfo.EnvironmentVariables.Add("WINEESYNC", linuxConfig.IsEsyncEnabled ? "1" : "0");
+            _process.StartInfo.EnvironmentVariables.Add("WINEFSYNC", linuxConfig.IsFsyncEnabled ? "1" : "0");
+            _process.StartInfo.EnvironmentVariables.Add("WINE_FULLSCREEN_FSR", linuxConfig.IsWineFsrEnabled ? "1" : "0");
             _process.StartInfo.EnvironmentVariables.Add("DXVK_NVAPIHACK", "0");
-            _process.StartInfo.EnvironmentVariables.Add("DXVK_ENABLE_NVAPI", config.IsDXVK_NVAPIEnabled ? "1" : "0");
+            _process.StartInfo.EnvironmentVariables.Add("DXVK_ENABLE_NVAPI", linuxConfig.IsDXVK_NVAPIEnabled ? "1" : "0");
             _process.StartInfo.EnvironmentVariables.Add("WINEARCH", "win64");
-            _process.StartInfo.EnvironmentVariables.Add("MANGOHUD", config.IsMangoHudEnabled ? "1" : "0");
-            _process.StartInfo.EnvironmentVariables.Add("MANGOHUD_DLSYM", config.IsMangoHudEnabled ? "1" : "0");
+            _process.StartInfo.EnvironmentVariables.Add("MANGOHUD", linuxConfig.IsMangoHudEnabled ? "1" : "0");
+            _process.StartInfo.EnvironmentVariables.Add("MANGOHUD_DLSYM", linuxConfig.IsMangoHudEnabled ? "1" : "0");
             _process.StartInfo.EnvironmentVariables.Add("__GL_SHADER_DISK_CACHE", "1");
             _process.StartInfo.EnvironmentVariables.Add("__GL_SHADER_DISK_CACHE_PATH", winePrefix);
             _process.StartInfo.EnvironmentVariables.Add("DXVK_STATE_CACHE_PATH", winePrefix);
             // TODO: add the ability to add custom DLL overrides.
-            string str = DllManager.GetDllOverride(config);
+            string str = DllManager.GetDllOverride(linuxConfig);
             _process.StartInfo.EnvironmentVariables.Add("WINEDLLOVERRIDES", str);
         }
         else

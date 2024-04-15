@@ -5,7 +5,7 @@ using System.IO;
 
 namespace SIT.Manager.Models;
 
-public partial class LinuxConfig : ManagerConfig
+public partial class LinuxConfig : ObservableObject
 {
     public static readonly string BaseDir = AppContext.BaseDirectory;
     public static readonly string RuntimeDir = Path.Combine(BaseDir, "runtime");
@@ -32,10 +32,6 @@ public partial class LinuxConfig : ManagerConfig
     public bool _isFsyncEnabled = false;
     [ObservableProperty]
     public bool _isWineFsrEnabled = false;
-    [ObservableProperty]
-    public List<string> _dxvkVersions = [];
-    [ObservableProperty]
-    public int _selectedDxvkVersionIndex = 0;
     [ObservableProperty]
     public bool _isMangoHudEnabled = false;
     [ObservableProperty]
