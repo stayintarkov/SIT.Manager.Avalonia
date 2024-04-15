@@ -65,7 +65,7 @@ public partial class PlayPageViewModel : ObservableObject
         ILocalizationService localizationService,
         ILogger<PlayPageViewModel> logger,
         IServiceProvider serviceProvider,
-        CachingService cachingService)
+        ICachingService cachingService)
     {
         _configService = configService;
         _managerConfig = _configService.Config;
@@ -91,11 +91,13 @@ public partial class PlayPageViewModel : ObservableObject
         ConnectToServerCommand = new AsyncRelayCommand(async () => await ConnectToServer());
         QuickPlayCommand = new AsyncRelayCommand(async () => await ConnectToServer(true));
 
-        for(int i = 0; i < 10; i++)
+        cachingService.InMemory.Add("testing", "uwu", TimeSpan.FromSeconds(4));
+        for (int i = 0; i < 3; i++)
         {
-            Debug.WriteLine($"interation {i}");
-            Debug.WriteLine(cachingService.GetOrComputeMemoryItem("test key", (pk) => { return $" was cached on iteration {i}"; }, TimeSpan.FromSeconds(1)));
-            Thread.Sleep((i % 2 == 0) ? 1500 : 500);
+            Thread.Sleep(1750);
+            Debug.WriteLine($"Interation {i}");
+            Debug.WriteLine(cachingService.InMemory.Get<string>("testing"));
+            Debug.WriteLine("");
         }
     }
 
