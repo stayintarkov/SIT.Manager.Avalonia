@@ -100,29 +100,34 @@ public partial class InstallPageViewModel : ObservableRecipient,
     {
         // Cache the current install steps just in case we update the steps we want to go back to what we displayed before
         int currentInstallStep = CurrentInstallStep;
-        if (_installProcessState.RequestedInstallOperation == RequestedInstallOperation.InstallEft)
+        switch (_installProcessState.RequestedInstallOperation)
         {
-            if (!_usingSitInstallSteps)
-            {
-                InstallationSteps = _linuxSitInstallSteps.AsReadOnly();
-                _usingSitInstallSteps = true;
-            }
-        }
-        else if (_installProcessState.RequestedInstallOperation == RequestedInstallOperation.InstallSit || _installProcessState.RequestedInstallOperation == RequestedInstallOperation.UpdateSit)
-        {
-            if (!_usingSitInstallSteps)
-            {
-                InstallationSteps = _sitInstallSteps.AsReadOnly();
-                _usingSitInstallSteps = true;
-            }
-        }
-        else if (_installProcessState.RequestedInstallOperation == RequestedInstallOperation.InstallServer || _installProcessState.RequestedInstallOperation == RequestedInstallOperation.UpdateServer)
-        {
-            if (_usingSitInstallSteps)
-            {
-                InstallationSteps = _serverInstallSteps.AsReadOnly();
-                _usingSitInstallSteps = false;
-            }
+            case RequestedInstallOperation.InstallSit:
+            case RequestedInstallOperation.UpdateSit:
+                {
+                    if (!_usingSitInstallSteps)
+                    {
+                        InstallationSteps = _sitInstallSteps.AsReadOnly();
+                        _usingSitInstallSteps = true;
+                    }
+
+                    break;
+                }
+            case RequestedInstallOperation.InstallServer:
+            case RequestedInstallOperation.UpdateServer:
+                {
+                    if (_usingSitInstallSteps)
+                    {
+                        InstallationSteps = _serverInstallSteps.AsReadOnly();
+                        _usingSitInstallSteps = false;
+                    }
+
+                    break;
+                }
+            case RequestedInstallOperation.None:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
 
         if (CurrentInstallStep < 0)
