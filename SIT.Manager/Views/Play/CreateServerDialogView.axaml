@@ -12,14 +12,9 @@
 				  CloseButtonText="Close"
 				  PrimaryButtonText="Create"
 				  IsPrimaryButtonEnabled="{Binding CanCreateServer}"
-				  PrimaryButtonCommand="{Binding CreateServerDataCommand}"
 				  x:Class="SIT.Manager.Views.Play.CreateServerDialogView"
 				  x:DataType="vm:CreateServerDialogViewModel">
 	<StackPanel>
-		<!--Server Name box-->
-		<Label Content="Server Name" Margin="10 10 10 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
-		<TextBox Text="{Binding ServerName, Mode=TwoWay}" MinWidth="150" Margin="10 5 10 10" HorizontalAlignment="Left" Watermark="Name for server"/>
-
 		<!--Server address box-->
 		<Label Content="Address" Margin="10 10 10 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
 		<TextBox Text="{Binding ServerAddress, Mode=TwoWay}" 

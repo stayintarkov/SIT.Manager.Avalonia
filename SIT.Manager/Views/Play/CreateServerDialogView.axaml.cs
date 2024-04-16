@@ -1,5 +1,4 @@
 using FluentAvalonia.UI.Controls;
-using SIT.Manager.Models.Aki;
 using SIT.Manager.ViewModels.Play;
 using System;
 using System.Threading.Tasks;
@@ -19,8 +18,8 @@ public partial class CreateServerDialogView : ContentDialog
         InitializeComponent();
     }
 
-    public new Task<AkiServer?> ShowAsync()
+    public new Task<string> ShowAsync()
     {
-        return this.ShowAsync(null).ContinueWith(t => dc.ServerData);
+        return this.ShowAsync(null).ContinueWith(t => dc.ServerAddress);
     }
 }

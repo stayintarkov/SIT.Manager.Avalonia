@@ -123,7 +123,8 @@ public sealed partial class App : Application
                 .AddTransient<SelectViewModel>();
 
             // Play View Models
-            services.AddTransient<DirectConnectViewModel>();
+            services.AddTransient<DirectConnectViewModel>()
+                .AddTransient<ServerSummaryViewModel>();
 
             #endregion ViewModels
 

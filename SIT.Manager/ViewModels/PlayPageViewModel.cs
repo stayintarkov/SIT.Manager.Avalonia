@@ -20,7 +20,7 @@ public partial class PlayPageViewModel : ObservableObject
 {
     private readonly IAkiServerRequestingService _serverService;
 
-    public ObservableCollection<AkiServer> ServerList { get; } = [];
+    public ObservableCollection<string> ServerUriList { get; } = [];
 
     public IAsyncRelayCommand CreateServerCommand { get; }
 
@@ -89,10 +89,10 @@ public partial class PlayPageViewModel : ObservableObject
     private async Task CreateServer()
     {
         CreateServerDialogView dialog = new();
-        AkiServer? result = await dialog.ShowAsync();
-        if (result != null)
+        string serverUriString = await dialog.ShowAsync();
+        if (!string.IsNullOrEmpty(serverUriString))
         {
-            ServerList.Add(result);
+            ServerUriList.Add(serverUriString);
         }
     }
 }
