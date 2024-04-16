@@ -37,7 +37,7 @@ public sealed partial class App : Application
     /// <summary>
     /// Configures the services for the application.
     /// </summary>
-    private static IServiceProvider ConfigureServices()
+    private static ServiceProvider ConfigureServices()
     {
         var services = new ServiceCollection();
 

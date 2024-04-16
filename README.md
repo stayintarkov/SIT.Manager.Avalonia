@@ -103,7 +103,7 @@ This installation guide is the recommended way of structuring your SIT install
 <!-- USAGE -->
 ## Usage
 
-You can find all the information you need on how to setup and run SIT in the [docs]( https://docs.stayintarkov.com/en/index.html)
+You can find all the information you need on how to setup and run SIT in the [docs](https://docs.stayintarkov.com)
 
 _For questions about usage and support please refer to the [SIT Discord](https://discord.gg/f4CN4n3nP2) for now_
 
