@@ -338,7 +338,7 @@ public partial class PlayPageViewModel : ObservableObject
             return;
 
         Version SITVersion;
-        if (_configService.Config.SitVersion == null)
+        if (string.IsNullOrWhiteSpace(_configService.Config.SitVersion))
             SITVersion = new();
         else
             SITVersion = new(_configService.Config.SitVersion);
