@@ -100,7 +100,7 @@ public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterServi
         Version currentVersion = Assembly.GetEntryAssembly()?.GetName().Version ?? new Version("0");
         Version latestVersion = new();
 
-        if (_managerConfigService.Config.LookForUpdates && DateTime.Now.AddHours(-1) < _managerConfigService.Config.LastManagerUpdateCheckTime)
+        if (_managerConfigService.Config.LookForUpdates && DateTime.Now.AddHours(1) < _managerConfigService.Config.LastManagerUpdateCheckTime)
         {
             try
             {

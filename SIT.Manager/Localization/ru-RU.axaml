@@ -39,7 +39,7 @@
 	<system:String x:Key="PlayPageViewModelWaitingForServerTitle">Ожидание сервера</system:String>
 	<system:String x:Key="PlayPageViewModelServerErrorTitle">Ошибка сервера</system:String>
 	<system:String x:Key="PlayPageViewModelServerErrorDescription">Сервер не запустился. Пожалуйста, проверьте журналы для получения дополнительной информации.</system:String>
-	<system:String x:Key="PlayPageViewModelLoginIncorrectPassword">Incorrect password</system:String>
+	<system:String x:Key="PlayPageViewModelLoginIncorrectPassword">Неверный пароль</system:String>
 
 	<!-- Pane View (Menu on the left also tooltip about update on top) -->
 	<system:String x:Key="UpdateNotification">Доступно обновление менеджера SIT. Нажмите здесь, чтобы обновить:</system:String>
@@ -114,7 +114,7 @@
 	<system:String x:Key="ServerEditServerConfigButtonToolTip">Редактировать сервер</system:String>
 	<system:String x:Key="ServerClearServerOutputText">Очистить вывод сервера</system:String>
 	<system:String x:Key="ServerClearServerOutputTooltip">Очищает весь вывод консоли.</system:String>
-	
+
 	<!-- Settings Page -->
 	<system:String x:Key="SettingsLauncherSettingsTitle">Настройки Лаунчера</system:String>
 	<system:String x:Key="SettingsCloseLauncherAfterGameLaunchTitle">Закрыть лаунчер после запуска игры</system:String>
@@ -123,8 +123,8 @@
 	<system:String x:Key="SettingsLookForUpdatesTitleToolTip">Автоматически проверяет обновления при открытии лаунчера.</system:String>
 	<system:String x:Key="SettingsHideIpAddressTitle">Скрыть IP-адрес</system:String>
 	<system:String x:Key="SettingsHideIpAddressToolTip">Скрывает IP-адрес звездочками в поле IP-адреcа.</system:String>
-	<system:String x:Key="SettingsEnableDeveloperMode">Enable Developer Mode</system:String>
-	<system:String x:Key="SettingsEnableDeveloperModeToolTip">Enables developer/test releases of SIT and SIT server for testing purposes</system:String>
+	<system:String x:Key="SettingsEnableDeveloperMode">Включить режим разработчика</system:String>
+	<system:String x:Key="SettingsEnableDeveloperModeToolTip">Позволяет разработчикам/тестерам выпускать SIT и SIT-сервер для целей тестирования</system:String>
 	<system:String x:Key="SettingsLanguageTitle">Язык:</system:String>
 	<system:String x:Key="SettingsLanguageTitleToolTip">Переводит весь лаунчер на ваш язык, выберите свой язык!</system:String>
 	<system:String x:Key="SettingsAccentColorTitle">Цвет акцента:</system:String>
@@ -247,9 +247,9 @@
 	<system:String x:Key="SettingsPageViewModelConfigInformationEFTDescription">Путь установки EFT установлен на '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">Путь установки SPT-AKI установлен на '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigErrorSPTAKI">Выбранная папка недействительна. Убедитесь, что это правильная папка сервера SPT-AKI.</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">Enable Developer Mod Failure</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">Can't enable developer mode as you have %1 incompatible mods still enabled</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorButtonOk">Ok</system:String>
+	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">Ошибка включения режима разработчика</system:String>
+	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">Невозможно включить режим разработчика, так-как у вас %1 несовместимые моды все еще включены</system:String>
+	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorButtonOk">Ок</system:String>
 
 	<!-- Server Page ViewModel -->
 	<system:String x:Key="ServerPageViewModelStartingServer">Запуск сервера!</system:String>
@@ -305,8 +305,8 @@
 	<system:String x:Key="InstallServiceInstallSuccessfulTitle">Установка</system:String>
 	<system:String x:Key="InstallServiceInstallSuccessfulDescription">Установка сервера прошла успешно.</system:String>
 	<system:String x:Key="InstallServiceInstallSITSuccessfulDescription">Установка SIT прошла успешно.</system:String>
-	<system:String x:Key="InstallerServiceNoDowngradePatcher">Для этой версии Таркова нет доступных программ для отката.</system:String>
-	<system:String x:Key="InstallServiceSSLError">Your ISP is likely blocking our connection. Please use a VPN and try again.</system:String>
+	<system:String x:Key="InstallerServiceNoDowngradePatcher">Для этой версии EFT нет доступных программ для отката.</system:String>
+	<system:String x:Key="InstallServiceSSLError">Вероятно, ваш интернет-провайдер блокирует наше соединение. Пожалуйста, воспользуйтесь VPN и попробуйте снова.</system:String>
 
 	<!-- File Service -->
 	<system:String x:Key="FileServiceProgressDownloading">Загрузка файла '%1'</system:String>
@@ -333,7 +333,7 @@
 	<system:String x:Key="ConfigureViewStartInstallButtonTitle">Начать установку</system:String>
 	<system:String x:Key="ConfigureViewBackButtonTitle">Назад</system:String>
 	<system:String x:Key="ConfigureViewVersionSelectionGroupTitle">Выбор версии</system:String>
-	<system:String x:Key="ConfigureViewPersonalizationOptions">Personalization and Import Options</system:String>
+	<system:String x:Key="ConfigureViewPersonalizationOptions">Персонализация и варианты импорта</system:String>
 
 	<!-- Install - Configure Server View -->
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathToolTip">Изменить путь установки SPT-AKI.</system:String>
@@ -352,10 +352,10 @@
 	<system:String x:Key="ConfigureSitViewEFTPathWarningNoPath">В настоящее время используется местоположение установки BSG EFT. Пожалуйста, установите EFT в другое место, чтобы избежать возможных проблем с SIT</system:String>
 	<system:String x:Key="ConfigureSitViewMirrorSelectionTitle">Выберите зеркало для использования:</system:String>
 	<system:String x:Key="ConfigureSitViewVersionSelectionTitle">Версия для установки:</system:String>
-	<system:String x:Key="ConfigureSitViewRecommendedModsTitle">Recommended Mods</system:String>
-	<system:String x:Key="ConfigureSitViewRecommendedModsDescription">Choose from the available mods which we recommend you install alongside SIT</system:String>
-	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTip">Import Live Game Graphic, Audio, and Control settings to SIT</system:String>
-	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTitle">Import EFT Settings to SIT</system:String>
+	<system:String x:Key="ConfigureSitViewRecommendedModsTitle">Рекомендуемые моды</system:String>
+	<system:String x:Key="ConfigureSitViewRecommendedModsDescription">Выберите из доступных модов, которые мы рекомендуем вам установить вместе с SIT</system:String>
+	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTip">Импортировать в SIT настройки из EFT</system:String>
+	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTitle">Импортировать настройки EFT в SIT</system:String>
 
 	<!-- Install - Configure Sit View Model -->
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorTitle">Ошибка выбора местоположения</system:String>
@@ -373,7 +373,7 @@
 	<system:String x:Key="PatchViewDownloadingTitle">Загрузка патчера</system:String>
 	<system:String x:Key="PatchViewExtractingTitle">Распаковка патчера</system:String>
 	<system:String x:Key="PatchViewPatchingErrorMessage">Ошибка при попытке патча EFT. Подробности смотрите в журналах</system:String>
-	<system:String x:Key="PatchViewAquirePatcherErrorMessage">Error trying to aquire the patcher for EFT, please consult the logs for more details</system:String>
+	<system:String x:Key="PatchViewAquirePatcherErrorMessage">Ошибка при попытке получить патчер для EFT, обратитесь к логам/журналам для получения дополнительной информации</system:String>
 	<system:String x:Key="PatchViewPatchingEndInstallButtonTitle">Завершить установку</system:String>
 
 	<!-- Install - Select View -->
@@ -387,8 +387,8 @@
 
 	<system:String x:Key="SelectViewInstallSITButtonTitle">Установить SIT</system:String>
 	<system:String x:Key="SelectViewInstallSITButtonToolTip">Понизить версию EFT при необходимости, установить SIT и поддержку модов.</system:String>
-	<system:String x:Key="SelectViewUpdateSITButtonTitle">Update SIT</system:String>
-	<system:String x:Key="SelectViewUpdateSITButtonToolTip">Update SIT to the latest version available for your current EFT version</system:String>
+	<system:String x:Key="SelectViewUpdateSITButtonTitle">Обновить SIT</system:String>
+	<system:String x:Key="SelectViewUpdateSITButtonToolTip">Обновить SIT до последней версии, доступной для вашей текущей версии EFT</system:String>
 	<system:String x:Key="SelectViewSITVersionTitle">Версия SIT:</system:String>
 	<system:String x:Key="SelectViewEFTVersionTitle">Версия EFT:</system:String>
 	<system:String x:Key="SelectViewEFTPathTitle">Путь EFT:</system:String>
@@ -402,5 +402,5 @@
 	<system:String x:Key="InstallPageViewModelPatchText">Патч</system:String>
 	<system:String x:Key="InstallPageViewModelInstallText">Установка</system:String>
 	<system:String x:Key="InstallPageViewModelCompleteText">Завершение</system:String>
-	
+
 </ResourceDictionary>
