@@ -6,11 +6,10 @@ using System.Threading;
 
 namespace SIT.Manager.Services.Caching;
 
-public class InMemoryCachingService(InMemoryCachingOptions? cachingOptions = null) : ICachingProvider
+public class InMemoryCachingService() : ICachingProvider
 {
     private readonly ConcurrentDictionary<string, CacheEntry> _memoryCache = new();
     //TODO Implement this properly
-    private readonly InMemoryCachingOptions _options = cachingOptions ?? new();
     public event EventHandler<EvictedEventArgs>? Evicted;
 
     public void Clear(string prefix = "")
