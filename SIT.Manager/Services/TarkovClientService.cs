@@ -6,6 +6,7 @@ using SIT.Manager.Models;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 
 namespace SIT.Manager.Services;
 
@@ -70,7 +71,7 @@ public class TarkovClientService(IBarNotificationService barNotificationService,
     {
         _process = new Process()
         {
-            StartInfo = new(ExecutableFilePath)
+            StartInfo = new ProcessStartInfo(ExecutableFilePath)
             {
                 UseShellExecute = true,
                 Arguments = arguments
@@ -85,27 +86,31 @@ public class TarkovClientService(IBarNotificationService barNotificationService,
             if (linuxConfig.IsGameModeEnabled)
             {
                 _process.StartInfo.FileName = "gamemoderun";
-                _process.StartInfo.Arguments = string.Empty;
                 if (linuxConfig.IsMangoHudEnabled)
                 {
-                    _process.StartInfo.Arguments += "\"mangohud\"";
+                    _process.StartInfo.ArgumentList.Add("\"mangohud\"");
                 }
-                _process.StartInfo.Arguments += $" \"{linuxConfig.WineRunner}\"";
+                _process.StartInfo.ArgumentList.Add($"\"{linuxConfig.WineRunner}\"");
             }
             else if (linuxConfig.IsMangoHudEnabled) // only mangohud is enabled
             {
                 _process.StartInfo.FileName = "mangohud";
-                _process.StartInfo.Arguments = $"\"{linuxConfig.WineRunner}\"";
+                _process.StartInfo.ArgumentList.Add($"\"{linuxConfig.WineRunner}\"");
             }
             else
             {
                 _process.StartInfo.FileName = linuxConfig.WineRunner;
-                _process.StartInfo.Arguments = string.Empty;
             }
             
             // force-gfx-jobs native is a workaround for the Unity bug that causes the game to crash on startup.
             // Taken from SPT Aki.Launcher.Base/Controllers/GameStarter.cs
-            _process.StartInfo.Arguments += $" \"{ExecutableFilePath}\" -force-gfx-jobs native {arguments}"; 
+            _process.StartInfo.ArgumentList.Add($"\"{ExecutableFilePath}\"");
+            _process.StartInfo.ArgumentList.Add("-force-gfx-jobs");
+            _process.StartInfo.ArgumentList.Add("native");
+            if (!string.IsNullOrEmpty(arguments))
+            {
+                _process.StartInfo.ArgumentList.Add(arguments);
+            }
             _process.StartInfo.UseShellExecute = false;
 
             string winePrefix = Path.GetFullPath(linuxConfig.WinePrefix);
