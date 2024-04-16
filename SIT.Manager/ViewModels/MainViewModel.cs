@@ -80,17 +80,9 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
         _managerConfigService.ConfigChanged += ManagerConfigService_ConfigChanged;
     }
 
-    private async void ManagerConfigService_ConfigChanged(object? sender, ManagerConfig e)
+    private void ManagerConfigService_ConfigChanged(object? sender, ManagerConfig e)
     {
         IsDevloperModeEnabled = e.EnableDeveloperMode;
-        try
-        {
-            await CheckForUpdate();
-        }
-        catch(Exception ex)
-        {
-            _logger.LogError(ex, "An error occured while trying to check for updates");
-        }
     }
 
     private async Task CheckForUpdate()
