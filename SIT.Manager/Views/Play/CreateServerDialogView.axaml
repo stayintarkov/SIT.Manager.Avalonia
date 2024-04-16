@@ -11,11 +11,21 @@
 				  FullSizeDesired="False"
 				  CloseButtonText="Close"
 				  PrimaryButtonText="Create"
-				  Height="225"
-				  Width="300"
+				  IsPrimaryButtonEnabled="{Binding CanCreateServer}"
+				  PrimaryButtonCommand="{Binding CreateServerDataCommand}"
 				  x:Class="SIT.Manager.Views.Play.CreateServerDialogView"
 				  x:DataType="vm:CreateServerDialogViewModel">
 	<StackPanel>
-		<TextBlock Text="{DynamicResource SelectEditionDialogTextBlockTitle}" Margin="5"/>		
+		<!--Server Name box-->
+		<Label Content="Server Name" Margin="10 10 10 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
+		<TextBox Text="{Binding ServerName, Mode=TwoWay}" MinWidth="150" Margin="10 5 10 10" HorizontalAlignment="Left" Watermark="Name for server"/>
+
+		<!--Server address box-->
+		<Label Content="Address" Margin="10 10 10 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
+		<TextBox Text="{Binding ServerAddress, Mode=TwoWay}" 
+				 MinWidth="300" 
+				 Margin="10 5 10 10" 
+				 HorizontalAlignment="Left" 
+				 Watermark="Enter Server Address..."/>
 	</StackPanel>
 </ui:ContentDialog>
