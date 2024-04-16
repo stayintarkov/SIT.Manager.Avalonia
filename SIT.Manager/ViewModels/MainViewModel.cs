@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using FluentAvalonia.Styling;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Media.Animation;
+using Microsoft.Extensions.Logging;
 using SIT.Manager.Interfaces;
 using SIT.Manager.ManagedProcess;
 using SIT.Manager.Models;
@@ -27,6 +28,7 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
     private readonly IInstallerService _installerService;
     private readonly IManagerConfigService _managerConfigService;
     private readonly ILocalizationService _localizationService;
+    private readonly ILogger<MainViewModel> _logger;
 
     private Frame? contentFrame;
 
@@ -54,7 +56,8 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
         IBarNotificationService barNotificationService,
         IInstallerService installerService,
         IManagerConfigService managerConfigService,
-        ILocalizationService localizationService)
+        ILocalizationService localizationService,
+        ILogger<MainViewModel> logger)
     {
         _actionNotificationService = actionNotificationService;
         _appUpdaterService = appUpdaterService;
@@ -62,6 +65,7 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
         _installerService = installerService;
         _managerConfigService = managerConfigService;
         _localizationService = localizationService;
+        _logger = logger;
 
         _localizationService.Translate(new CultureInfo(_managerConfigService.Config.CurrentLanguageSelected));
 
@@ -79,8 +83,14 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
     private async void ManagerConfigService_ConfigChanged(object? sender, ManagerConfig e)
     {
         IsDevloperModeEnabled = e.EnableDeveloperMode;
-
-        await CheckForUpdate();
+        try
+        {
+            await CheckForUpdate();
+        }
+        catch(Exception ex)
+        {
+            _logger.LogError(ex, "An error occured while trying to check for updates");
+        }
     }
 
     private async Task CheckForUpdate()
