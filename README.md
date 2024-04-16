@@ -100,14 +100,12 @@ This installation guide is the recommended way of structuring your SIT install
 5. <b>(OPTIONAL)</b> Find the file called `SIT.Manager.Avalonia.Desktop.exe` and create a shortcut
 
 
-<!-- USAGE EXAMPLES -->
+<!-- USAGE -->
 ## Usage
 
-### Under construction
+You can find all the information you need on how to setup and run SIT in the [docs](https://docs.stayintarkov.com)
 
-
-_For questions about usage please refer to the [SIT Discord](https://discord.gg/f4CN4n3nP2) for now_
-
+_For questions about usage and support please refer to the [SIT Discord](https://discord.gg/f4CN4n3nP2) for now_
 
 
 <!-- ROADMAP -->

@@ -46,14 +46,14 @@ public class DiagnosticService : IDiagnosticService
                 string fileData;
                 using (FileStream fs = File.Open(logFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
-                    using(StreamReader  sr = new(fs))
+                    using (StreamReader sr = new(fs))
                     {
                         fileData = await CleanseLogFile(await sr.ReadToEndAsync());
                     }
                 }
                 return fileData;
             }
-            catch(IOException ex)
+            catch (IOException ex)
             {
                 return $"Problem reading {logFileName}\n{ex}";
             }
@@ -64,7 +64,7 @@ public class DiagnosticService : IDiagnosticService
         }
     }
 
-    //TODO: Clean this up a little. It has a bunch of duplication
+    // TODO: Clean this up a little. It has a bunch of duplication
     public async Task<Stream> GenerateDiagnosticReport(DiagnosticsOptions options)
     {
         List<Tuple<string, string>> diagnosticLogs = new(4);

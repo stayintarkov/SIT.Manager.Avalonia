@@ -1,16 +1,18 @@
-using Avalonia.Controls;
-using Avalonia.Labs.Controls;
+using FluentAvalonia.UI.Controls;
 using SIT.Manager.Models;
 using SIT.Manager.ViewModels.Dialogs;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Views.Dialogs;
+
 public partial class SelectLogsDialog : ContentDialog
 {
+
     readonly SelectLogsDialogViewModel dc;
+
     protected override Type StyleKeyOverride => typeof(ContentDialog);
+
     public SelectLogsDialog()
     {
         dc = new SelectLogsDialogViewModel();
@@ -18,8 +20,8 @@ public partial class SelectLogsDialog : ContentDialog
         InitializeComponent();
     }
 
-    public new Task<DiagnosticsOptions> ShowAsync()
+    public new Task<(ContentDialogResult, DiagnosticsOptions)> ShowAsync()
     {
-        return this.ShowAsync(null).ContinueWith(t => dc.SelectedOptions);
+        return this.ShowAsync(null).ContinueWith(t => (t.Result, dc.SelectedOptions));
     }
 }

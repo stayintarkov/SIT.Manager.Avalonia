@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
+using Microsoft.Extensions.Logging;
 using SIT.Manager.Extentions;
 using SIT.Manager.Interfaces;
 using SIT.Manager.ManagedProcess;
@@ -20,6 +21,7 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
     private readonly IManagerConfigService _configService;
     private readonly IInstallerService _installerService;
     private readonly ILocalizationService _localizationService;
+    private readonly ILogger<ConfigureSitViewModel> _logger;
     private readonly IModService _modService;
     private readonly IPickerDialogService _pickerDialogService;
 
@@ -57,12 +59,14 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
         IManagerConfigService configService,
         IInstallerService installerService,
         ILocalizationService localizationService,
+        ILogger<ConfigureSitViewModel> logger,
         IModService modService,
         IPickerDialogService pickerDialogService) : base()
     {
         _configService = configService;
         _installerService = installerService;
         _localizationService = localizationService;
+        _logger = logger;
         _modService = modService;
         _pickerDialogService = pickerDialogService;
 
@@ -109,36 +113,49 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
         AvailableVersions.Clear();
         AvailableMirrors.Clear();
 
-        List<SitInstallVersion> availableVersions = await _installerService.GetAvailableSitReleases(CurrentInstallProcessState.EftVersion);
-        if (!string.IsNullOrEmpty(_configService.Config.SitVersion))
+        try
         {
-            availableVersions = availableVersions.Where(x =>
+            List<SitInstallVersion> availableVersions = await _installerService.GetAvailableSitReleases(CurrentInstallProcessState.EftVersion);
+            if (!string.IsNullOrEmpty(_configService.Config.SitVersion))
             {
-                bool parsedSitVersion = Version.TryParse(x.SitVersion.Replace("StayInTarkov.Client-", ""), out Version? sitVersion);
-                if (parsedSitVersion)
+                // Don't filter down the available versions if user has enabled developer mode.
+                if (!_configService.Config.EnableDeveloperMode)
                 {
-                    Version installedSit = Version.Parse(_configService.Config.SitVersion);
-                    if (sitVersion >= installedSit)
+                    availableVersions = availableVersions.Where(x =>
                     {
-                        return true;
-                    }
+                        bool parsedSitVersion = Version.TryParse(x.SitVersion.Replace("StayInTarkov.Client-", ""), out Version? sitVersion);
+                        if (parsedSitVersion)
+                        {
+                            Version installedSit = Version.Parse(_configService.Config.SitVersion);
+                            if (sitVersion >= installedSit)
+                            {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }).ToList();
                 }
-                return false;
-            }).ToList();
-        }
+            }
 
-        // Make sure we only offer versions which are actually available to use to maximize the chances the install will work
-        AvailableVersions.AddRange(availableVersions.Where(x => x.IsAvailable));
-        if (AvailableVersions.Count > 0)
+            // Make sure we only offer versions which are actually available to use to maximize the chances the install will work
+            AvailableVersions.AddRange(availableVersions.Where(x => x.IsAvailable));
+            if (AvailableVersions.Count > 0)
+            {
+                SelectedVersion = AvailableVersions[0];
+                HasVersionsAvailable = true;
+            }
+            else
+            {
+                _logger.LogWarning("Available SIT version count {availableVersions} and 0 marked as available to use so will display error message", availableVersions.Count);
+            }
+        }
+        catch (Exception ex)
         {
-            SelectedVersion = AvailableVersions[0];
-            HasVersionsAvailable = true;
+            _logger.LogError(ex, "Issue trying to determine versions available to install for SIT");
         }
-
-        // TODO add some logging here and an alert somehow in case it fails to load any versions or something
 
         IsVersionSelectionLoading = false;
-        
+
         // Validate the configuration to allow the user to start the installation without having to change the mirror
         // This way the user is able to use the first available mirror without having to change it
         ValidateConfiguration();

@@ -13,6 +13,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Security.Authentication;
+using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -27,6 +28,9 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                                       ILogger<InstallerService> logger,
                                       IVersionService versionService) : IInstallerService
 {
+    // Base 64 encoded url :)
+    private const string PATCHER_URL = "aHR0cHM6Ly9wYXRjaGVyLnN0YXlpbnRhcmtvdi5jb20vYXBpL3YxL3JlcG9zL1NJVC9Eb3duZ3JhZGUtUGF0Y2hlcy9yZWxlYXNlcw==";
+
     private readonly IBarNotificationService _barNotificationService = barNotificationService;
     private readonly IManagerConfigService _configService = configService;
     private readonly IFileService _fileService = fileService;
@@ -124,7 +128,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         string releasesJsonString;
         try
         {
-            releasesJsonString = await GetHttpStringWithRetryAsync(() => _httpClient.GetStringAsync(@"https://patcher.stayintarkov.com/api/v1/repos/SIT/Downgrade-Patches/releases"), TimeSpan.FromSeconds(1), 3);
+            releasesJsonString = await GetHttpStringWithRetryAsync(() => _httpClient.GetStringAsync(Encoding.UTF8.GetString(Convert.FromBase64String(PATCHER_URL))), TimeSpan.FromSeconds(3), 3);
         }
         catch (AuthenticationException)
         {
@@ -183,7 +187,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             if (compatibleDowngradePatcher != null)
             {
                 string mirrorsUrl = compatibleDowngradePatcher.assets.Find(q => q.name == "mirrors.json")?.browser_download_url ?? string.Empty;
-                string mirrorsJsonString = await GetHttpStringWithRetryAsync(() => _httpClient.GetStringAsync(mirrorsUrl), TimeSpan.FromSeconds(1), 3);
+                string mirrorsJsonString = await GetHttpStringWithRetryAsync(() => _httpClient.GetStringAsync(mirrorsUrl), TimeSpan.FromSeconds(3), 3);
                 List<Mirrors> mirrors = JsonSerializer.Deserialize<List<Mirrors>>(mirrorsJsonString) ?? [];
                 if (mirrors.Count == 0)
                 {
@@ -476,6 +480,12 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                 availableVersions[i].DowngradeRequired = true;
                 availableVersions[i].IsAvailable = true;
             }
+
+            // If user is a developer just enable the version anyway
+            if (_configService.Config.EnableDeveloperMode)
+            {
+                availableVersions[i].IsAvailable = true;
+            }
         }
         return availableVersions;
     }
@@ -499,7 +509,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         if (string.IsNullOrEmpty(_configService.Config.TarkovVersion) || string.IsNullOrEmpty(_configService.Config.SitVersion)) return false;
 
         TimeSpan timeSinceLastCheck = DateTime.Now - _configService.Config.LastSitUpdateCheckTime;
-        
+
         if (timeSinceLastCheck.TotalHours >= 1)
         {
             _availableSitUpdateVersions = await GetAvailableSitReleases(_configService.Config.TarkovVersion);

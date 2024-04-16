@@ -90,6 +90,7 @@
 			</ui:NavigationView.MenuItems>
 
 			<ui:NavigationView.FooterMenuItems>
+				<ui:NavigationViewItem IconSource="Help" Content="Help" Tag="Help"/>
 				<ui:NavigationViewItem IconSource="Settings" Content="{DynamicResource SettingsTitle}" Tag="SIT.Manager.Views.SettingsPage"/>
 			</ui:NavigationView.FooterMenuItems>		
 
