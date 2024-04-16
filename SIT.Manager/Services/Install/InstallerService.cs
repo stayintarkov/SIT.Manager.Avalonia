@@ -13,6 +13,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Security.Authentication;
+using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -27,6 +28,9 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                                       ILogger<InstallerService> logger,
                                       IVersionService versionService) : IInstallerService
 {
+    // Base 64 encoded url :)
+    private const string PATCHER_URL = "aHR0cHM6Ly9wYXRjaGVyLnN0YXlpbnRhcmtvdi5jb20vYXBpL3YxL3JlcG9zL1NJVC9Eb3duZ3JhZGUtUGF0Y2hlcy9yZWxlYXNlcw==";
+
     private readonly IBarNotificationService _barNotificationService = barNotificationService;
     private readonly IManagerConfigService _configService = configService;
     private readonly IFileService _fileService = fileService;
@@ -124,7 +128,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         string releasesJsonString;
         try
         {
-            releasesJsonString = await GetHttpStringWithRetryAsync(() => _httpClient.GetStringAsync(@"https://patcher.stayintarkov.com/api/v1/repos/SIT/Downgrade-Patches/releases"), TimeSpan.FromSeconds(3), 3);
+            releasesJsonString = await GetHttpStringWithRetryAsync(() => _httpClient.GetStringAsync(Encoding.UTF8.GetString(Convert.FromBase64String(PATCHER_URL))), TimeSpan.FromSeconds(3), 3);
         }
         catch (AuthenticationException)
         {
