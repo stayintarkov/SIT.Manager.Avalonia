@@ -112,19 +112,23 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
         List<SitInstallVersion> availableVersions = await _installerService.GetAvailableSitReleases(CurrentInstallProcessState.EftVersion);
         if (!string.IsNullOrEmpty(_configService.Config.SitVersion))
         {
-            availableVersions = availableVersions.Where(x =>
+            // Don't filter down the available versions if user has enabled developer mode.
+            if (!_configService.Config.EnableDeveloperMode)
             {
-                bool parsedSitVersion = Version.TryParse(x.SitVersion.Replace("StayInTarkov.Client-", ""), out Version? sitVersion);
-                if (parsedSitVersion)
+                availableVersions = availableVersions.Where(x =>
                 {
-                    Version installedSit = Version.Parse(_configService.Config.SitVersion);
-                    if (sitVersion >= installedSit)
+                    bool parsedSitVersion = Version.TryParse(x.SitVersion.Replace("StayInTarkov.Client-", ""), out Version? sitVersion);
+                    if (parsedSitVersion)
                     {
-                        return true;
+                        Version installedSit = Version.Parse(_configService.Config.SitVersion);
+                        if (sitVersion >= installedSit)
+                        {
+                            return true;
+                        }
                     }
-                }
-                return false;
-            }).ToList();
+                    return false;
+                }).ToList();
+            }
         }
 
         // Make sure we only offer versions which are actually available to use to maximize the chances the install will work
@@ -138,7 +142,7 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
         // TODO add some logging here and an alert somehow in case it fails to load any versions or something
 
         IsVersionSelectionLoading = false;
-        
+
         // Validate the configuration to allow the user to start the installation without having to change the mirror
         // This way the user is able to use the first available mirror without having to change it
         ValidateConfiguration();

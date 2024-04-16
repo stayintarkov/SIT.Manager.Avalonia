@@ -480,6 +480,12 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                 availableVersions[i].DowngradeRequired = true;
                 availableVersions[i].IsAvailable = true;
             }
+
+            // If user is a developer just enable the version anyway
+            if (_configService.Config.EnableDeveloperMode)
+            {
+                availableVersions[i].IsAvailable = true;
+            }
         }
         return availableVersions;
     }
