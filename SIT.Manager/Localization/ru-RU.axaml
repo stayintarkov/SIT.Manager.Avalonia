@@ -346,6 +346,7 @@
 	<!-- Install - Configure Sit View -->
 	<system:String x:Key="ConfigureSitViewLoadingVersionSelectionText">Определение доступных версий SIT, пожалуйста, подождите...</system:String>
 	<system:String x:Key="ConfigureSitViewEFTChangeInstallPathToolTip">Изменить путь установки EFT.</system:String>
+	<system:String x:Key="ConfigureSitViewVersionSelectionErrorMessage">Unable to determine available SIT versions...</system:String>
 	<system:String x:Key="ConfigureSitViewEFTSettingsButtonChangeTitle">Изменить</system:String>
 	<system:String x:Key="ConfigureSitViewEFTInstallPathPlaceholder">Путь установки EFT...</system:String>
 	<system:String x:Key="ConfigureSitViewEFTInstallPathTitle">Путь EFT:</system:String>
