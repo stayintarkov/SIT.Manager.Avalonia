@@ -498,7 +498,9 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
     {
         if (string.IsNullOrEmpty(_configService.Config.TarkovVersion) || string.IsNullOrEmpty(_configService.Config.SitVersion)) return false;
 
-        if (DateTime.Now > _configService.Config.LastSitUpdateCheckTime.AddHours(1))
+        TimeSpan timeSinceLastCheck = DateTime.Now - _configService.Config.LastSitUpdateCheckTime;
+        
+        if (timeSinceLastCheck.TotalHours >= 1)
         {
             _availableSitUpdateVersions = await GetAvailableSitReleases(_configService.Config.TarkovVersion);
 
@@ -510,11 +512,14 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                                 _configService.Config.TarkovVersion == x.EftVersion)
                     .ToList();
             }
+
             _configService.Config.LastSitUpdateCheckTime = DateTime.Now;
             _configService.UpdateConfig(_configService.Config);
         }
+
         return _availableSitUpdateVersions != null && _availableSitUpdateVersions.Any();
     }
+
 
     public async Task InstallServer(GithubRelease selectedVersion, string targetInstallDir, IProgress<double> downloadProgress, IProgress<double> extractionProgress)
     {
