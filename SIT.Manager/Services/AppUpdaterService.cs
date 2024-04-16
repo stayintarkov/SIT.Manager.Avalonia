@@ -98,30 +98,36 @@ public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterServi
     public async Task<bool> CheckForUpdate()
     {
         Version currentVersion = Assembly.GetEntryAssembly()?.GetName().Version ?? new Version("0");
-        Version latestVersion = new();
+        Version? latestVersion = null;
 
-        if (_managerConfigService.Config.LookForUpdates && DateTime.Now.AddHours(1) < _managerConfigService.Config.LastManagerUpdateCheckTime)
+        if (_managerConfigService.Config.LookForUpdates && DateTime.Now > _managerConfigService.Config.LastManagerUpdateCheckTime.AddHours(1))
         {
             try
             {
                 string versionJsonString = await _httpClient.GetStringAsync(MANAGER_VERSION_URL);
                 GithubRelease? latestRelease = JsonSerializer.Deserialize<GithubRelease>(versionJsonString);
-                if (latestRelease != null)
+
+                if (latestRelease != null && Version.TryParse(latestRelease.Name, out latestVersion))
                 {
-                    latestVersion = new(latestRelease.Name);
+                    if (latestVersion > currentVersion)
+                    {
+                        // Update the last check time only if there's a new version available
+                        _managerConfigService.Config.LastManagerUpdateCheckTime = DateTime.Now;
+                        _managerConfigService.UpdateConfig(_managerConfigService.Config);
+                    }
+                }
+                else
+                {
+                    _logger.LogWarning("Failed to parse the latest version.");
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "CheckForUpdate");
+                _logger.LogError(ex, "Failed to check for updates.");
             }
-
-            // Update the last check time so that we don't refresh this for at least an hour
-            _managerConfigService.Config.LastManagerUpdateCheckTime = DateTime.Now;
-            _managerConfigService.UpdateConfig(_managerConfigService.Config);
         }
 
-        return latestVersion > currentVersion;
+        return latestVersion != null && latestVersion > currentVersion;
     }
 
     public async Task<bool> Update(IProgress<double> progress)

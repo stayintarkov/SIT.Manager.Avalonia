@@ -51,6 +51,8 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
 
     public IRelayCommand CloseButtonCommand { get; }
 
+    private readonly System.Timers.Timer _timerUpdateCheck = new();
+
     public MainViewModel(IActionNotificationService actionNotificationService,
         IAppUpdaterService appUpdaterService,
         IBarNotificationService barNotificationService,
@@ -66,6 +68,11 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
         _managerConfigService = managerConfigService;
         _localizationService = localizationService;
         _logger = logger;
+
+        int hour = 3600000;
+        _timerUpdateCheck.Interval = hour;
+        _timerUpdateCheck.Elapsed += async (o, e) => await CheckForUpdate();
+        _timerUpdateCheck.Start();
 
         _localizationService.Translate(new CultureInfo(_managerConfigService.Config.CurrentLanguageSelected));
 
@@ -96,7 +103,7 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
     private async Task CheckForUpdate()
     {
         UpdateAvailable = await _appUpdaterService.CheckForUpdate();
-        SitUpdateAvailable = await _installerService.IsSitUpateAvailable();
+        SitUpdateAvailable = await _installerService.IsSitUpdateAvailable();
     }
 
     [RelayCommand]

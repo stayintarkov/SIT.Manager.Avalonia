@@ -89,6 +89,6 @@ public partial class SelectViewModel : InstallationViewModelBase
         EstablishEFTInstallStatus();
         EstablishSptAkiInstallStatus();
 
-        HasSitUpdateAvailable = await _installerService.IsSitUpateAvailable();
+        HasSitUpdateAvailable = await _installerService.IsSitUpdateAvailable();
     }
 }
