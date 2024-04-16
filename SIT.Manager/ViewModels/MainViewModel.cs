@@ -96,7 +96,7 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
     private async Task CheckForUpdate()
     {
         UpdateAvailable = await _appUpdaterService.CheckForUpdate();
-        SitUpdateAvailable = await _installerService.IsSitUpateAvailable();
+        SitUpdateAvailable = await _installerService.IsSitUpdateAvailable();
     }
 
     [RelayCommand]

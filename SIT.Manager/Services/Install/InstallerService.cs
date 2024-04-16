@@ -494,39 +494,32 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         return _availableSitUpdateVersions?.MaxBy(x => x.SitVersion);
     }
 
-    public async Task<bool> IsSitUpateAvailable()
+    public async Task<bool> IsSitUpdateAvailable()
     {
-        if (string.IsNullOrEmpty(_configService.Config.TarkovVersion) && string.IsNullOrEmpty(_configService.Config.SitVersion))
-        {
-            // We need a tarkov and SIT version to be able to check for updates so return early.
-            return false;
-        }
+        if (string.IsNullOrEmpty(_configService.Config.TarkovVersion) || string.IsNullOrEmpty(_configService.Config.SitVersion)) return false;
 
-        if (DateTime.Now.AddHours(-1) < _configService.Config.LastSitUpdateCheckTime)
+        TimeSpan timeSinceLastCheck = DateTime.Now - _configService.Config.LastSitUpdateCheckTime;
+        
+        if (timeSinceLastCheck.TotalHours >= 1)
         {
-            // We haven't checked for updates in the last hour so refresh the available verisons
             _availableSitUpdateVersions = await GetAvailableSitReleases(_configService.Config.TarkovVersion);
-            _availableSitUpdateVersions = _availableSitUpdateVersions?.Where(x =>
-            {
-                bool parsedSitVersion = Version.TryParse(x.SitVersion.Replace("StayInTarkov.Client-", ""), out Version? sitVersion);
-                if (parsedSitVersion)
-                {
-                    Version installedSit = Version.Parse(_configService.Config.SitVersion);
-                    if (sitVersion > installedSit && _configService.Config.TarkovVersion == x.EftVersion)
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }).ToList();
 
-            // Update the last check time so that we don't refresh this list again for an hour
+            if (_availableSitUpdateVersions != null)
+            {
+                _availableSitUpdateVersions = _availableSitUpdateVersions
+                    .Where(x => Version.TryParse(x.SitVersion.Replace("StayInTarkov.Client-", ""), out Version? sitVersion) &&
+                                sitVersion > Version.Parse(_configService.Config.SitVersion) &&
+                                _configService.Config.TarkovVersion == x.EftVersion)
+                    .ToList();
+            }
+
             _configService.Config.LastSitUpdateCheckTime = DateTime.Now;
             _configService.UpdateConfig(_configService.Config);
         }
 
-        return _availableSitUpdateVersions != null && _availableSitUpdateVersions.Count != 0;
+        return _availableSitUpdateVersions != null && _availableSitUpdateVersions.Any();
     }
+
 
     public async Task InstallServer(GithubRelease selectedVersion, string targetInstallDir, IProgress<double> downloadProgress, IProgress<double> extractionProgress)
     {

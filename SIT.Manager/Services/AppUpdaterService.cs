@@ -100,7 +100,9 @@ public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterServi
         Version currentVersion = Assembly.GetEntryAssembly()?.GetName().Version ?? new Version("0");
         Version latestVersion = new();
 
-        if (_managerConfigService.Config.LookForUpdates && DateTime.Now.AddHours(1) < _managerConfigService.Config.LastManagerUpdateCheckTime)
+        TimeSpan timeSinceLastCheck = DateTime.Now - _managerConfigService.Config.LastManagerUpdateCheckTime;
+
+        if (_managerConfigService.Config.LookForUpdates && timeSinceLastCheck.TotalHours >= 1)
         {
             try
             {
@@ -116,7 +118,6 @@ public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterServi
                 _logger.LogError(ex, "CheckForUpdate");
             }
 
-            // Update the last check time so that we don't refresh this for at least an hour
             _managerConfigService.Config.LastManagerUpdateCheckTime = DateTime.Now;
             _managerConfigService.UpdateConfig(_managerConfigService.Config);
         }
