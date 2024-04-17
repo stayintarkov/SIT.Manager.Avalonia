@@ -11,7 +11,7 @@ using System.Text;
 using System.Text.Json;
 
 namespace SIT.Manager.Services.Caching;
-internal class OnDiskCachingService : ICachingProvider
+internal class OnDiskCachingProvider : ICachingProvider
 {
     private const string RESTORE_FILE_NAME = "fileCache.dat";
     private readonly ConcurrentDictionary<string, CacheEntry> _cacheKeysMap;
@@ -20,7 +20,7 @@ internal class OnDiskCachingService : ICachingProvider
 
     public event EventHandler<EvictedEventArgs>? Evicted;
 
-    public OnDiskCachingService(string cachePath)
+    public OnDiskCachingProvider(string cachePath)
     {
         _cachePath = new(cachePath);
         _cachePath.Create();

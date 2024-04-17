@@ -9,14 +9,14 @@ using System.Threading;
 
 namespace SIT.Manager.Services.Caching;
 
-public class InMemoryCachingService : ICachingProvider
+public class InMemoryCachingProvider : ICachingProvider
 {
     private const string RESTORE_FILE_NAME = "memoryCache.dat";
     private readonly ConcurrentDictionary<string, CacheEntry> _memoryCache = new();
     private readonly DirectoryInfo _cachePath;
     public event EventHandler<EvictedEventArgs>? Evicted;
 
-    public InMemoryCachingService(string cachePath)
+    public InMemoryCachingProvider(string cachePath)
     {
         _cachePath = new(cachePath);
         _cachePath.Create();

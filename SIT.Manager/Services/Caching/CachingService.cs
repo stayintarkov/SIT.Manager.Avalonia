@@ -11,6 +11,6 @@ namespace SIT.Manager.Services.Caching;
 public class CachingService : ICachingService
 {
     private const string CACHE_PATH = "Cache";
-    public ICachingProvider InMemory { get; } = new InMemoryCachingService(CACHE_PATH);
-    public ICachingProvider OnDisk { get; } = new OnDiskCachingService(CACHE_PATH);
+    public ICachingProvider InMemory { get; } = new InMemoryCachingProvider(CACHE_PATH);
+    public ICachingProvider OnDisk { get; } = new OnDiskCachingProvider(CACHE_PATH);
 }
