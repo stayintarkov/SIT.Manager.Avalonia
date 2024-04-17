@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SIT.Manager.Interfaces;
@@ -92,8 +93,8 @@ public partial class PlayPageViewModel : ObservableObject
     private async Task CreateServer()
     {
         CreateServerDialogView dialog = new();
-        string serverUriString = await dialog.ShowAsync();
-        if (!string.IsNullOrEmpty(serverUriString))
+        (ContentDialogResult result, string serverUriString) = await dialog.ShowAsync();
+        if (result == ContentDialogResult.Primary && !string.IsNullOrEmpty(serverUriString))
         {
             ServerList.Add(new ServerSummaryViewModel(serverUriString, App.Current.Services.GetService<ILogger<ServerSummaryViewModel>>(), App.Current.Services.GetService<IAkiServerRequestingService>()));
         }

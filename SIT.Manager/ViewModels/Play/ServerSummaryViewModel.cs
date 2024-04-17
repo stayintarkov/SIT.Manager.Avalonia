@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Models.Aki;
 using System;
+using System.ComponentModel;
 
 namespace SIT.Manager.ViewModels.Play;
 
@@ -14,16 +15,31 @@ public partial class ServerSummaryViewModel : ObservableRecipient
     private readonly IAkiServerRequestingService _serverService;
 
     private readonly string _serverUri;
+    private AkiServer _server = new(new Uri("http://127.0.0.1:6969"));
     private readonly DispatcherTimer _dispatcherTimer;
 
     [ObservableProperty]
     private bool _isLoading = false;
 
     [ObservableProperty]
-    private AkiServer? _server;
-
-    [ObservableProperty]
     private SolidColorBrush _pingColor = new(Colors.White);
+
+    public Uri Address
+    {
+        get => _server.Address;
+    }
+
+    public string Name
+    {
+        get => _server.Name;
+        set => SetProperty(_server.Name, value, _server, (u, n) => u.Name = n);
+    }
+
+    public int Ping
+    {
+        get => _server.Ping;
+        set => SetProperty(_server.Ping, value, _server, (u, n) => u.Ping = n);
+    }
 
     public ServerSummaryViewModel(string serverUri, ILogger<ServerSummaryViewModel> logger, IAkiServerRequestingService serverService)
     {
@@ -37,21 +53,15 @@ public partial class ServerSummaryViewModel : ObservableRecipient
 
     private void UpdatePingColor()
     {
-        int ping = -1;
-        if (Server != null)
-        {
-            ping = Server.Ping;
-        }
-
-        if (ping < 0)
+        if (Ping < 0)
         {
             PingColor = new SolidColorBrush(Colors.White);
         }
-        else if (ping < 50)
+        else if (Ping < 50)
         {
             PingColor = new SolidColorBrush(Colors.Green);
         }
-        else if (ping < 150)
+        else if (Ping < 150)
         {
             PingColor = new SolidColorBrush(Colors.Orange);
         }
@@ -63,19 +73,15 @@ public partial class ServerSummaryViewModel : ObservableRecipient
 
     private async void DispatcherTimer_Tick(object? sender, EventArgs e)
     {
-        if (Server != null)
+        try
         {
-            try
-            {
-                Server.Ping = await _serverService.GetPingAsync(Server);
-                _logger.LogDebug("{Name}'s ping is {Ping}ms", Server.Name, Server.Ping);
-            }
-            catch (Exception ex)
-            {
-                Server.Ping = -1;
-                _logger.LogWarning(ex, "Couldn't evaluate ping from server {Name}", Server.Name);
-            }
-            UpdatePingColor();
+            Ping = await _serverService.GetPingAsync(_server);
+            _logger.LogDebug("{Name}'s ping is {Ping}ms", Name, Ping);
+        }
+        catch (Exception ex)
+        {
+            Ping = -1;
+            _logger.LogWarning(ex, "Couldn't evaluate ping from server {Name}", Name);
         }
     }
 
@@ -86,18 +92,18 @@ public partial class ServerSummaryViewModel : ObservableRecipient
 
         try
         {
-            Server = await _serverService.GetAkiServerAsync(new Uri(_serverUri));
-            _logger.LogDebug("{Address} found with name {Name}", Server.Address.AbsoluteUri, Server.Name);
+            _server = await _serverService.GetAkiServerAsync(new Uri(_serverUri));
+            Name = _server.Name;
+            _logger.LogDebug("{Address} found with name {Name}", Address.AbsoluteUri, Name);
         }
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Couldn't retrieve server from address {Address}", _serverUri);
-            Server = new AkiServer(new Uri(_serverUri))
-            {
-                Name = "N/A",
-                Ping = -1
-            };
+            _server = new AkiServer(new Uri(_serverUri));
+            Name = "N/A";
         }
+
+        Ping = -2;
 
         _dispatcherTimer.Start();
         IsLoading = false;
@@ -108,5 +114,15 @@ public partial class ServerSummaryViewModel : ObservableRecipient
         base.OnDeactivated();
 
         _dispatcherTimer.Stop();
+    }
+
+    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+    {
+        base.OnPropertyChanged(e);
+
+        if (e.PropertyName == nameof(Ping))
+        {
+            UpdatePingColor();
+        }
     }
 }

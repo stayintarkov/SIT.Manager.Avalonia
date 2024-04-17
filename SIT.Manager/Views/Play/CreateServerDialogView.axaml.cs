@@ -14,12 +14,12 @@ public partial class CreateServerDialogView : ContentDialog
     public CreateServerDialogView()
     {
         dc = new CreateServerDialogViewModel();
-        this.DataContext = dc;
+        DataContext = dc;
         InitializeComponent();
     }
 
-    public new Task<string> ShowAsync()
+    public new Task<(ContentDialogResult, string)> ShowAsync()
     {
-        return this.ShowAsync(null).ContinueWith(t => dc.ServerAddress);
+        return ShowAsync(null).ContinueWith(t => (t.Result, dc.ServerAddress));
     }
 }

@@ -36,10 +36,10 @@
 			<StackPanel Grid.Column="1"
 						IsVisible="{Binding !IsLoading}"
 						Margin="8,0">
-				<TextBlock Text="{Binding Server.Name}"
+				<TextBlock Text="{Binding Name}"
 						   FontSize="24"
 						   FontWeight="Bold"/>
-				<TextBlock Text="{Binding Server.Address}"/>
+				<TextBlock Text="{Binding Address}"/>
 			</StackPanel>
 
 			<StackPanel Grid.Column="2"
@@ -52,7 +52,7 @@
 						  Stretch="Uniform"/>
 				</Viewbox>
 				<TextBlock HorizontalAlignment="Center">
-					<Run Text="{Binding Server.Ping}"/>
+					<Run Text="{Binding Ping}"/>
 					<Run Text="ms"/>
 				</TextBlock>					
 			</StackPanel>
