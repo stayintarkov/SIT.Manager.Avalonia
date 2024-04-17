@@ -20,7 +20,7 @@ internal class OnDiskCachingProvider(string cachePath) : CachingProviderBase(cac
     {
         if(_cacheMap.TryGetValue(key, out CacheEntry? cacheEntry))
         {
-            string cacheFilePath = cacheEntry.GetValue<string>();
+            string cacheFilePath = cacheEntry.GetValue<JsonElement>().GetString() ?? string.Empty;
             if(File.Exists(cacheFilePath))
                 File.Delete(cacheFilePath);
         }

@@ -21,7 +21,13 @@ internal abstract class CachingProviderBase : ICachingProvider
     protected CachingProviderBase(string cachePath)
     {
         _cachePath = new(cachePath);
-        _landlord = new(new TimerCallback(EvictTenents), _cacheMap, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(10));
+        _landlord = new(new TimerCallback(EvictTenents), _cacheMap, TimeSpan.FromSeconds(30), TimeSpan.FromMinutes(2));
+
+        _cachePath.Create();
+
+        string restoreFilePath = Path.Combine(cachePath, RestoreFileName);
+        if (File.Exists(restoreFilePath))
+            _cacheMap = JsonSerializer.Deserialize<ConcurrentDictionary<string, CacheEntry>>(File.ReadAllText(restoreFilePath)) ?? new();
 
         if (App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime)
         {
@@ -34,10 +40,14 @@ internal abstract class CachingProviderBase : ICachingProvider
 
     protected virtual void SaveKeysToFile(string restoreFileName)
     {
-        if (_cacheMap.IsEmpty)
-            return;
-
         string keyDataPath = Path.Combine(_cachePath.FullName, restoreFileName);
+        if (_cacheMap.IsEmpty)
+        {
+            if(File.Exists(keyDataPath))
+                File.Delete(keyDataPath);
+            return;
+        }
+
         File.WriteAllText(keyDataPath, JsonSerializer.Serialize(_cacheMap));
     }
     protected virtual void EvictTenents(object? state)
