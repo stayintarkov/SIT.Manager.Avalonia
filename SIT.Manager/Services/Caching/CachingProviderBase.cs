@@ -32,7 +32,7 @@ internal abstract class CachingProviderBase : ICachingProvider
         }
     }
 
-    protected void SaveKeysToFile(string restoreFileName)
+    protected virtual void SaveKeysToFile(string restoreFileName)
     {
         if (_cacheMap.IsEmpty)
             return;
@@ -40,7 +40,7 @@ internal abstract class CachingProviderBase : ICachingProvider
         string keyDataPath = Path.Combine(_cachePath.FullName, restoreFileName);
         File.WriteAllText(keyDataPath, JsonSerializer.Serialize(_cacheMap));
     }
-    private void EvictTenents(object? state)
+    protected virtual void EvictTenents(object? state)
     {
         if (state == null)
             return;
@@ -55,7 +55,7 @@ internal abstract class CachingProviderBase : ICachingProvider
         SaveKeysToFile(RestoreFileName);
     }
 
-    protected void RemoveExpiredKey(string key)
+    protected virtual void RemoveExpiredKey(string key)
     {
         if (_cacheMap.TryRemove(key, out _))
         {
