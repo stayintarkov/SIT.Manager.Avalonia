@@ -83,19 +83,20 @@ public class TarkovClientService(IBarNotificationService barNotificationService,
             LinuxConfig linuxConfig = _configService.Config.LinuxConfig;
 
             // Check if either mangohud or gamemode is enabled.
+            StringBuilder argumentsBuilder = new();
             if (linuxConfig.IsGameModeEnabled)
             {
                 _process.StartInfo.FileName = "gamemoderun";
                 if (linuxConfig.IsMangoHudEnabled)
                 {
-                    _process.StartInfo.ArgumentList.Add("\"mangohud\"");
+                    argumentsBuilder.Append("mangohud ");
                 }
-                _process.StartInfo.ArgumentList.Add($"\"{linuxConfig.WineRunner}\"");
+                argumentsBuilder.Append($"\"{linuxConfig.WineRunner}\" ");
             }
             else if (linuxConfig.IsMangoHudEnabled) // only mangohud is enabled
             {
                 _process.StartInfo.FileName = "mangohud";
-                _process.StartInfo.ArgumentList.Add($"\"{linuxConfig.WineRunner}\"");
+                argumentsBuilder.Append($"\"{linuxConfig.WineRunner}\" ");
             }
             else
             {
@@ -104,33 +105,26 @@ public class TarkovClientService(IBarNotificationService barNotificationService,
             
             // force-gfx-jobs native is a workaround for the Unity bug that causes the game to crash on startup.
             // Taken from SPT Aki.Launcher.Base/Controllers/GameStarter.cs
-            _process.StartInfo.ArgumentList.Add($"\"{ExecutableFilePath}\"");
-            _process.StartInfo.ArgumentList.Add("-force-gfx-jobs");
-            _process.StartInfo.ArgumentList.Add("native");
+            argumentsBuilder.Append($"\"{ExecutableFilePath}\" -force-gfx-jobs native ");
             if (!string.IsNullOrEmpty(arguments))
             {
-                _process.StartInfo.ArgumentList.Add(arguments);
+                argumentsBuilder.Append(arguments);
             }
+            _process.StartInfo.Arguments = argumentsBuilder.ToString();
             _process.StartInfo.UseShellExecute = false;
-
-            string winePrefix = Path.GetFullPath(linuxConfig.WinePrefix);
-            if (!Path.EndsInDirectorySeparator(winePrefix))
-            {
-                winePrefix = $"{winePrefix}{Path.DirectorySeparatorChar}";
-            }
             
-            _process.StartInfo.EnvironmentVariables.Add("WINEPREFIX", winePrefix);
-            _process.StartInfo.EnvironmentVariables.Add("WINEESYNC", linuxConfig.IsEsyncEnabled ? "1" : "0");
-            _process.StartInfo.EnvironmentVariables.Add("WINEFSYNC", linuxConfig.IsFsyncEnabled ? "1" : "0");
-            _process.StartInfo.EnvironmentVariables.Add("WINE_FULLSCREEN_FSR", linuxConfig.IsWineFsrEnabled ? "1" : "0");
-            _process.StartInfo.EnvironmentVariables.Add("DXVK_NVAPIHACK", "0");
-            _process.StartInfo.EnvironmentVariables.Add("DXVK_ENABLE_NVAPI", linuxConfig.IsDXVK_NVAPIEnabled ? "1" : "0");
-            _process.StartInfo.EnvironmentVariables.Add("WINEARCH", "win64");
-            _process.StartInfo.EnvironmentVariables.Add("MANGOHUD", linuxConfig.IsMangoHudEnabled ? "1" : "0");
-            _process.StartInfo.EnvironmentVariables.Add("MANGOHUD_DLSYM", linuxConfig.IsMangoHudEnabled ? "1" : "0");
-            _process.StartInfo.EnvironmentVariables.Add("__GL_SHADER_DISK_CACHE", "1");
-            _process.StartInfo.EnvironmentVariables.Add("__GL_SHADER_DISK_CACHE_PATH", winePrefix);
-            _process.StartInfo.EnvironmentVariables.Add("DXVK_STATE_CACHE_PATH", winePrefix);
+            _process.StartInfo.EnvironmentVariables["WINEPREFIX"] = linuxConfig.WinePrefix;
+            _process.StartInfo.EnvironmentVariables["WINEESYNC"] = linuxConfig.IsEsyncEnabled ? "1" : "0";
+            _process.StartInfo.EnvironmentVariables["WINEFSYNC"] = linuxConfig.IsFsyncEnabled ? "1" : "0";
+            _process.StartInfo.EnvironmentVariables["WINE_FULLSCREEN_FSR"] = linuxConfig.IsWineFsrEnabled ? "1" : "0";
+            _process.StartInfo.EnvironmentVariables["DXVK_NVAPIHACK"] = "0";
+            _process.StartInfo.EnvironmentVariables["DXVK_ENABLE_NVAPI"] = linuxConfig.IsDXVK_NVAPIEnabled ? "1" : "0";
+            _process.StartInfo.EnvironmentVariables["WINEARCH"] = "win64";
+            _process.StartInfo.EnvironmentVariables["MANGOHUD"] = linuxConfig.IsMangoHudEnabled ? "1" : "0";
+            _process.StartInfo.EnvironmentVariables["MANGOHUD_DLSYM"] = linuxConfig.IsMangoHudEnabled ? "1" : "0";
+            _process.StartInfo.EnvironmentVariables["__GL_SHADER_DISK_CACHE"] = "1";
+            _process.StartInfo.EnvironmentVariables["__GL_SHADER_DISK_CACHE_PATH"] = linuxConfig.WinePrefix;
+            _process.StartInfo.EnvironmentVariables["DXVK_STATE_CACHE_PATH"] = linuxConfig.WinePrefix;
             // TODO: add the ability to add custom DLL overrides.
             string str = DllManager.GetDllOverride(linuxConfig);
             _process.StartInfo.EnvironmentVariables.Add("WINEDLLOVERRIDES", str);
