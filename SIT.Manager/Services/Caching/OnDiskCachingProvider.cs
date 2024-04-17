@@ -11,49 +11,12 @@ using System.Text;
 using System.Text.Json;
 
 namespace SIT.Manager.Services.Caching;
-internal class OnDiskCachingProvider : ICachingProvider
+internal class OnDiskCachingProvider(string cachePath) : CachingProviderBase(cachePath)
 {
     private const string RESTORE_FILE_NAME = "fileCache.dat";
-    private readonly ConcurrentDictionary<string, CacheEntry> _cacheKeysMap;
-    private readonly DirectoryInfo _cachePath;
+    protected override string RestoreFileName => RESTORE_FILE_NAME;
 
-
-    public event EventHandler<EvictedEventArgs>? Evicted;
-
-    public OnDiskCachingProvider(string cachePath)
-    {
-        _cachePath = new(cachePath);
-        _cachePath.Create();
-
-        string restoreFilePath = Path.Combine(_cachePath.FullName, RESTORE_FILE_NAME);
-        if (File.Exists(restoreFilePath))
-        {
-            _cacheKeysMap = JsonSerializer.Deserialize<ConcurrentDictionary<string, CacheEntry>>(File.ReadAllText(restoreFilePath)) ?? new();
-        }
-        else
-        {
-            _cacheKeysMap = new();
-        }
-
-        if (App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime)
-        {
-            lifetime.ShutdownRequested += (sender, e) =>
-            {
-                SaveKeysToFile();
-            };
-        }
-    }
-
-    private void SaveKeysToFile()
-    {
-        if (_cacheKeysMap.IsEmpty)
-            return;
-
-        string keyDataPath = Path.Combine(_cachePath.FullName, RESTORE_FILE_NAME);
-        File.WriteAllText(keyDataPath, JsonSerializer.Serialize(_cacheKeysMap));
-    }
-
-    public bool Add<T>(string key, T value, TimeSpan? expiryTime = null)
+    public override bool Add<T>(string key, T value, TimeSpan? expiryTime = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
         ArgumentNullException.ThrowIfNull(value, nameof(value));
@@ -88,7 +51,7 @@ internal class OnDiskCachingProvider : ICachingProvider
         }
 
         DateTime expiryDate = DateTime.UtcNow + (expiryTime ?? TimeSpan.FromMinutes(15));
-        bool success = _cacheKeysMap.TryAdd(key, new CacheEntry(key, filePath, expiryDate));
+        bool success = _cacheMap.TryAdd(key, new CacheEntry(key, filePath, expiryDate));
         if (success)
         {
             return true;
@@ -97,41 +60,14 @@ internal class OnDiskCachingProvider : ICachingProvider
             throw new Exception("Key didn't exist but couldn't add key to cache.");
     }
 
-    public void Clear(string prefix = "")
-    {
-        IEnumerable<CacheEntry> entriesToRemove = string.IsNullOrWhiteSpace(prefix) ? _cacheKeysMap.Values : _cacheKeysMap.Values.Where(x => x.Key.StartsWith(prefix));
-
-        foreach (CacheEntry entry in entriesToRemove)
-        {
-            string filePath = entry.Value as string ?? string.Empty;
-            if (File.Exists(filePath))
-                File.Delete(filePath);
-            _cacheKeysMap.Remove(entry.Key, out _);
-        }
-    }
-
-    public bool Exists(string key)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
-        return _cacheKeysMap.TryGetValue(key, out CacheEntry? entry) && entry.ExpiryDate > DateTime.UtcNow;
-    }
-
-    internal void RemoveExpiredKey(string key)
-    {
-        if (_cacheKeysMap.TryRemove(key, out _))
-        {
-            Evicted?.Invoke(this, new EvictedEventArgs(key));
-        }
-    }
-
-    public CacheValue<T> Get<T>(string key)
+    public override CacheValue<T> Get<T>(string key)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
 
-        if(!_cacheKeysMap.TryGetValue(key, out CacheEntry? cacheEntry))
+        if (!_cacheMap.TryGetValue(key, out CacheEntry? cacheEntry))
             return CacheValue<T>.NoValue;
 
-        if(cacheEntry.ExpiryDate < DateTime.UtcNow)
+        if (cacheEntry.ExpiryDate < DateTime.UtcNow)
         {
             RemoveExpiredKey(key);
             return CacheValue<T>.NoValue;
@@ -140,14 +76,14 @@ internal class OnDiskCachingProvider : ICachingProvider
         try
         {
             string filePath = cacheEntry.GetValue<string>();
-            if(!File.Exists(filePath))
+            if (!File.Exists(filePath))
                 return CacheValue<T>.Null;
 
             Type tType = typeof(T);
             FileStream fs = File.OpenRead(filePath);
             if (tType == typeof(FileStream))
             {
-                return new CacheValue<T>((T)(object)fs, true);
+                return new CacheValue<T>((T) (object) fs, true);
             }
 
             byte[] fileBytes;
@@ -174,9 +110,9 @@ internal class OnDiskCachingProvider : ICachingProvider
                 return CacheValue<T>.Null;
             }
 
-            if(tType == typeof(string))
+            if (tType == typeof(string))
             {
-                return new CacheValue<T>((T)(object)Encoding.UTF8.GetString(fileBytes), true);
+                return new CacheValue<T>((T) (object) Encoding.UTF8.GetString(fileBytes), true);
             }
             return new CacheValue<T>(JsonSerializer.Deserialize<T>(fileBytes), true);
         }
@@ -185,66 +121,5 @@ internal class OnDiskCachingProvider : ICachingProvider
             //TODO: log exception
             return CacheValue<T>.NoValue;
         }
-    }
-
-    public IEnumerable<string> GetAllKeys(string prefix)
-    {
-        return _cacheKeysMap.Values
-            .Where(x => x.Key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase) && x.ExpiryDate > DateTime.UtcNow)
-            .Select(x => x.Key).ToList();
-    }
-
-    public int GetCount(string prefix = "")
-    {
-        IEnumerable<CacheEntry> cacheItems = cacheItems = _cacheKeysMap.Values.Where(x => x.ExpiryDate > DateTime.UtcNow);
-        if (!string.IsNullOrWhiteSpace(prefix))
-        {
-            cacheItems = cacheItems.Where(x => x.Key.StartsWith(prefix));
-        }
-
-        return cacheItems.Count();
-    }
-
-    public CacheValue<T> GetOrCompute<T>(string key, Func<string, T> computor, TimeSpan? expiaryTime = null)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
-
-        bool success = TryGet(key, out CacheValue<T> valOut);
-        if (success)
-            return valOut;
-
-        T computedValue = computor(key);
-        bool addSuccess = Add(key, computedValue, expiaryTime);
-
-        if (!addSuccess)
-            throw new Exception("Cached value did not exist but could not be added to the cache");
-
-        return Get<T>(key);
-    }
-
-    public bool Remove(string key)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
-        return _cacheKeysMap.TryRemove(key, out _);
-    }
-
-    public int RemoveByPrefix(string prefix)
-    {
-        var keysToRemove = _cacheKeysMap.Keys.Where(x => x.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)).ToList();
-        int removed = 0;
-        foreach (var key in keysToRemove)
-        {
-            if (Remove(key))
-                removed++;
-        }
-        return removed;
-    }
-
-    public bool TryGet<T>(string key, out CacheValue<T> cacheValue)
-    {
-        cacheValue = Get<T>(key);
-        if (cacheValue == CacheValue<T>.NoValue || cacheValue == CacheValue<T>.Null)
-            return false;
-        return true;
     }
 }
