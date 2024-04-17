@@ -156,6 +156,54 @@
 	<system:String x:Key="SettingsServerConsoleFontColorTitle">Колір Шрифту:</system:String>
 	<system:String x:Key="SettingsManagerVersionTitle">Версія Менеджера (Лаунчера):</system:String>
 
+	<!-- Linux Settings Page -->
+	<system:String x:Key="Key">Key</system:String>
+	<system:String x:Key="Value">Value</system:String>
+	<system:String x:Key="LinuxSettingsPageTitle">Linux Settings</system:String>
+	<system:String x:Key="LinuxSettingsExperimentalWarning">Experimental Linux settings. Some might not work or are not implemented yet. Use at your own risk.</system:String>
+	
+	<system:String x:Key="LinuxSettingsWinePrefixTitle">Wine Prefix:</system:String>
+	<system:String x:Key="LinuxSettingsWinePrefixPlaceholder">Wine Prefix Path</system:String>
+	<system:String x:Key="LinuxSettingsWinePrefixToolTip">Change the WINEPREFIX used for EFT</system:String>
+	<system:String x:Key="LinuxSettingsWineRunnerTitle">Wine Runner:</system:String>
+	<system:String x:Key="LinuxSettingsWineRunnerPlaceholder">Wine Runner Path</system:String>
+	<system:String x:Key="LinuxSettingsWineRunnerToolTip">Set the wine runner used for EFT. Leave blank to download the recommended SPT wine runner into the same folder as the bottle</system:String>
+	<system:String x:Key="LinuxSettingsWineEnvTitle">Environment: </system:String>
+	<system:String x:Key="LinuxSettingsWineEnvPlaceholder">Wine Environment Variables</system:String>
+	<system:String x:Key="LinuxSettingsWineEnvToolTip">Set custom environment variables used for wine</system:String>
+	<system:String x:Key="LinuxSettingsWineEnvAddButton">Add</system:String>
+	<system:String x:Key="LinuxSettingsWineEnvDeleteButton">Delete</system:String>
+	
+	<system:String x:Key="LinuxSettingsGraphicsTitle">Graphics</system:String>
+	<system:String x:Key="LinuxSettingsEnableDxvkTitle">Enable DXVK</system:String>
+	<system:String x:Key="LinuxSettingsEnableDxvkToolTip">Use DXVK to increase compatibility and performance in Direct3D 11, 10 and 9 applications by translating their calls to Vulkan.</system:String>
+	<system:String x:Key="LinuxSettingsDxvkVersionTitle">DXVK Version</system:String>
+	<system:String x:Key="LinuxSettingsDxvkVersionToolTip">Select the version of DXVK to use</system:String>
+	<system:String x:Key="LinuxSettingsEnableVkd3DTitle">Enable VKD3D</system:String>
+	<system:String x:Key="LinuxSettingsEnableVkd3DToolTip">Use VKD3D to translate Direct3D 12 to Vulkan</system:String>
+	<system:String x:Key="LinuxSettingsEnableD3DExtrasTitle">Enable D3D Extras</system:String>
+	<system:String x:Key="LinuxSettingsEnableD3DExtrasToolTip">Enable additional Direct3D features</system:String>
+	<system:String x:Key="LinuxSettingsEnableDxvkNvapiTitle">Enable DXVK NVAPI / DLSS [TO BE IMPLEMENTED]</system:String>
+	<system:String x:Key="LinuxSettingsEnableDxvkNvapiToolTip">Enable NVAPI support in DXVK [TO BE IMPLEMENTED/DOES NOT WORK]</system:String>
+	<system:String x:Key="LinuxSettingsEnableDgVoodoo2Title">Enable dgvoodoo2</system:String>
+	<system:String x:Key="LinuxSettingsEnableDgVoodoo2ToolTip">Use dgvoodoo2 to translate Direct3D 1-11 to OpenGL</system:String>
+	
+	<system:String x:Key="LinuxSettingsLaunchOptionsTitle">Launch Options</system:String>
+	<system:String x:Key="LinuxSettingsEnableEsyncTitle">Enable Esync</system:String>
+	<system:String x:Key="LinuxSettingsEnableEsyncToolTip">Use Esync to improve performance in Wine</system:String>
+	<system:String x:Key="LinuxSettingsEnableFsyncTitle">Enable Fsync</system:String>
+	<system:String x:Key="LinuxSettingsEnableFsyncToolTip">Use Fsync to improve performance in Wine</system:String>
+	<system:String x:Key="LinuxSettingsEnableFsrTitle">Enable AMD FidelityFX Super Resolution (FSR)</system:String>
+	<system:String x:Key="LinuxSettingsEnableFsrToolTip">Use FSR to improve performance in games</system:String>
+	<system:String x:Key="LinuxSettingsEnableMangoHudTitle">Enable MangoHud</system:String>
+	<system:String x:Key="LinuxSettingsEnableMangoHudToolTip">MangoHud is a modification of the Mesa Vulkan overlay that includes GUI improvements, temperature monitoring, and more</system:String>
+	<system:String x:Key="LinuxSettingsEnableGameModeTitle">Enable Feral GameMode</system:String>
+	<system:String x:Key="LinuxSettingsEnableGameModeToolTip">GameMode is a daemon/lib combo for Linux that allows games to request a set of optimisations be temporarily applied to the host OS</system:String>
+	
+	<!-- Linux Settings View Model -->
+	<system:String x:Key="LinuxSettingsPageViewModelConfigErrorRunner">The selected folder was invalid. Make sure it's a proper wine runner folder with a bin folder inside</system:String>
+	<system:String x:Key="LinuxSettingsPageViewModelConfigErrorPrefix">The selected folder was invalid. Make sure the folder exists</system:String>
+	
 	<!-- Location Editor View -->
 	<system:String x:Key="LocationEditorLoadButtonTitle">Завантажити</system:String>
 	<system:String x:Key="LocationEditorSaveButtonTitle">Зберегти</system:String>
