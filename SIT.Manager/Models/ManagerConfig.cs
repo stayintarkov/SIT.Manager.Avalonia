@@ -41,6 +41,8 @@ public partial class ManagerConfig : ObservableObject
     [ObservableProperty]
     public bool _lookForUpdates = true;
     [ObservableProperty]
+    private DateTime _lastManagerUpdateCheckTime = DateTime.MinValue;
+    [ObservableProperty]
     public string _currentLanguageSelected = CultureInfo.CurrentCulture.Name;
     [ObservableProperty]
     public bool _hideIpAddress = true;

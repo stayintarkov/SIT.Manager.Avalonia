@@ -1,11 +1,14 @@
 using CommunityToolkit.Mvvm.Messaging;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Navigation;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SIT.Manager.Controls;
 using SIT.Manager.Models;
 using SIT.Manager.Models.Messages;
 using SIT.Manager.ViewModels;
 using System;
+using System.Diagnostics;
 using System.Linq;
 
 namespace SIT.Manager.Views;
@@ -43,16 +46,44 @@ public partial class MainView : ActivatableUserControl
         }
         else if (e.InvokedItemContainer != null)
         {
-            Type? navPageType = Type.GetType(e.InvokedItemContainer.Tag?.ToString() ?? string.Empty);
-            if (navPageType != null)
+            string tag = e.InvokedItemContainer.Tag?.ToString() ?? string.Empty;
+            if (tag == "Help")
             {
-                pageNavigation = new(navPageType);
+                OpenUrl("https://docs.stayintarkov.com");
+            }
+            else
+            {
+                Type? navPageType = Type.GetType(tag);
+                if (navPageType != null)
+                {
+                    pageNavigation = new(navPageType);
+                }
             }
         }
 
         if (pageNavigation != null)
         {
             WeakReferenceMessenger.Default.Send(new PageNavigationMessage(pageNavigation));
+        }
+    }
+
+    private static void OpenUrl(string url)
+    {
+        try
+        {
+            if (OperatingSystem.IsWindows())
+            {
+                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+            }
+            else
+            {
+                Process.Start("open", url);
+            }
+        }
+        catch (Exception ex)
+        {
+            ILogger? logger = App.Current.Services.GetService<ILogger<MainView>>();
+            logger?.LogError(ex, $"Error lauching url (${url}).");
         }
     }
 
