@@ -39,7 +39,7 @@
 	<system:String x:Key="PlayPageViewModelWaitingForServerTitle">等待伺服器</system:String>
 	<system:String x:Key="PlayPageViewModelServerErrorTitle">伺服器錯誤</system:String>
 	<system:String x:Key="PlayPageViewModelServerErrorDescription">伺服器從未啟動，請查看日誌以獲取更多信息！</system:String>
-	<system:String x:Key="PlayPageViewModelLoginIncorrectPassword">Incorrect password</system:String>
+	<system:String x:Key="PlayPageViewModelLoginIncorrectPassword">密碼錯誤</system:String>
 
 	<!-- Pane View (Menu on the left also tooltip about update on top) -->
 	<system:String x:Key="UpdateNotification">SIT 管理器有新版本可供更新。點擊這裡進行更新：</system:String>
@@ -123,8 +123,8 @@
 	<system:String x:Key="SettingsLookForUpdatesTitleToolTip">啟動啟動器時自動檢查更新</system:String>
 	<system:String x:Key="SettingsHideIpAddressTitle">隱藏 IP 地址</system:String>
 	<system:String x:Key="SettingsHideIpAddressToolTip">在 IP 地址框中用星號隱藏 IP 地址。</system:String>
-	<system:String x:Key="SettingsEnableDeveloperMode">Enable Developer Mode</system:String>
-	<system:String x:Key="SettingsEnableDeveloperModeToolTip">Enables developer/test releases of SIT and SIT server for testing purposes</system:String>
+	<system:String x:Key="SettingsEnableDeveloperMode">啟用開發者模式</system:String>
+	<system:String x:Key="SettingsEnableDeveloperModeToolTip">啟用開發者/測試版本的 SIT 和 SIT 伺服器，以進行測試用途</system:String>
 	<system:String x:Key="SettingsLanguageTitle">語言:</system:String>
 	<system:String x:Key="SettingsLanguageTitleToolTip">將整個啟動器翻譯為您的語言，選擇其中一種！</system:String>
 	<system:String x:Key="SettingsAccentColorTitle">強調顏色:</system:String>
@@ -247,9 +247,9 @@
 	<system:String x:Key="SettingsPageViewModelConfigInformationEFTDescription">EFT 安裝路徑已設置為 '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">SPT-AKI 伺服器安裝路徑已設置為 '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigErrorSPTAKI">所選文件夾無效，請確保它是正確的 SPT-AKI 伺服器文件夾！</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">Enable Developer Mod Failure</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">Can't enable developer mode as you have %1 incompatible mods still enabled</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorButtonOk">Ok</system:String>
+	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">啟用開發者模式錯誤</system:String>
+	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">無法啟用開發者模式，因為您仍然有 %1 不相容的模式處於啟用狀態</system:String>
+	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorButtonOk">確定</system:String>
 
 	<!-- Server Page ViewModel -->
 	<system:String x:Key="ServerPageViewModelStartingServer">正在啟動伺服器！</system:String>
@@ -306,8 +306,8 @@
 	<system:String x:Key="InstallServiceInstallSuccessfulDescription">伺服器端安裝成功</system:String>
 	<system:String x:Key="InstallServiceInstallSITSuccessfulDescription">SIT 安裝成功</system:String>
 	<system:String x:Key="InstallerServiceNoDowngradePatcher">這些版本的《逃離塔科夫》沒有可用的降級補丁。</system:String>
-	<system:String x:Key="InstallServiceSSLError">Your ISP is likely blocking our connection. Please use a VPN and try again.</system:String>
-	
+	<system:String x:Key="InstallServiceSSLError">您的 ISP 可能阻止了我們的連接。請使用 VPN 再試一次。</system:String>
+
 	<!-- File Service -->
 	<system:String x:Key="FileServiceProgressDownloading">下載檔案 '%1'</system:String>
 	<system:String x:Key="FileServiceProgressExtracting">正在提取檔案 %1 (%2)</system:String>
@@ -344,6 +344,7 @@
 
 	<!-- Install - Configure Sit View -->
 	<system:String x:Key="ConfigureSitViewLoadingVersionSelectionText">正在確定可用的 SIT 版本，請稍候...</system:String>
+	<system:String x:Key="ConfigureSitViewVersionSelectionErrorMessage">Unable to determine available SIT versions...</system:String>
 	<system:String x:Key="ConfigureSitViewEFTChangeInstallPathToolTip">更改 EFT 的安裝路徑。</system:String>
 	<system:String x:Key="ConfigureSitViewEFTSettingsButtonChangeTitle">更改</system:String>
 	<system:String x:Key="ConfigureSitViewEFTInstallPathPlaceholder">EFT 安裝路徑...</system:String>
@@ -351,10 +352,10 @@
 	<system:String x:Key="ConfigureSitViewEFTPathWarningNoPath">目前使用 BSG EFT 的安裝位置。請將 EFT 安裝到其他位置以避免與 SIT 的潛在問題</system:String>
 	<system:String x:Key="ConfigureSitViewMirrorSelectionTitle">選擇要使用的鏡像：</system:String>
 	<system:String x:Key="ConfigureSitViewVersionSelectionTitle">要安裝的版本：</system:String>
-	<system:String x:Key="ConfigureSitViewRecommendedModsTitle">Recommended Mods</system:String>
-	<system:String x:Key="ConfigureSitViewRecommendedModsDescription">Choose from the available mods which we recommend you install alongside SIT</system:String>
-	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTip">Import Live Game Graphic, Audio, and Control settings to SIT</system:String>
-	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTitle">Import EFT Settings to SIT</system:String>
+	<system:String x:Key="ConfigureSitViewRecommendedModsTitle">推薦 Mod</system:String>
+	<system:String x:Key="ConfigureSitViewRecommendedModsDescription">從可用的 Mod 中選擇我們建議您與 SIT 一起安裝的內容</system:String>
+	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTip">將現場遊戲的圖形、音頻和控制設置導入到 SIT</system:String>
+	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTitle">將 EFT 設置導入到 SIT</system:String>
 
 	<!-- Install - Configure Sit View Model -->
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorTitle">位置選擇錯誤</system:String>
@@ -372,7 +373,7 @@
 	<system:String x:Key="PatchViewDownloadingTitle">正在下載補丁程序</system:String>
 	<system:String x:Key="PatchViewExtractingTitle">正在提取補丁程序</system:String>
 	<system:String x:Key="PatchViewPatchingErrorMessage">尝试对 EFT 进行修补时出错。请查看日志以获取详细信息</system:String>
-	<system:String x:Key="PatchViewAquirePatcherErrorMessage">Error trying to aquire the patcher for EFT, please consult the logs for more details</system:String>
+	<system:String x:Key="PatchViewAquirePatcherErrorMessage">獲取 EFT 補丁程式時發生錯誤，請查閱日誌以獲取更多詳細信息</system:String>
 	<system:String x:Key="PatchViewPatchingEndInstallButtonTitle">完成安裝</system:String>
 
 	<!-- Install - Select View -->

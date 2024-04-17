@@ -379,7 +379,7 @@
 	<system:String x:Key="ConfigureViewVersionSelectionGroupTitle">Version Selection</system:String>
 	<system:String x:Key="ConfigureViewPersonalizationOptions">Personalization and Import Options</system:String>
 	
-		<!-- Install - Configure Server View -->
+	<!-- Install - Configure Server View -->
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathToolTip">Change the SPT-AKI Install Path.</system:String>
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathTitle">Change</system:String>
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathPlaceholder">SPT-AKI Install Path...</system:String>
@@ -389,6 +389,7 @@
 	
 	<!-- Install - Configure Sit View -->
 	<system:String x:Key="ConfigureSitViewLoadingVersionSelectionText">Working out available SIT versions please wait...</system:String>
+	<system:String x:Key="ConfigureSitViewVersionSelectionErrorMessage">Unable to determine available SIT versions...</system:String>
 	<system:String x:Key="ConfigureSitViewEFTChangeInstallPathToolTip">Change the EFT Install Path.</system:String>
 	<system:String x:Key="ConfigureSitViewEFTSettingsButtonChangeTitle">Change</system:String>
 	<system:String x:Key="ConfigureSitViewEFTInstallPathPlaceholder">EFT Install Path...</system:String>

@@ -39,7 +39,7 @@
 	<system:String x:Key="PlayPageViewModelWaitingForServerTitle">Очікування сервера</system:String>
 	<system:String x:Key="PlayPageViewModelServerErrorTitle">Помилка сервера</system:String>
 	<system:String x:Key="PlayPageViewModelServerErrorDescription">Сервер не запустився. Будь ласка, перевірте журнали для отримання додаткової інформації.</system:String>
-	<system:String x:Key="PlayPageViewModelLoginIncorrectPassword">Incorrect password</system:String>
+	<system:String x:Key="PlayPageViewModelLoginIncorrectPassword">Невірний пароль</system:String>
 
 	<!-- Pane View (Menu on the left also tooltip about update on top) -->
 	<system:String x:Key="UpdateNotification">Доступне оновлення менеджера SIT. Натисніть тут, щоб оновити:</system:String>
@@ -127,8 +127,8 @@
 	<system:String x:Key="SettingsLookForUpdatesTitleToolTip">Автоматично перевіряє оновлення при відкритті лаунчера.</system:String>
 	<system:String x:Key="SettingsHideIpAddressTitle">Сховати IP-адресу</system:String>
 	<system:String x:Key="SettingsHideIpAddressToolTip">Приховує IP-адресу зірочками в полі IP-адреси.</system:String>
-	<system:String x:Key="SettingsEnableDeveloperMode">Enable Developer Mode</system:String>
-	<system:String x:Key="SettingsEnableDeveloperModeToolTip">Enables developer/test releases of SIT and SIT server for testing purposes</system:String>
+	<system:String x:Key="SettingsEnableDeveloperMode">Увімкнути режим розробника</system:String>
+	<system:String x:Key="SettingsEnableDeveloperModeToolTip">Увімкнення режиму розробника/тестових випусків SIT та сервера SIT для тестування</system:String>
 	<system:String x:Key="SettingsLanguageTitle">Мова:</system:String>
 	<system:String x:Key="SettingsLanguageTitleToolTip">Перекладає весь лаунчер на вашу мову, оберіть свою мову!</system:String>
 	<system:String x:Key="SettingsAccentColorTitle">Колір акценту:</system:String>
@@ -155,7 +155,7 @@
 	<system:String x:Key="SettingsServerConsoleFontFamilyTitle">Шрифт:</system:String>
 	<system:String x:Key="SettingsServerConsoleFontColorTitle">Колір Шрифту:</system:String>
 	<system:String x:Key="SettingsManagerVersionTitle">Версія Менеджера (Лаунчера):</system:String>
-	
+
 	<!-- Location Editor View -->
 	<system:String x:Key="LocationEditorLoadButtonTitle">Завантажити</system:String>
 	<system:String x:Key="LocationEditorSaveButtonTitle">Зберегти</system:String>
@@ -212,7 +212,7 @@
 	<system:String x:Key="LocationEditorForceSpawnContent">Примусовий Спаун</system:String>
 	<system:String x:Key="LocationEditorIgnoreMaxBotsContent">Ігнорувати Максимальну Кількість Ботів</system:String>
 	<system:String x:Key="LocationEditorRandomTimeSpawnContent">Випадковий Час Спауну</system:String>
-	
+
 	<!-- LocationEditor ViewModel -->
 	<system:String x:Key="LocationEditorViewModelLoadErrorTitle">Помилка завантаження</system:String>
 	<system:String x:Key="LocationEditorViewModelLoadErrorDescription">Під час збереження файлу виникла помилка.</system:String>
@@ -251,9 +251,9 @@
 	<system:String x:Key="SettingsPageViewModelConfigInformationEFTDescription">Шлях встановлення EFT встановлено на '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">Шлях встановлення SPT-AKI встановлено на '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigErrorSPTAKI">Вибрана тека є недійсною. Переконайтеся, що це вірна тека сервера SPT-AKI.</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">Enable Developer Mod Failure</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">Can't enable developer mode as you have %1 incompatible mods still enabled</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorButtonOk">Ok</system:String>
+	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">Помилка ввімкнення режиму розробника</system:String>
+	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">Неможливо ввімкнути режим розробника, бо у вас %1 несумісні моди все ще ввімкнені</system:String>
+	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorButtonOk">Ок</system:String>
 
 	<!-- Server Page ViewModel -->
 	<system:String x:Key="ServerPageViewModelStartingServer">Запуск сервера!</system:String>
@@ -305,8 +305,8 @@
 	<system:String x:Key="InstallServiceInstallSuccessfulTitle">Встановлення</system:String>
 	<system:String x:Key="InstallServiceInstallSuccessfulDescription">Установка сервера пройшла успішно.</system:String>
 	<system:String x:Key="InstallServiceInstallSITSuccessfulDescription">Установка SIT пройшла успішно.</system:String>
-	<system:String x:Key="InstallerServiceNoDowngradePatcher">Для цієї версії Таркова нема доступних програм для відкату версії.</system:String>
-	<system:String x:Key="InstallServiceSSLError">Your ISP is likely blocking our connection. Please use a VPN and try again.</system:String>
+	<system:String x:Key="InstallerServiceNoDowngradePatcher">Для цієї версії EFT нема доступних програм для відкату версії.</system:String>
+	<system:String x:Key="InstallServiceSSLError">Ваш провайдер, ймовірно, блокує наше з'єднання. Будь ласка, скористайтеся VPN і спробуйте ще раз.</system:String>
 
 	<!-- File Service -->
 	<system:String x:Key="FileServiceProgressDownloading">Завантаження файлу '%1'</system:String>
@@ -333,7 +333,7 @@
 	<system:String x:Key="ConfigureViewStartInstallButtonTitle">Почати установку</system:String>
 	<system:String x:Key="ConfigureViewBackButtonTitle">Назад</system:String>
 	<system:String x:Key="ConfigureViewVersionSelectionGroupTitle">Вибір версії</system:String>
-	<system:String x:Key="ConfigureViewPersonalizationOptions">Personalization and Import Options</system:String>
+	<system:String x:Key="ConfigureViewPersonalizationOptions">Персоналізація та Імпорт Налаштувань</system:String>
 
 	<!-- Install - Configure Server View -->
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathToolTip">Змінити шлях установки SPT-AKI.</system:String>
@@ -346,16 +346,17 @@
 	<!-- Install - Configure Sit View -->
 	<system:String x:Key="ConfigureSitViewLoadingVersionSelectionText">Визначення доступних версій SIT, будь ласка, зачекайте...</system:String>
 	<system:String x:Key="ConfigureSitViewEFTChangeInstallPathToolTip">Змінити шлях установки EFT.</system:String>
+	<system:String x:Key="ConfigureSitViewVersionSelectionErrorMessage">Unable to determine available SIT versions...</system:String>
 	<system:String x:Key="ConfigureSitViewEFTSettingsButtonChangeTitle">Змінити</system:String>
 	<system:String x:Key="ConfigureSitViewEFTInstallPathPlaceholder">Шлях установки EFT...</system:String>
 	<system:String x:Key="ConfigureSitViewEFTInstallPathTitle">Шлях EFT:</system:String>
 	<system:String x:Key="ConfigureSitViewEFTPathWarningNoPath">Наразі використовується місце встановлення BSG EFT. Будь ласка, встановіть EFT в інше місце, щоб уникнути можливих проблем з SIT</system:String>
 	<system:String x:Key="ConfigureSitViewMirrorSelectionTitle">Виберіть дзеркало для використання:</system:String>
 	<system:String x:Key="ConfigureSitViewVersionSelectionTitle">Версія для установки:</system:String>
-	<system:String x:Key="ConfigureSitViewRecommendedModsTitle">Recommended Mods</system:String>
-	<system:String x:Key="ConfigureSitViewRecommendedModsDescription">Choose from the available mods which we recommend you install alongside SIT</system:String>
-	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTip">Import Live Game Graphic, Audio, and Control settings to SIT</system:String>
-	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTitle">Import EFT Settings to SIT</system:String>
+	<system:String x:Key="ConfigureSitViewRecommendedModsTitle">Рекомендовані модифікації</system:String>
+	<system:String x:Key="ConfigureSitViewRecommendedModsDescription">Виберіть з доступних модів, які ми рекомендуємо вам встановити разом з SIT</system:String>
+	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTip">Імпортувати налаштування графіки, звуку та керування живої гри до SIT</system:String>
+	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTitle">Імпортувати налаштування EFT до SIT</system:String>
 
 	<!-- Install - Configure Sit View Model -->
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorTitle">Помилка вибору місця розташування</system:String>
@@ -373,7 +374,7 @@
 	<system:String x:Key="PatchViewDownloadingTitle">Завантаження патчера</system:String>
 	<system:String x:Key="PatchViewExtractingTitle">Розпакування патчера</system:String>
 	<system:String x:Key="PatchViewPatchingErrorMessage">Помилка при спробі патчу EFT. Деталі дивіться у журналах</system:String>
-	<system:String x:Key="PatchViewAquirePatcherErrorMessage">Error trying to aquire the patcher for EFT, please consult the logs for more details</system:String>
+	<system:String x:Key="PatchViewAquirePatcherErrorMessage">Помилка при спробі отримати патч для EFT, будь ласка, зверніться до логів (журналів) для більш детальної інформації</system:String>
 	<system:String x:Key="PatchViewPatchingEndInstallButtonTitle">Завершити установку</system:String>
 
 	<!-- Install - Select View -->
@@ -387,8 +388,8 @@
 
 	<system:String x:Key="SelectViewInstallSITButtonTitle">Встановити SIT</system:String>
 	<system:String x:Key="SelectViewInstallSITButtonToolTip">Понизити версію EFT за потреби, встановити SIT та підтримку модів.</system:String>
-	<system:String x:Key="SelectViewUpdateSITButtonTitle">Update SIT</system:String>
-	<system:String x:Key="SelectViewUpdateSITButtonToolTip">Update SIT to the latest version available for your current EFT version</system:String>
+	<system:String x:Key="SelectViewUpdateSITButtonTitle">Оновлення SIT</system:String>
+	<system:String x:Key="SelectViewUpdateSITButtonToolTip">Оновіть SIT до останньої версії, доступної для вашої поточної версії EFT</system:String>
 	<system:String x:Key="SelectViewSITVersionTitle">Версія SIT:</system:String>
 	<system:String x:Key="SelectViewEFTVersionTitle">Версія EFT:</system:String>
 	<system:String x:Key="SelectViewEFTPathTitle">Шлях EFT:</system:String>
@@ -402,5 +403,5 @@
 	<system:String x:Key="InstallPageViewModelPatchText">Патч</system:String>
 	<system:String x:Key="InstallPageViewModelInstallText">Встановлення</system:String>
 	<system:String x:Key="InstallPageViewModelCompleteText">Завершення</system:String>
-	
+
 </ResourceDictionary>

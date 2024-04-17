@@ -29,7 +29,7 @@ public partial class ManagerConfig : ObservableObject
     [ObservableProperty]
     public string _sitVersion = string.Empty;
     [ObservableProperty]
-    private DateTime _lastSitUpdateCheckTime = DateTime.MaxValue;
+    private DateTime _lastSitUpdateCheckTime = DateTime.MinValue;
     [ObservableProperty]
     public string _sptAkiVersion = string.Empty;
     [ObservableProperty]
@@ -37,7 +37,7 @@ public partial class ManagerConfig : ObservableObject
     [ObservableProperty]
     public bool _lookForUpdates = true;
     [ObservableProperty]
-    private DateTime _lastManagerUpdateCheckTime = DateTime.MaxValue;
+    private DateTime _lastManagerUpdateCheckTime = DateTime.MinValue;
     [ObservableProperty]
     public string _currentLanguageSelected = CultureInfo.CurrentCulture.Name;
     [ObservableProperty]

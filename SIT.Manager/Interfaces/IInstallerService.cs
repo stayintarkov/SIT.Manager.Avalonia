@@ -43,7 +43,7 @@ public interface IInstallerService
     /// Check to see if there is an update available for the currently installed version of SIT or not
     /// </summary>
     /// <returns>True if there is an update; otherwise False</returns>
-    Task<bool> IsSitUpateAvailable();
+    Task<bool> IsSitUpdateAvailable();
     /// <summary>
     /// Fetch all of the currently available Server Releases
     /// </summary>

@@ -237,9 +237,13 @@ public partial class ToolsPageViewModel : ObservableObject
 
     private async Task GenerateDiagnosticReport()
     {
-        var results = await new SelectLogsDialog().ShowAsync();
+        (ContentDialogResult result, DiagnosticsOptions options) = await new SelectLogsDialog().ShowAsync();
+        if (result != ContentDialogResult.Primary)
+        {
+            return;
+        }
 
-        using (Stream diagnosticArchive = await _diagnosticService.GenerateDiagnosticReport(results))
+        using (Stream diagnosticArchive = await _diagnosticService.GenerateDiagnosticReport(options))
         {
             string savePath;
             Window? mainWindow = (App.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
