@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 namespace SIT.Manager.Services.Caching;
 public class CachingService : ICachingService
 {
-    public ICachingProvider InMemory { get; } = new InMemoryCachingService();
-    //public readonly ICachingService OnDisk = new OnDiskCachingService();
+    private const string CACHE_PATH = "Cache";
+    public ICachingProvider InMemory { get; } = new InMemoryCachingService(CACHE_PATH);
+    public ICachingProvider OnDisk { get; } = new OnDiskCachingService(CACHE_PATH);
 }

@@ -6,10 +6,10 @@ using System.Threading;
 
 namespace SIT.Manager.Services.Caching;
 
-public class InMemoryCachingService() : ICachingProvider
+public class InMemoryCachingService(string cachePath) : ICachingProvider
 {
     private readonly ConcurrentDictionary<string, CacheEntry> _memoryCache = new();
-    //TODO Implement this properly
+    private readonly string _cachePath = cachePath;
     public event EventHandler<EvictedEventArgs>? Evicted;
 
     public void Clear(string prefix = "")
@@ -69,30 +69,6 @@ public class InMemoryCachingService() : ICachingProvider
         {
             //TODO: log exception here
             return CacheValue<T>.NoValue;
-        }
-    }
-
-    public object? Get(string key)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
-
-        if (!_memoryCache.TryGetValue(key, out CacheEntry? cacheEntry))
-            return null;
-
-        if (cacheEntry.ExpiraryDate < DateTime.UtcNow)
-        {
-            RemoveExpiredKey(key);
-            return null;
-        }
-
-        try
-        {
-            return cacheEntry.Value;
-        }
-        catch (Exception ex)
-        {
-            //TODO: log exception
-            return null;
         }
     }
 
