@@ -31,7 +31,7 @@
 					  HorizontalScrollBarVisibility="Disabled"
 					  Margin="0,8,0,0">
 			<ItemsControl Name="ConsoleLogItemsControl"
-						  ItemsSource="{Binding ServerUriList}">
+						  ItemsSource="{Binding ServerList}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
 						<VirtualizingStackPanel Orientation="Vertical"/>
@@ -41,8 +41,7 @@
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
 						<StackPanel>
-							<TextBlock Text="{Binding}"/>
-							<pv:ServerSummaryView ServerUri="{Binding}" Tag="{Binding}"/>
+							<pv:ServerSummaryView DataContext="{Binding}"/>
 						</StackPanel>
 					</DataTemplate>
 				</ItemsControl.ItemTemplate>

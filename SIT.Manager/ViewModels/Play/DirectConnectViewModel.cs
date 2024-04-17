@@ -1,15 +1,10 @@
-﻿using Avalonia.Threading;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.Logging;
 using SIT.Manager.Interfaces;
 using SIT.Manager.ManagedProcess;
 using SIT.Manager.Models;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace SIT.Manager.ViewModels.Play;
 
@@ -77,8 +72,8 @@ public partial class DirectConnectViewModel : ObservableObject
         _password = _configService.Config.Password;
         _rememberMe = _configService.Config.RememberLogin;
 
-        ConnectToServerCommand = new AsyncRelayCommand(async () => await ConnectToServer());
-        QuickPlayCommand = new AsyncRelayCommand(async () => await ConnectToServer(true));
+        // TODO ConnectToServerCommand = new AsyncRelayCommand(async () => await ConnectToServer());
+        // TODO QuickPlayCommand = new AsyncRelayCommand(async () => await ConnectToServer(true));
     }
 
     /* TODO
@@ -104,12 +99,10 @@ public partial class DirectConnectViewModel : ObservableObject
         }
         return launchArguments;
     }
-    */
 
     //TODO: Refactor this so avoid the repeat after registering. This also violates the one purpose rule anyway
     private async Task<string> LoginToServerAsync(Uri address)
     {
-        /* TODO
         TarkovRequesting requesting = ActivatorUtilities.CreateInstance<TarkovRequesting>(_serviceProvider, address);
         TarkovLoginInfo loginInfo = new()
         {
@@ -177,7 +170,7 @@ public partial class DirectConnectViewModel : ObservableObject
                 CloseButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonOk")
             }.ShowAsync();
         }
-        */
+
         return string.Empty;
     }
 
@@ -333,14 +326,13 @@ public partial class DirectConnectViewModel : ObservableObject
             return;
 
         Version SITVersion;
-        if (_configService.Config.SitVersion == null)
+        if (string.IsNullOrWhiteSpace(_configService.Config.SitVersion))
             SITVersion = new();
         else
             SITVersion = new(_configService.Config.SitVersion);
         string backendUrl = serverAddress.AbsoluteUri[..^(SITVersion >= standardUriFormatSupportedVersion ? 0 : 1)];
 
         // Launch game
-        /* TODO
         string launchArguments = CreateLaunchArguments(new TarkovLaunchConfig { BackendUrl = backendUrl }, token);
         try
         {
@@ -370,5 +362,4 @@ public partial class DirectConnectViewModel : ObservableObject
             }
         }
         */
-    }
 }

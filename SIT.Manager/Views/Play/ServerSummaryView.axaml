@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:controls="clr-namespace:SIT.Manager.Controls"
 			 xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Play"
              mc:Ignorable="d"
 			 d:DesignWidth="800" 
@@ -19,9 +20,21 @@
 			  VerticalAlignment="Center">
 			<TextBlock Grid.Column="0"
 					   VerticalAlignment="Center"
+					   IsVisible="{Binding !IsLoading}"
 					   Text="Image Placeholder"/>
 
+			<controls:LoadingSpinner Grid.Column="1"
+									 Width="64"
+									 Height="{Binding $self.Width}"
+									 IsVisible="{Binding IsLoading}"
+									 Margin="0,8,0,0"
+									 HorizontalAlignment="Center"
+									 VerticalAlignment="Center"
+									 Foreground="{DynamicResource TextControlForeground}"
+									 StrokeWidth="8"/>
+
 			<StackPanel Grid.Column="1"
+						IsVisible="{Binding !IsLoading}"
 						Margin="8,0">
 				<TextBlock Text="{Binding Server.Name}"
 						   FontSize="24"
@@ -30,6 +43,7 @@
 			</StackPanel>
 
 			<StackPanel Grid.Column="2"
+						IsVisible="{Binding !IsLoading}"
 						VerticalAlignment="Center">
 				<Viewbox Width="24"
 						 Height="24">
@@ -40,8 +54,7 @@
 				<TextBlock HorizontalAlignment="Center">
 					<Run Text="{Binding Server.Ping}"/>
 					<Run Text="ms"/>
-				</TextBlock>
-					
+				</TextBlock>					
 			</StackPanel>
 		</Grid>
 	</Border>

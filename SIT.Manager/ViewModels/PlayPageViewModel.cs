@@ -1,11 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Models;
 using SIT.Manager.Models.Aki;
 using SIT.Manager.Models.Messages;
 using SIT.Manager.Services;
+using SIT.Manager.ViewModels.Play;
 using SIT.Manager.Views.Play;
 using System;
 using System.Collections.Generic;
@@ -20,7 +23,7 @@ public partial class PlayPageViewModel : ObservableObject
 {
     private readonly IAkiServerRequestingService _serverService;
 
-    public ObservableCollection<string> ServerUriList { get; } = [];
+    public ObservableCollection<ServerSummaryViewModel> ServerList { get; } = [];
 
     public IAsyncRelayCommand CreateServerCommand { get; }
 
@@ -92,7 +95,7 @@ public partial class PlayPageViewModel : ObservableObject
         string serverUriString = await dialog.ShowAsync();
         if (!string.IsNullOrEmpty(serverUriString))
         {
-            ServerUriList.Add(serverUriString);
+            ServerList.Add(new ServerSummaryViewModel(serverUriString, App.Current.Services.GetService<ILogger<ServerSummaryViewModel>>(), App.Current.Services.GetService<IAkiServerRequestingService>()));
         }
     }
 }
