@@ -1,0 +1,56 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Play"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SIT.Manager.Views.Play.CharacterSelectionView"
+			 x:DataType="vm:CharacterSelectionViewModel">
+	<Grid RowDefinitions="Auto, *"
+		  Margin="8">
+		<Border Grid.Row="0"
+				Margin="4,0,4,8"
+				Background="Black"
+				Classes="StandardFrame">
+			<Grid ColumnDefinitions="Auto, *, Auto">
+				<!--TODO add command -->
+				<Button Grid.Column="0"
+						VerticalAlignment="Center"
+						Content="Back"/>
+
+				<!--TODO add command -->
+				<Button Grid.Column="2"
+						VerticalAlignment="Center"
+						Content="Create Character"/>
+			</Grid>
+		</Border>
+
+		<ScrollViewer Grid.Row="1"
+					  HorizontalScrollBarVisibility="Disabled"
+					  Margin="0,8,0,0">
+			<ItemsControl Name="ConsoleLogItemsControl"
+						  ItemsSource="{Binding ServerProfiles}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<VirtualizingStackPanel Orientation="Vertical"/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<StackPanel>
+							<TextBlock Text="{Binding Username}"/>
+							<TextBlock Text="{Binding Nickname}"/>
+							<TextBlock Text="{Binding Side}"/>
+							<TextBlock Text="{Binding CurrentLevel}"/>
+							<TextBlock Text="{Binding CurrentExperience}"/>
+							<TextBlock Text="{Binding PreviousExperience}"/>
+							<TextBlock Text="{Binding NextExperience}"/>
+							<TextBlock Text="{Binding MaxLevel}"/>
+						</StackPanel>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</ScrollViewer>
+	</Grid>
+</UserControl>

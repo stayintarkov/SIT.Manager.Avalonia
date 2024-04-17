@@ -18,10 +18,14 @@
 			Background="Black">
 		<Grid ColumnDefinitions="Auto, *, Auto"
 			  VerticalAlignment="Center">
-			<TextBlock Grid.Column="0"
-					   VerticalAlignment="Center"
-					   IsVisible="{Binding !IsLoading}"
-					   Text="Image Placeholder"/>
+			<Image Grid.Column="0"
+				   Height="64"
+				   Width="64"
+				   Stretch="Uniform"
+				   StretchDirection="Both"
+				   VerticalAlignment="Center"
+				   IsVisible="{Binding !IsLoading}"
+				   Source="{Binding ServerImage}"/>
 
 			<controls:LoadingSpinner Grid.Column="1"
 									 Width="64"
@@ -39,7 +43,23 @@
 				<TextBlock Text="{Binding Name}"
 						   FontSize="24"
 						   FontWeight="Bold"/>
-				<TextBlock Text="{Binding Address}"/>
+
+				<Grid ColumnDefinitions="*, Auto, Auto, Auto">
+					<TextBlock Text="{Binding Address}"
+							   VerticalAlignment="Center"/>
+					<Button Grid.Column="1"
+							Margin="4,0"
+							Content="Delete"
+							Command="{Binding DeleteCommand}"/>
+					<Button Grid.Column="2"
+							Margin="4,0"
+							Content="Edit"
+							Command="{Binding EditCommand}"/>
+					<Button Grid.Column="3"
+							Margin="4,0"
+							Content="Connect"
+							Command="{Binding ConnectCommand}"/>
+				</Grid>
 			</StackPanel>
 
 			<StackPanel Grid.Column="2"
