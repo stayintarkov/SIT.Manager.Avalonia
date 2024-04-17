@@ -16,6 +16,17 @@ internal class OnDiskCachingProvider(string cachePath) : CachingProviderBase(cac
     private const string RESTORE_FILE_NAME = "fileCache.dat";
     protected override string RestoreFileName => RESTORE_FILE_NAME;
 
+    protected override void RemoveExpiredKey(string key)
+    {
+        if(_cacheMap.TryGetValue(key, out CacheEntry? cacheEntry))
+        {
+            string cacheFilePath = cacheEntry.GetValue<string>();
+            if(File.Exists(cacheFilePath))
+                File.Delete(cacheFilePath);
+        }
+        base.RemoveExpiredKey(key);
+    }
+
     public override bool Add<T>(string key, T value, TimeSpan? expiryTime = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
