@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Services.Caching;
-internal class CacheEntry(string key, object value, DateTime expiaryDate)
+internal class CacheEntry
 {
-    private object _cacheValue = value;
-    internal string Key { get; private set; } = key;
-    internal DateTime ExpiraryDate { get; private set; } = expiaryDate;
-    internal DateTime LastAccess { get; private set; } = default;
-    internal DateTime LastModified { get; private set; } = DateTime.Now;
-    internal object Value
+    private object _cacheValue;
+    public string Key { get; private set; }
+    public DateTime ExpiryDate { get; private set; }
+    public DateTime LastAccess { get; private set; } = default;
+    public DateTime LastModified { get; private set; } = DateTime.Now;
+    public object Value
     {
         get
         {
@@ -25,6 +26,14 @@ internal class CacheEntry(string key, object value, DateTime expiaryDate)
             LastAccess = DateTime.UtcNow;
             LastModified = DateTime.UtcNow;
         }
+    }
+
+    [JsonConstructor]
+    public CacheEntry(string key, object value, DateTime expiryDate)
+    {
+        this.Key = key;
+        this._cacheValue = value;
+        this.ExpiryDate = expiryDate;
     }
 
     public T GetValue<T>()

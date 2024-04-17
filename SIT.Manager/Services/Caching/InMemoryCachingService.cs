@@ -1,16 +1,53 @@
-﻿using System;
+﻿using Avalonia.Controls.ApplicationLifetimes;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 
 namespace SIT.Manager.Services.Caching;
 
-public class InMemoryCachingService(string cachePath) : ICachingProvider
+public class InMemoryCachingService : ICachingProvider
 {
+    private const string RESTORE_FILE_NAME = "memoryCache.dat";
     private readonly ConcurrentDictionary<string, CacheEntry> _memoryCache = new();
-    private readonly string _cachePath = cachePath;
+    private readonly DirectoryInfo _cachePath;
     public event EventHandler<EvictedEventArgs>? Evicted;
+
+    public InMemoryCachingService(string cachePath)
+    {
+        _cachePath = new(cachePath);
+        _cachePath.Create();
+
+        string restoreFilePath = Path.Combine(_cachePath.FullName, RESTORE_FILE_NAME);
+        if (File.Exists(restoreFilePath))
+        {
+            _memoryCache = JsonSerializer.Deserialize<ConcurrentDictionary<string, CacheEntry>>(File.ReadAllText(restoreFilePath)) ?? new();
+        }
+        else
+        {
+            _memoryCache = new();
+        }
+
+        if(App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime)
+        {
+            lifetime.ShutdownRequested += (sender, e) =>
+            {
+                SaveKeysToFile();
+            };
+        }
+    }
+
+    private void SaveKeysToFile()
+    {
+        if (_memoryCache.IsEmpty)
+            return;
+
+        string keyDataPath = Path.Combine(_cachePath.FullName, RESTORE_FILE_NAME);
+        File.WriteAllText(keyDataPath, JsonSerializer.Serialize(_memoryCache));
+    }
 
     public void Clear(string prefix = "")
     {
@@ -30,7 +67,7 @@ public class InMemoryCachingService(string cachePath) : ICachingProvider
 
     public int GetCount(string prefix = "")
     {
-        IEnumerable<CacheEntry> cacheItems = cacheItems = _memoryCache.Values.Where(x => x.ExpiraryDate > DateTime.UtcNow);
+        IEnumerable<CacheEntry> cacheItems = cacheItems = _memoryCache.Values.Where(x => x.ExpiryDate > DateTime.UtcNow);
         if (!string.IsNullOrWhiteSpace(prefix))
         {
             cacheItems = cacheItems.Where(x => x.Key.StartsWith(prefix));
@@ -54,7 +91,7 @@ public class InMemoryCachingService(string cachePath) : ICachingProvider
         if (!_memoryCache.TryGetValue(key, out CacheEntry? cacheEntry))
             return CacheValue<T>.NoValue;
 
-        if (cacheEntry.ExpiraryDate < DateTime.UtcNow)
+        if (cacheEntry.ExpiryDate < DateTime.UtcNow)
         {
             RemoveExpiredKey(key);
             return CacheValue<T>.NoValue;
@@ -108,7 +145,7 @@ public class InMemoryCachingService(string cachePath) : ICachingProvider
 
     private bool SetInternal(CacheEntry entry, bool addOnly = false)
     {
-        if (entry.ExpiraryDate < DateTime.UtcNow)
+        if (entry.ExpiryDate < DateTime.UtcNow)
         {
             RemoveExpiredKey(entry.Key);
             return false;
@@ -118,7 +155,7 @@ public class InMemoryCachingService(string cachePath) : ICachingProvider
         {
             if (!_memoryCache.TryAdd(entry.Key, entry))
             {
-                if (!_memoryCache.TryGetValue(entry.Key, out CacheEntry? existingEntry) || existingEntry.ExpiraryDate < DateTime.UtcNow)
+                if (!_memoryCache.TryGetValue(entry.Key, out CacheEntry? existingEntry) || existingEntry.ExpiryDate < DateTime.UtcNow)
                     return false;
 
                 _memoryCache.AddOrUpdate(entry.Key, entry, (k, cacheEntry) => entry);
@@ -135,7 +172,7 @@ public class InMemoryCachingService(string cachePath) : ICachingProvider
     public bool Exists(string key)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
-        return _memoryCache.TryGetValue(key, out CacheEntry? entry) && entry.ExpiraryDate > DateTime.UtcNow;
+        return _memoryCache.TryGetValue(key, out CacheEntry? entry) && entry.ExpiryDate > DateTime.UtcNow;
     }
 
     public bool Remove(string key)
@@ -159,7 +196,7 @@ public class InMemoryCachingService(string cachePath) : ICachingProvider
     public IEnumerable<string> GetAllKeys(string prefix)
     {
         return _memoryCache.Values
-            .Where(x => x.Key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase) && x.ExpiraryDate > DateTime.UtcNow)
+            .Where(x => x.Key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase) && x.ExpiryDate > DateTime.UtcNow)
             .Select(x => x.Key).ToList();
     }
 }

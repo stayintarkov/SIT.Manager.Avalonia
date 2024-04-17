@@ -1,4 +1,5 @@
-﻿using PeNet;
+﻿using Avalonia.Controls.ApplicationLifetimes;
+using PeNet;
 using SIT.Manager.Interfaces;
 using System;
 using System.Collections.Concurrent;
@@ -32,6 +33,14 @@ internal class OnDiskCachingService : ICachingProvider
         else
         {
             _cacheKeysMap = new();
+        }
+
+        if (App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime)
+        {
+            lifetime.ShutdownRequested += (sender, e) =>
+            {
+                SaveKeysToFile();
+            };
         }
     }
 
@@ -82,7 +91,6 @@ internal class OnDiskCachingService : ICachingProvider
         bool success = _cacheKeysMap.TryAdd(key, new CacheEntry(key, filePath, expiryDate));
         if (success)
         {
-            SaveKeysToFile();
             return true;
         }
         else
@@ -105,7 +113,7 @@ internal class OnDiskCachingService : ICachingProvider
     public bool Exists(string key)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
-        return _cacheKeysMap.TryGetValue(key, out CacheEntry? entry) && entry.ExpiraryDate > DateTime.UtcNow;
+        return _cacheKeysMap.TryGetValue(key, out CacheEntry? entry) && entry.ExpiryDate > DateTime.UtcNow;
     }
 
     internal void RemoveExpiredKey(string key)
@@ -123,7 +131,7 @@ internal class OnDiskCachingService : ICachingProvider
         if(!_cacheKeysMap.TryGetValue(key, out CacheEntry? cacheEntry))
             return CacheValue<T>.NoValue;
 
-        if(cacheEntry.ExpiraryDate < DateTime.UtcNow)
+        if(cacheEntry.ExpiryDate < DateTime.UtcNow)
         {
             RemoveExpiredKey(key);
             return CacheValue<T>.NoValue;
@@ -181,31 +189,62 @@ internal class OnDiskCachingService : ICachingProvider
 
     public IEnumerable<string> GetAllKeys(string prefix)
     {
-        throw new NotImplementedException();
+        return _cacheKeysMap.Values
+            .Where(x => x.Key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase) && x.ExpiryDate > DateTime.UtcNow)
+            .Select(x => x.Key).ToList();
     }
 
     public int GetCount(string prefix = "")
     {
-        throw new NotImplementedException();
+        IEnumerable<CacheEntry> cacheItems = cacheItems = _cacheKeysMap.Values.Where(x => x.ExpiryDate > DateTime.UtcNow);
+        if (!string.IsNullOrWhiteSpace(prefix))
+        {
+            cacheItems = cacheItems.Where(x => x.Key.StartsWith(prefix));
+        }
+
+        return cacheItems.Count();
     }
 
     public CacheValue<T> GetOrCompute<T>(string key, Func<string, T> computor, TimeSpan? expiaryTime = null)
     {
-        throw new NotImplementedException();
+        ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
+
+        bool success = TryGet(key, out CacheValue<T> valOut);
+        if (success)
+            return valOut;
+
+        T computedValue = computor(key);
+        bool addSuccess = Add(key, computedValue, expiaryTime);
+
+        if (!addSuccess)
+            throw new Exception("Cached value did not exist but could not be added to the cache");
+
+        return Get<T>(key);
     }
 
     public bool Remove(string key)
     {
-        throw new NotImplementedException();
+        ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
+        return _cacheKeysMap.TryRemove(key, out _);
     }
 
     public int RemoveByPrefix(string prefix)
     {
-        throw new NotImplementedException();
+        var keysToRemove = _cacheKeysMap.Keys.Where(x => x.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)).ToList();
+        int removed = 0;
+        foreach (var key in keysToRemove)
+        {
+            if (Remove(key))
+                removed++;
+        }
+        return removed;
     }
 
     public bool TryGet<T>(string key, out CacheValue<T> cacheValue)
     {
-        throw new NotImplementedException();
+        cacheValue = Get<T>(key);
+        if (cacheValue == CacheValue<T>.NoValue || cacheValue == CacheValue<T>.Null)
+            return false;
+        return true;
     }
 }
