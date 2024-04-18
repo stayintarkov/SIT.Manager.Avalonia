@@ -5,6 +5,7 @@ using SIT.Manager.Extentions;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Models.Aki;
 using SIT.Manager.Models.Play;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -24,7 +25,19 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
         _logger = logger;
         _serverService = serverService;
 
-        _connectedServer = WeakReferenceMessenger.Default.Send<ConnectedServerRequestMessage>();
+        try
+        {
+            _connectedServer = WeakReferenceMessenger.Default.Send<ConnectedServerRequestMessage>();
+        }
+        catch (Exception ex)
+        {
+            _connectedServer = new AkiServer(new Uri("http://127.0.0.1:6969"))
+            {
+                Characters = [],
+                Name = "N/A",
+                Ping = -1
+            };
+        }
     }
 
     protected override async void OnActivated()

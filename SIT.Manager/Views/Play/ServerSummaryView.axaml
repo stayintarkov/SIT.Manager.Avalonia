@@ -45,6 +45,7 @@
 						   FontWeight="Bold"/>
 
 				<Grid ColumnDefinitions="*, Auto, Auto, Auto">
+					<!-- TODO make this respect ManagerConfig.HideIpAddress and also provide a local toggle for this button -->
 					<TextBlock Text="{Binding Address}"
 							   VerticalAlignment="Center"/>
 					<Button Grid.Column="1"

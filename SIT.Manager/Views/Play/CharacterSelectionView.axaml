@@ -27,7 +27,7 @@
 
 		<ScrollViewer Grid.Row="1"
 					  HorizontalScrollBarVisibility="Disabled"
-					  Margin="0,8,0,0">
+					  Margin="0,8,12,0">
 			<ItemsControl Name="ConsoleLogItemsControl"
 						  ItemsSource="{Binding ServerProfiles}">
 				<ItemsControl.ItemsPanel>
@@ -38,16 +38,43 @@
 
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
-						<StackPanel>
-							<TextBlock Text="{Binding Username}"/>
-							<TextBlock Text="{Binding Nickname}"/>
-							<TextBlock Text="{Binding Side}"/>
-							<TextBlock Text="{Binding CurrentLevel}"/>
-							<TextBlock Text="{Binding CurrentExperience}"/>
-							<TextBlock Text="{Binding PreviousExperience}"/>
-							<TextBlock Text="{Binding NextExperience}"/>
-							<TextBlock Text="{Binding MaxLevel}"/>
-						</StackPanel>
+						<Border Classes="StandardFrame"
+								Margin="0,8"
+								Background="Black">
+							<Grid ColumnDefinitions="Auto, *, Auto">								
+								<TextBlock Grid.Column="0" 
+										   VerticalAlignment="Center"
+										   Text="{Binding Side}"/>
+
+								<StackPanel Grid.Column="1"
+											Margin="8,0">
+									<TextBlock FontSize="24"
+											   FontWeight="Bold"
+											   Text="{Binding Nickname}"/>
+
+									<TextBlock FontStyle="Italic"
+											   Text="{Binding Username}"/>
+
+									<Grid ColumnDefinitions="Auto, *, Auto"
+										  VerticalAlignment="Center">
+										<TextBlock Grid.Column="0"
+												   Text="{Binding CurrentLevel}"/>
+										<ProgressBar Grid.Column="1"
+													 Margin="8,0"
+													 Minimum="{Binding PreviousExperience}"
+													 Value="{Binding CurrentExperience}"
+													 Height="4"
+													 Maximum="{Binding NextExperience}"/>
+										<TextBlock Grid.Column="2"
+												   Text="{Binding MaxLevel}"/>
+									</Grid>
+								</StackPanel>
+
+								<!-- TODO bind command -->
+								<Button Grid.Column="2"
+										Content="Play"/>
+							</Grid>
+						</Border>
 					</DataTemplate>
 				</ItemsControl.ItemTemplate>
 			</ItemsControl>

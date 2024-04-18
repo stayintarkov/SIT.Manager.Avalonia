@@ -1,15 +1,12 @@
 ﻿using Polly;
 using Polly.Registry;
-using SIT.Manager.Exceptions;
 using SIT.Manager.Extentions;
 using SIT.Manager.Interfaces;
 using SIT.Manager.ManagedProcess;
 using SIT.Manager.Models.Aki;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -23,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace SIT.Manager.Services;
 public class AkiServerRequestingService(
-    HttpClient httpClient, 
+    HttpClient httpClient,
     ResiliencePipelineProvider<string> resiliencePipelineProvider,
     IManagerConfigService configService) : IAkiServerRequestingService
 {
@@ -88,7 +85,7 @@ public class AkiServerRequestingService(
         if (fetchInformation)
         {
             AkiServerInfo? serverInfo = await GetAkiServerInfoAsync(ret, cancellationToken);
-            if(serverInfo != null)
+            if (serverInfo != null)
             {
                 ret.Name = serverInfo.Name;
             }
