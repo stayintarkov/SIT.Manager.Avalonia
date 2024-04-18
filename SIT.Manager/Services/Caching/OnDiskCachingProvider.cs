@@ -20,11 +20,25 @@ internal class OnDiskCachingProvider(string cachePath) : CachingProviderBase(cac
     {
         if(_cacheMap.TryGetValue(key, out CacheEntry? cacheEntry))
         {
-            string cacheFilePath = cacheEntry.GetValue<JsonElement>().GetString() ?? string.Empty;
+            string cacheFilePath = cacheEntry.GetValue<string>() ?? string.Empty;
             if(File.Exists(cacheFilePath))
                 File.Delete(cacheFilePath);
         }
         base.RemoveExpiredKey(key);
+    }
+
+    protected override void CleanCache()
+    {
+        HashSet<string> validFileNames = new(_cacheMap.Values
+            .Where(x => x.ExpiryDate > DateTime.UtcNow)
+            .Select(x => Path.GetFileName(x.GetValue<string>())));
+
+        foreach (FileInfo file in _cachePath.GetFiles())
+        {
+            if (string.IsNullOrEmpty(file.Extension) && !validFileNames.Contains(file.Name))
+                file.Delete();
+        }
+        base.CleanCache();
     }
 
     public override bool Add<T>(string key, T value, TimeSpan? expiryTime = null)

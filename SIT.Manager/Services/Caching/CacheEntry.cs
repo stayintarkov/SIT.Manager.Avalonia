@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
@@ -52,6 +53,12 @@ internal class CacheEntry
             {
                 return (T) Convert.ChangeType(val, underlying);
             }
+        }
+
+        if(val.GetType() == typeof(JsonElement))
+        {
+            JsonElement jsonElement = (JsonElement) val;
+            return jsonElement.Deserialize<T>();
         }
 
         return (T) val;

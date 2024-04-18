@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -21,7 +22,7 @@ internal abstract class CachingProviderBase : ICachingProvider
     protected CachingProviderBase(string cachePath)
     {
         _cachePath = new(cachePath);
-        _landlord = new(new TimerCallback(EvictTenents), _cacheMap, TimeSpan.FromSeconds(30), TimeSpan.FromMinutes(2));
+        _landlord = new(new TimerCallback(EvictTenents), _cacheMap, TimeSpan.FromSeconds(30), TimeSpan.FromMinutes(0.5));
 
         _cachePath.Create();
 
@@ -33,9 +34,17 @@ internal abstract class CachingProviderBase : ICachingProvider
         {
             lifetime.ShutdownRequested += (sender, e) =>
             {
+                CleanCache();
                 SaveKeysToFile(RestoreFileName);
             };
         }
+
+        CleanCache();
+    }
+
+    protected virtual void CleanCache()
+    {
+        EvictTenents(_cacheMap);
     }
 
     protected virtual void SaveKeysToFile(string restoreFileName)
@@ -52,6 +61,7 @@ internal abstract class CachingProviderBase : ICachingProvider
     }
     protected virtual void EvictTenents(object? state)
     {
+        Debug.WriteLine("Evicting tenents");
         if (state == null)
             return;
 
@@ -59,7 +69,10 @@ internal abstract class CachingProviderBase : ICachingProvider
         foreach(CacheEntry entry in cache.Values)
         {
             if(entry.ExpiryDate <  DateTime.UtcNow)
+            {
+                Debug.WriteLine($"Evicting {entry.Key}");
                 RemoveExpiredKey(entry.Key);
+            }
         }
 
         SaveKeysToFile(RestoreFileName);
