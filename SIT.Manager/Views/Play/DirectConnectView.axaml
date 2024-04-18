@@ -10,8 +10,8 @@
 	<Grid Margin="10" >
 		<StackPanel>
 			<!--Address box-->
-			<Label Content="{DynamicResource AddressBoxTitle}" Margin="10 10 10 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
-			<TextBox Name="AddressBox" Text="{Binding LastServer, Mode=TwoWay}" MinWidth="300" Margin="10 5 10 10" HorizontalAlignment="Left" Watermark="{DynamicResource EnterServerAddressPlaceholder}" PasswordChar="*">
+			<Label Content="{DynamicResource AddressBoxTitle}" Margin="8 8 8 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
+			<TextBox Name="AddressBox" Text="{Binding LastServer, Mode=TwoWay}" MinWidth="300" Margin="8 4 8 8" HorizontalAlignment="Left" Watermark="{DynamicResource EnterServerAddressPlaceholder}" PasswordChar="*">
 				<TextBox.RevealPassword>
 					<MultiBinding Converter="{x:Static BoolConverters.Or}">
 						<Binding Path="#AddressBox.IsFocused"/>
@@ -20,25 +20,35 @@
 				</TextBox.RevealPassword>
 			</TextBox>
 			<!--Username box-->
-			<Label Content="{DynamicResource UsernameBoxTitle}" Margin="10 10 10 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
-			<TextBox Name="UsernameBox" Text="{Binding Username, Mode=TwoWay}" MinWidth="150" Margin="10 5 10 10" HorizontalAlignment="Left" Watermark="{DynamicResource EnterUserNamePlaceholder}"/>
+			<Label Content="{DynamicResource UsernameBoxTitle}" Margin="8 8 8 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
+			<TextBox Name="UsernameBox" Text="{Binding Username, Mode=TwoWay}" MinWidth="150" Margin="8 4 8 8" HorizontalAlignment="Left" Watermark="{DynamicResource EnterUserNamePlaceholder}"/>
 			<!--Password box-->
 			<Label Content="{DynamicResource PasswordBoxTitle}" Margin="10 10 10 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
-			<TextBox Name="PasswordBox" Text="{Binding Password, Mode=TwoWay}" MinWidth="150" Margin="10 5 10 10" HorizontalAlignment="Left" PasswordChar="●" Watermark="{DynamicResource EnterPasswordPlaceholder}"/>
-			<CheckBox Name="RememberMeCheck" Content="{DynamicResource RememberMeCheckBoxTitle}" Margin="10" IsChecked="{Binding RememberMe}"/>
-			<Button Name="ConnectButton" Command="{Binding ConnectToServerCommand}" Content="{DynamicResource ConnectButtonTitle}" ToolTip.Tip="{DynamicResource ConnectButtonTitleToolTip}" Margin="10"/>
-			<Button Name="QuickPlayButton" Command="{Binding QuickPlayCommand}" ToolTip.Tip="{DynamicResource StartServerAndConnectButtonTitleToolTip}" Margin="10">
-				<StackPanel Orientation="Horizontal">
-					<TextBlock Text="{Binding QuickPlayText}"/>
-					<controls:LoadingSpinner Width="12"
-											 Height="12"
-											 Margin="4,0,0,0"
-											 VerticalAlignment="Center"
-											 IsVisible="{Binding QuickPlayCommand.IsRunning}"
-											 Foreground="{DynamicResource TextControlForeground}"
-											 StrokeWidth="2"/>
-				</StackPanel>
-			</Button>
+			<TextBox Name="PasswordBox" Text="{Binding Password, Mode=TwoWay}" MinWidth="150" Margin="8 4 8 8" HorizontalAlignment="Left" PasswordChar="●" Watermark="{DynamicResource EnterPasswordPlaceholder}"/>
+			<CheckBox Name="RememberMeCheck" Content="{DynamicResource RememberMeCheckBoxTitle}" Margin="8" IsChecked="{Binding RememberMe}"/>
+
+			<StackPanel Orientation="Horizontal" Margin="8">
+				<Button Name="ConnectButton" 
+						Command="{Binding ConnectToServerCommand}" 
+						Content="{DynamicResource ConnectButtonTitle}" 
+						ToolTip.Tip="{DynamicResource ConnectButtonTitleToolTip}"
+						Margin="0,0,4,0"/>
+				<Button Name="QuickPlayButton" 
+						Command="{Binding QuickPlayCommand}" 
+						ToolTip.Tip="{DynamicResource StartServerAndConnectButtonTitleToolTip}"
+						Margin="4,0,0,0">
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Text="{Binding QuickPlayText}"/>
+						<controls:LoadingSpinner Width="12"
+												 Height="12"
+												 Margin="4,0,0,0"
+												 VerticalAlignment="Center"
+												 IsVisible="{Binding QuickPlayCommand.IsRunning}"
+												 Foreground="{DynamicResource TextControlForeground}"
+												 StrokeWidth="2"/>
+					</StackPanel>
+				</Button>
+			</StackPanel>
 		</StackPanel>
 	</Grid>
 </UserControl>

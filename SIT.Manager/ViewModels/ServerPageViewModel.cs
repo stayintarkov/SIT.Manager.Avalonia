@@ -36,7 +36,7 @@ public partial class ServerPageViewModel : ObservableRecipient
     private Symbol _startServerButtonSymbolIcon = Symbol.Play;
 
     [ObservableProperty]
-    private string _startServerButtonTextBlock = "Start Server";
+    private string _startServerButtonTextBlock;
 
     public ObservableCollection<ConsoleText> ConsoleOutput { get; } = [];
 
@@ -75,8 +75,6 @@ public partial class ServerPageViewModel : ObservableRecipient
 
     private void UpdateCachedServerProperties(object? sender, ManagerConfig newConfig)
     {
-        StartServerButtonTextBlock = _localizationService.TranslateSource("ServerPageViewModelStartServer");
-
         FontFamily newFont = FontManager.Current.SystemFonts.FirstOrDefault(x => x.Name == newConfig.ConsoleFontFamily, FontFamily.Parse("Bender"));
         if (!newFont.Name.Equals(cachedFontFamily.Name))
         {
@@ -146,7 +144,6 @@ public partial class ServerPageViewModel : ObservableRecipient
                     }
                 case RunningState.Running:
                     {
-                        AddConsole(_localizationService.TranslateSource("ServerPageViewModelServerStarted"));
                         StartServerButtonSymbolIcon = Symbol.Stop;
                         StartServerButtonTextBlock = _localizationService.TranslateSource("ServerPageViewModelStopServer");
                         break;

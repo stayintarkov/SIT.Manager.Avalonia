@@ -1,5 +1,6 @@
 ﻿using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
+using SIT.Manager.Models.Aki;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -24,10 +25,6 @@ public partial class ManagerConfig : ObservableObject
     public bool _closeAfterLaunch = false;
     [ObservableProperty]
     public bool _enableDeveloperMode = false;
-    [ObservableProperty]
-    public string _winePrefix = string.Empty;
-    [ObservableProperty]
-    public string _wineRunner = string.Empty;
     [ObservableProperty]
     public string _tarkovVersion = string.Empty;
     [ObservableProperty]
@@ -56,4 +53,9 @@ public partial class ManagerConfig : ObservableObject
     private Color? _accentColor = Color.FromRgb(0x7f, 0x7f, 0x7f); // 7f7f7f 
     [ObservableProperty]
     public string _consoleFontFamily = "Consolas";
+    public List<AkiServer> BookmarkedServers = [];
+
+    // Linux specific settings
+    [ObservableProperty]
+    public LinuxConfig _linuxConfig = new();
 }

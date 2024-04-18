@@ -1,9 +1,16 @@
 ﻿using Avalonia.Controls.ApplicationLifetimes;
 using SIT.Manager.Interfaces;
+using SIT.Manager.Linux;
 using SIT.Manager.ManagedProcess;
+using SIT.Manager.Models;
+using SIT.Manager.Models.Play;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.Json;
 
 namespace SIT.Manager.Services;
 
@@ -64,11 +71,36 @@ public class TarkovClientService(IBarNotificationService barNotificationService,
         _barNotificationService.ShowInformational(_localizationService.TranslateSource("TarkovClientServiceCacheClearedTitle"), _localizationService.TranslateSource("TarkovClientServiceCacheClearedEFTDescription"));
     }
 
+    public string CreateLaunchArguments(TarkovLaunchConfig launchConfig, string token)
+    {
+        string jsonConfig = JsonSerializer.Serialize(launchConfig);
+
+        // The json needs single quotes on Linux for some reason even though not valid json
+        // but this seems to work fine on Windows too so might as well do it on both ¯\_(ツ)_/¯
+        jsonConfig = jsonConfig.Replace('\"', '\'');
+
+        Dictionary<string, string> argumentList = new()
+        {
+            { "-token", token },
+            { "-config", jsonConfig }
+        };
+
+        string launchArguments = string.Join(' ', argumentList.Select(argument => $"{argument.Key}={argument.Value}"));
+        if (OperatingSystem.IsLinux())
+        {
+            // We need to make sure that the json is contained in quotes on Linux otherwise you won't be able to connect to the server.
+            launchArguments = string.Join(' ', argumentList.Select(argument => $"{argument.Key}=\"{argument.Value}\""));
+        }
+        return launchArguments;
+    }
+
     public override void Start(string? arguments)
     {
+        UpdateRunningState(RunningState.Starting);
+
         _process = new Process()
         {
-            StartInfo = new(ExecutableFilePath)
+            StartInfo = new ProcessStartInfo(ExecutableFilePath)
             {
                 UseShellExecute = true,
                 Arguments = arguments
@@ -77,29 +109,67 @@ public class TarkovClientService(IBarNotificationService barNotificationService,
         };
         if (OperatingSystem.IsLinux())
         {
-            _process.StartInfo.FileName = _configService.Config.WineRunner;
-            _process.StartInfo.Arguments = $"\"{ExecutableFilePath}\" {arguments}";
+            LinuxConfig linuxConfig = _configService.Config.LinuxConfig;
+
+            // Check if either mangohud or gamemode is enabled.
+            StringBuilder argumentsBuilder = new();
+            if (linuxConfig.IsGameModeEnabled)
+            {
+                _process.StartInfo.FileName = "gamemoderun";
+                if (linuxConfig.IsMangoHudEnabled)
+                {
+                    argumentsBuilder.Append("mangohud ");
+                }
+                argumentsBuilder.Append($"\"{linuxConfig.WineRunner}\" ");
+            }
+            else if (linuxConfig.IsMangoHudEnabled) // only mangohud is enabled
+            {
+                _process.StartInfo.FileName = "mangohud";
+                argumentsBuilder.Append($"\"{linuxConfig.WineRunner}\" ");
+            }
+            else
+            {
+                _process.StartInfo.FileName = linuxConfig.WineRunner;
+            }
+
+            // force-gfx-jobs native is a workaround for the Unity bug that causes the game to crash on startup.
+            // Taken from SPT Aki.Launcher.Base/Controllers/GameStarter.cs
+            argumentsBuilder.Append($"\"{ExecutableFilePath}\" -force-gfx-jobs native ");
+            if (!string.IsNullOrEmpty(arguments))
+            {
+                argumentsBuilder.Append(arguments);
+            }
+            _process.StartInfo.Arguments = argumentsBuilder.ToString();
             _process.StartInfo.UseShellExecute = false;
 
-            string winePrefix = Path.GetFullPath(_configService.Config.WinePrefix);
-            if (!Path.EndsInDirectorySeparator(winePrefix))
-            {
-                winePrefix = $"{winePrefix}{Path.DirectorySeparatorChar}";
-            }
-            _process.StartInfo.EnvironmentVariables.Add("WINEPREFIX", winePrefix);
+            _process.StartInfo.EnvironmentVariables["WINEPREFIX"] = linuxConfig.WinePrefix;
+            _process.StartInfo.EnvironmentVariables["WINEESYNC"] = linuxConfig.IsEsyncEnabled ? "1" : "0";
+            _process.StartInfo.EnvironmentVariables["WINEFSYNC"] = linuxConfig.IsFsyncEnabled ? "1" : "0";
+            _process.StartInfo.EnvironmentVariables["WINE_FULLSCREEN_FSR"] = linuxConfig.IsWineFsrEnabled ? "1" : "0";
+            _process.StartInfo.EnvironmentVariables["DXVK_NVAPIHACK"] = "0";
+            _process.StartInfo.EnvironmentVariables["DXVK_ENABLE_NVAPI"] = linuxConfig.IsDXVK_NVAPIEnabled ? "1" : "0";
+            _process.StartInfo.EnvironmentVariables["WINEARCH"] = "win64";
+            _process.StartInfo.EnvironmentVariables["MANGOHUD"] = linuxConfig.IsMangoHudEnabled ? "1" : "0";
+            _process.StartInfo.EnvironmentVariables["MANGOHUD_DLSYM"] = linuxConfig.IsMangoHudEnabled ? "1" : "0";
+            _process.StartInfo.EnvironmentVariables["__GL_SHADER_DISK_CACHE"] = "1";
+            _process.StartInfo.EnvironmentVariables["__GL_SHADER_DISK_CACHE_PATH"] = linuxConfig.WinePrefix;
+            _process.StartInfo.EnvironmentVariables["DXVK_STATE_CACHE_PATH"] = linuxConfig.WinePrefix;
+            // TODO: add the ability to add custom DLL overrides.
+            string str = DllManager.GetDllOverride(linuxConfig);
+            _process.StartInfo.EnvironmentVariables.Add("WINEDLLOVERRIDES", str);
         }
         else
         {
             _process.StartInfo.WorkingDirectory = ExecutableDirectory;
         }
 
-        _process.Exited += new EventHandler(ExitedEvent);
+        _process.Exited += ExitedEvent;
         _process.Start();
 
         if (_configService.Config.CloseAfterLaunch)
         {
-            IApplicationLifetime? lifetime = App.Current?.ApplicationLifetime;
-            if (lifetime != null && lifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
+            IApplicationLifetime? lifetime = App.Current.ApplicationLifetime;
+            if (lifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
             {
                 desktopLifetime.Shutdown();
             }
@@ -108,9 +178,6 @@ public class TarkovClientService(IBarNotificationService barNotificationService,
                 Environment.Exit(0);
             }
         }
-        else
-        {
-            UpdateRunningState(RunningState.Running);
-        }
+        UpdateRunningState(RunningState.Running);
     }
 }

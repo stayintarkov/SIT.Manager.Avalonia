@@ -55,32 +55,6 @@
 						</Grid>
 					</StackPanel>
 				</Border>
-
-				<!--Linux Settings-->
-				<TextBlock Text="{DynamicResource SettingsLinuxSettingsTitle}"
-						   Classes="FrameHeading"
-						   IsVisible="{OnPlatform Default=False, Linux=True}"/>
-				<Border Classes="StandardFrame" IsVisible="{OnPlatform Default=False, Linux=True}">
-					<StackPanel>
-						<StackPanel Orientation="Horizontal">
-							<TextBlock Text="{DynamicResource SettingsLinuxWinePrefixTitle}" Margin="0,0,10,0" VerticalAlignment="Center"/>
-							<TextBox Watermark="{DynamicResource SettingsLinuxWinePrefixPlaceholder}"
-									 MinWidth="425"
-									 MaxWidth="425"
-									 ToolTip.Tip="{DynamicResource SettingsLinuxWinePrefixToolTip}"
-									 Text="{Binding Config.WinePrefix}"/>
-						</StackPanel>
-
-						<StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-							<TextBlock Text="{DynamicResource SettingsLinuxWineRunnerTitle}" Margin="0,0,10,0" VerticalAlignment="Center"/>
-							<TextBox Watermark="{DynamicResource SettingsLinuxWineRunnerPlaceholder}"
-									 MinWidth="425"
-									 MaxWidth="425"
-									 ToolTip.Tip="{DynamicResource SettingsLinuxWineRunnerToolTip}"
-									 Text="{Binding Config.WineRunner}"/>
-						</StackPanel>
-					</StackPanel>
-				</Border>
 				
 				<!--EFT Settings-->
 				<TextBlock Text="{DynamicResource SettingsEFTSettingsTitle}" Classes="FrameHeading"/>

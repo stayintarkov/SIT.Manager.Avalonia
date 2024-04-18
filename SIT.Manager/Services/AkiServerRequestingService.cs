@@ -19,6 +19,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Services;
+
 public class AkiServerRequestingService(
     HttpClient httpClient,
     ResiliencePipelineProvider<string> resiliencePipelineProvider,
@@ -26,7 +27,7 @@ public class AkiServerRequestingService(
 {
     private static readonly MediaTypeHeaderValue _contentHeaderType = new("application/json");
     private static readonly Version standardUriFormatSupportedVersion = new Version("1.10.8827.30098");
-    private static readonly byte[] zlibMagicBytes = new byte[] { 0x01, 0x5E, 0x9C, 0xDA };
+    private static readonly byte[] zlibMagicBytes = [0x01, 0x5E, 0x9C, 0xDA];
     private readonly HttpClient _httpClient = httpClient;
     private readonly ResiliencePipelineProvider<string> _resiliencePipelineProvider = resiliencePipelineProvider;
     private readonly IManagerConfigService _configService = configService;

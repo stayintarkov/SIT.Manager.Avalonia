@@ -1,0 +1,142 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:SIT.Manager.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="550"
+             x:Class="SIT.Manager.Views.LinuxSettingsPage"
+             x:CompileBindings="True"
+             Background="{DynamicResource ApplicationPageBackgroundThemeBrush}"	 
+             x:DataType="vm:LinuxSettingsPageViewModel">
+    <Grid RowDefinitions="*,Auto">
+        <ScrollViewer Grid.Row="0">
+            <StackPanel Margin="10">
+                <!-- TODO: Make the boxes responsive with the selected language -->
+                <!-- Wine Settings-->
+                <TextBlock Text="{DynamicResource LinuxSettingsPageTitle}"
+                           Classes="FrameHeading"
+                           IsVisible="{OnPlatform Default=False, Linux=True}"/>
+                <TextBlock Text="{DynamicResource LinuxSettingsExperimentalWarning}"
+                           TextTrimming="CharacterEllipsis"
+                           Margin="8,0,0,0"
+                           Classes="WarningMessage"/>
+                <Border Classes="StandardFrame">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{DynamicResource LinuxSettingsWinePrefixTitle}" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <TextBox Watermark="{DynamicResource LinuxSettingsWinePrefixPlaceholder}"
+                                     Margin="10,0,10,0"
+                                     MinWidth="425"
+                                     MaxWidth="425"
+                                     ToolTip.Tip="{DynamicResource LinuxSettingsWinePrefixToolTip}"
+                                     Text="{Binding LinuxConfig.WinePrefix}"/>
+                            <Button Name="ChangePrefixButton" 
+                                    Content="{DynamicResource SettingsEFTSettingsButtonChangeTitle}"
+                                    Margin="0,0,10,0" 
+                                    ToolTip.Tip="{DynamicResource SettingsEFTChangeInstallPathToolTip}"
+                                    Command="{Binding ChangePrefixLocationCommand}"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                            <TextBlock Text="{DynamicResource LinuxSettingsWineRunnerTitle}" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <TextBox Watermark="{DynamicResource LinuxSettingsWineRunnerPlaceholder}"
+                                     MinWidth="425"
+                                     MaxWidth="425"
+                                     ToolTip.Tip="{DynamicResource LinuxSettingsWineRunnerToolTip}"
+                                     Text="{Binding LinuxConfig.WineRunner}"/>
+                            <Button Name="ChangeRunnerButton" 
+                                    Content="{DynamicResource SettingsEFTSettingsButtonChangeTitle}"
+                                    Margin="10,0,10,0" 
+                                    ToolTip.Tip="{DynamicResource SettingsEFTChangeInstallPathToolTip}"
+                                    Command="{Binding ChangeRunnerLocationCommand}"/>
+                        </StackPanel>
+						
+                        <StackPanel Orientation="Horizontal" Margin="0,10,1,0">
+                            <TextBlock Text="{DynamicResource LinuxSettingsWineEnvTitle}"
+                                       Classes="WarningMessage"/>
+                            <!-- TODO: convert this to a table with keys and values which the user can add -->
+                            <DataGrid ItemsSource="{Binding LinuxConfig.WineEnv}"
+                                      AutoGenerateColumns="False"
+                                      Margin="7,0,0,0">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="{DynamicResource Key}" Width="255"/>
+                                    <DataGridTextColumn Header="{DynamicResource Value}" Width="255"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <!-- <TextBox Watermark="{DynamicResource LinuxSettingsWineEnvPlaceholder}" -->
+                            <!--          Margin="7,0,10,0" -->
+                            <!--          MinWidth="425" -->
+                            <!--          MaxWidth="425" -->
+                            <!--          ToolTip.Tip="{DynamicResource LinuxSettingsWineEnvToolTip}" -->
+                            <!--          Text="{Binding Config.WineEnv}" -->
+                            <!--          IsEnabled="False"/> -->
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                            <Button Name="AddEnvButton" 
+                                    Content="{DynamicResource LinuxSettingsWineEnvAddButton}"
+                                    Margin="467,10,10,0"
+                                    MinWidth="66"
+                                    Command="{Binding AddEnvCommand}"/>
+                            <Button Name="RemoveEnvButton"
+                                    Content="{DynamicResource LinuxSettingsWineEnvDeleteButton}"
+                                    Margin="0,10,0,0"
+                                    MinWidth="66"
+                                    Command="{Binding DeleteEnvCommand}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                
+                <TextBlock Text="{DynamicResource LinuxSettingsGraphicsTitle}" Classes="FrameHeading"/>
+                <Border Classes="StandardFrame">
+                    <StackPanel>
+                        <!-- Graphics -->
+                        <CheckBox Content="{DynamicResource LinuxSettingsEnableDxvkTitle}" 
+                                  ToolTip.Tip="{DynamicResource LinuxSettingsEnableDxvkToolTip}"
+                                  IsChecked="{Binding LinuxConfig.IsDXVKEnabled, Mode=TwoWay}"/>
+                        <!-- TODO: Add versions in the future, for now I'll keep it simple
+                        <ComboBox Items="{Binding DxvkVersions}" 
+                                  SelectedIndex="{Binding DxvkVersions[0], Mode=TwoWay}"
+                                  ToolTip.Tip="{DynamicResource LinuxSettingsDxvkVersionToolTip}"
+                                  IsEnabled="{Binding Config.IsDXVKEnabled}"/>
+                        -->
+                        <CheckBox Content="{DynamicResource LinuxSettingsEnableVkd3DTitle}"
+                                  ToolTip.Tip="{DynamicResource LinuxSettingsEnableVkd3DToolTip}"
+                                  IsChecked="{Binding LinuxConfig.IsVKD3DEnabled, Mode=TwoWay}"/>
+                        <CheckBox Content="{DynamicResource LinuxSettingsEnableD3DExtrasTitle}"
+                                  ToolTip.Tip="{DynamicResource LinuxSettingsEnableD3DExtrasToolTip}"
+                                  IsChecked="{Binding LinuxConfig.IsD3DExtrasEnabled, Mode=TwoWay}"/>
+                        <CheckBox Content="{DynamicResource LinuxSettingsEnableDxvkNvapiTitle}"
+                                  ToolTip.Tip="{DynamicResource LinuxSettingsEnableDxvkNvapiToolTip}"
+                                  IsChecked="{Binding LinuxConfig.IsDXVK_NVAPIEnabled, Mode=TwoWay}"
+                                  IsEnabled="False"/> <!-- TODO: Implement this, see SIT.Manager.Linux.Managers.DxvkNvapiManager -->
+                        <CheckBox Content="{DynamicResource LinuxSettingsEnableDgVoodoo2Title}"
+                                  ToolTip.Tip="{DynamicResource LinuxSettingsEnableDgVoodoo2ToolTip}"
+                                  IsChecked="{Binding LinuxConfig.IsDGVoodoo2Enabled, Mode=TwoWay}"
+                                  IsEnabled="False"/> <!-- TODO: Implement this, see SIT.Manager.Linux.Managers.DgVoodoo2Manager -->
+                    </StackPanel>
+                </Border>
+                <!-- Launch Options -->
+                <TextBlock Text="{DynamicResource LinuxSettingsLaunchOptionsTitle}" Classes="FrameHeading"/>
+                <Border Classes="StandardFrame">
+                    <StackPanel>
+                        <CheckBox Content="{DynamicResource LinuxSettingsEnableEsyncTitle}"
+                                  ToolTip.Tip="{DynamicResource LinuxSettingsEnableEsyncToolTip}"
+                                  IsChecked="{Binding LinuxConfig.IsEsyncEnabled, Mode=TwoWay}"/>
+                        <CheckBox Content="{DynamicResource LinuxSettingsEnableFsyncTitle}"
+                                  ToolTip.Tip="{DynamicResource LinuxSettingsEnableFsyncToolTip}"
+                                  IsChecked="{Binding LinuxConfig.IsFsyncEnabled, Mode=TwoWay}"/>
+                        <CheckBox Content="{DynamicResource LinuxSettingsEnableFsrTitle}"
+                                  ToolTip.Tip="{DynamicResource LinuxSettingsEnableFsrToolTip}"
+                                  IsChecked="{Binding LinuxConfig.IsWineFsrEnabled, Mode=TwoWay}"/>
+                        <CheckBox Content="{DynamicResource LinuxSettingsEnableMangoHudTitle}"
+                                  ToolTip.Tip="{DynamicResource LinuxSettingsEnableMangoHudToolTip}"
+                                  IsChecked="{Binding LinuxConfig.IsMangoHudEnabled, Mode=TwoWay}"/>
+                        <CheckBox Content="{DynamicResource LinuxSettingsEnableGameModeTitle}"
+                                  ToolTip.Tip="{DynamicResource LinuxSettingsEnableGameModeToolTip}"
+                                  IsChecked="{Binding LinuxConfig.IsGameModeEnabled, Mode=TwoWay}"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

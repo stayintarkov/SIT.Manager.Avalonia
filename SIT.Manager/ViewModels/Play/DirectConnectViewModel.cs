@@ -3,21 +3,17 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SIT.Manager.Exceptions;
 using SIT.Manager.Interfaces;
 using SIT.Manager.ManagedProcess;
 using SIT.Manager.Models;
 using SIT.Manager.Models.Aki;
+using SIT.Manager.Models.Play;
 using SIT.Manager.Services;
-using SIT.Manager.Views.Dialogs;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.ViewModels.Play;
@@ -26,8 +22,6 @@ public partial class DirectConnectViewModel : ObservableRecipient
 {
     private const string SIT_DLL_FILENAME = "StayInTarkov.dll";
     private const string EFT_EXE_FILENAME = "EscapeFromTarkov.exe";
-
-    private static readonly Version standardUriFormatSupportedVersion = new("1.10.8827.30098");
 
     private readonly IAkiServerService _akiServerService;
     private readonly IAkiServerRequestingService _serverRequestingService;
@@ -153,25 +147,13 @@ public partial class DirectConnectViewModel : ObservableRecipient
                 }
                 else
                 {
-                    // TODO We want to pop up a dialog or show a message somewhere if this has failed for some reason
                     _logger.LogDebug("Failed to login with error {status}", status);
+                    await HandleFailedStatus(status);
                 }
             }
             else
             {
-                // TODO run a dialog here to ensure that we ask the user if they wish to register.
-                _logger.LogDebug("Username {Username} not found. Registering...", character.Username);
-                (string registerRespStr, AkiLoginStatus status) = await _serverRequestingService.RegisterCharacterAsync(character);
-                if (status == AkiLoginStatus.Success)
-                {
-                    _logger.LogDebug("Register successful");
-                    ProfileID = registerRespStr;
-                }
-                else
-                {
-                    // TODO We want to pop up a dialog or show a message somewhere if this has failed for some reason
-                    _logger.LogDebug("Register failed with {status}", status);
-                }
+                ProfileID = await RegisterUser(character);
             }
 
             if (ProfileID != null)
@@ -181,68 +163,34 @@ public partial class DirectConnectViewModel : ObservableRecipient
                 _logger.LogDebug("{Username}'s ProfileID is {ProfileID}", character.Username, character.ProfileID);
                 server.Characters.Add(character);
             }
-        }
 
-        // TODO actually take the above info and launch the game.
-
-        /* TODO
-        // Connect to server
-        string token = await LoginToServerAsync(serverAddress ?? throw new ArgumentNullException(nameof(serverAddress), "Server address is null"));
-        if (string.IsNullOrEmpty(token))
-            return;
-
-        Version SITVersion;
-        if (string.IsNullOrWhiteSpace(_configService.Config.SitVersion))
-            SITVersion = new();
-        else
-            SITVersion = new(_configService.Config.SitVersion);
-        string backendUrl = serverAddress.AbsoluteUri[..^(SITVersion >= standardUriFormatSupportedVersion ? 0 : 1)];
-
-        // Launch game
-        string launchArguments = CreateLaunchArguments(new TarkovLaunchConfig { BackendUrl = backendUrl }, token);
-        try
-        {
-            _tarkovClientService.Start(launchArguments);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("An exception occured while launching Tarkov: {exMessage}", ex.Message);
-            await new ContentDialog()
+            // Launch game
+            string launchArguments = _tarkovClientService.CreateLaunchArguments(new TarkovLaunchConfig { BackendUrl = server.Address.AbsoluteUri }, character.ProfileID);
+            try
             {
-                Title = _localizationService.TranslateSource("ModsPageViewModelErrorTitle"),
-                Content = ex.Message
-            }.ShowAsync();
-            return;
+                _tarkovClientService.Start(launchArguments);
+
+                while (_tarkovClientService.State == RunningState.Starting)
+                {
+                    await Task.Delay(500);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An exception occured while launching Tarkov");
+                await new ContentDialog()
+                {
+                    Title = _localizationService.TranslateSource("ModsPageViewModelErrorTitle"),
+                    Content = ex.Message
+                }.ShowAsync();
+                return;
+            }
         }
-        */
 
         if (_configService.Config.CloseAfterLaunch)
         {
             CloseManager();
         }
-    }
-
-    private string CreateLaunchArguments(TarkovLaunchConfig launchConfig, string token)
-    {
-        string jsonConfig = JsonSerializer.Serialize(launchConfig);
-
-        // The json needs single quotes on Linux for some reason even though not valid json
-        // but this seems to work fine on Windows too so might as well do it on both ¯\_(ツ)_/¯
-        jsonConfig = jsonConfig.Replace('\"', '\'');
-
-        Dictionary<string, string> argumentList = new()
-        {
-            { "-token", token },
-            { "-config", jsonConfig }
-        };
-
-        string launchArguments = string.Join(' ', argumentList.Select(argument => $"{argument.Key}={argument.Value}"));
-        if (OperatingSystem.IsLinux())
-        {
-            // We need to make sure that the json is contained in quotes on Linux otherwise you won't be able to connect to the server.
-            launchArguments = string.Join(' ', argumentList.Select(argument => $"{argument.Key}=\"{argument.Value}\""));
-        }
-        return launchArguments;
     }
 
     private Uri? GetUriFromAddress(string addressString)
@@ -330,6 +278,35 @@ public partial class DirectConnectViewModel : ObservableRecipient
         return validationRules;
     }
 
+    private async Task HandleFailedStatus(AkiLoginStatus status)
+    {
+        switch (status)
+        {
+            case AkiLoginStatus.IncorrectPassword:
+                {
+                    await new ContentDialog()
+                    {
+                        Title = _localizationService.TranslateSource("PlayPageViewModelLoginErrorTitle"),
+                        Content = _localizationService.TranslateSource("PlayPageViewModelLoginIncorrectPassword"),
+                        CloseButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonOk")
+                    }.ShowAsync();
+                    break;
+                }
+            case AkiLoginStatus.UsernameTaken:
+            default:
+                {
+                    await new ContentDialog()
+                    {
+                        Title = _localizationService.TranslateSource("PlayPageViewModelLoginErrorTitle"),
+                        Content = _localizationService.TranslateSource("PlayPageViewModelLoginErrorDescription"),
+                        CloseButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonOk")
+                    }.ShowAsync();
+                    break;
+                }
+        }
+
+    }
+
     private async Task<bool> LaunchServer()
     {
         _akiServerService.Start();
@@ -368,75 +345,32 @@ public partial class DirectConnectViewModel : ObservableRecipient
         return aborted;
     }
 
-    //TODO: Refactor this so avoid the repeat after registering. This also violates the one purpose rule anyway
-    private async Task<string> LoginToServerAsync(Uri address)
+    private async Task<string> RegisterUser(AkiCharacter character)
     {
-        TarkovRequesting requesting = ActivatorUtilities.CreateInstance<TarkovRequesting>(_serviceProvider, address);
-        TarkovLoginInfo loginInfo = new()
+        _logger.LogDebug("Username {Username} not found....", character.Username);
+        ContentDialogResult createAccountResponse = await new ContentDialog()
         {
-            Username = Username,
-            Password = Password,
-            BackendUrl = address.AbsoluteUri.Trim(['/', '\\'])
-        };
+            Title = _localizationService.TranslateSource("PlayPageViewModelAccountNotFound"),
+            Content = _localizationService.TranslateSource("PlayPageViewModelAccountNotFoundDescription"),
+            IsPrimaryButtonEnabled = true,
+            PrimaryButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonYes"),
+            CloseButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonNo")
+        }.ShowAsync();
 
-        try
+        if (createAccountResponse == ContentDialogResult.Primary)
         {
-            string SessionID = await requesting.LoginAsync(loginInfo);
-            return SessionID;
-        }
-        catch (AccountNotFoundException)
-        {
-            AkiServerConnectionResponse serverResponse = await requesting.QueryServer();
-
-            TarkovEdition[] editions = new TarkovEdition[serverResponse.Editions.Length];
-            for (int i = 0; i < editions.Length; i++)
+            _logger.LogDebug("Registering...");
+            (string registerRespStr, AkiLoginStatus status) = await _serverRequestingService.RegisterCharacterAsync(character);
+            if (status == AkiLoginStatus.Success)
             {
-                string editionStr = serverResponse.Editions[i];
-                string descriptionStr = serverResponse.Descriptions[editionStr];
-                editions[i] = new TarkovEdition(editionStr, descriptionStr);
-            }
-
-            ContentDialogResult createAccountResponse = await new ContentDialog()
-            {
-                Title = _localizationService.TranslateSource("PlayPageViewModelAccountNotFound"),
-                Content = _localizationService.TranslateSource("PlayPageViewModelAccountNotFoundDescription"),
-                IsPrimaryButtonEnabled = true,
-                PrimaryButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonYes"),
-                CloseButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonNo")
-            }.ShowAsync();
-
-            if (createAccountResponse == ContentDialogResult.Primary)
-            {
-                SelectEditionDialog selectEditionDialog = new SelectEditionDialog(editions);
-                loginInfo.Edition = (await selectEditionDialog.ShowAsync()).Edition;
-
-                //Register new account
-                await requesting.RegisterAccountAsync(loginInfo);
-
-                //Attempt to login after registering
-                return await requesting.LoginAsync(loginInfo);
+                _logger.LogDebug("Register successful");
+                return registerRespStr;
             }
             else
-                return string.Empty;
-        }
-        catch (IncorrectServerPasswordException)
-        {
-            Debug.WriteLine("DEBUG: Incorrect password");
-            await new ContentDialog()
             {
-                Title = _localizationService.TranslateSource("PlayPageViewModelLoginErrorTitle"),
-                Content = _localizationService.TranslateSource("PlayPageViewModelLoginIncorrectPassword"),
-                CloseButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonOk")
-            }.ShowAsync();
-        }
-        catch (Exception ex)
-        {
-            await new ContentDialog()
-            {
-                Title = _localizationService.TranslateSource("PlayPageViewModelLoginErrorTitle"),
-                Content = _localizationService.TranslateSource("PlayPageViewModelLoginErrorDescription", ex.Message),
-                CloseButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonOk")
-            }.ShowAsync();
+                _logger.LogDebug("Register failed with {status}", status);
+                await HandleFailedStatus(status);
+            }
         }
 
         return string.Empty;

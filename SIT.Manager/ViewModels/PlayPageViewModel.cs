@@ -4,13 +4,8 @@ using CommunityToolkit.Mvvm.Messaging;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Models.Aki;
 using SIT.Manager.Models.Play;
-using SIT.Manager.Services;
 using SIT.Manager.Views.Play;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SIT.Manager.ViewModels;
 
@@ -29,7 +24,7 @@ public partial class PlayPageViewModel : ObservableRecipient, IRecipient<ServerC
 
         PlayControl = new ServerSelectionView();
 
-        // TODO remove this at some point
+        /* TODO remove this at some point
         Task.Run(async () =>
         {
             AkiServer localServer = await _serverService.GetAkiServerAsync(new Uri("http://127.0.0.1:6969"));
@@ -77,6 +72,7 @@ public partial class PlayPageViewModel : ObservableRecipient, IRecipient<ServerC
                 localServer.Characters.Add(testCharacter);
             }
         });
+        */
     }
 
     public void Receive(ServerConnectMessage message)

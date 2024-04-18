@@ -106,6 +106,7 @@ public sealed partial class App : Application
 
             // Page Viewmodels
             services.AddTransient<InstallPageViewModel>()
+                .AddTransient<LinuxSettingsPageViewModel>()
                 .AddTransient<LocationEditorViewModel>()
                 .AddTransient<MainViewModel>()
                 .AddTransient<ModsPageViewModel>()
