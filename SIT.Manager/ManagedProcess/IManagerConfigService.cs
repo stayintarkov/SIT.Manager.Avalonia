@@ -7,6 +7,6 @@ public interface IManagerConfigService
 {
     ManagerConfig Config { get; }
 
-    void UpdateConfig(ManagerConfig config, bool ShouldSave = true, bool? SaveAccount = false);
+    void UpdateConfig(ManagerConfig config, bool shouldSave = true, bool? saveAccount = false);
     event EventHandler<ManagerConfig>? ConfigChanged;
 }

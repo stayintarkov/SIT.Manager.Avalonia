@@ -350,7 +350,7 @@ public partial class PlayPageViewModel : ObservableObject
             return;
 
         Version SITVersion;
-        if (_configService.Config.SitVersion == null)
+        if (string.IsNullOrWhiteSpace(_configService.Config.SitVersion))
             SITVersion = new();
         else
             SITVersion = new(_configService.Config.SitVersion);
@@ -364,7 +364,7 @@ public partial class PlayPageViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            _logger.LogError("An exception occured while launching Tarkov: {exMessage}", ex.Message);
+            _logger.LogError("An exception occured while launching Tarkov: {exMessage}", ex);
             await new ContentDialog()
             {
                 Title = _localizationService.TranslateSource("ModsPageViewModelErrorTitle"),

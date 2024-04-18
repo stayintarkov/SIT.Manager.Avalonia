@@ -39,7 +39,7 @@
 	<system:String x:Key="PlayPageViewModelWaitingForServerTitle">等待伺服器</system:String>
 	<system:String x:Key="PlayPageViewModelServerErrorTitle">伺服器錯誤</system:String>
 	<system:String x:Key="PlayPageViewModelServerErrorDescription">伺服器從未啟動，請查看日誌以獲取更多資訊！</system:String>
-	<system:String x:Key="PlayPageViewModelLoginIncorrectPassword">Incorrect password</system:String>
+	<system:String x:Key="PlayPageViewModelLoginIncorrectPassword">密碼錯誤</system:String>
 
 	<!-- Pane View (Menu on the left also tooltip about update on top) -->
 	<system:String x:Key="UpdateNotification">SIT 管理器有新版本可用。按此處更新：</system:String>
@@ -123,8 +123,8 @@
 	<system:String x:Key="SettingsLookForUpdatesTitleToolTip">開啟啟動器時自動檢查更新</system:String>
 	<system:String x:Key="SettingsHideIpAddressTitle">隱藏 IP 位址</system:String>
 	<system:String x:Key="SettingsHideIpAddressToolTip">在 IP 位址框中使用星號隱藏 IP 位址。</system:String>
-	<system:String x:Key="SettingsEnableDeveloperMode">Enable Developer Mode</system:String>
-	<system:String x:Key="SettingsEnableDeveloperModeToolTip">Enables developer/test releases of SIT and SIT server for testing purposes</system:String>
+	<system:String x:Key="SettingsEnableDeveloperMode">啟用開發者模式</system:String>
+	<system:String x:Key="SettingsEnableDeveloperModeToolTip">啟用開發者/測試版本的 SIT 和 SIT 伺服器，以進行測試用途</system:String>
 	<system:String x:Key="SettingsLanguageTitle">語言:</system:String>
 	<system:String x:Key="SettingsLanguageTitleToolTip">將整個啟動器翻譯為您的語言，選擇其中一種!</system:String>
 	<system:String x:Key="SettingsAccentColorTitle">強調顏色:</system:String>
@@ -152,6 +152,54 @@
 	<system:String x:Key="SettingsServerConsoleFontColorTitle">字體顏色:</system:String>
 	<system:String x:Key="SettingsManagerVersionTitle">當前 SIT Manager 版本:</system:String>
 
+	<!-- Linux Settings Page -->
+	<system:String x:Key="Key">Key</system:String>
+	<system:String x:Key="Value">Value</system:String>
+	<system:String x:Key="LinuxSettingsPageTitle">Linux Settings</system:String>
+	<system:String x:Key="LinuxSettingsExperimentalWarning">Experimental Linux settings. Some might not work or are not implemented yet. Use at your own risk.</system:String>
+	
+	<system:String x:Key="LinuxSettingsWinePrefixTitle">Wine Prefix:</system:String>
+	<system:String x:Key="LinuxSettingsWinePrefixPlaceholder">Wine Prefix Path</system:String>
+	<system:String x:Key="LinuxSettingsWinePrefixToolTip">Change the WINEPREFIX used for EFT</system:String>
+	<system:String x:Key="LinuxSettingsWineRunnerTitle">Wine Runner:</system:String>
+	<system:String x:Key="LinuxSettingsWineRunnerPlaceholder">Wine Runner Path</system:String>
+	<system:String x:Key="LinuxSettingsWineRunnerToolTip">Set the wine runner used for EFT. Leave blank to download the recommended SPT wine runner into the same folder as the bottle</system:String>
+	<system:String x:Key="LinuxSettingsWineEnvTitle">Environment: </system:String>
+	<system:String x:Key="LinuxSettingsWineEnvPlaceholder">Wine Environment Variables</system:String>
+	<system:String x:Key="LinuxSettingsWineEnvToolTip">Set custom environment variables used for wine</system:String>
+	<system:String x:Key="LinuxSettingsWineEnvAddButton">Add</system:String>
+	<system:String x:Key="LinuxSettingsWineEnvDeleteButton">Delete</system:String>
+	
+	<system:String x:Key="LinuxSettingsGraphicsTitle">Graphics</system:String>
+	<system:String x:Key="LinuxSettingsEnableDxvkTitle">Enable DXVK</system:String>
+	<system:String x:Key="LinuxSettingsEnableDxvkToolTip">Use DXVK to increase compatibility and performance in Direct3D 11, 10 and 9 applications by translating their calls to Vulkan.</system:String>
+	<system:String x:Key="LinuxSettingsDxvkVersionTitle">DXVK Version</system:String>
+	<system:String x:Key="LinuxSettingsDxvkVersionToolTip">Select the version of DXVK to use</system:String>
+	<system:String x:Key="LinuxSettingsEnableVkd3DTitle">Enable VKD3D</system:String>
+	<system:String x:Key="LinuxSettingsEnableVkd3DToolTip">Use VKD3D to translate Direct3D 12 to Vulkan</system:String>
+	<system:String x:Key="LinuxSettingsEnableD3DExtrasTitle">Enable D3D Extras</system:String>
+	<system:String x:Key="LinuxSettingsEnableD3DExtrasToolTip">Enable additional Direct3D features</system:String>
+	<system:String x:Key="LinuxSettingsEnableDxvkNvapiTitle">Enable DXVK NVAPI / DLSS [TO BE IMPLEMENTED]</system:String>
+	<system:String x:Key="LinuxSettingsEnableDxvkNvapiToolTip">Enable NVAPI support in DXVK [TO BE IMPLEMENTED/DOES NOT WORK]</system:String>
+	<system:String x:Key="LinuxSettingsEnableDgVoodoo2Title">Enable dgvoodoo2</system:String>
+	<system:String x:Key="LinuxSettingsEnableDgVoodoo2ToolTip">Use dgvoodoo2 to translate Direct3D 1-11 to OpenGL</system:String>
+	
+	<system:String x:Key="LinuxSettingsLaunchOptionsTitle">Launch Options</system:String>
+	<system:String x:Key="LinuxSettingsEnableEsyncTitle">Enable Esync</system:String>
+	<system:String x:Key="LinuxSettingsEnableEsyncToolTip">Use Esync to improve performance in Wine</system:String>
+	<system:String x:Key="LinuxSettingsEnableFsyncTitle">Enable Fsync</system:String>
+	<system:String x:Key="LinuxSettingsEnableFsyncToolTip">Use Fsync to improve performance in Wine</system:String>
+	<system:String x:Key="LinuxSettingsEnableFsrTitle">Enable AMD FidelityFX Super Resolution (FSR)</system:String>
+	<system:String x:Key="LinuxSettingsEnableFsrToolTip">Use FSR to improve performance in games</system:String>
+	<system:String x:Key="LinuxSettingsEnableMangoHudTitle">Enable MangoHud</system:String>
+	<system:String x:Key="LinuxSettingsEnableMangoHudToolTip">MangoHud is a modification of the Mesa Vulkan overlay that includes GUI improvements, temperature monitoring, and more</system:String>
+	<system:String x:Key="LinuxSettingsEnableGameModeTitle">Enable Feral GameMode</system:String>
+	<system:String x:Key="LinuxSettingsEnableGameModeToolTip">GameMode is a daemon/lib combo for Linux that allows games to request a set of optimisations be temporarily applied to the host OS</system:String>
+	
+	<!-- Linux Settings View Model -->
+	<system:String x:Key="LinuxSettingsPageViewModelConfigErrorRunner">The selected folder was invalid. Make sure it's a proper wine runner folder with a bin folder inside</system:String>
+	<system:String x:Key="LinuxSettingsPageViewModelConfigErrorPrefix">The selected folder was invalid. Make sure the folder exists</system:String>
+	
 	<!-- Location Editor View -->
 	<system:String x:Key="LocationEditorLoadButtonTitle">載入</system:String>
 	<system:String x:Key="LocationEditorSaveButtonTitle">儲存</system:String>
@@ -247,9 +295,9 @@
 	<system:String x:Key="SettingsPageViewModelConfigInformationEFTDescription">EFT 安裝路徑已設置為 '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">SPT-AKI 伺服器安裝路徑已設置為 '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigErrorSPTAKI">所選檔案夾無效，請確保它是正確的 SPT-AKI 伺服器檔案夾！</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">Enable Developer Mod Failure</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">Can't enable developer mode as you have %1 incompatible mods still enabled</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorButtonOk">Ok</system:String>
+	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">啟用開發者模式錯誤</system:String>
+	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">無法啟用開發者模式，因為您仍然有 %1 不相容的模式處於啟用狀態</system:String>
+	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorButtonOk">確定</system:String>
 
 	<!-- Server Page ViewModel -->
 	<system:String x:Key="ServerPageViewModelStartingServer">正在啟動伺服器！</system:String>
@@ -306,7 +354,7 @@
 	<system:String x:Key="InstallServiceInstallSuccessfulDescription">伺服器端安裝成功</system:String>
 	<system:String x:Key="InstallServiceInstallSITSuccessfulDescription">SIT 安裝成功</system:String>
 	<system:String x:Key="InstallerServiceNoDowngradePatcher">《逃離塔科夫》這些版本沒有可用的降級補丁。</system:String>
-	<system:String x:Key="InstallServiceSSLError">Your ISP is likely blocking our connection. Please use a VPN and try again.</system:String>
+	<system:String x:Key="InstallServiceSSLError">您的 ISP 可能封鎖了我們的連線。請使用 VPN 再試一次。</system:String>
 
 	<!-- File Service -->
 	<system:String x:Key="FileServiceProgressDownloading">下載檔案 '%1'</system:String>
@@ -333,7 +381,7 @@
 	<system:String x:Key="ConfigureViewStartInstallButtonTitle">開始安裝</system:String>
 	<system:String x:Key="ConfigureViewBackButtonTitle">返回</system:String>
 	<system:String x:Key="ConfigureViewVersionSelectionGroupTitle">版本選擇</system:String>
-	<system:String x:Key="ConfigureViewPersonalizationOptions">Personalization and Import Options</system:String>
+	<system:String x:Key="ConfigureViewPersonalizationOptions">個人化和匯入選項</system:String>
 
 	<!-- Install - Configure Server View -->
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathToolTip">更改 SPT-AKI 的安裝路徑。</system:String>
@@ -345,6 +393,7 @@
 
 	<!-- Install - Configure Sit View -->
 	<system:String x:Key="ConfigureSitViewLoadingVersionSelectionText">正在確定可用的 SIT 版本，請稍候...</system:String>
+	<system:String x:Key="ConfigureSitViewVersionSelectionErrorMessage">Unable to determine available SIT versions...</system:String>
 	<system:String x:Key="ConfigureSitViewEFTChangeInstallPathToolTip">更改 EFT 的安裝路徑。</system:String>
 	<system:String x:Key="ConfigureSitViewEFTSettingsButtonChangeTitle">更改</system:String>
 	<system:String x:Key="ConfigureSitViewEFTInstallPathPlaceholder">EFT 安裝路徑...</system:String>
@@ -352,10 +401,10 @@
 	<system:String x:Key="ConfigureSitViewEFTPathWarningNoPath">目前使用 BSG EFT 的安裝位置。請將 EFT 安裝到其他位置以避免與 SIT 的潛在問題</system:String>
 	<system:String x:Key="ConfigureSitViewMirrorSelectionTitle">選擇要使用的鏡像：</system:String>
 	<system:String x:Key="ConfigureSitViewVersionSelectionTitle">要安裝的版本：</system:String>
-	<system:String x:Key="ConfigureSitViewRecommendedModsTitle">Recommended Mods</system:String>
-	<system:String x:Key="ConfigureSitViewRecommendedModsDescription">Choose from the available mods which we recommend you install alongside SIT</system:String>
-	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTip">Import Live Game Graphic, Audio, and Control settings to SIT</system:String>
-	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTitle">Import EFT Settings to SIT</system:String>
+	<system:String x:Key="ConfigureSitViewRecommendedModsTitle">推薦 Mod</system:String>
+	<system:String x:Key="ConfigureSitViewRecommendedModsDescription">從可用的 Mod 中選擇我們建議您與 SIT 一起安裝的內容</system:String>
+	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTip">將現場遊戲的圖形、音頻和控制設置導入到 SIT</system:String>
+	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTitle">將 EFT 設置導入到 SIT</system:String>
 
 	<!-- Install - Configure Sit View Model -->
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorTitle">位置選擇錯誤</system:String>
@@ -373,7 +422,7 @@
 	<system:String x:Key="PatchViewDownloadingTitle">正在下載補丁</system:String>
 	<system:String x:Key="PatchViewExtractingTitle">正在解壓縮補丁</system:String>
 	<system:String x:Key="PatchViewPatchingErrorMessage">嘗試對 EFT 進行補丁時出錯。請查看日誌以獲取詳細信息</system:String>
-	<system:String x:Key="PatchViewAquirePatcherErrorMessage">Error trying to aquire the patcher for EFT, please consult the logs for more details</system:String>
+	<system:String x:Key="PatchViewAquirePatcherErrorMessage">取得 EFT 補丁程式時發生錯誤，請查看日誌以獲取更多詳細資訊</system:String>
 	<system:String x:Key="PatchViewPatchingEndInstallButtonTitle">完成安裝</system:String>
 
 	<!-- Install - Select View -->

@@ -14,6 +14,7 @@ using SIT.Manager.ViewModels.Installation;
 using SIT.Manager.Views;
 using System;
 using System.Net.Http;
+using System.Reflection;
 
 namespace SIT.Manager;
 
@@ -37,7 +38,7 @@ public sealed partial class App : Application
     /// <summary>
     /// Configures the services for the application.
     /// </summary>
-    private static IServiceProvider ConfigureServices()
+    private static ServiceProvider ConfigureServices()
     {
         var services = new ServiceCollection();
 
@@ -80,7 +81,7 @@ public sealed partial class App : Application
         {
             DefaultRequestHeaders = {
                 { "X-GitHub-Api-Version", "2022-11-28" },
-                { "User-Agent", "request" }
+                { "User-Agent", $"SITManager/{Assembly.GetEntryAssembly()?.GetName().Version?.ToString() ?? "1.0.0.1a"}" }
             }
         });
         services.AddSingleton<IZlibService, ZlibService>();
@@ -94,6 +95,7 @@ public sealed partial class App : Application
         services.AddTransient<MainViewModel>();
         services.AddTransient<ModsPageViewModel>();
         services.AddTransient<PlayPageViewModel>();
+        services.AddTransient<LinuxSettingsPageViewModel>();
         services.AddTransient<SettingsPageViewModel>();
         services.AddTransient<ServerPageViewModel>();
         services.AddTransient<ToolsPageViewModel>();

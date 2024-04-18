@@ -60,8 +60,8 @@
 							<Run Text=" "/>
 							<Run Text="{Binding CurrentInstallProcessState.SitVersion}"/>
 						</TextBlock>
-
-						<Grid ColumnDefinitions="*, *">
+						
+						<Grid ColumnDefinitions="*,*">
 							<Button Grid.Column="0"
 									HorizontalAlignment="Left"
 									ToolTip.Tip="{DynamicResource SelectViewInstallSITButtonToolTip}"

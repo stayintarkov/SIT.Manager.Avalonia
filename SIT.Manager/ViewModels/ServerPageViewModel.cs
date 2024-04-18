@@ -27,15 +27,16 @@ public partial class ServerPageViewModel : ObservableRecipient
 
     private readonly IAkiServerService _akiServerService;
     private readonly IManagerConfigService _configService;
-    private FontFamily cachedFontFamily = FontFamily.Parse("Bender");
-    private SolidColorBrush cachedColorBrush = new(Color.FromRgb(255, 255, 255));
     private readonly IFileService _fileService;
+
+    private readonly SolidColorBrush cachedColorBrush = new(Color.FromRgb(255, 255, 255));
+    private FontFamily cachedFontFamily = FontFamily.Parse("Bender");
 
     [ObservableProperty]
     private Symbol _startServerButtonSymbolIcon = Symbol.Play;
 
     [ObservableProperty]
-    private string _startServerButtonTextBlock = "Start Server";
+    private string _startServerButtonTextBlock;
 
     public ObservableCollection<ConsoleText> ConsoleOutput { get; } = [];
 
@@ -54,11 +55,6 @@ public partial class ServerPageViewModel : ObservableRecipient
         StartServerButtonTextBlock = _localizationService.TranslateSource("ServerPageViewModelStartServer");
         EditServerConfigCommand = new AsyncRelayCommand(EditServerConfig);
         ClearServerOutputCommand = new AsyncRelayCommand(ClearServerOutput);
-
-        configService.ConfigChanged += (o, e) =>
-        {
-            StartServerButtonTextBlock = _localizationService.TranslateSource("ServerPageViewModelStartServer");
-        };
     }
 
     private async Task ClearServerOutput()
@@ -89,7 +85,10 @@ public partial class ServerPageViewModel : ObservableRecipient
             }
         }
 
-        cachedColorBrush.Color = newConfig.ConsoleFontColor;
+        if (newConfig.ConsoleFontColor != cachedColorBrush.Color)
+        {
+            Dispatcher.UIThread.Post(() => cachedColorBrush.Color = newConfig.ConsoleFontColor);
+        }
     }
 
     private void UpdateConsoleWithCachedEntries()
@@ -145,7 +144,6 @@ public partial class ServerPageViewModel : ObservableRecipient
                     }
                 case RunningState.Running:
                     {
-                        AddConsole(_localizationService.TranslateSource("ServerPageViewModelServerStarted"));
                         StartServerButtonSymbolIcon = Symbol.Stop;
                         StartServerButtonTextBlock = _localizationService.TranslateSource("ServerPageViewModelStopServer");
                         break;
@@ -223,8 +221,6 @@ public partial class ServerPageViewModel : ObservableRecipient
 
     protected override void OnActivated()
     {
-        UpdateCachedServerProperties(null, _configService.Config);
-        _configService.ConfigChanged += UpdateCachedServerProperties;
         if (_akiServerService.State != RunningState.NotRunning)
         {
             AkiServer_RunningStateChanged(null, _akiServerService.State);
@@ -232,13 +228,17 @@ public partial class ServerPageViewModel : ObservableRecipient
 
         _akiServerService.OutputDataReceived += AkiServer_OutputDataReceived;
         _akiServerService.RunningStateChanged += AkiServer_RunningStateChanged;
+        _configService.ConfigChanged += UpdateCachedServerProperties;
 
+        UpdateCachedServerProperties(null, _configService.Config);
         UpdateConsoleWithCachedEntries();
     }
 
     protected override void OnDeactivated()
     {
+        // We don't want these event firing when the page isn't currently active.
         _akiServerService.OutputDataReceived -= AkiServer_OutputDataReceived;
         _akiServerService.RunningStateChanged -= AkiServer_RunningStateChanged;
+        _configService.ConfigChanged -= UpdateCachedServerProperties;
     }
 }
