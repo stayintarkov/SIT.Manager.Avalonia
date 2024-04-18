@@ -344,11 +344,16 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         };
         if (OperatingSystem.IsLinux())
         {
-            patcherProcess.StartInfo.FileName = _configService.Config.WineRunner;
+            // TODO: actually improve this (will probably be done after fixing launching problems)
+            LinuxConfig config = _configService.Config.LinuxConfig;
+            string winePrefix = Path.GetFullPath(config.WinePrefix);
+            // Update the wine prefix and install any required components
+            UpdateWinePrefix(winePrefix);
+            
+            patcherProcess.StartInfo.FileName = config.WineRunner;
             patcherProcess.StartInfo.Arguments = $"\"{patcherPath}\" autoclose";
             patcherProcess.StartInfo.UseShellExecute = false;
-
-            string winePrefix = Path.GetFullPath(_configService.Config.WinePrefix);
+            
             if (!Path.EndsInDirectorySeparator(winePrefix))
             {
                 winePrefix = $"{winePrefix}{Path.DirectorySeparatorChar}";
@@ -361,6 +366,25 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         }
 
         return patcherProcess;
+    }
+
+    private void UpdateWinePrefix(string configWinePrefix)
+    {
+        try
+        {
+            using Process process = new();
+            process.StartInfo.FileName = "/bin/bash";
+            process.StartInfo.Arguments = "-c \"WINEPREFIX=" + configWinePrefix + " winetricks -q arial times dotnetdesktop6 dotnetdesktop8 win81\"";
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.UseShellExecute = false;
+            process.Start();
+
+            process.WaitForExit();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while installing .NET Desktop Runtime 6.0");
+        }
     }
 
     public async Task<List<GithubRelease>> GetServerReleases()

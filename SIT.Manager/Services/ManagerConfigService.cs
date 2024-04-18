@@ -29,6 +29,14 @@ internal sealed class ManagerConfigService : IManagerConfigService
 
     public event EventHandler<ManagerConfig>? ConfigChanged;
 
+    private static readonly JsonSerializerOptions Options = new ()
+    {
+        Converters = {
+            new ColorJsonConverter()
+        },
+        WriteIndented = true
+    };
+
     public ManagerConfigService(ILogger<ManagerConfigService> logger)
     {
         _logger = logger;
@@ -40,11 +48,12 @@ internal sealed class ManagerConfigService : IManagerConfigService
         try
         {
             string managerConfigPath = Path.Combine(AppContext.BaseDirectory, "ManagerConfig.json");
-            if (File.Exists(managerConfigPath))
+            if (!File.Exists(managerConfigPath))
             {
-                string json = File.ReadAllText(managerConfigPath);
-                _config = JsonSerializer.Deserialize<ManagerConfig>(json, _jsonSerializationOptions) ?? new();
+                return;
             }
+            string json = File.ReadAllText(managerConfigPath);
+            Config = JsonSerializer.Deserialize<ManagerConfig>(json, _jsonSerializationOptions) ?? new ManagerConfig();
         }
         catch (Exception ex)
         {
@@ -53,15 +62,15 @@ internal sealed class ManagerConfigService : IManagerConfigService
     }
 
 
-    public void UpdateConfig(ManagerConfig config, bool ShouldSave = true, bool? SaveAccount = null)
+    public void UpdateConfig(ManagerConfig config, bool shouldSave = true, bool? saveAccount = null)
     {
-        _config = config;
-        SaveAccount ??= config.RememberLogin;
+        Config = config;
+        saveAccount ??= config.RememberLogin;
 
-        if (ShouldSave)
+        if (shouldSave)
         {
-            ManagerConfig newLauncherConfig = _config;
-            if (!SaveAccount.Value)
+            ManagerConfig newLauncherConfig = Config;
+            if (!saveAccount.Value)
             {
                 newLauncherConfig.Username = string.Empty;
                 newLauncherConfig.Password = string.Empty;
@@ -71,6 +80,6 @@ internal sealed class ManagerConfigService : IManagerConfigService
             File.WriteAllText(managerConfigPath, JsonSerializer.Serialize(newLauncherConfig, _jsonSerializationOptions));
         }
 
-        ConfigChanged?.Invoke(this, _config);
+        ConfigChanged?.Invoke(this, Config);
     }
 }

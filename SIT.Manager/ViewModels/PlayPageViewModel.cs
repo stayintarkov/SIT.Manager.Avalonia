@@ -352,7 +352,7 @@ public partial class PlayPageViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            _logger.LogError("An exception occured while launching Tarkov: {exMessage}", ex.Message);
+            _logger.LogError("An exception occured while launching Tarkov: {exMessage}", ex);
             await new ContentDialog()
             {
                 Title = _localizationService.TranslateSource("ModsPageViewModelErrorTitle"),
