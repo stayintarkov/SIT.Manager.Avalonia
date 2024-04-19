@@ -29,7 +29,7 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
         {
             _connectedServer = WeakReferenceMessenger.Default.Send<ConnectedServerRequestMessage>();
         }
-        catch (Exception ex)
+        catch
         {
             _connectedServer = new AkiServer(new Uri("http://127.0.0.1:6969"))
             {

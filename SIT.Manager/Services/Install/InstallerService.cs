@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using SIT.Manager.Interfaces;
 using SIT.Manager.ManagedProcess;
 using SIT.Manager.Models;
+using SIT.Manager.Models.Config;
 using SIT.Manager.Models.Github;
 using SIT.Manager.Models.Installation;
 using System;
@@ -349,11 +350,11 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             string winePrefix = Path.GetFullPath(config.WinePrefix);
             // Update the wine prefix and install any required components
             UpdateWinePrefix(winePrefix);
-            
+
             patcherProcess.StartInfo.FileName = config.WineRunner;
             patcherProcess.StartInfo.Arguments = $"\"{patcherPath}\" autoclose";
             patcherProcess.StartInfo.UseShellExecute = false;
-            
+
             if (!Path.EndsInDirectorySeparator(winePrefix))
             {
                 winePrefix = $"{winePrefix}{Path.DirectorySeparatorChar}";

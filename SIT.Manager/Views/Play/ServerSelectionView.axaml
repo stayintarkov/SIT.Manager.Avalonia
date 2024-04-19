@@ -17,7 +17,7 @@
 			<Grid ColumnDefinitions="Auto, *">
 				<Button Grid.Column="0"
 						VerticalAlignment="Center"
-						Content="Create New Server"
+						Content="Add Server"
 						Command="{Binding CreateServerCommand}"/>
 			</Grid>
 		</Border>

@@ -1,4 +1,4 @@
-﻿using SIT.Manager.Models;
+﻿using SIT.Manager.Models.Config;
 using System;
 
 namespace SIT.Manager.ManagedProcess;

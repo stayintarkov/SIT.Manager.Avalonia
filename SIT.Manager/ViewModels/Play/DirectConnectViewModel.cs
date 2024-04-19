@@ -8,6 +8,7 @@ using SIT.Manager.Interfaces;
 using SIT.Manager.ManagedProcess;
 using SIT.Manager.Models;
 using SIT.Manager.Models.Aki;
+using SIT.Manager.Models.Config;
 using SIT.Manager.Models.Play;
 using SIT.Manager.Services;
 using System;

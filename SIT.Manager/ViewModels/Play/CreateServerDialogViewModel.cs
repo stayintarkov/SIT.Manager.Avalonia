@@ -8,9 +8,12 @@ public partial class CreateServerDialogViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CanCreateServer))]
-    private string _serverAddress = DEFAULT_SERVER_ADDRESS;
+    private string _serverAddress;
 
     public bool CanCreateServer => !string.IsNullOrEmpty(ServerAddress);
 
-    public CreateServerDialogViewModel() { }
+    public CreateServerDialogViewModel(string currentServerAddress = DEFAULT_SERVER_ADDRESS)
+    {
+        ServerAddress = currentServerAddress;
+    }
 }

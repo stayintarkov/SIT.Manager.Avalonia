@@ -10,7 +10,7 @@
 				  Title="Create Server"
 				  FullSizeDesired="False"
 				  CloseButtonText="Close"
-				  PrimaryButtonText="Create"
+				  PrimaryButtonText="Save"
 				  IsPrimaryButtonEnabled="{Binding CanCreateServer}"
 				  x:Class="SIT.Manager.Views.Play.CreateServerDialogView"
 				  x:DataType="vm:CreateServerDialogViewModel">

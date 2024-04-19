@@ -1,7 +1,6 @@
 ﻿using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
-using SIT.Manager.Interfaces;
 using SIT.Manager.Models.Aki;
 using SIT.Manager.Models.Play;
 using SIT.Manager.Views.Play;
@@ -11,17 +10,13 @@ namespace SIT.Manager.ViewModels;
 
 public partial class PlayPageViewModel : ObservableRecipient, IRecipient<ServerConnectMessage>, IRecipient<ConnectedServerRequestMessage>
 {
-    private readonly IAkiServerRequestingService _serverService;
-
     private AkiServer? _connectedServer;
 
     [ObservableProperty]
     private UserControl _playControl;
 
-    public PlayPageViewModel(IAkiServerRequestingService serverService)
+    public PlayPageViewModel()
     {
-        _serverService = serverService;
-
         PlayControl = new ServerSelectionView();
 
         /* TODO remove this at some point

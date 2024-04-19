@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using SIT.Manager.Converters;
 using SIT.Manager.ManagedProcess;
-using SIT.Manager.Models;
+using SIT.Manager.Models.Config;
 using System;
 using System.IO;
 using System.Text.Json;
@@ -29,7 +29,7 @@ internal sealed class ManagerConfigService : IManagerConfigService
 
     public event EventHandler<ManagerConfig>? ConfigChanged;
 
-    private static readonly JsonSerializerOptions Options = new ()
+    private static readonly JsonSerializerOptions Options = new()
     {
         Converters = {
             new ColorJsonConverter()

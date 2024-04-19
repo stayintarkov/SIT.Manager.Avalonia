@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SIT.Manager.Interfaces;
 using SIT.Manager.ManagedProcess;
-using SIT.Manager.Models;
+using SIT.Manager.Models.Config;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -18,14 +18,14 @@ public partial class LinuxSettingsPageViewModel : ObservableObject
     private readonly IPickerDialogService _pickerDialogService;
     private readonly IBarNotificationService _barNotificationService;
     private readonly ILocalizationService _localizationService;
-    
+
     [ObservableProperty]
     private LinuxConfig _linuxConfig;
-    
+
     // DXVK Versions TODO
-    [ObservableProperty] 
+    [ObservableProperty]
     private List<string> _dxvkVersions;
-    
+
     public IAsyncRelayCommand ChangePrefixLocationCommand { get; }
     public IAsyncRelayCommand ChangeRunnerLocationCommand { get; }
     public IRelayCommand AddEnvCommand { get; }
@@ -40,17 +40,17 @@ public partial class LinuxSettingsPageViewModel : ObservableObject
         _pickerDialogService = pickerDialogService;
         _barNotificationService = barNotificationService;
         _localizationService = localizationService;
-        
+
         _linuxConfig = _configsService.Config.LinuxConfig;
-        
+
         _linuxConfig.PropertyChanged += (o, e) => OnPropertyChanged(e);
-        
+
         // Find dxvk versions
         //_dxvkVersions = _versionService.GetDXVKVersions();
-        
+
         ChangePrefixLocationCommand = new AsyncRelayCommand(ChangePrefixLocation);
         ChangeRunnerLocationCommand = new AsyncRelayCommand(ChangeRunnerLocation);
-        
+
         AddEnvCommand = new RelayCommand(AddEnv);
         DeleteEnvCommand = new RelayCommand(DeleteEnv);
     }
@@ -83,7 +83,7 @@ public partial class LinuxSettingsPageViewModel : ObservableObject
             _barNotificationService.ShowError(_localizationService.TranslateSource("SettingsPageViewModelErrorTitle"), _localizationService.TranslateSource("LinuxSettingsPageViewModelConfigErrorPrefix"));
         }
     }
-    
+
     /// <summary>
     /// Gets the path containing the required filename based on the folder picker selection from a user
     /// </summary>
@@ -99,7 +99,7 @@ public partial class LinuxSettingsPageViewModel : ObservableObject
 
         return File.Exists(Path.Combine(directorySelected.Path.LocalPath, filename)) ? directorySelected.Path.LocalPath : string.Empty;
     }
-    
+
     private async Task ChangeRunnerLocation()
     {
         string newPath = await GetPathLocation(Path.Combine("bin", "wine"));
