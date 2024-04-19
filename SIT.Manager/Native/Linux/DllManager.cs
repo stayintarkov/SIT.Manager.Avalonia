@@ -1,12 +1,12 @@
-using SIT.Manager.Linux.Managers;
 using SIT.Manager.Models;
+using SIT.Manager.Native.Linux.Managers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace SIT.Manager.Linux;
+namespace SIT.Manager.Native.Linux;
 
-public abstract class DllManager(string component, IEnumerable<string> dlls, string baseDir, string releaseUrl, IEnumerable<string>? managedAppDataFiles=null)
+public abstract class DllManager(string component, IEnumerable<string> dlls, string baseDir, string releaseUrl, IEnumerable<string>? managedAppDataFiles = null)
 {
     public readonly string Component = component;
     protected string BaseDir = baseDir;
@@ -27,7 +27,7 @@ public abstract class DllManager(string component, IEnumerable<string> dlls, str
     {
         return dlls.Aggregate("", (current, dll) => current + "," + dll).Remove(0, 1);
     }
-    
+
     public static string GetDllOverride(LinuxConfig config)
     {
         // Collect every DLL override string from every manager and collect them per Mode if the setting is enabled
@@ -41,7 +41,7 @@ public abstract class DllManager(string component, IEnumerable<string> dlls, str
             sb.Append(manager.Value.GetDllOverrideString());
         }
         string result = sb.ToString();
-        
-        return string.IsNullOrEmpty(result) ? "winemenubuilder=" : result + "=n;winemenubuilder=" ;
+
+        return string.IsNullOrEmpty(result) ? "winemenubuilder=" : result + "=n;winemenubuilder=";
     }
 }

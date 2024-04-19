@@ -1,7 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Platform;
-using SIT.Manager.Native;
+using SIT.Manager.Native.Windows;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;

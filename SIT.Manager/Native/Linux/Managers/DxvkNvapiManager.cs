@@ -1,4 +1,6 @@
-namespace SIT.Manager.Linux.Managers;
+using SIT.Manager.Native.Linux;
+
+namespace SIT.Manager.Native.Linux.Managers;
 
 public class DxvkNvapiManager() : DllManager("DXVK-NVAPI",
     [
