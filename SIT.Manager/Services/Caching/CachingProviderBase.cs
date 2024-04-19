@@ -61,7 +61,6 @@ internal abstract class CachingProviderBase : ICachingProvider
     }
     protected virtual void EvictTenents(object? state)
     {
-        Debug.WriteLine("Evicting tenents");
         if (state == null)
             return;
 
@@ -70,7 +69,6 @@ internal abstract class CachingProviderBase : ICachingProvider
         {
             if(entry.ExpiryDate <  DateTime.UtcNow)
             {
-                Debug.WriteLine($"Evicting {entry.Key}");
                 RemoveExpiredKey(entry.Key);
             }
         }
