@@ -64,8 +64,7 @@ public partial class PlayPageViewModel : ObservableObject
         IAkiServerService akiServerService,
         ILocalizationService localizationService,
         ILogger<PlayPageViewModel> logger,
-        IServiceProvider serviceProvider,
-        ICachingService cachingService)
+        IServiceProvider serviceProvider)
     {
         _configService = configService;
         _managerConfig = _configService.Config;
