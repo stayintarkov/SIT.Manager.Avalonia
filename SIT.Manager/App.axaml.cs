@@ -10,6 +10,7 @@ using SIT.Manager.Services;
 using SIT.Manager.Services.Install;
 using SIT.Manager.ViewModels;
 using SIT.Manager.ViewModels.Installation;
+using SIT.Manager.ViewModels.Settings;
 using SIT.Manager.Views;
 using System;
 using System.Net.Http;
@@ -93,7 +94,6 @@ public sealed partial class App : Application
         services.AddTransient<MainViewModel>();
         services.AddTransient<ModsPageViewModel>();
         services.AddTransient<PlayPageViewModel>();
-        services.AddTransient<LinuxSettingsPageViewModel>();
         services.AddTransient<SettingsPageViewModel>();
         services.AddTransient<ServerPageViewModel>();
         services.AddTransient<ToolsPageViewModel>();
@@ -106,6 +106,12 @@ public sealed partial class App : Application
         services.AddTransient<InstallViewModel>();
         services.AddTransient<PatchViewModel>();
         services.AddTransient<SelectViewModel>();
+
+        // Settings View Models
+        services.AddTransient<EftViewModel>();
+        services.AddTransient<LauncherViewModel>();
+        services.AddTransient<LinuxViewModel>();
+        services.AddTransient<SptAkiViewModel>();
 
         return services.BuildServiceProvider();
     }

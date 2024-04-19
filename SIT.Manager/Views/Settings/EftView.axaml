@@ -1,0 +1,35 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Settings"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SIT.Manager.Views.Settings.EftView"
+			 x:DataType="vm:EftViewModel">
+	<Border Classes="StandardFrame">
+		<StackPanel>
+			<StackPanel Orientation="Horizontal" >
+				<TextBlock Text="{DynamicResource SettingsEFTInstallPathTitle}" Margin="0,0,10,0" VerticalAlignment="Center"/>
+				<TextBox Watermark="{DynamicResource SettingsEFTInstallPathPlaceholder}"
+						 Margin="0,0,10,0"
+						 MinWidth="425"
+						 MaxWidth="425"
+						 IsReadOnly="True"
+						 Text="{Binding Config.InstallPath}"/>
+				<Button Name="ChangeInstallButton"
+						Content="{DynamicResource SettingsEFTSettingsButtonChangeTitle}"
+						Margin="0,0,10,0"
+						ToolTip.Tip="{DynamicResource SettingsEFTChangeInstallPathToolTip}"
+						Command="{Binding ChangeInstallLocationCommand}"/>
+			</StackPanel>
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="{DynamicResource SettingsEFTVersionTitle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
+				<SelectableTextBlock Text="{Binding Config.TarkovVersion, Mode=TwoWay}" Margin="0,10,10,0" VerticalAlignment="Center"/>
+			</StackPanel>
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="{DynamicResource SettingsSITVersionTitle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
+				<SelectableTextBlock Text="{Binding Config.SitVersion, Mode=TwoWay}" Margin="0,10,10,0" VerticalAlignment="Center"/>
+			</StackPanel>
+		</StackPanel>
+	</Border>
+</UserControl>
