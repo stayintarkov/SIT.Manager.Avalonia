@@ -90,15 +90,6 @@ public partial class PlayPageViewModel : ObservableObject
 
         ConnectToServerCommand = new AsyncRelayCommand(async () => await ConnectToServer());
         QuickPlayCommand = new AsyncRelayCommand(async () => await ConnectToServer(true));
-
-        cachingService.InMemory.Add("testing", "uwu", TimeSpan.FromSeconds(4));
-        for (int i = 0; i < 3; i++)
-        {
-            Thread.Sleep(1750);
-            Debug.WriteLine($"Interation {i}");
-            Debug.WriteLine(cachingService.InMemory.Get<string>("testing"));
-            Debug.WriteLine("");
-        }
     }
 
     private string CreateLaunchArguments(TarkovLaunchConfig launchConfig, string token)
