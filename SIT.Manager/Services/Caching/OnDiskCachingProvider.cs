@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls.ApplicationLifetimes;
+using Microsoft.Extensions.Logging;
 using PeNet;
 using SIT.Manager.Interfaces;
 using System;
@@ -11,10 +12,11 @@ using System.Text;
 using System.Text.Json;
 
 namespace SIT.Manager.Services.Caching;
-internal class OnDiskCachingProvider(string cachePath) : CachingProviderBase(cachePath)
+internal class OnDiskCachingProvider(string cachePath, ILogger<OnDiskCachingProvider> logger) : CachingProviderBase(cachePath)
 {
     private const string RESTORE_FILE_NAME = "fileCache.dat";
     protected override string RestoreFileName => RESTORE_FILE_NAME;
+    private ILogger<OnDiskCachingProvider> _logger = logger;
 
     protected override void RemoveExpiredKey(string key)
     {
@@ -131,7 +133,7 @@ internal class OnDiskCachingProvider(string cachePath) : CachingProviderBase(cac
             catch (Exception ex)
             {
                 ms.Dispose();
-                //TODO: logging
+                _logger.LogError(ex, "Error occured during reading or casting file bytes.");
                 return CacheValue<T>.Null;
             }
 
@@ -143,7 +145,7 @@ internal class OnDiskCachingProvider(string cachePath) : CachingProviderBase(cac
         }
         catch (Exception ex)
         {
-            //TODO: log exception
+            _logger.LogError(ex, "Error occured during cast or file opening.");
             return CacheValue<T>.NoValue;
         }
     }

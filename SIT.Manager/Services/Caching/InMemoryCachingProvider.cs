@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls.ApplicationLifetimes;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -9,10 +10,11 @@ using System.Threading;
 
 namespace SIT.Manager.Services.Caching;
 
-internal class InMemoryCachingProvider(string cachePath) : CachingProviderBase(cachePath)
+internal class InMemoryCachingProvider(string cachePath, ILogger<InMemoryCachingProvider> logger) : CachingProviderBase(cachePath)
 {
     private const string RESTORE_FILE_NAME = "memoryCache.dat";
     protected override string RestoreFileName => RESTORE_FILE_NAME;
+    private ILogger<InMemoryCachingProvider> _logger = logger;
 
     public override CacheValue<T> Get<T>(string key)
     {
@@ -34,7 +36,7 @@ internal class InMemoryCachingProvider(string cachePath) : CachingProviderBase(c
         }
         catch (Exception ex)
         {
-            //TODO: log exception here
+            _logger.LogError(ex, "An error occured while casting value to generic");
             return CacheValue<T>.NoValue;
         }
     }
