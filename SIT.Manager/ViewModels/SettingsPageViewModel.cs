@@ -6,7 +6,6 @@ using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.Styling;
 using FluentAvalonia.UI.Controls;
 using SIT.Manager.Interfaces;
-using SIT.Manager.ManagedProcess;
 using SIT.Manager.Models.Config;
 using System.Collections.Generic;
 using System.ComponentModel;

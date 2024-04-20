@@ -1,20 +1,18 @@
-﻿using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Threading;
+﻿using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.Logging;
+using SIT.Manager.Exceptions;
 using SIT.Manager.Interfaces;
-using SIT.Manager.ManagedProcess;
+using SIT.Manager.Interfaces.ManagedProcesses;
 using SIT.Manager.Models;
 using SIT.Manager.Models.Aki;
 using SIT.Manager.Models.Config;
-using SIT.Manager.Models.Play;
 using SIT.Manager.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.ViewModels.Play;
@@ -29,7 +27,6 @@ public partial class DirectConnectViewModel : ObservableRecipient
     private readonly ILocalizationService _localizationService;
     private readonly ILogger<DirectConnectViewModel> _logger;
     private readonly IManagerConfigService _configService;
-    private readonly IServiceProvider _serviceProvider;
     private readonly ITarkovClientService _tarkovClientService;
 
     [ObservableProperty]
@@ -59,15 +56,13 @@ public partial class DirectConnectViewModel : ObservableRecipient
         ITarkovClientService tarkovClientService,
         IAkiServerService akiServerService,
         ILocalizationService localizationService,
-        ILogger<DirectConnectViewModel> logger,
-        IServiceProvider serviceProvider)
+        ILogger<DirectConnectViewModel> logger)
     {
         _serverRequestingService = serverRequestingService;
         _configService = configService;
         _managerConfig = _configService.Config;
         _tarkovClientService = tarkovClientService;
         _akiServerService = akiServerService;
-        _serviceProvider = serviceProvider;
         _localizationService = localizationService;
         _managerConfig = configService.Config;
         _logger = logger;
@@ -79,19 +74,6 @@ public partial class DirectConnectViewModel : ObservableRecipient
 
         ConnectToServerCommand = new AsyncRelayCommand(async () => await ConnectToServer());
         QuickPlayCommand = new AsyncRelayCommand(async () => await ConnectToServer(true));
-    }
-
-    private static void CloseManager()
-    {
-        IApplicationLifetime? lifetime = App.Current.ApplicationLifetime;
-        if (lifetime != null && lifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
-        {
-            desktopLifetime.Shutdown();
-        }
-        else
-        {
-            Environment.Exit(0);
-        }
     }
 
     private async Task ConnectToServer(bool launchServer = false)
@@ -125,72 +107,24 @@ public partial class DirectConnectViewModel : ObservableRecipient
             bool aborted = await LaunchServer();
             if (aborted)
             {
+                // TODO log aborted :)
                 return;
             }
         }
 
         if (serverAddress != null)
         {
-            AkiServer server = await _serverRequestingService.GetAkiServerAsync(new Uri("http://127.0.0.1:6969"));
-
+            AkiServer server = await _serverRequestingService.GetAkiServerAsync(serverAddress);
             AkiCharacter character = new(server, Username, Password);
 
-            string? ProfileID = null;
-            List<AkiMiniProfile> miniProfiles = await _serverRequestingService.GetMiniProfilesAsync(server);
-            if (miniProfiles.Select(x => x.Username == character.Username).Any())
-            {
-                _logger.LogDebug("Username {Username} was already found on server. Attempting to login...", character.Username);
-                (string loginRespStr, AkiLoginStatus status) = await _serverRequestingService.LoginAsync(character);
-                if (status == AkiLoginStatus.Success)
-                {
-                    _logger.LogDebug("Login successful");
-                    ProfileID = loginRespStr;
-                }
-                else
-                {
-                    _logger.LogDebug("Failed to login with error {status}", status);
-                    await HandleFailedStatus(status);
-                }
-            }
-            else
-            {
-                ProfileID = await RegisterUser(character);
-            }
-
-            if (ProfileID != null)
-            {
-                // TODO make this persistent :)
-                character.ProfileID = ProfileID;
-                _logger.LogDebug("{Username}'s ProfileID is {ProfileID}", character.Username, character.ProfileID);
-                server.Characters.Add(character);
-            }
-
-            // Launch game
-            string launchArguments = _tarkovClientService.CreateLaunchArguments(new TarkovLaunchConfig { BackendUrl = server.Address.AbsoluteUri }, character.ProfileID);
             try
             {
-                _tarkovClientService.Start(launchArguments);
-
-                while (_tarkovClientService.State == RunningState.Starting)
-                {
-                    await Task.Delay(500);
-                }
+                await _tarkovClientService.ConnectToServer(character);
             }
-            catch (Exception ex)
+            catch (AccountNotFoundException)
             {
-                _logger.LogError(ex, "An exception occured while launching Tarkov");
-                await new ContentDialog()
-                {
-                    Title = _localizationService.TranslateSource("ModsPageViewModelErrorTitle"),
-                    Content = ex.Message
-                }.ShowAsync();
-                return;
+                // TODO handle account not found (register?)
             }
-        }
-
-        if (_configService.Config.CloseAfterLaunch)
-        {
-            CloseManager();
         }
     }
 

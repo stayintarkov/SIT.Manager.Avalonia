@@ -1,0 +1,25 @@
+<ui:ContentDialog xmlns="https://github.com/avaloniaui"
+				  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                  xmlns:ui="using:FluentAvalonia.UI.Controls"
+				  xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Play"
+				  Title="Character Login"
+				  FullSizeDesired="False"
+				  CloseButtonText="Close"
+				  PrimaryButtonText="Login"
+				  mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                  x:Class="SIT.Manager.Views.Play.LoginDialogView"
+				  x:DataType="vm:LoginDialogViewModel">
+	<StackPanel>
+		<!--Username box-->
+		<Label Content="{DynamicResource UsernameBoxTitle}" Margin="8 8 8 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
+		<TextBox Name="UsernameBox" Text="{Binding Username, Mode=TwoWay}" MinWidth="150" Margin="8 4 8 8" HorizontalAlignment="Left" Watermark="{DynamicResource EnterUserNamePlaceholder}" IsReadOnly="True"/>
+
+		<!--Password box-->
+		<Label Content="{DynamicResource PasswordBoxTitle}" Margin="10 10 10 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
+		<TextBox Name="PasswordBox" Text="{Binding Password, Mode=TwoWay}" MinWidth="150" Margin="8 4 8 8" HorizontalAlignment="Left" PasswordChar="●" Watermark="{DynamicResource EnterPasswordPlaceholder}"/>
+
+		<CheckBox Name="RememberMeCheck" Content="{DynamicResource RememberMeCheckBoxTitle}" Margin="8" IsChecked="{Binding RememberMe}"/>
+	</StackPanel>
+</ui:ContentDialog>

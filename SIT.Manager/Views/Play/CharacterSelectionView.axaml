@@ -29,20 +29,35 @@
 		<ScrollViewer Grid.Row="1"
 					  HorizontalScrollBarVisibility="Disabled"
 					  Margin="0,8,12,0">
-			<ItemsControl Name="ConsoleLogItemsControl"
-						  ItemsSource="{Binding CharacterList}">
-				<ItemsControl.ItemsPanel>
-					<ItemsPanelTemplate>
-						<VirtualizingStackPanel Orientation="Vertical"/>
-					</ItemsPanelTemplate>
-				</ItemsControl.ItemsPanel>
+			<StackPanel>
+				<ItemsControl ItemsSource="{Binding SavedCharacterList}">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<VirtualizingStackPanel Orientation="Vertical"/>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
 
-				<ItemsControl.ItemTemplate>
-					<DataTemplate>
-						<pv:CharacterSummaryView DataContext="{Binding}"/>
-					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-			</ItemsControl>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<pv:CharacterSummaryView DataContext="{Binding}"/>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+
+				<ItemsControl ItemsSource="{Binding CharacterList}">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<VirtualizingStackPanel Orientation="Vertical"/>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<pv:CharacterSummaryView DataContext="{Binding}"/>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</StackPanel>
 		</ScrollViewer>
 	</Grid>
 </UserControl>

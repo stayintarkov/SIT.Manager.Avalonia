@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace SIT.Manager.ManagedProcess;
+namespace SIT.Manager.Interfaces.ManagedProcesses;
 
 public interface IAkiServerService : IManagedProcess
 {

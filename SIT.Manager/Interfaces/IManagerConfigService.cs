@@ -1,7 +1,7 @@
 ﻿using SIT.Manager.Models.Config;
 using System;
 
-namespace SIT.Manager.ManagedProcess;
+namespace SIT.Manager.Interfaces;
 
 public interface IManagerConfigService
 {

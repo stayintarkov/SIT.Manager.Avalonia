@@ -52,7 +52,7 @@ public partial class ManagerConfig : ObservableObject
     public string _password = string.Empty;
     [ObservableProperty]
     public bool _rememberLogin = false;
-    public Dictionary<string, List<AkiCharacter>> BookmarkedServers { get; set; } = [];
+    public List<AkiServer> BookmarkedServers { get; set; } = [];
 
     // SPT-AKI settings
     [ObservableProperty]

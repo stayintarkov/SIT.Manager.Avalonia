@@ -4,7 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using SIT.Manager.Interfaces;
-using SIT.Manager.ManagedProcess;
+using SIT.Manager.Interfaces.ManagedProcesses;
 using SIT.Manager.Models;
 using SIT.Manager.Models.Config;
 using SIT.Manager.Services;

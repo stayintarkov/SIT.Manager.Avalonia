@@ -2,9 +2,7 @@
 				  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 				  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 				  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-				  xmlns:sty="using:FluentAvalonia.Styling"
 				  xmlns:ui="using:FluentAvalonia.UI.Controls"
-				  xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
 				  xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Play"
 				  mc:Ignorable="d"
 				  Title="Create Server"
@@ -15,8 +13,10 @@
 				  x:Class="SIT.Manager.Views.Play.CreateServerDialogView"
 				  x:DataType="vm:CreateServerDialogViewModel">
 	<StackPanel>
-		<!--Server address box-->
-		<Label Content="Address" Margin="10 10 10 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
+		<Label Content="Address" 
+			   Margin="10 10 10 0" 
+			   FontFamily="{StaticResource BenderFont}"
+			   FontStyle="Oblique"/>
 		<TextBox Text="{Binding ServerAddress, Mode=TwoWay}" 
 				 MinWidth="300" 
 				 Margin="10 5 10 10" 

@@ -3,7 +3,8 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.DependencyInjection;
-using SIT.Manager.ManagedProcess;
+using SIT.Manager.Interfaces;
+using SIT.Manager.Models.Aki;
 using SIT.Manager.Models.Play;
 using SIT.Manager.Views.Play;
 using System;
@@ -36,11 +37,12 @@ public partial class ServerSelectionViewModel : ObservableRecipient, IRecipient<
         (ContentDialogResult result, string serverUriString) = await dialog.ShowAsync();
         if (result == ContentDialogResult.Primary && !string.IsNullOrEmpty(serverUriString))
         {
-            ServerList.Add(ActivatorUtilities.CreateInstance<ServerSummaryViewModel>(_serviceProvider, serverUriString));
-
-            bool addedSuccessfully = _configService.Config.BookmarkedServers.TryAdd(serverUriString, []);
-            if (addedSuccessfully)
+            bool serverExists = _configService.Config.BookmarkedServers.Any(x => x.Address.OriginalString == serverUriString);
+            if (!serverExists)
             {
+                AkiServer newServer = new AkiServer(new Uri(serverUriString));
+                ServerList.Add(ActivatorUtilities.CreateInstance<ServerSummaryViewModel>(_serviceProvider, newServer));
+                _configService.Config.BookmarkedServers.Add(newServer);
                 _configService.UpdateConfig(_configService.Config);
             }
             else
@@ -61,7 +63,7 @@ public partial class ServerSelectionViewModel : ObservableRecipient, IRecipient<
         base.OnActivated();
 
         ServerList.Clear();
-        foreach (string server in _configService.Config.BookmarkedServers.Keys)
+        foreach (AkiServer server in _configService.Config.BookmarkedServers)
         {
             ServerList.Add(ActivatorUtilities.CreateInstance<ServerSummaryViewModel>(_serviceProvider, server));
         }
@@ -84,8 +86,12 @@ public partial class ServerSelectionViewModel : ObservableRecipient, IRecipient<
             {
                 ServerList.Remove(server);
 
-                _configService.Config.BookmarkedServers.Remove(server.Address.OriginalString);
-                _configService.UpdateConfig(_configService.Config);
+                AkiServer? serverToRemove = _configService.Config.BookmarkedServers.Find(x => x.Address == server.Address);
+                if (serverToRemove != null)
+                {
+                    _configService.Config.BookmarkedServers.Remove(serverToRemove);
+                    _configService.UpdateConfig(_configService.Config);
+                }
             }
         }
     }

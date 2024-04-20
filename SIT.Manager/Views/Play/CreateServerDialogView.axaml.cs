@@ -7,13 +7,15 @@ namespace SIT.Manager.Views.Play;
 
 public partial class CreateServerDialogView : ContentDialog
 {
+    private const string DEFAULT_SERVER_ADDRESS = "http://127.0.0.1:6969";
+
     private readonly CreateServerDialogViewModel dc;
 
     protected override Type StyleKeyOverride => typeof(ContentDialog);
 
-    public CreateServerDialogView()
+    public CreateServerDialogView(string currentServerAddress = DEFAULT_SERVER_ADDRESS)
     {
-        dc = new CreateServerDialogViewModel();
+        dc = new CreateServerDialogViewModel(currentServerAddress);
         DataContext = dc;
         InitializeComponent();
     }

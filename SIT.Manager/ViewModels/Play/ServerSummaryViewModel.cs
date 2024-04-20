@@ -7,14 +7,13 @@ using CommunityToolkit.Mvvm.Messaging;
 using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.Logging;
 using SIT.Manager.Interfaces;
-using SIT.Manager.ManagedProcess;
 using SIT.Manager.Models.Aki;
 using SIT.Manager.Models.Play;
 using SIT.Manager.Views.Play;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.ViewModels.Play;
@@ -27,8 +26,7 @@ public partial class ServerSummaryViewModel : ObservableRecipient
 
     private readonly DispatcherTimer _dispatcherTimer;
 
-    private string _serverUri;
-    private AkiServer _server = new(new Uri("http://127.0.0.1:6969"));
+    private AkiServer _server;
 
     [ObservableProperty]
     private bool _isLoading = false;
@@ -58,13 +56,13 @@ public partial class ServerSummaryViewModel : ObservableRecipient
 
     public IAsyncRelayCommand EditCommand { get; }
 
-    public ServerSummaryViewModel(string serverUri, ILogger<ServerSummaryViewModel> logger, IAkiServerRequestingService serverService, IManagerConfigService configService)
+    public ServerSummaryViewModel(AkiServer server, ILogger<ServerSummaryViewModel> logger, IAkiServerRequestingService serverService, IManagerConfigService configService)
     {
         _logger = logger;
         _serverService = serverService;
         _configService = configService;
 
-        _serverUri = serverUri;
+        _server = server;
 
         EditCommand = new AsyncRelayCommand(Edit);
 
@@ -85,42 +83,34 @@ public partial class ServerSummaryViewModel : ObservableRecipient
 
     private async Task Edit()
     {
-        bool hasEditError = false;
-
-        CreateServerDialogView dialog = new();
+        CreateServerDialogView dialog = new(Address.AbsoluteUri);
         (ContentDialogResult result, string serverUriString) = await dialog.ShowAsync();
         if (result == ContentDialogResult.Primary && !string.IsNullOrEmpty(serverUriString))
         {
-            bool gotCurrentEntry = _configService.Config.BookmarkedServers.TryGetValue(_serverUri, out List<AkiCharacter>? characterList);
-            if (!gotCurrentEntry || characterList == null)
+            AkiServer? server = _configService.Config.BookmarkedServers.FirstOrDefault(x => x.Address == _server.Address);
+            if (server != null)
             {
-                hasEditError = true;
+                _configService.Config.BookmarkedServers.Remove(server);
+
+                AkiServer updatedServer = new AkiServer(new Uri(serverUriString))
+                {
+                    Characters = server.Characters
+                };
+                _configService.Config.BookmarkedServers.Add(server);
+
+                _server = updatedServer;
+                _configService.UpdateConfig(_configService.Config);
             }
             else
             {
-                bool addedSuccessfully = _configService.Config.BookmarkedServers.TryAdd(serverUriString, characterList);
-                if (addedSuccessfully)
+                ContentDialog contentDialog = new()
                 {
-                    _configService.Config.BookmarkedServers.Remove(_serverUri);
-                    _configService.UpdateConfig(_configService.Config);
-                    _serverUri = serverUriString;
-                }
-                else
-                {
-                    hasEditError = true;
-                }
+                    Title = "Edit Server Error",
+                    Content = "Failed to edit server",
+                    PrimaryButtonText = "Ok"
+                };
+                await contentDialog.ShowAsync();
             }
-        }
-
-        if (hasEditError)
-        {
-            ContentDialog contentDialog = new()
-            {
-                Title = "Edit Server Error",
-                Content = "Failed to edit server",
-                PrimaryButtonText = "Ok"
-            };
-            await contentDialog.ShowAsync();
         }
     }
 
@@ -165,7 +155,7 @@ public partial class ServerSummaryViewModel : ObservableRecipient
 
         try
         {
-            _server = await _serverService.GetAkiServerAsync(new Uri(_serverUri));
+            _server = await _serverService.GetAkiServerAsync(_server.Address);
             OnPropertyChanged(nameof(Name));
             _logger.LogDebug("{Address} found with name {Name}", Address.AbsoluteUri, Name);
 
@@ -176,12 +166,10 @@ public partial class ServerSummaryViewModel : ObservableRecipient
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "Couldn't retrieve server from address {Address}", _serverUri);
-            _server = new AkiServer(new Uri(_serverUri));
+            _logger.LogWarning(ex, "Couldn't retrieve server from address {Address}", _server.Address);
             Name = "N/A";
+            Ping = -2;
         }
-
-        Ping = -2;
 
         _dispatcherTimer.Start();
         IsLoading = false;

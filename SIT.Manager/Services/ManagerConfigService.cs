@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using SIT.Manager.Converters;
-using SIT.Manager.ManagedProcess;
+using SIT.Manager.Interfaces;
 using SIT.Manager.Models.Config;
 using System;
 using System.IO;

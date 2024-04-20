@@ -1,7 +1,11 @@
 ﻿using Avalonia.Controls.ApplicationLifetimes;
+using FluentAvalonia.UI.Controls;
+using Microsoft.Extensions.Logging;
+using SIT.Manager.Exceptions;
 using SIT.Manager.Interfaces;
+using SIT.Manager.Interfaces.ManagedProcesses;
 using SIT.Manager.Linux;
-using SIT.Manager.ManagedProcess;
+using SIT.Manager.Models.Aki;
 using SIT.Manager.Models.Config;
 using SIT.Manager.Models.Play;
 using System;
@@ -11,18 +15,25 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 
-namespace SIT.Manager.Services;
+namespace SIT.Manager.Services.ManagedProcesses;
 
-public class TarkovClientService(IBarNotificationService barNotificationService,
+public class TarkovClientService(IAkiServerRequestingService serverRequestingService,
+                                 IBarNotificationService barNotificationService,
                                  ILocalizationService localizationService,
-                                 IManagerConfigService configService) : ManagedProcess.ManagedProcess(barNotificationService, configService), ITarkovClientService
+                                 ILogger<TarkovClientService> logger,
+                                 IManagerConfigService configService) : ManagedProcess(barNotificationService, configService), ITarkovClientService
 {
     private const string TARKOV_EXE = "EscapeFromTarkov.exe";
+
+    private readonly IAkiServerRequestingService _serverRequestingService = serverRequestingService;
+    private readonly ILocalizationService _localizationService = localizationService;
+    private readonly ILogger<TarkovClientService> _logger = logger;
+
     public override string ExecutableDirectory => !string.IsNullOrEmpty(_configService.Config.InstallPath) ? _configService.Config.InstallPath : string.Empty;
 
     protected override string EXECUTABLE_NAME => TARKOV_EXE;
-    private readonly ILocalizationService _localizationService = localizationService;
 
     private void ClearModCache()
     {
@@ -43,6 +54,42 @@ public class TarkovClientService(IBarNotificationService barNotificationService,
             // Handle the case where InstallPath is not found or empty.
             _barNotificationService.ShowError(_localizationService.TranslateSource("TarkovClientServiceCacheClearedErrorTitle"), _localizationService.TranslateSource("TarkovClientServiceCacheClearedErrorDescription"));
         }
+    }
+
+    private static void CloseManager()
+    {
+        IApplicationLifetime? lifetime = App.Current.ApplicationLifetime;
+        if (lifetime != null && lifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
+        {
+            desktopLifetime.Shutdown();
+        }
+        else
+        {
+            Environment.Exit(0);
+        }
+    }
+
+    private static string CreateLaunchArguments(TarkovLaunchConfig launchConfig, string token)
+    {
+        string jsonConfig = JsonSerializer.Serialize(launchConfig);
+
+        // The json needs single quotes on Linux for some reason even though not valid json
+        // but this seems to work fine on Windows too so might as well do it on both ¯\_(ツ)_/¯
+        jsonConfig = jsonConfig.Replace('\"', '\'');
+
+        Dictionary<string, string> argumentList = new()
+        {
+            { "-token", token },
+            { "-config", jsonConfig }
+        };
+
+        string launchArguments = string.Join(' ', argumentList.Select(argument => $"{argument.Key}={argument.Value}"));
+        if (OperatingSystem.IsLinux())
+        {
+            // We need to make sure that the json is contained in quotes on Linux otherwise you won't be able to connect to the server.
+            launchArguments = string.Join(' ', argumentList.Select(argument => $"{argument.Key}=\"{argument.Value}\""));
+        }
+        return launchArguments;
     }
 
     public override void ClearCache()
@@ -71,27 +118,70 @@ public class TarkovClientService(IBarNotificationService barNotificationService,
         _barNotificationService.ShowInformational(_localizationService.TranslateSource("TarkovClientServiceCacheClearedTitle"), _localizationService.TranslateSource("TarkovClientServiceCacheClearedEFTDescription"));
     }
 
-    public string CreateLaunchArguments(TarkovLaunchConfig launchConfig, string token)
+    public async Task ConnectToServer(AkiCharacter character)
     {
-        string jsonConfig = JsonSerializer.Serialize(launchConfig);
-
-        // The json needs single quotes on Linux for some reason even though not valid json
-        // but this seems to work fine on Windows too so might as well do it on both ¯\_(ツ)_/¯
-        jsonConfig = jsonConfig.Replace('\"', '\'');
-
-        Dictionary<string, string> argumentList = new()
+        string? ProfileID = null;
+        List<AkiMiniProfile> miniProfiles = await _serverRequestingService.GetMiniProfilesAsync(character.ParentServer);
+        if (miniProfiles.Select(x => x.Username == character.Username).Any())
         {
-            { "-token", token },
-            { "-config", jsonConfig }
-        };
-
-        string launchArguments = string.Join(' ', argumentList.Select(argument => $"{argument.Key}={argument.Value}"));
-        if (OperatingSystem.IsLinux())
-        {
-            // We need to make sure that the json is contained in quotes on Linux otherwise you won't be able to connect to the server.
-            launchArguments = string.Join(' ', argumentList.Select(argument => $"{argument.Key}=\"{argument.Value}\""));
+            _logger.LogDebug("Username {Username} was already found on server. Attempting to login...", character.Username);
+            (string loginRespStr, AkiLoginStatus status) = await _serverRequestingService.LoginAsync(character);
+            if (status == AkiLoginStatus.Success)
+            {
+                _logger.LogDebug("Login successful");
+                ProfileID = loginRespStr;
+            }
+            else
+            {
+                _logger.LogDebug("Failed to login with error {status}", status);
+                await new ContentDialog()
+                {
+                    Title = _localizationService.TranslateSource("PlayPageViewModelLoginErrorTitle"),
+                    Content = _localizationService.TranslateSource("PlayPageViewModelLoginIncorrectPassword"),
+                    CloseButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonOk")
+                }.ShowAsync();
+                return;
+            }
         }
-        return launchArguments;
+        else
+        {
+            throw new AccountNotFoundException();
+        }
+
+        if (ProfileID != null)
+        {
+            // TODO make this persistent :)
+            character.ProfileID = ProfileID;
+            _logger.LogDebug("{Username}'s ProfileID is {ProfileID}", character.Username, character.ProfileID);
+            character.ParentServer.Characters.Add(character);
+        }
+
+        // Launch game
+        string launchArguments = CreateLaunchArguments(new TarkovLaunchConfig { BackendUrl = character.ParentServer.Address.AbsoluteUri }, character.ProfileID);
+        try
+        {
+            Start(launchArguments);
+            while (State == RunningState.Starting)
+            {
+                await Task.Delay(500);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An exception occured while launching Tarkov");
+            await new ContentDialog()
+            {
+                Title = _localizationService.TranslateSource("ModsPageViewModelErrorTitle"),
+                Content = ex.Message
+            }.ShowAsync();
+            return;
+        }
+
+
+        if (_configService.Config.CloseAfterLaunch)
+        {
+            CloseManager();
+        }
     }
 
     public override void Start(string? arguments)

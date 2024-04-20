@@ -8,10 +8,11 @@ using Polly;
 using Polly.Retry;
 using Polly.Timeout;
 using SIT.Manager.Interfaces;
-using SIT.Manager.ManagedProcess;
+using SIT.Manager.Interfaces.ManagedProcesses;
 using SIT.Manager.Services;
 using SIT.Manager.Services.Caching;
 using SIT.Manager.Services.Install;
+using SIT.Manager.Services.ManagedProcesses;
 using SIT.Manager.ViewModels;
 using SIT.Manager.ViewModels.Installation;
 using SIT.Manager.ViewModels.Play;
@@ -81,7 +82,6 @@ public sealed partial class App : Application
                     }
                     return new PickerDialogService(desktop.MainWindow);
                 })
-                .AddSingleton<ITarkovClientService, TarkovClientService>()
                 .AddSingleton<IVersionService, VersionService>()
                 //TODO: Move this to httpclient factory with proper configuration
                 .AddSingleton(new HttpClientHandler

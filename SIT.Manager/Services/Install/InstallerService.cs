@@ -1,7 +1,6 @@
 ﻿using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.Logging;
 using SIT.Manager.Interfaces;
-using SIT.Manager.ManagedProcess;
 using SIT.Manager.Models;
 using SIT.Manager.Models.Config;
 using SIT.Manager.Models.Github;
