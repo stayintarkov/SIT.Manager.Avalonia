@@ -11,6 +11,7 @@ using SIT.Manager.Models.Aki;
 using SIT.Manager.Models.Play;
 using SIT.Manager.Views.Play;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -20,13 +21,17 @@ namespace SIT.Manager.ViewModels.Play;
 
 public partial class ServerSummaryViewModel : ObservableRecipient
 {
-    private readonly ILogger _logger;
+    private readonly ILogger<ServerSummaryViewModel> _logger;
     private readonly IAkiServerRequestingService _serverService;
     private readonly IManagerConfigService _configService;
 
     private readonly DispatcherTimer _dispatcherTimer;
 
     private AkiServer _server;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShownAddress))]
+    private bool _showIPOverride = false;
 
     [ObservableProperty]
     private bool _isLoading = false;
@@ -40,6 +45,24 @@ public partial class ServerSummaryViewModel : ObservableRecipient
     public Uri Address
     {
         get => _server.Address;
+    }
+
+    public string ShownAddress
+    {
+        get
+        {
+            if (!_configService.Config.HideIpAddress || ShowIPOverride)
+            {
+                return Address.AbsoluteUri;
+            }
+
+            string returnString = "";
+            foreach (var character in Address.AbsoluteUri)
+            {
+                returnString += "*";
+            }
+            return returnString;
+        }
     }
 
     public string Name
@@ -92,7 +115,7 @@ public partial class ServerSummaryViewModel : ObservableRecipient
             {
                 _configService.Config.BookmarkedServers.Remove(server);
 
-                AkiServer updatedServer = new AkiServer(new Uri(serverUriString))
+                AkiServer updatedServer = new(new Uri(serverUriString))
                 {
                     Characters = server.Characters
                 };
@@ -100,6 +123,9 @@ public partial class ServerSummaryViewModel : ObservableRecipient
 
                 _server = updatedServer;
                 _configService.UpdateConfig(_configService.Config);
+
+                OnPropertyChanged(nameof(Address));
+                OnPropertyChanged(nameof(ShownAddress));
             }
             else
             {
