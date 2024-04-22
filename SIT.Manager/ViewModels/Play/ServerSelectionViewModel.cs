@@ -64,10 +64,11 @@ public partial class ServerSelectionViewModel : ObservableRecipient, IRecipient<
     {
         base.OnActivated();
 
-        ServerList.Clear();
         foreach (AkiServer server in _configService.Config.BookmarkedServers)
         {
-            ServerList.Add(ActivatorUtilities.CreateInstance<ServerSummaryViewModel>(_serviceProvider, server));
+            //This has the potential to be kinda slow on *large* sets. If so we can swap to a hashset but that feels overkill rn
+            if(!ServerList.Select(x => x.Address.AbsoluteUri).Contains(server.Address.AbsoluteUri))
+                ServerList.Add(ActivatorUtilities.CreateInstance<ServerSummaryViewModel>(_serviceProvider, server));
         }
     }
 
