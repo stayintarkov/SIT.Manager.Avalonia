@@ -68,7 +68,7 @@ public partial class ServerSelectionViewModel : ObservableRecipient, IRecipient<
         foreach (AkiServer server in _configService.Config.BookmarkedServers)
         {
             //This has the potential to be kinda slow on *large* sets. If so we can swap to a hashset but that feels overkill rn
-            if(!ServerList.Select(x => x.Address.AbsoluteUri).Contains(server.Address.AbsoluteUri))
+            if (!ServerList.Where(x => Uri.Compare(x.Address, server.Address, UriComponents.HostAndPort, UriFormat.SafeUnescaped, StringComparison.OrdinalIgnoreCase) == 0).Any())
                 ServerList.Add(ActivatorUtilities.CreateInstance<ServerSummaryViewModel>(_serviceProvider, server));
         }
     }
