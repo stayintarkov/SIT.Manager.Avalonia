@@ -35,8 +35,9 @@ public interface IModService
     /// <param name="targetPath">Base location of where the EFT install is to put the mod</param>
     /// <param name="mod">The meta data for the mod we want to install</param>
     /// <param name="suppressNotification">Supress notifications of the mods installation status</param>
+    /// <param name="suppressCompatibilityWarning">Supress the warning about a mods compatibility</param>
     /// <returns></returns>
-    Task<bool> InstallMod(string targetPath, ModInfo mod, bool suppressNotification = false);
+    Task<bool> InstallMod(string targetPath, ModInfo mod, bool suppressNotification = false, bool suppressCompatibilityWarning = false);
     /// <summary>
     /// Load the master list of mods into memory so we know what mods are available
     /// </summary>
