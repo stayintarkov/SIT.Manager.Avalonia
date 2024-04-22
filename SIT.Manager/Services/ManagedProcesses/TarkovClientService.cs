@@ -150,10 +150,8 @@ public class TarkovClientService(IAkiServerRequestingService serverRequestingSer
 
         if (ProfileID != null)
         {
-            // TODO make this persistent :)
             character.ProfileID = ProfileID;
             _logger.LogDebug("{Username}'s ProfileID is {ProfileID}", character.Username, character.ProfileID);
-            character.ParentServer.Characters.Add(character);
         }
 
         // Launch game
@@ -176,7 +174,6 @@ public class TarkovClientService(IAkiServerRequestingService serverRequestingSer
             }.ShowAsync();
             return;
         }
-
 
         if (_configService.Config.CloseAfterLaunch)
         {

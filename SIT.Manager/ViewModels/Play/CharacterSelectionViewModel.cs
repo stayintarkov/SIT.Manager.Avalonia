@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Models.Aki;
@@ -18,6 +19,7 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
     private readonly ILogger _logger;
     private readonly IAkiServerRequestingService _serverService;
     private readonly IManagerConfigService _configService;
+    private readonly IServiceProvider _serviceProvider;
 
     private readonly AkiServer _connectedServer;
 
@@ -26,8 +28,9 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
 
     public IAsyncRelayCommand CreateCharacterCommand { get; }
 
-    public CharacterSelectionViewModel(ILogger<CharacterSelectionViewModel> logger, IAkiServerRequestingService serverService, IManagerConfigService configService)
+    public CharacterSelectionViewModel(IServiceProvider serviceProvider, ILogger<CharacterSelectionViewModel> logger, IAkiServerRequestingService serverService, IManagerConfigService configService)
     {
+        _serviceProvider = serviceProvider;
         _logger = logger;
         _serverService = serverService;
         _configService = configService;
@@ -52,7 +55,7 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
     [RelayCommand]
     private void Back()
     {
-        // TODO
+        WeakReferenceMessenger.Default.Send(new ServerDisconnectMessage(_connectedServer));
     }
 
     private async Task CreateCharacter()
@@ -70,7 +73,7 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
         List<AkiMiniProfile> miniProfiles = await _serverService.GetMiniProfilesAsync(_connectedServer);
         foreach (AkiMiniProfile profile in miniProfiles)
         {
-            CharacterSummaryViewModel characterSummaryViewModel = new(_connectedServer, profile);
+            CharacterSummaryViewModel characterSummaryViewModel = ActivatorUtilities.CreateInstance<CharacterSummaryViewModel>(_serviceProvider, _connectedServer, profile);
             if (currentServer?.Characters.Any(x => x.Username == profile.Username) == true)
             {
                 SavedCharacterList.Add(characterSummaryViewModel);

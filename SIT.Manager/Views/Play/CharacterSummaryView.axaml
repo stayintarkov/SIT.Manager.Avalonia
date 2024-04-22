@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Play"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SIT.Manager.Views.Play.CharacterSummaryView"
@@ -16,9 +17,14 @@
 
 			<StackPanel Grid.Column="1"
 						Margin="8,0">
-				<TextBlock FontSize="24"
-						   FontWeight="Bold"
-						   Text="{Binding Profile.Nickname}"/>
+				<StackPanel Orientation="Horizontal">
+					<TextBlock FontSize="24"
+							   FontWeight="Bold"
+							   Text="{Binding Profile.Nickname}"/>
+					<ui:SymbolIcon Height="32" 
+								   Width="32"
+								   Symbol="Star"/>
+				</StackPanel>
 
 				<TextBlock FontStyle="Italic"
 						   Text="{Binding Profile.Username}"/>
@@ -34,7 +40,7 @@
 								 Height="4"
 								 Maximum="100"/>
 					<TextBlock Grid.Column="2"
-							   Text="{Binding Profile.MaxLevel}"/>
+							   Text="{Binding NextLevel}"/>
 				</Grid>
 			</StackPanel>
 
