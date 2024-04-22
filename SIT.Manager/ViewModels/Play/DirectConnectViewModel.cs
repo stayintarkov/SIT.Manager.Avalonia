@@ -45,7 +45,7 @@ public partial class DirectConnectViewModel : ObservableRecipient
     private ManagerConfig _managerConfig;
 
     [ObservableProperty]
-    private string _quickPlayText = "Start Server and Connect";
+    private string _quickPlayText = string.Empty;
 
     public IAsyncRelayCommand ConnectToServerCommand { get; }
     public IAsyncRelayCommand QuickPlayCommand { get; }
@@ -96,7 +96,7 @@ public partial class DirectConnectViewModel : ObservableRecipient
                 {
                     Title = rule?.Name,
                     Content = rule?.ErrorMessage,
-                    CloseButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonOk")
+                    CloseButtonText = _localizationService.TranslateSource("DirectConnectViewModelButtonOk")
                 }.ShowAsync();
                 return;
             }
@@ -155,36 +155,36 @@ public partial class DirectConnectViewModel : ObservableRecipient
             //Address
             new()
             {
-                Name = _localizationService.TranslateSource("PlayPageViewModelServerAddressTitle"),
-                ErrorMessage = _localizationService.TranslateSource("PlayPageViewModelServerAddressDescription"),
+                Name = _localizationService.TranslateSource("DirectConnectViewModelServerAddressTitle"),
+                ErrorMessage = _localizationService.TranslateSource("DirectConnectViewModelServerAddressDescription"),
                 Check = () => { return serverAddress != null; }
             },
             //Install path
             new()
             {
-                Name = _localizationService.TranslateSource("PlayPageViewModelInstallPathTitle"),
-                ErrorMessage = _localizationService.TranslateSource("PlayPageViewModelInstallPathDescription"),
+                Name = _localizationService.TranslateSource("DirectConnectViewModelInstallPathTitle"),
+                ErrorMessage = _localizationService.TranslateSource("DirectConnectViewModelInstallPathDescription"),
                 Check = () => { return !string.IsNullOrEmpty(_configService.Config.InstallPath); }
             },
             //SIT check
             new()
             {
-                Name = _localizationService.TranslateSource("PlayPageViewModelSITInstallationTitle"),
-                ErrorMessage = _localizationService.TranslateSource("PlayPageViewModelSITInstallationDescription", SIT_DLL_FILENAME),
+                Name = _localizationService.TranslateSource("DirectConnectViewModelSITInstallationTitle"),
+                ErrorMessage = _localizationService.TranslateSource("DirectConnectViewModelSITInstallationDescription", SIT_DLL_FILENAME),
                 Check = () => { return File.Exists(Path.Combine(_configService.Config.InstallPath, "BepInEx", "plugins", SIT_DLL_FILENAME)); }
             },
             //EFT Check
             new()
             {
-                Name = _localizationService.TranslateSource("PlayPageViewModelEFTInstallationTitle"),
-                ErrorMessage = _localizationService.TranslateSource("PlayPageViewModelEFTInstallationDescription", EFT_EXE_FILENAME),
+                Name = _localizationService.TranslateSource("DirectConnectViewModelEFTInstallationTitle"),
+                ErrorMessage = _localizationService.TranslateSource("DirectConnectViewModelEFTInstallationDescription", EFT_EXE_FILENAME),
                 Check = () => { return File.Exists(Path.Combine(_configService.Config.InstallPath, EFT_EXE_FILENAME)); }
             },
             //Field Check
             new()
             {
-                Name = _localizationService.TranslateSource("PlayPageViewModelInputValidationTitle"),
-                ErrorMessage = _localizationService.TranslateSource("PlayPageViewModelInputValidationDescription"),
+                Name = _localizationService.TranslateSource("DirectConnectViewModelInputValidationTitle"),
+                ErrorMessage = _localizationService.TranslateSource("DirectConnectViewModelInputValidationDescription"),
                 Check = () => { return LastServer.Length > 0 && Username.Length > 0 && Password.Length > 0; }
             }
         ];
@@ -196,15 +196,15 @@ public partial class DirectConnectViewModel : ObservableRecipient
                 //Unhandled Instance
                 new ValidationRule()
                 {
-                    Name = _localizationService.TranslateSource("PlayPageViewModelUnhandledAkiInstanceTitle"),
-                    ErrorMessage = _localizationService.TranslateSource("PlayPageViewModelUnhandledAkiInstanceDescription"),
+                    Name = _localizationService.TranslateSource("DirectConnectViewModelUnhandledAkiInstanceTitle"),
+                    ErrorMessage = _localizationService.TranslateSource("DirectConnectViewModelUnhandledAkiInstanceDescription"),
                     Check = () => { return !_akiServerService.IsUnhandledInstanceRunning(); }
                 },
                 //Missing executable
                 new ValidationRule()
                 {
-                    Name = _localizationService.TranslateSource("PlayPageViewModelMissingAKIInstallationTitle"),
-                    ErrorMessage = _localizationService.TranslateSource("PlayPageViewModelMissingAKIInstallationDescription"),
+                    Name = _localizationService.TranslateSource("DirectConnectViewModelMissingAKIInstallationTitle"),
+                    ErrorMessage = _localizationService.TranslateSource("DirectConnectViewModelMissingAKIInstallationDescription"),
                     Check = () => { return File.Exists(_akiServerService.ExecutableFilePath); }
                 }
             ]);
@@ -221,9 +221,9 @@ public partial class DirectConnectViewModel : ObservableRecipient
                 {
                     await new ContentDialog()
                     {
-                        Title = _localizationService.TranslateSource("PlayPageViewModelLoginErrorTitle"),
-                        Content = _localizationService.TranslateSource("PlayPageViewModelLoginIncorrectPassword"),
-                        CloseButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonOk")
+                        Title = _localizationService.TranslateSource("DirectConnectViewModelLoginErrorTitle"),
+                        Content = _localizationService.TranslateSource("DirectConnectViewModelLoginIncorrectPassword"),
+                        CloseButtonText = _localizationService.TranslateSource("DirectConnectViewModelButtonOk")
                     }.ShowAsync();
                     break;
                 }
@@ -232,9 +232,9 @@ public partial class DirectConnectViewModel : ObservableRecipient
                 {
                     await new ContentDialog()
                     {
-                        Title = _localizationService.TranslateSource("PlayPageViewModelLoginErrorTitle"),
-                        Content = _localizationService.TranslateSource("PlayPageViewModelLoginErrorDescription"),
-                        CloseButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonOk")
+                        Title = _localizationService.TranslateSource("DirectConnectViewModelLoginErrorTitle"),
+                        Content = _localizationService.TranslateSource("DirectConnectViewModelLoginErrorDescription"),
+                        CloseButtonText = _localizationService.TranslateSource("DirectConnectViewModelButtonOk")
                     }.ShowAsync();
                     break;
                 }
@@ -250,7 +250,7 @@ public partial class DirectConnectViewModel : ObservableRecipient
         RunningState serverState;
         while ((serverState = _akiServerService.State) == RunningState.Starting)
         {
-            QuickPlayText = _localizationService.TranslateSource("PlayPageViewModelWaitingForServerTitle");
+            QuickPlayText = _localizationService.TranslateSource("DirectConnectViewModelWaitingForServerTitle");
 
             if (serverState == RunningState.Running)
             {
@@ -264,9 +264,9 @@ public partial class DirectConnectViewModel : ObservableRecipient
                 {
                     new ContentDialog()
                     {
-                        Title = _localizationService.TranslateSource("PlayPageViewModelServerErrorTitle"),
-                        Content = _localizationService.TranslateSource("PlayPageViewModelServerErrorDescription"),
-                        CloseButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonOk")
+                        Title = _localizationService.TranslateSource("DirectConnectViewModelServerErrorTitle"),
+                        Content = _localizationService.TranslateSource("DirectConnectViewModelServerErrorDescription"),
+                        CloseButtonText = _localizationService.TranslateSource("DirectConnectViewModelButtonOk")
                     }.ShowAsync();
                 });
                 aborted = true;
@@ -276,7 +276,7 @@ public partial class DirectConnectViewModel : ObservableRecipient
             await Task.Delay(1000);
         }
 
-        QuickPlayText = _localizationService.TranslateSource("PlayPageViewModelQuickPlayText");
+        QuickPlayText = _localizationService.TranslateSource("DirectConnectViewModelQuickPlayText");
         return aborted;
     }
 
@@ -285,11 +285,11 @@ public partial class DirectConnectViewModel : ObservableRecipient
         _logger.LogDebug("Username {Username} not found....", character.Username);
         ContentDialogResult createAccountResponse = await new ContentDialog()
         {
-            Title = _localizationService.TranslateSource("PlayPageViewModelAccountNotFound"),
-            Content = _localizationService.TranslateSource("PlayPageViewModelAccountNotFoundDescription"),
+            Title = _localizationService.TranslateSource("DirectConnectViewModelAccountNotFound"),
+            Content = _localizationService.TranslateSource("DirectConnectViewModelAccountNotFoundDescription"),
             IsPrimaryButtonEnabled = true,
-            PrimaryButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonYes"),
-            CloseButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonNo")
+            PrimaryButtonText = _localizationService.TranslateSource("DirectConnectViewModelButtonYes"),
+            CloseButtonText = _localizationService.TranslateSource("DirectConnectViewModelButtonNo")
         }.ShowAsync();
 
         if (createAccountResponse == ContentDialogResult.Primary)
@@ -315,6 +315,6 @@ public partial class DirectConnectViewModel : ObservableRecipient
     {
         base.OnActivated();
 
-        QuickPlayText = _localizationService.TranslateSource("PlayPageViewModelQuickPlayText");
+        QuickPlayText = _localizationService.TranslateSource("DirectConnectViewModelQuickPlayText");
     }
 }

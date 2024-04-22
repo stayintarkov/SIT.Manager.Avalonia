@@ -17,15 +17,17 @@ namespace SIT.Manager.ViewModels.Play;
 public partial class ServerSelectionViewModel : ObservableRecipient, IRecipient<DeleteServerMessage>
 {
     private readonly IManagerConfigService _configService;
+    private readonly ILocalizationService _localizationService;
     private readonly IServiceProvider _serviceProvider;
 
     public ObservableCollection<ServerSummaryViewModel> ServerList { get; } = [];
 
     public IAsyncRelayCommand CreateServerCommand { get; }
 
-    public ServerSelectionViewModel(IServiceProvider serviceProvider, IManagerConfigService configService)
+    public ServerSelectionViewModel(IServiceProvider serviceProvider, ILocalizationService localizationService, IManagerConfigService configService)
     {
         _configService = configService;
+        _localizationService = localizationService;
         _serviceProvider = serviceProvider;
 
         CreateServerCommand = new AsyncRelayCommand(CreateServer);
@@ -40,7 +42,7 @@ public partial class ServerSelectionViewModel : ObservableRecipient, IRecipient<
             bool serverExists = _configService.Config.BookmarkedServers.Any(x => x.Address.OriginalString == serverUriString);
             if (!serverExists)
             {
-                AkiServer newServer = new AkiServer(new Uri(serverUriString));
+                AkiServer newServer = new(new Uri(serverUriString));
                 ServerList.Add(ActivatorUtilities.CreateInstance<ServerSummaryViewModel>(_serviceProvider, newServer));
                 _configService.Config.BookmarkedServers.Add(newServer);
                 _configService.UpdateConfig(_configService.Config);
@@ -49,9 +51,9 @@ public partial class ServerSelectionViewModel : ObservableRecipient, IRecipient<
             {
                 ContentDialog contentDialog = new()
                 {
-                    Title = "Add Server Error",
-                    Content = "Failed to add server as it already exists",
-                    PrimaryButtonText = "Ok"
+                    Title = _localizationService.TranslateSource("ServerSelectionViewModelAddServerDialogTitle"),
+                    Content = _localizationService.TranslateSource("ServerSelectionViewModelAddServerDialogContent"),
+                    PrimaryButtonText = _localizationService.TranslateSource("ServerSelectionViewModelAddServerPrimaryButtonText")
                 };
                 await contentDialog.ShowAsync();
             }
@@ -73,10 +75,10 @@ public partial class ServerSelectionViewModel : ObservableRecipient, IRecipient<
     {
         ContentDialog contentDialog = new()
         {
-            Title = "Delete Server",
-            Content = "Are you sure you want to delete this server?",
-            PrimaryButtonText = "Yes",
-            CloseButtonText = "No"
+            Title = _localizationService.TranslateSource("ServerSelectionViewModelDeleteServerDialogTitle"),
+            Content = _localizationService.TranslateSource("ServerSelectionViewModelDeleteServerDialogContent"),
+            PrimaryButtonText = _localizationService.TranslateSource("ServerSelectionViewModelDeleteServerPrimaryButtonText"),
+            CloseButtonText = _localizationService.TranslateSource("ServerSelectionViewModelDeleteServerCloseButtonText")
         };
         ContentDialogResult result = await contentDialog.ShowAsync();
         if (result == ContentDialogResult.Primary)

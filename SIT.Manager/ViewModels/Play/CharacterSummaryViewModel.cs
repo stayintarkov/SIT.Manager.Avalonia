@@ -16,6 +16,7 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
 {
     private readonly ILogger _logger;
     private readonly IManagerConfigService _configService;
+    private readonly ILocalizationService _localizationService;
     private readonly ITarkovClientService _tarkovClientService;
 
     private readonly AkiServer _connectedServer;
@@ -31,10 +32,11 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
 
     public IAsyncRelayCommand PlayCommand { get; }
 
-    public CharacterSummaryViewModel(AkiServer server, AkiMiniProfile profile, ILogger<CharacterSummaryViewModel> logger, IManagerConfigService configService, ITarkovClientService tarkovClientService)
+    public CharacterSummaryViewModel(AkiServer server, AkiMiniProfile profile, ILocalizationService localizationService, ILogger<CharacterSummaryViewModel> logger, IManagerConfigService configService, ITarkovClientService tarkovClientService)
     {
         _logger = logger;
         _configService = configService;
+        _localizationService = localizationService;
         _tarkovClientService = tarkovClientService;
 
         _connectedServer = server;
@@ -88,8 +90,9 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
             _logger.LogError(ex, "Error trying to connect to Tarkov server");
             ContentDialog errorDialog = new()
             {
-                Title = "Error",
-                PrimaryButtonText = "Error launching Tarkov; consult log for details"
+                Title = _localizationService.TranslateSource("CharacterSummaryViewModelPlayErrorDialogTitle"),
+                Content = _localizationService.TranslateSource("CharacterSummaryViewModelPlayErrorDialogContent"),
+                PrimaryButtonText = _localizationService.TranslateSource("CharacterSummaryViewModelPlayErrorDialogPrimaryButtonText"),
             };
             await errorDialog.ShowAsync();
         }

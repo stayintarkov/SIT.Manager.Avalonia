@@ -16,12 +16,12 @@
 			<Grid ColumnDefinitions="Auto, *, Auto">
 				<Button Grid.Column="0"
 						VerticalAlignment="Center"
-						Content="Back"
+						Content="{DynamicResource CharacterSelectionViewBackButtonText}"
 						Command="{Binding BackCommand}"/>
 
 				<Button Grid.Column="2"
 						VerticalAlignment="Center"
-						Content="Add Character"
+						Content="{DynamicResource CharacterSelectionViewAddCharacterButtonText}"
 						Command="{Binding CreateCharacterCommand}"/>
 			</Grid>
 		</Border>

@@ -8,10 +8,10 @@
 			 x:DataType="vm:PlayPageViewModel"
              x:Class="SIT.Manager.Views.PlayPage">
 	<TabControl Margin="2">
-		<TabItem Header="Bookmarks">
+		<TabItem Header="{DynamicResource PlayPageBookmarksTabHeader}">
 			<ContentControl Content="{Binding PlayControl}"/>
 		</TabItem>
-		<TabItem Header="Direct Connect">
+		<TabItem Header="{DynamicResource PlayPageDirectConnectTabHeader}">
 			<pv:DirectConnectView/>
 		</TabItem>
 	</TabControl>

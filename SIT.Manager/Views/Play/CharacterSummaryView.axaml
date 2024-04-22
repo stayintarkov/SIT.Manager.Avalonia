@@ -45,7 +45,7 @@
 			</StackPanel>
 
 			<Button Grid.Column="2"
-					Content="Play"
+					Content="{DynamicResource CharacterSummaryViewPlayButtonText}"
 					Command="{Binding PlayCommand}"/>
 		</Grid>
 	</Border>

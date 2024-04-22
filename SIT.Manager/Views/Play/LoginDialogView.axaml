@@ -4,22 +4,22 @@
                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                   xmlns:ui="using:FluentAvalonia.UI.Controls"
 				  xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Play"
-				  Title="Character Login"
+				  Title="{DynamicResource LoginDialogViewViewTitle}"
 				  FullSizeDesired="False"
-				  CloseButtonText="Close"
-				  PrimaryButtonText="Login"
+				  CloseButtonText="{DynamicResource LoginDialogViewViewCloseButtonText}"
+				  PrimaryButtonText="{DynamicResource LoginDialogViewViewPrimaryButtonText}"
 				  mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
                   x:Class="SIT.Manager.Views.Play.LoginDialogView"
 				  x:DataType="vm:LoginDialogViewModel">
 	<StackPanel>
 		<!--Username box-->
-		<Label Content="{DynamicResource UsernameBoxTitle}" Margin="8 8 8 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
-		<TextBox Name="UsernameBox" Text="{Binding Username, Mode=TwoWay}" MinWidth="150" Margin="8 4 8 8" HorizontalAlignment="Left" Watermark="{DynamicResource EnterUserNamePlaceholder}" IsReadOnly="True"/>
+		<Label Content="{DynamicResource LoginDialogViewViewUsernameBoxTitle}" Margin="8 8 8 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
+		<TextBox Name="UsernameBox" Text="{Binding Username, Mode=TwoWay}" MinWidth="150" Margin="8 4 8 8" HorizontalAlignment="Left" Watermark="{DynamicResource LoginDialogViewViewEnterUserNamePlaceholder}" IsReadOnly="True"/>
 
 		<!--Password box-->
-		<Label Content="{DynamicResource PasswordBoxTitle}" Margin="10 10 10 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
-		<TextBox Name="PasswordBox" Text="{Binding Password, Mode=TwoWay}" MinWidth="150" Margin="8 4 8 8" HorizontalAlignment="Left" PasswordChar="●" Watermark="{DynamicResource EnterPasswordPlaceholder}"/>
+		<Label Content="{DynamicResource LoginDialogViewViewPasswordBoxTitle}" Margin="10 10 10 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
+		<TextBox Name="PasswordBox" Text="{Binding Password, Mode=TwoWay}" MinWidth="150" Margin="8 4 8 8" HorizontalAlignment="Left" PasswordChar="●" Watermark="{DynamicResource LoginDialogViewViewEnterPasswordPlaceholder}"/>
 
-		<CheckBox Name="RememberMeCheck" Content="{DynamicResource RememberMeCheckBoxTitle}" Margin="8" IsChecked="{Binding RememberMe}"/>
+		<CheckBox Name="RememberMeCheck" Content="{DynamicResource LoginDialogViewRememberMeCheckBoxTitle}" Margin="8" IsChecked="{Binding RememberMe}"/>
 	</StackPanel>
 </ui:ContentDialog>

@@ -11,7 +11,6 @@ using SIT.Manager.Models.Aki;
 using SIT.Manager.Models.Play;
 using SIT.Manager.Views.Play;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -21,6 +20,7 @@ namespace SIT.Manager.ViewModels.Play;
 
 public partial class ServerSummaryViewModel : ObservableRecipient
 {
+    private readonly ILocalizationService _localizationService;
     private readonly ILogger<ServerSummaryViewModel> _logger;
     private readonly IAkiServerRequestingService _serverService;
     private readonly IManagerConfigService _configService;
@@ -79,8 +79,9 @@ public partial class ServerSummaryViewModel : ObservableRecipient
 
     public IAsyncRelayCommand EditCommand { get; }
 
-    public ServerSummaryViewModel(AkiServer server, ILogger<ServerSummaryViewModel> logger, IAkiServerRequestingService serverService, IManagerConfigService configService)
+    public ServerSummaryViewModel(AkiServer server, ILocalizationService localizationService, ILogger<ServerSummaryViewModel> logger, IAkiServerRequestingService serverService, IManagerConfigService configService)
     {
+        _localizationService = localizationService;
         _logger = logger;
         _serverService = serverService;
         _configService = configService;
@@ -131,9 +132,9 @@ public partial class ServerSummaryViewModel : ObservableRecipient
             {
                 ContentDialog contentDialog = new()
                 {
-                    Title = "Edit Server Error",
-                    Content = "Failed to edit server",
-                    PrimaryButtonText = "Ok"
+                    Title = _localizationService.TranslateSource("ServerSummaryViewModelEditDialogTitle"),
+                    Content = _localizationService.TranslateSource("ServerSummaryViewModelEditDialogContent"),
+                    PrimaryButtonText = _localizationService.TranslateSource("ServerSummaryViewModelEditDialogPrimaryButtonText")
                 };
                 await contentDialog.ShowAsync();
             }
@@ -193,7 +194,7 @@ public partial class ServerSummaryViewModel : ObservableRecipient
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Couldn't retrieve server from address {Address}", _server.Address);
-            Name = "N/A";
+            Name = _localizationService.TranslateSource("ServerSummaryViewModelNoServerNameText");
             Ping = -2;
         }
 

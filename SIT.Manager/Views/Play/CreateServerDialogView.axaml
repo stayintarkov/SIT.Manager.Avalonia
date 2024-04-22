@@ -5,15 +5,15 @@
 				  xmlns:ui="using:FluentAvalonia.UI.Controls"
 				  xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Play"
 				  mc:Ignorable="d"
-				  Title="Create Server"
+				  Title="{DynamicResource CreateServerDialogViewTitle}"
 				  FullSizeDesired="False"
-				  CloseButtonText="Close"
-				  PrimaryButtonText="Save"
+				  CloseButtonText="{DynamicResource CreateServerDialogViewCloseButtonText}"
+				  PrimaryButtonText="{DynamicResource CreateServerDialogViewPrimaryButtonText}"
 				  IsPrimaryButtonEnabled="{Binding CanCreateServer}"
 				  x:Class="SIT.Manager.Views.Play.CreateServerDialogView"
 				  x:DataType="vm:CreateServerDialogViewModel">
 	<StackPanel>
-		<Label Content="Address" 
+		<Label Content="{DynamicResource CreateServerDialogViewAddressLabel}" 
 			   Margin="10 10 10 0" 
 			   FontFamily="{StaticResource BenderFont}"
 			   FontStyle="Oblique"/>
@@ -21,6 +21,6 @@
 				 MinWidth="300" 
 				 Margin="10 5 10 10" 
 				 HorizontalAlignment="Left" 
-				 Watermark="Enter Server Address..."/>
+				 Watermark="{DynamicResource CreateServerDialogViewAddressTextBoxWatermark}"/>
 	</StackPanel>
 </ui:ContentDialog>
