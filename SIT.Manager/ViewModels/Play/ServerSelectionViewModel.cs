@@ -36,13 +36,14 @@ public partial class ServerSelectionViewModel : ObservableRecipient, IRecipient<
     private async Task CreateServer()
     {
         CreateServerDialogView dialog = new();
-        (ContentDialogResult result, string serverUriString) = await dialog.ShowAsync();
-        if (result == ContentDialogResult.Primary && !string.IsNullOrEmpty(serverUriString))
+        (ContentDialogResult result, Uri serverUri) = await dialog.ShowAsync();
+        if (result == ContentDialogResult.Primary)
         {
-            bool serverExists = _configService.Config.BookmarkedServers.Any(x => x.Address.OriginalString == serverUriString);
+            bool serverExists = _configService.Config.BookmarkedServers
+                .Any(x => Uri.Compare(x.Address, serverUri, UriComponents.HostAndPort, UriFormat.SafeUnescaped, StringComparison.OrdinalIgnoreCase) == 0);
             if (!serverExists)
             {
-                AkiServer newServer = new(new Uri(serverUriString));
+                AkiServer newServer = new(serverUri);
                 ServerList.Add(ActivatorUtilities.CreateInstance<ServerSummaryViewModel>(_serviceProvider, newServer));
                 _configService.Config.BookmarkedServers.Add(newServer);
                 _configService.UpdateConfig(_configService.Config);

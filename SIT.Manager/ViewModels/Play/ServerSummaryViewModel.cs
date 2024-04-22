@@ -108,15 +108,15 @@ public partial class ServerSummaryViewModel : ObservableRecipient
     private async Task Edit()
     {
         CreateServerDialogView dialog = new(Address.AbsoluteUri);
-        (ContentDialogResult result, string serverUriString) = await dialog.ShowAsync();
-        if (result == ContentDialogResult.Primary && !string.IsNullOrEmpty(serverUriString))
+        (ContentDialogResult result, Uri serverUri) = await dialog.ShowAsync();
+        if (result == ContentDialogResult.Primary)
         {
             AkiServer? server = _configService.Config.BookmarkedServers.FirstOrDefault(x => x.Address == _server.Address);
             if (server != null)
             {
                 _configService.Config.BookmarkedServers.Remove(server);
 
-                AkiServer updatedServer = new(new Uri(serverUriString))
+                AkiServer updatedServer = new(serverUri)
                 {
                     Characters = server.Characters
                 };
