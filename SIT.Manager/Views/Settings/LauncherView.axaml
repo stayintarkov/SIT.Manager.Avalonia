@@ -23,7 +23,11 @@
 					  IsChecked="{Binding IsDeveloperModeEnabled, Mode=TwoWay}"/>
 			<Grid ColumnDefinitions="auto, *">
 				<TextBlock Text="{DynamicResource SettingsLanguageTitle}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
-				<ComboBox Margin="5,0,0,0" Grid.Column="1" ToolTip.Tip="{DynamicResource SettingsLanguageTitleToolTip}" ItemsSource="{Binding AvailableLocalization}" SelectedItem="{Binding CurrentLocalization}">
+				<ComboBox Margin="5,0,0,0" 
+						  Grid.Column="1" 
+						  ToolTip.Tip="{DynamicResource SettingsLanguageTitleToolTip}" 
+						  ItemsSource="{Binding AvailableLocalizations}" 
+						  SelectedItem="{Binding CurrentLocalization}">
 					<ComboBox.ItemTemplate>
 						<DataTemplate>
 							<TextBlock Text="{Binding NativeName}" Tag="{Binding Name}"/>

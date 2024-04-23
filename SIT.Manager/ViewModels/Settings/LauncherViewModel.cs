@@ -22,13 +22,13 @@ public partial class LauncherViewModel(IManagerConfigService configService,
     private readonly FluentAvaloniaTheme? faTheme = Application.Current?.Styles.OfType<FluentAvaloniaTheme>().FirstOrDefault();
 
     [ObservableProperty]
-    private bool _isDeveloperModeEnabled;
+    private bool _isDeveloperModeEnabled = false;
 
     [ObservableProperty]
-    private List<CultureInfo> _availableLocalization = [];
+    private List<CultureInfo> _availableLocalizations = localizationService.GetAvailableLocalizations();
 
     [ObservableProperty]
-    private CultureInfo _currentLocalization = CultureInfo.CurrentCulture;
+    private CultureInfo _currentLocalization = localizationService.DefaultLocale;
 
     private void Config_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
@@ -45,26 +45,25 @@ public partial class LauncherViewModel(IManagerConfigService configService,
     {
         base.OnActivated();
 
-        Config.PropertyChanged += Config_PropertyChanged;
-
+        CurrentLocalization = AvailableLocalizations.FirstOrDefault(x => x.Name == Config.CurrentLanguageSelected, _localizationService.DefaultLocale);
         IsDeveloperModeEnabled = Config.EnableDeveloperMode;
 
-        CurrentLocalization = new CultureInfo(Config.CurrentLanguageSelected);
-        AvailableLocalization = _localizationService.GetAvailableLocalizations();
-        _localizationService.Translate(CurrentLocalization);
+        Config.PropertyChanged += Config_PropertyChanged;
     }
 
     protected override void OnDeactivated()
     {
         base.OnDeactivated();
-
         Config.PropertyChanged -= Config_PropertyChanged;
     }
 
     partial void OnCurrentLocalizationChanged(CultureInfo value)
     {
-        _localizationService.Translate(value);
-        Config.CurrentLanguageSelected = value.Name;
+        if (value != null)
+        {
+            Config.CurrentLanguageSelected = value.Name;
+            _localizationService.Translate(value);
+        }
     }
 
     async partial void OnIsDeveloperModeEnabledChanged(bool value)

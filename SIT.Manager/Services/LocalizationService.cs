@@ -5,17 +5,20 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 
 namespace SIT.Manager.Services;
 
 public partial class LocalizationService : ILocalizationService
 {
-    private const string DEFAULT_LANGUAGE = "en-US";
     private const string ASSEMBLY_NAME = "SIT.Manager";
+    public const string DEFAULT_LANGUAGE = "en-US";
 
     private readonly IManagerConfigService _configService;
 
     private ResourceInclude? resourceInclude;
+
+    public CultureInfo DefaultLocale => new(DEFAULT_LANGUAGE);
 
     public event EventHandler<EventArgs>? LocalizationChanged;
 
@@ -23,6 +26,20 @@ public partial class LocalizationService : ILocalizationService
     {
         _configService = configService;
         VerifyLocaleAvailability();
+    }
+
+    /// <summary>
+    /// Creates a Resource that will load Localization later on.
+    /// </summary>
+    /// <returns>Resource with Localization</returns>
+    private static ResourceInclude CreateResourceLocalization(string locale)
+    {
+        string url = $"avares://SIT.Manager.ASM/Localization/{locale}.axaml";
+        Uri self = new("resm:Styles?assembly=SIT.Manager");
+        return new ResourceInclude(self)
+        {
+            Source = new Uri(url)
+        };
     }
 
     private void VerifyLocaleAvailability()
@@ -33,6 +50,42 @@ public partial class LocalizationService : ILocalizationService
         {
             _configService.Config.CurrentLanguageSelected = DEFAULT_LANGUAGE;
         }
+    }
+
+    /// <summary>
+    /// Function that loads the Available Localizations when program starts.
+    /// </summary>
+    public List<CultureInfo> GetAvailableLocalizations()
+    {
+        List<CultureInfo?> result = [];
+        Assembly assembly = typeof(LocalizationService).Assembly;
+        string folderName = string.Format("{0}.Localization", ASSEMBLY_NAME);
+        result = assembly.GetManifestResourceNames()
+            .Where(r => r.StartsWith(folderName) && r.EndsWith(".axaml"))
+            .Select(r =>
+            {
+                string languageCode = r.Split('.')[^2];
+                try
+                {
+                    return new CultureInfo(languageCode);
+                }
+                catch
+                {
+                    return null;
+                }
+            })
+            .ToList();
+
+        if (result.Count == 0) result.Add(DefaultLocale);
+        List<CultureInfo> resultNotNull = [];
+        foreach (CultureInfo? r in result)
+        {
+            if (r != null)
+            {
+                resultNotNull.Add(r);
+            }
+        }
+        return resultNotNull;
     }
 
     /// <summary>
@@ -97,52 +150,5 @@ public partial class LocalizationService : ILocalizationService
             }
         }
         return result;
-    }
-
-    /// <summary>
-    /// Function that loads the Available Localizations when program starts.
-    /// </summary>
-    public List<CultureInfo> GetAvailableLocalizations()
-    {
-        List<CultureInfo?> result = [];
-        var assembly = typeof(LocalizationService).Assembly;
-        string folderName = string.Format("{0}.Localization", ASSEMBLY_NAME);
-        result = assembly.GetManifestResourceNames()
-            .Where(r => r.StartsWith(folderName) && r.EndsWith(".axaml"))
-            .Select(r =>
-            {
-                string languageCode = r.Split('.')[^2];
-                try
-                {
-                    return new CultureInfo(languageCode);
-                }
-                catch
-                {
-                    return null;
-                }
-            })
-            .ToList();
-
-        if (result.Count == 0) result.Add(new CultureInfo(DEFAULT_LANGUAGE));
-        List<CultureInfo> resultNotNull = [];
-        foreach (var r in result)
-        {
-            if (r != null) resultNotNull.Add(r);
-        }
-        return resultNotNull;
-    }
-
-    /// <summary>
-    /// Creates a Resource that will load Localization later on.
-    /// </summary>
-    /// <returns>Resource with Localization</returns>
-    private ResourceInclude CreateResourceLocalization(string locale)
-    {
-        string url = $"avares://SIT.Manager.ASM/Localization/{locale}.axaml";
-        Uri self = new("resm:Styles?assembly=SIT.Manager");
-        return new ResourceInclude(self)
-        {
-            Source = new Uri(url)
-        };
     }
 }
