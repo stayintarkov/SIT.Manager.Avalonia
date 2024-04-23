@@ -139,7 +139,7 @@ public class ModService(IBarNotificationService barNotificationService,
         _barNotificationService.ShowSuccess(_localizationService.TranslateSource("ModServiceUpdatedModsTitle"), _localizationService.TranslateSource("ModServiceUpdatedModsDescription", $"{outdatedMods.Count}"));
     }
 
-    public async Task<bool> InstallMod(string targetPath, ModInfo mod, bool suppressNotification = false)
+    public async Task<bool> InstallMod(string targetPath, ModInfo mod, bool suppressNotification = false, bool suppressCompatibilityWarning = false)
     {
         if (string.IsNullOrEmpty(targetPath))
         {
@@ -149,7 +149,7 @@ public class ModService(IBarNotificationService barNotificationService,
 
         try
         {
-            if (mod.SupportedVersion != _configService.Config.SitVersion)
+            if (mod.SupportedVersion != _configService.Config.SitVersion && !suppressCompatibilityWarning)
             {
                 ContentDialog contentDialog = new()
                 {
