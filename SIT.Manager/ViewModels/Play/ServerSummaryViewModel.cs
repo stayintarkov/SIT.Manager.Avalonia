@@ -9,9 +9,11 @@ using Microsoft.Extensions.Logging;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Models.Aki;
 using SIT.Manager.Models.Play;
+using SIT.Manager.Services.Caching;
 using SIT.Manager.Views.Play;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,6 +26,7 @@ public partial class ServerSummaryViewModel : ObservableRecipient
     private readonly ILogger<ServerSummaryViewModel> _logger;
     private readonly IAkiServerRequestingService _serverService;
     private readonly IManagerConfigService _configService;
+    private readonly ICachingService _cachingService;
 
     private readonly DispatcherTimer _dispatcherTimer;
 
@@ -79,12 +82,19 @@ public partial class ServerSummaryViewModel : ObservableRecipient
 
     public IAsyncRelayCommand EditCommand { get; }
 
-    public ServerSummaryViewModel(AkiServer server, ILocalizationService localizationService, ILogger<ServerSummaryViewModel> logger, IAkiServerRequestingService serverService, IManagerConfigService configService)
+    public ServerSummaryViewModel(
+        AkiServer server,
+        ILocalizationService localizationService,
+        ILogger<ServerSummaryViewModel> logger,
+        IAkiServerRequestingService serverService,
+        IManagerConfigService configService,
+        ICachingService cachingService)
     {
         _localizationService = localizationService;
         _logger = logger;
         _serverService = serverService;
         _configService = configService;
+        _cachingService = cachingService;
 
         _server = server;
 
@@ -182,10 +192,16 @@ public partial class ServerSummaryViewModel : ObservableRecipient
             OnPropertyChanged(nameof(Name));
             _logger.LogDebug("{Address} found with name {Name}", Address.AbsoluteUri, Name);
 
-            using (MemoryStream ms = await _serverService.GetAkiServerImage(_server, "launcher/side_scav.png"))
+            string serverImageCacheKey = $"{_server.Address.Host}:{_server.Address.Port} serverimg";
+            CacheValue<Bitmap> cachedImage = await _cachingService.InMemory.GetOrComputeAsync<Bitmap>(serverImageCacheKey, async (key) =>
             {
-                ServerImage = new Bitmap(ms);
-            }
+                using (MemoryStream ms = await _serverService.GetAkiServerImage(_server, "launcher/side_scav.png"))
+                {
+                    Debug.WriteLine($"Creating new cached bitmap for key \"{key}\"");
+                    return new Bitmap(ms);
+                }
+            }, TimeSpan.FromHours(1));
+            ServerImage = cachedImage.Value;
         }
         catch (Exception ex)
         {
