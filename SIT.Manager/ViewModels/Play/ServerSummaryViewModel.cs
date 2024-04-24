@@ -145,6 +145,7 @@ public partial class ServerSummaryViewModel : ObservableRecipient
     {
         try
         {
+            _dispatcherTimer.Stop();
             Ping = await _serverService.GetPingAsync(_server);
             _logger.LogDebug("{Name}'s ping is {Ping}ms", Name, Ping);
         }
@@ -152,6 +153,10 @@ public partial class ServerSummaryViewModel : ObservableRecipient
         {
             Ping = -1;
             _logger.LogWarning(ex, "Couldn't evaluate ping from server {Name}", Name);
+        }
+        finally
+        {
+            _dispatcherTimer.Start();
         }
     }
 
