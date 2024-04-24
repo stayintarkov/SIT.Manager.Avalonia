@@ -62,11 +62,11 @@ public class AkiServerRequestingService(
         reqResp.EnsureSuccessStatusCode();
         Stream respStream = await reqResp.Content.ReadAsStreamAsync(cancellationToken);
 
-        byte[] magicNumber = new byte[2];
-        int debug = await respStream.ReadAsync(magicNumber.AsMemory(0, 2), cancellationToken);
+        Memory<byte> magicNumber = new(new byte[2]);
+        await respStream.ReadAsync(magicNumber, cancellationToken);
         respStream.Seek(0, SeekOrigin.Begin);
 
-        if (magicNumber[0] == 0x78 && zlibMagicBytes.Contains(magicNumber[1]))
+        if (magicNumber.Span[0] == 0x78 && zlibMagicBytes.Contains(magicNumber.Span[1]))
         {
             return await respStream.InflateAsync(cancellationToken);
         }

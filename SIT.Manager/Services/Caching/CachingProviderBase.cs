@@ -150,6 +150,7 @@ internal abstract class CachingProviderBase : ICachingProvider
         return Get<T>(key);
     }
 
+    //TODO: Make this based off synchro version
     public virtual async Task<CacheValue<T>> GetOrComputeAsync<T>(string key, Func<string, Task<T>> computor, TimeSpan? expiaryTime = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
