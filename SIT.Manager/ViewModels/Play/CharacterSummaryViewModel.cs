@@ -83,6 +83,7 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
                 {
                     _configService.Config.BookmarkedServers[index].Characters.Add(character);
                 }
+                _configService.UpdateConfig(_configService.Config);
             }
         }
         catch (Exception ex)
