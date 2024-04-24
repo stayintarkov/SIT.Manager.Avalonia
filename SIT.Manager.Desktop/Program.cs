@@ -1,9 +1,8 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Threading;
 using SIT.Manager.Views;
 using System;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace SIT.Manager.Desktop;
 
@@ -22,8 +21,8 @@ class Program
         }
         catch (Exception ex)
         {
-            System.IO.File.WriteAllText("crash.log", ex.ToString());
-            CrashApp crashApp = new CrashApp();
+            File.WriteAllText("crash.log", ex.ToString());
+            CrashApp crashApp = new();
             crashApp.RunWithMainWindow<CrashWindow>();
         }
     }
