@@ -22,6 +22,6 @@ public partial class CreateServerDialogView : ContentDialog
 
     public new Task<(ContentDialogResult, Uri)> ShowAsync()
     {
-        return ShowAsync(null).ContinueWith(t => (t.Result, dc.ServerUri ?? throw new ArgumentNullException(nameof(dc.ServerUri))));
+        return ShowAsync(null).ContinueWith(t => (t.Result, dc.ServerUri));
     }
 }
