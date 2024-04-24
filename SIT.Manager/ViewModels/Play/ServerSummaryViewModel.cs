@@ -59,12 +59,7 @@ public partial class ServerSummaryViewModel : ObservableRecipient
                 return Address.AbsoluteUri;
             }
 
-            string returnString = "";
-            foreach (var character in Address.AbsoluteUri)
-            {
-                returnString += "*";
-            }
-            return returnString;
+            return new string('*', Address.AbsoluteUri.Length);
         }
     }
 
@@ -198,7 +193,7 @@ public partial class ServerSummaryViewModel : ObservableRecipient
             _logger.LogDebug("{Address} found with name {Name}", Address.AbsoluteUri, Name);
 
             string serverImageCacheKey = $"{_server.Address.Host}:{_server.Address.Port} serverimg";
-            CacheValue<Bitmap> cachedImage = await _cachingService.InMemory.GetOrComputeAsync<Bitmap>(serverImageCacheKey, async (key) =>
+            CacheValue<Bitmap> cachedImage = await _cachingService.InMemory.GetOrComputeAsync(serverImageCacheKey, async (key) =>
             {
                 using (MemoryStream ms = await _serverService.GetAkiServerImage(_server, "launcher/side_scav.png"))
                 {
@@ -207,15 +202,16 @@ public partial class ServerSummaryViewModel : ObservableRecipient
                 }
             }, TimeSpan.FromHours(1));
             ServerImage = cachedImage.Value;
+            _dispatcherTimer.Start();
         }
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Couldn't retrieve server from address {Address}", _server.Address);
             Name = _localizationService.TranslateSource("ServerSummaryViewModelNoServerNameText");
             Ping = -2;
+            _dispatcherTimer.Stop();
         }
 
-        _dispatcherTimer.Start();
         IsLoading = false;
     }
 
