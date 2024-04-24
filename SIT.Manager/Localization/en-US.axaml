@@ -76,7 +76,7 @@
 	<system:String x:Key="ServerClearServerOutputTooltip">Clears all of the output in console.</system:String>
 
 	<!-- Settings Page -->
-	<system:String x:Key="SettingsLauncherSettingsTitle">Launcher Settings</system:String>
+	<system:String x:Key="SettingsLauncherSettingsTitle">Launcher</system:String>
 	<system:String x:Key="SettingsCloseLauncherAfterGameLaunchTitle">Close Launcher After Game Launch</system:String>
 	<system:String x:Key="SettingsCloseLauncherAfterGameLaunchToolTip">Closes the launcher automatically after opening the game.</system:String>
 	<system:String x:Key="SettingsLookForUpdatesTitle">Look For Updates</system:String>
@@ -89,14 +89,14 @@
 	<system:String x:Key="SettingsLanguageTitleToolTip">Translates entire launcher to your language, select one!</system:String>
 	<system:String x:Key="SettingsAccentColorTitle">Accent Color:</system:String>
 	<system:String x:Key="SettingsAccentColorToolTip">Changes color of selected visuals to your choice!</system:String>
-	<system:String x:Key="SettingsEFTSettingsTitle">EFT Settings</system:String>
+	<system:String x:Key="SettingsEFTSettingsTitle">EFT</system:String>
 	<system:String x:Key="SettingsEFTSettingsButtonChangeTitle">Change</system:String>
 	<system:String x:Key="SettingsEFTInstallPathTitle">EFT Path:</system:String>
 	<system:String x:Key="SettingsEFTInstallPathPlaceholder">EFT Install Path...</system:String>
 	<system:String x:Key="SettingsEFTChangeInstallPathToolTip">Change the EFT Install Path.</system:String>
 	<system:String x:Key="SettingsEFTVersionTitle">EFT Version:</system:String>
 	<system:String x:Key="SettingsSITVersionTitle">SIT Version:</system:String>
-	<system:String x:Key="SettingsSPTAKITitle">SPT-AKI Settings</system:String>
+	<system:String x:Key="SettingsSPTAKITitle">SPT-AKI</system:String>
 	<system:String x:Key="SettingsSPTAKIPathTitle">SPT-AKI Path:</system:String>
 	<system:String x:Key="SettingsSPTAKIVersionTitle">SPT-AKI Version:</system:String>
 	<system:String x:Key="SettingsSITModVersionTitle">SIT Mod Version:</system:String>
@@ -105,13 +105,12 @@
 	<system:String x:Key="SettingsServerConsoleTitle">Server Console</system:String>
 	<system:String x:Key="SettingsServerConsoleFontFamilyTitle">Font Family:</system:String>
 	<system:String x:Key="SettingsServerConsoleFontColorTitle">Font Color:</system:String>
-	<system:String x:Key="SettingsManagerVersionTitle">Manager Version:</system:String>
-	
+	<system:String x:Key="SettingsManagerVersionTitle">Manager Version:</system:String>	
 	
 	<!-- Linux Settings Page -->
 	<system:String x:Key="Key">Key</system:String>
 	<system:String x:Key="Value">Value</system:String>
-	<system:String x:Key="LinuxSettingsPageTitle">Linux Settings</system:String>
+	<system:String x:Key="LinuxSettingsPageTitle">Linux</system:String>
 	<system:String x:Key="LinuxSettingsExperimentalWarning">Experimental Linux settings. Some might not work or are not implemented yet. Use at your own risk.</system:String>
 	
 	<system:String x:Key="LinuxSettingsWinePrefixTitle">Wine Prefix:</system:String>
