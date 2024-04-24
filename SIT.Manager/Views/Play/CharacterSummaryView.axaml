@@ -11,9 +11,11 @@
 			Margin="0,8"
 			Background="Black">
 		<Grid ColumnDefinitions="Auto, *, Auto">
-			<TextBlock Grid.Column="0"
-					   VerticalAlignment="Center"
-					   Text="{Binding Profile.Side}"/>
+			<Image Grid.Column="0"
+					VerticalAlignment="Center"
+					Source="{Binding SideImage}"
+					MaxWidth="80"
+					MaxHeight="80"/>
 
 			<StackPanel Grid.Column="1"
 						Margin="8,0">

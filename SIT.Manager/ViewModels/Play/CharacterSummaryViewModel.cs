@@ -1,10 +1,12 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Media.Imaging;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.Logging;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Interfaces.ManagedProcesses;
 using SIT.Manager.Models.Aki;
+using SIT.Manager.Services.Caching;
 using SIT.Manager.Views.Play;
 using System;
 using System.Linq;
@@ -18,11 +20,16 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
     private readonly IManagerConfigService _configService;
     private readonly ILocalizationService _localizationService;
     private readonly ITarkovClientService _tarkovClientService;
+    private readonly ICachingService _cachingService;
+    private readonly IAkiServerRequestingService _akiServerRequestingService;
 
     private readonly AkiServer _connectedServer;
 
     [ObservableProperty]
     private AkiMiniProfile _profile;
+
+    [ObservableProperty]
+    private Bitmap _sideImage;
 
     [ObservableProperty]
     private double _levelProgressPercentage = 0;
@@ -32,12 +39,21 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
 
     public IAsyncRelayCommand PlayCommand { get; }
 
-    public CharacterSummaryViewModel(AkiServer server, AkiMiniProfile profile, ILocalizationService localizationService, ILogger<CharacterSummaryViewModel> logger, IManagerConfigService configService, ITarkovClientService tarkovClientService)
+    public CharacterSummaryViewModel(AkiServer server,
+        AkiMiniProfile profile,
+        ILocalizationService localizationService,
+        ILogger<CharacterSummaryViewModel> logger,
+        IManagerConfigService configService,
+        ITarkovClientService tarkovClientService,
+        ICachingService cachingService,
+        IAkiServerRequestingService akiServerRequestingService)
     {
         _logger = logger;
         _configService = configService;
         _localizationService = localizationService;
         _tarkovClientService = tarkovClientService;
+        _cachingService = cachingService;
+        _akiServerRequestingService = akiServerRequestingService;
 
         _connectedServer = server;
         Profile = profile;
@@ -51,6 +67,20 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
         {
             NextLevel = Profile.MaxLevel;
         }
+
+        Task.Run(async () =>
+        {
+            if(!string.IsNullOrEmpty(profile.Side) && !profile.Side.Equals("unknown", StringComparison.InvariantCultureIgnoreCase))
+            {
+                string cacheKey = $"side_{Profile.Side} icon";
+                CacheValue<Bitmap> cacheVal = await _cachingService.InMemory.GetOrComputeAsync<Bitmap>(cacheKey, async (key) =>
+                {
+                    return new(await _akiServerRequestingService.GetAkiServerImage(server, $"launcher/side_{profile.Side.ToLower()}.png"));
+                });
+                if(cacheVal.HasValue && cacheVal.Value != null)
+                    SideImage = cacheVal.Value;
+            }
+        });
 
         PlayCommand = new AsyncRelayCommand(Play);
     }
