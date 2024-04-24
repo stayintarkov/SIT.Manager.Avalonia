@@ -419,7 +419,8 @@
 	<system:String x:Key="CharacterSummaryViewLoginButtonText">Login</system:String>
 	
 	<!-- CreateServerDialogView -->
-	<system:String x:Key="CreateServerDialogViewTitle">Add Server</system:String>
+	<system:String x:Key="CreateServerDialogViewAddTitle">Add Server</system:String>
+	<system:String x:Key="CreateServerDialogViewEditTitle">Edit Server</system:String>
 	<system:String x:Key="CreateServerDialogViewPrimaryButtonText">Save</system:String>
 	<system:String x:Key="CreateServerDialogViewCloseButtonText">Close</system:String>
 	<system:String x:Key="CreateServerDialogViewAddressLabel">Address</system:String>

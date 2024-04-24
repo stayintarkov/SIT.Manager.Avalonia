@@ -117,7 +117,7 @@ public partial class ServerSummaryViewModel : ObservableRecipient
 
     private async Task Edit()
     {
-        CreateServerDialogView dialog = new(Address.AbsoluteUri);
+        CreateServerDialogView dialog = new(_localizationService, true, Address.AbsoluteUri);
         (ContentDialogResult result, Uri serverUri) = await dialog.ShowAsync();
         if (result == ContentDialogResult.Primary)
         {

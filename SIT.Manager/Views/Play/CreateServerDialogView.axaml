@@ -5,7 +5,7 @@
 				  xmlns:ui="using:FluentAvalonia.UI.Controls"
 				  xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Play"
 				  mc:Ignorable="d"
-				  Title="{DynamicResource CreateServerDialogViewTitle}"
+				  Title="{Binding AddOrEditTitle}"
 				  FullSizeDesired="False"
 				  CloseButtonText="{DynamicResource CreateServerDialogViewCloseButtonText}"
 				  PrimaryButtonText="{DynamicResource CreateServerDialogViewPrimaryButtonText}"

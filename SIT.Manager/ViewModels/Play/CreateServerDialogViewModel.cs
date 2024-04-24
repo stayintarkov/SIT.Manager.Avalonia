@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using SIT.Manager.Interfaces;
 using System;
 using System.ComponentModel.DataAnnotations;
 
@@ -6,6 +7,8 @@ namespace SIT.Manager.ViewModels.Play;
 
 public partial class CreateServerDialogViewModel : ObservableValidator
 {
+    private readonly ILocalizationService _localizationService;
+
     private string _serverAddress = string.Empty;
 
     [CustomValidation(typeof(CreateServerDialogViewModel), nameof(ValidateAddress))]
@@ -23,9 +26,22 @@ public partial class CreateServerDialogViewModel : ObservableValidator
 
     public bool CanCreateServer => !HasErrors;
 
-    public CreateServerDialogViewModel(string currentServerAddress)
+    public string AddOrEditTitle { get; }
+
+    public CreateServerDialogViewModel(string currentServerAddress, bool isEdit, ILocalizationService localizationService)
     {
+        _localizationService = localizationService;
+
         ServerAddress = currentServerAddress;
+
+        if (isEdit)
+        {
+            AddOrEditTitle = _localizationService.TranslateSource("CreateServerDialogViewEditTitle");
+        }
+        else
+        {
+            AddOrEditTitle = _localizationService.TranslateSource("CreateServerDialogViewAddTitle");
+        }
     }
 
     public static ValidationResult? ValidateAddress(string serverAddress, ValidationContext context)
