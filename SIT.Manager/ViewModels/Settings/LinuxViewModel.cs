@@ -2,8 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SIT.Manager.Interfaces;
-using SIT.Manager.ManagedProcess;
-using SIT.Manager.Models;
+using SIT.Manager.Models.Config;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;

@@ -1,46 +1,6 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
 					xmlns:system="clr-namespace:System;assembly=System.Runtime"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-	<!-- Play Page / View -->
-	<system:String x:Key="AddressBoxTitle">伺服器位址</system:String>
-	<system:String x:Key="UsernameBoxTitle">使用者名稱</system:String>
-	<system:String x:Key="PasswordBoxTitle">密碼</system:String>
-	<system:String x:Key="EnterUserNamePlaceholder">請輸入使用者名稱...</system:String>
-	<system:String x:Key="EnterPasswordPlaceholder">請輸入密碼...</system:String>
-	<system:String x:Key="EnterServerAddressPlaceholder">請輸入伺服器位址...</system:String>
-	<system:String x:Key="RememberMeCheckBoxTitle">記住我</system:String>
-	<system:String x:Key="ConnectButtonTitle">連線</system:String>
-	<system:String x:Key="StartServerAndConnectButtonTitleToolTip">啟動本地Aki伺服器並連接至該伺服器</system:String>
-	<system:String x:Key="ConnectButtonTitleToolTip">連接至伺服器</system:String>
-
-	<!-- Play Page ViewModel -->
-	<system:String x:Key="PlayPageViewModelQuickPlayText">啟動伺服器並連線</system:String>
-	<system:String x:Key="PlayPageViewModelAccountNotFound">帳戶未找到</system:String>
-	<system:String x:Key="PlayPageViewModelAccountNotFoundDescription">找不到您的帳戶，您是否要使用這些憑證註冊新帳戶？</system:String>
-	<system:String x:Key="PlayPageViewModelButtonYes">是</system:String>
-	<system:String x:Key="PlayPageViewModelButtonOk">確定</system:String>
-	<system:String x:Key="PlayPageViewModelButtonNo">否</system:String>
-	<system:String x:Key="PlayPageViewModelLoginErrorTitle">登入錯誤</system:String>
-	<system:String x:Key="PlayPageViewModelLoginErrorDescription">無法與伺服器 %1 通訊</system:String>
-	<system:String x:Key="PlayPageViewModelServerAddressTitle">伺服器位址</system:String>
-	<system:String x:Key="PlayPageViewModelServerAddressDescription">請修正您的伺服器位址，然後重試！</system:String>
-	<system:String x:Key="PlayPageViewModelInstallPathTitle">安裝路徑</system:String>
-	<system:String x:Key="PlayPageViewModelInstallPathDescription">尚未設定 EFT 的安裝路徑，請前往設定並設定安裝路徑！</system:String>
-	<system:String x:Key="PlayPageViewModelSITInstallationTitle">SIT 安裝</system:String>
-	<system:String x:Key="PlayPageViewModelSITInstallationDescription">找不到 "%1"，連線前請先安裝 SIT！</system:String>
-	<system:String x:Key="PlayPageViewModelEFTInstallationTitle">EFT 安裝</system:String>
-	<system:String x:Key="PlayPageViewModelEFTInstallationDescription">在安裝路徑中找不到 "%1"！</system:String>
-	<system:String x:Key="PlayPageViewModelInputValidationTitle">輸入驗證</system:String>
-	<system:String x:Key="PlayPageViewModelInputValidationDescription">缺少輸入欄位！</system:String>
-	<system:String x:Key="PlayPageViewModelUnhandledAkiInstanceTitle">未處理的 Aki 實例</system:String>
-	<system:String x:Key="PlayPageViewModelUnhandledAkiInstanceDescription">SPT-AKI 伺服器端目前正在運行，請關閉任何正在運行的 SPT-AKI 伺服器端實例！</system:String>
-	<system:String x:Key="PlayPageViewModelMissingAKIInstallationTitle">缺少 AKI 安裝</system:String>
-	<system:String x:Key="PlayPageViewModelMissingAKIInstallationDescription">SPT-AKI 伺服器可執行檔丟失！</system:String>
-	<system:String x:Key="PlayPageViewModelWaitingForServerTitle">等待伺服器</system:String>
-	<system:String x:Key="PlayPageViewModelServerErrorTitle">伺服器錯誤</system:String>
-	<system:String x:Key="PlayPageViewModelServerErrorDescription">伺服器從未啟動，請查看日誌以獲取更多資訊！</system:String>
-	<system:String x:Key="PlayPageViewModelLoginIncorrectPassword">密碼錯誤</system:String>
-
 	<!-- Pane View (Menu on the left also tooltip about update on top) -->
 	<system:String x:Key="UpdateNotification">SIT 管理器有新版本可用。按此處更新：</system:String>
 	<system:String x:Key="UpdateButtonTitle">更新</system:String>
@@ -452,4 +412,98 @@
 	<system:String x:Key="InstallPageViewModelInstallText">安裝</system:String>
 	<system:String x:Key="InstallPageViewModelCompleteText">完成</system:String>
 
+	<!-- CharacterSelectionView -->
+	<system:String x:Key="CharacterSelectionViewBackButtonText">Back</system:String>
+	<system:String x:Key="CharacterSelectionViewAddCharacterButtonText">Add Character</system:String>
+
+	<!-- CharacterSummaryView -->
+	<system:String x:Key="CharacterSummaryViewPlayButtonText">Play</system:String>
+
+	<!-- CreateServerDialogView -->
+	<system:String x:Key="CreateServerDialogViewTitle">Add Server</system:String>
+	<system:String x:Key="CreateServerDialogViewPrimaryButtonText">Save</system:String>
+	<system:String x:Key="CreateServerDialogViewCloseButtonText">Close</system:String>
+	<system:String x:Key="CreateServerDialogViewAddressLabel">Address</system:String>
+	<system:String x:Key="CreateServerDialogViewAddressTextBoxWatermark">Enter Server Address...</system:String>
+
+	<!-- DirectConnectView -->
+	<system:String x:Key="DirectConnectViewAddressBoxTitle">Address</system:String>
+	<system:String x:Key="DirectConnectViewEnterServerAddressPlaceholder">Enter Server Address...</system:String>
+	<system:String x:Key="DirectConnectViewUsernameBoxTitle">Username</system:String>
+	<system:String x:Key="DirectConnectViewEnterUserNamePlaceholder">Enter Username...</system:String>
+	<system:String x:Key="DirectConnectViewPasswordBoxTitle">Password</system:String>
+	<system:String x:Key="DirectConnectViewEnterPasswordPlaceholder">Enter Password...</system:String>
+	<system:String x:Key="DirectConnectViewRememberMeCheckBoxTitle">Remember Me</system:String>
+	<system:String x:Key="DirectConnectViewConnectButtonTitle">Connect</system:String>
+	<system:String x:Key="CDirectConnectViewonnectButtonTitleToolTip">Connect to the server</system:String>
+	<system:String x:Key="DirectConnectViewStartServerAndConnectButtonTitleToolTip">Start the Aki server and connect to the server</system:String>
+
+	<!-- LoginDialogView -->
+	<system:String x:Key="LoginDialogViewViewTitle">Character Login</system:String>
+	<system:String x:Key="LoginDialogViewViewPrimaryButtonText">Login</system:String>
+	<system:String x:Key="LoginDialogViewViewCloseButtonText">Close</system:String>
+	<system:String x:Key="LoginDialogViewViewUsernameBoxTitle">Username</system:String>
+	<system:String x:Key="LoginDialogViewViewEnterUserNamePlaceholder">Enter Username...</system:String>
+	<system:String x:Key="LoginDialogViewViewPasswordBoxTitle">Username</system:String>
+	<system:String x:Key="LoginDialogViewViewEnterPasswordPlaceholder">Enter Username...</system:String>
+	<system:String x:Key="LoginDialogViewRememberMeCheckBoxTitle">Remember Me</system:String>
+
+	<!-- ServerSelectionView -->
+	<system:String x:Key="ServerSelectionViewAddServerButtonText">Add Server</system:String>
+
+	<!-- ServerSummaryView -->
+	<system:String x:Key="ServerSummaryViewModelConnectButtonText">Connect</system:String>
+	<system:String x:Key="ServerSummaryViewModelPingUnitsText">ms</system:String>
+
+	<!-- PlayPage -->
+	<system:String x:Key="PlayPageBookmarksTabHeader">Bookmarks</system:String>
+	<system:String x:Key="PlayPageDirectConnectTabHeader">Direct Connect</system:String>
+
+	<!-- ServerSummaryViewModel -->
+	<system:String x:Key="ServerSummaryViewModelEditDialogTitle">Edit Server Error</system:String>
+	<system:String x:Key="ServerSummaryViewModelEditDialogContent">Failed to edit server</system:String>
+	<system:String x:Key="ServerSummaryViewModelEditDialogPrimaryButtonText">Ok</system:String>
+	<system:String x:Key="ServerSummaryViewModelNoServerNameText">N/A</system:String>
+
+	<!-- ServerSelectionViewModel -->
+	<system:String x:Key="ServerSelectionViewModelAddServerDialogTitle">Add Server Error</system:String>
+	<system:String x:Key="ServerSelectionViewModelAddServerDialogContent">Failed to add server as it already exists</system:String>
+	<system:String x:Key="ServerSelectionViewModelAddServerPrimaryButtonText">Ok</system:String>
+	<system:String x:Key="ServerSelectionViewModelDeleteServerDialogTitle">Delete Server</system:String>
+	<system:String x:Key="ServerSelectionViewModelDeleteServerDialogContent">Are you sure you want to delete this server?</system:String>
+	<system:String x:Key="ServerSelectionViewModelDeleteServerPrimaryButtonText">Yes</system:String>
+	<system:String x:Key="ServerSelectionViewModelDeleteServerCloseButtonText">No</system:String>
+
+	<!-- CharacterSummaryViewModel -->
+	<system:String x:Key="CharacterSummaryViewModelPlayErrorDialogTitle">Error</system:String>
+	<system:String x:Key="CharacterSummaryViewModelPlayErrorDialogContent">Error launching Tarkov; consult log for details</system:String>
+	<system:String x:Key="CharacterSummaryViewModelPlayErrorDialogPrimaryButtonText">Ok</system:String>
+
+	<!-- DirectConnectViewModel -->
+	<system:String x:Key="DirectConnectViewModelButtonOk">Ok</system:String>
+	<system:String x:Key="DirectConnectViewModelServerAddressTitle">Server Address</system:String>
+	<system:String x:Key="DirectConnectViewModelServerAddressDescription">Please fix your server address and try again</system:String>
+	<system:String x:Key="DirectConnectViewModelInstallPathTitle">Install Path</system:String>
+	<system:String x:Key="DirectConnectViewModelInstallPathDescription">'Install Path' is not configured. Go to settings and configure the installtion path.</system:String>
+	<system:String x:Key="DirectConnectViewModelSITInstallationTitle">SIT Installation</system:String>
+	<system:String x:Key="DirectConnectViewModelSITInstallationDescription">Unable to find '%1'. Install SIT before connecting.</system:String>
+	<system:String x:Key="DirectConnectViewModelEFTInstallationTitle">EFT Installation</system:String>
+	<system:String x:Key="DirectConnectViewModelEFTInstallationDescription">Unable to find '%1' in the installation path.</system:String>
+	<system:String x:Key="DirectConnectViewModelInputValidationTitle">Input Validation</system:String>
+	<system:String x:Key="DirectConnectViewModelInputValidationDescription">Missing input field.</system:String>
+	<system:String x:Key="DirectConnectViewModelUnhandledAkiInstanceTitle">Unhandled Aki Instance</system:String>
+	<system:String x:Key="DirectConnectViewModelUnhandledAkiInstanceDescription">SPT-AKI is currently running. Please close any running instance of SPT-AKI.</system:String>
+	<system:String x:Key="DirectConnectViewModelMissingAKIInstallationTitle">Missing AKI Installation</system:String>
+	<system:String x:Key="DirectConnectViewModelMissingAKIInstallationDescription">SPT-AKI server executable is missing.</system:String>
+	<system:String x:Key="DirectConnectViewModelLoginIncorrectPassword">Incorrect password</system:String>
+	<system:String x:Key="DirectConnectViewModelLoginErrorTitle">Login Error</system:String>
+	<system:String x:Key="DirectConnectViewModelLoginErrorDescription">Unable to communicate with the server %1</system:String>
+	<system:String x:Key="DirectConnectViewModelWaitingForServerTitle">Waiting for server</system:String>
+	<system:String x:Key="DirectConnectViewModelServerErrorTitle">Server Error</system:String>
+	<system:String x:Key="DirectConnectViewModelServerErrorDescription">The server never started. Please check the logs for more information.</system:String>
+	<system:String x:Key="DirectConnectViewModelQuickPlayText">Start Server and Connect</system:String>
+	<system:String x:Key="DirectConnectViewModelAccountNotFound">Account Not Found</system:String>
+	<system:String x:Key="DirectConnectViewModelAccountNotFoundDescription">Your account has not been found, would you like to register a new account with these credentials?</system:String>
+	<system:String x:Key="DirectConnectViewModelButtonYes">Yes</system:String>
+	<system:String x:Key="DirectConnectViewModelButtonNo">No</system:String>
 </ResourceDictionary>

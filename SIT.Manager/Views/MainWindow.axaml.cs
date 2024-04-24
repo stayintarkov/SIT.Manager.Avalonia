@@ -1,7 +1,8 @@
 ﻿using Avalonia.Media;
 using FluentAvalonia.UI.Windowing;
 using Microsoft.Extensions.DependencyInjection;
-using SIT.Manager.ManagedProcess;
+using SIT.Manager.Interfaces;
+using SIT.Manager.Interfaces.ManagedProcesses;
 using System;
 
 namespace SIT.Manager.Views;

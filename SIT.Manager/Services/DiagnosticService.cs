@@ -1,6 +1,5 @@
 ﻿using Microsoft.Win32;
 using SIT.Manager.Interfaces;
-using SIT.Manager.ManagedProcess;
 using SIT.Manager.Models;
 using System;
 using System.Collections.Generic;
@@ -152,7 +151,7 @@ public class DiagnosticService : IDiagnosticService
             {
                 foreach (string valueName in key.GetValueNames())
                 {
-                    sb.Append($"{valueName}: {key.GetValue(valueName)}");
+                    sb.AppendLine($"{valueName}: {key.GetValue(valueName)}");
                 }
             }
         }

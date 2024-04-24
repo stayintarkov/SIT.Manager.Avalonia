@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using FluentAvalonia.Styling;
 using FluentAvalonia.UI.Controls;
 using SIT.Manager.Interfaces;
-using SIT.Manager.ManagedProcess;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;

@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SIT.Manager.Interfaces;
-using SIT.Manager.ManagedProcess;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;

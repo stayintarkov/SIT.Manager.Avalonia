@@ -115,7 +115,7 @@ public partial class InstallViewModel : InstallationViewModelBase
 
         foreach (ModInfo mod in CurrentInstallProcessState.RequestedMods)
         {
-            await _modService.InstallMod(CurrentInstallProcessState.EftInstallPath, mod, true);
+            await _modService.InstallMod(CurrentInstallProcessState.EftInstallPath, mod, true, true);
 
             // We copied settings so remove a step and force a progress bar recalculation
             _installSteps--;

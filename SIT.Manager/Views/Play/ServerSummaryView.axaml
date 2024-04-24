@@ -1,0 +1,110 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:controls="clr-namespace:SIT.Manager.Controls"
+			 xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Play"
+             mc:Ignorable="d"
+			 d:DesignWidth="800"
+			 d:DesignHeight="450"
+             x:Class="SIT.Manager.Views.Play.ServerSummaryView"
+			 x:DataType="vm:ServerSummaryViewModel">
+	<UserControl.Resources>
+		<Geometry x:Key="CellularDataIcon">M16 8c.552 0 1 .446 1 .995v10.01c0 .55-.448.995-1 .995s-1-.446-1-.995V8.995c0-.55.448-.995 1-.995Zm-4 3a1 1 0 0 1 1 1v7a1 1 0 1 1-2 0v-7a1 1 0 0 1 1-1Zm-4 3c.552 0 1 .445 1 .994v4.012c0 .549-.448.994-1 .994s-1-.445-1-.994v-4.012c0-.549.448-.994 1-.994Zm-4 3c.552 0 1 .44 1 .984v1.032A.992.992 0 0 1 4 20c-.552 0-1-.44-1-.984v-1.032A.992.992 0 0 1 4 17Z</Geometry>
+	</UserControl.Resources>
+
+	<Border Classes="StandardFrame"
+			Background="Black">
+		<Grid ColumnDefinitions="Auto, *, Auto"
+			  VerticalAlignment="Center">
+			<Image Grid.Column="0"
+				   Height="64"
+				   Width="64"
+				   Stretch="Uniform"
+				   StretchDirection="Both"
+				   VerticalAlignment="Center"
+				   IsVisible="{Binding !IsLoading}"
+				   Source="{Binding ServerImage}"/>
+
+			<controls:LoadingSpinner Grid.Column="1"
+									 Width="64"
+									 Height="{Binding $self.Width}"
+									 IsVisible="{Binding IsLoading}"
+									 Margin="0,8,0,0"
+									 HorizontalAlignment="Center"
+									 VerticalAlignment="Center"
+									 Foreground="{DynamicResource TextControlForeground}"
+									 StrokeWidth="8"/>
+
+			<StackPanel Grid.Column="1"
+						IsVisible="{Binding !IsLoading}"
+						Margin="8,0">
+				<TextBlock Text="{Binding Name}"
+						   FontSize="24"
+						   FontWeight="Bold"/>
+
+				<Grid ColumnDefinitions="*, Auto, Auto, Auto, Auto"
+					  Margin="0,4,0,0">
+					<SelectableTextBlock Text="{Binding ShownAddress}"
+										 TextTrimming="CharacterEllipsis"
+										 VerticalAlignment="Top"/>
+					<ToggleButton Grid.Column="1"
+								  Margin="4,0"
+								  IsChecked="{Binding ShowIPOverride}">
+						<ToggleButton.Styles>
+							<Style Selector="ToggleButton ui|SymbolIcon.ip-hidden">
+								<Setter Property="IsVisible" Value="False"/>
+							</Style>
+							<Style Selector="ToggleButton:checked ui|SymbolIcon.ip-hidden">
+								<Setter Property="IsVisible" Value="True"/>
+							</Style>
+							<Style Selector="ToggleButton ui|SymbolIcon.ip-shown">
+								<Setter Property="IsVisible" Value="True"/>
+							</Style>
+							<Style Selector="ToggleButton:checked ui|SymbolIcon.ip-shown">
+								<Setter Property="IsVisible" Value="False"/>
+							</Style>
+						</ToggleButton.Styles>
+
+						<Panel>
+							<ui:SymbolIcon Symbol="ZoomOutFilled"
+										   Classes="ip-hidden"/>
+							<ui:SymbolIcon Symbol="ZoomIn"
+										   Classes="ip-shown"/>
+						</Panel>
+					</ToggleButton>
+					<Button Grid.Column="2"
+							Margin="4,0"
+							Command="{Binding DeleteCommand}">
+						<ui:SymbolIcon Symbol="Delete"/>
+					</Button>
+					<Button Grid.Column="3"
+							Margin="4,0"
+							Command="{Binding EditCommand}">
+						<ui:SymbolIcon Symbol="Edit"/>
+					</Button>
+					<Button Grid.Column="4"
+							Margin="4,0"
+							Content="{DynamicResource ServerSummaryViewModelConnectButtonText}"
+							Command="{Binding ConnectCommand}"/>
+				</Grid>
+			</StackPanel>
+
+			<StackPanel Grid.Column="2"
+						IsVisible="{Binding !IsLoading}"
+						VerticalAlignment="Center">
+				<Viewbox Width="24"
+						 Height="24">
+					<Path Data="{StaticResource CellularDataIcon}"
+						  Fill="{Binding PingColor}"
+						  Stretch="Uniform"/>
+				</Viewbox>
+				<TextBlock HorizontalAlignment="Center">
+					<Run Text="{Binding Ping}"/>
+					<Run Text="{DynamicResource ServerSummaryViewModelPingUnitsText}"/>
+				</TextBlock>
+			</StackPanel>
+		</Grid>
+	</Border>
+</UserControl>

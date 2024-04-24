@@ -4,7 +4,6 @@ using SharpCompress.Common;
 using SharpCompress.Readers;
 using SIT.Manager.Extentions;
 using SIT.Manager.Interfaces;
-using SIT.Manager.ManagedProcess;
 using SIT.Manager.Models;
 using System;
 using System.Collections.Generic;

@@ -4,15 +4,22 @@ using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Polly;
+using Polly.Retry;
+using Polly.Timeout;
 using SIT.Manager.Interfaces;
-using SIT.Manager.ManagedProcess;
+using SIT.Manager.Interfaces.ManagedProcesses;
 using SIT.Manager.Services;
+using SIT.Manager.Services.Caching;
 using SIT.Manager.Services.Install;
+using SIT.Manager.Services.ManagedProcesses;
 using SIT.Manager.ViewModels;
 using SIT.Manager.ViewModels.Installation;
+using SIT.Manager.ViewModels.Play;
 using SIT.Manager.ViewModels.Settings;
 using SIT.Manager.Views;
 using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Reflection;
 
@@ -32,89 +39,155 @@ public sealed partial class App : Application
 
     public App()
     {
-        Services = ConfigureServices();
+        Services = ConfigureServices;
     }
 
     /// <summary>
     /// Configures the services for the application.
     /// </summary>
-    private static ServiceProvider ConfigureServices()
+    private static ServiceProvider ConfigureServices
     {
-        var services = new ServiceCollection();
-
-        var configuration = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json", true, true)
-            .Build();
-
-        services.AddLogging(builder =>
+        get
         {
-            builder.AddConfiguration(configuration.GetSection("Logging"));
-            builder.AddFile(o => o.RootPath = AppContext.BaseDirectory);
-        });
+            var services = new ServiceCollection();
 
-        // Services
-        services.AddSingleton<IActionNotificationService, ActionNotificationService>();
-        services.AddSingleton<IAkiServerService, AkiServerService>();
-        services.AddSingleton<IAppUpdaterService, AppUpdaterService>();
-        services.AddSingleton<ITarkovClientService, TarkovClientService>();
-        services.AddSingleton<IBarNotificationService, BarNotificationService>();
-        services.AddTransient<IFileService, FileService>();
-        services.AddSingleton<IInstallerService, InstallerService>();
-        services.AddSingleton<IManagerConfigService, ManagerConfigService>();
-        services.AddSingleton<IModService, ModService>();
-        services.AddTransient<IPickerDialogService>(x =>
-        {
-            if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop || desktop.MainWindow?.StorageProvider is not { } provider)
+            #region Logging
+
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", true, true)
+                .Build();
+            services.AddLogging(builder =>
             {
-                return new PickerDialogService(new MainWindow());
-            }
-            return new PickerDialogService(desktop.MainWindow);
-        });
-        services.AddSingleton<ITarkovClientService, TarkovClientService>();
-        services.AddSingleton<IVersionService, VersionService>();
-        services.AddSingleton(new HttpClientHandler
-        {
-            SslProtocols = System.Security.Authentication.SslProtocols.Tls12,
-            ServerCertificateCustomValidationCallback = delegate { return true; }
-        });
-        services.AddSingleton(provider => new HttpClient(provider.GetService<HttpClientHandler>() ?? throw new ArgumentNullException())
-        {
-            DefaultRequestHeaders = {
-                { "X-GitHub-Api-Version", "2022-11-28" },
-                { "User-Agent", $"SITManager/{Assembly.GetEntryAssembly()?.GetName().Version?.ToString() ?? "1.0.0.1a"}" }
-            }
-        });
-        services.AddSingleton<IZlibService, ZlibService>();
-        services.AddSingleton<ILocalizationService, LocalizationService>();
-        services.AddSingleton<IDiagnosticService, DiagnosticService>();
+                builder.AddConfiguration(configuration.GetSection("Logging"));
+                builder.AddFile(o => o.RootPath = AppContext.BaseDirectory);
+            });
 
-        // Page Viewmodels
-        services.AddTransient<InstallPageViewModel>();
-        services.AddTransient<LocationEditorViewModel>();
-        services.AddTransient<MainViewModel>();
-        services.AddTransient<ModsPageViewModel>();
-        services.AddTransient<PlayPageViewModel>();
-        services.AddTransient<SettingsPageViewModel>();
-        services.AddTransient<ServerPageViewModel>();
-        services.AddTransient<ToolsPageViewModel>();
-        services.AddTransient<UpdatePageViewModel>();
+            #endregion Logging
 
-        // Installation View Models
-        services.AddTransient<CompleteViewModel>();
-        services.AddTransient<ConfigureSitViewModel>();
-        services.AddTransient<ConfigureServerViewModel>();
-        services.AddTransient<InstallViewModel>();
-        services.AddTransient<PatchViewModel>();
-        services.AddTransient<SelectViewModel>();
+            #region Services
 
-        // Settings View Models
-        services.AddTransient<EftViewModel>();
-        services.AddTransient<LauncherViewModel>();
-        services.AddTransient<LinuxViewModel>();
-        services.AddTransient<SptAkiViewModel>();
+            services.AddSingleton<IActionNotificationService, ActionNotificationService>()
+                .AddSingleton<IAkiServerService, AkiServerService>()
+                .AddSingleton<ICachingService, CachingService>()
+                .AddSingleton<ITarkovClientService, TarkovClientService>()
+                .AddSingleton<IBarNotificationService, BarNotificationService>()
+                .AddTransient<IFileService, FileService>()
+                .AddTransient<IInstallerService, InstallerService>()
+                .AddSingleton<IManagerConfigService, ManagerConfigService>()
+                .AddTransient<IModService, ModService>()
+                .AddTransient<IPickerDialogService>(x =>
+                {
+                    if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop || desktop.MainWindow?.StorageProvider is not { } provider)
+                    {
+                        return new PickerDialogService(new MainWindow());
+                    }
+                    return new PickerDialogService(desktop.MainWindow);
+                })
+                .AddSingleton<IVersionService, VersionService>()
+                //TODO: Move this to httpclient factory with proper configuration
+                .AddSingleton(new HttpClientHandler
+                {
+                    SslProtocols = System.Security.Authentication.SslProtocols.Tls12,
+                    ServerCertificateCustomValidationCallback = delegate { return true; }
+                })
+                .AddSingleton(provider => new HttpClient(provider.GetService<HttpClientHandler>() ?? throw new ArgumentNullException())
+                {
+                    DefaultRequestHeaders =
+                    {
+                        { "X-GitHub-Api-Version", "2022-11-28" },
+                        { "User-Agent", $"SITManager/{Assembly.GetEntryAssembly()?.GetName().Version?.ToString() ?? "1.0.0.1a"}" }
+                    }
+                })
+                .AddSingleton<ILocalizationService, LocalizationService>()
+                .AddSingleton<IAkiServerRequestingService, AkiServerRequestingService>()
+                .AddSingleton<IAppUpdaterService, AppUpdaterService>()
+                .AddSingleton<IDiagnosticService, DiagnosticService>();
 
-        return services.BuildServiceProvider();
+            #endregion Services
+
+            #region ViewModels
+
+            // Page Viewmodels
+            services.AddTransient<InstallPageViewModel>()
+                .AddTransient<LocationEditorViewModel>()
+                .AddTransient<MainViewModel>()
+                .AddTransient<ModsPageViewModel>()
+                .AddTransient<PlayPageViewModel>()
+                .AddTransient<SettingsPageViewModel>()
+                .AddTransient<ServerPageViewModel>()
+                .AddTransient<ToolsPageViewModel>()
+                .AddTransient<UpdatePageViewModel>();
+
+            // Installation View Models
+            services.AddTransient<CompleteViewModel>()
+                .AddTransient<ConfigureSitViewModel>()
+                .AddTransient<ConfigureServerViewModel>()
+                .AddTransient<InstallViewModel>()
+                .AddTransient<PatchViewModel>()
+                .AddTransient<SelectViewModel>();
+
+            // Play View Models
+            services.AddTransient<CharacterSelectionViewModel>()
+                .AddTransient<DirectConnectViewModel>()
+                .AddTransient<ServerSelectionViewModel>();
+
+            // Settings View Models
+            services.AddTransient<EftViewModel>()
+                .AddTransient<LauncherViewModel>()
+                .AddTransient<LinuxViewModel>()
+                .AddTransient<SptAkiViewModel>();
+
+            #endregion ViewModels
+
+            #region Polly
+
+            services.AddHttpClient<AkiServerRequestingService>(client =>
+            {
+                foreach (string encoding in trEncodings)
+                    client.DefaultRequestHeaders.AcceptEncoding.ParseAdd(encoding);
+                client.DefaultRequestHeaders.ExpectContinue = true;
+            }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler()
+            {
+                SslProtocols = System.Security.Authentication.SslProtocols.Tls12,
+                ServerCertificateCustomValidationCallback = delegate { return true; },
+                MaxConnectionsPerServer = 10
+            });
+
+            services.AddResiliencePipeline<string, HttpResponseMessage>("default-pipeline", builder =>
+            {
+                builder.AddRetry(new RetryStrategyOptions<HttpResponseMessage>()
+                {
+                    MaxRetryAttempts = 3,
+                    Delay = TimeSpan.FromSeconds(3)
+                });
+            })
+            .AddResiliencePipeline<string, HttpResponseMessage>("ping-pipeline", builder =>
+            {
+                builder.AddRetry(new RetryStrategyOptions<HttpResponseMessage>()
+                {
+                    MaxRetryAttempts = 6,
+                    BackoffType = DelayBackoffType.Exponential,
+                    MaxDelay = TimeSpan.FromSeconds(30),
+                    OnRetry = static args =>
+                    {
+                        Debug.WriteLine("Retrying ping. Attempt: {0}", args.AttemptNumber);
+                        //TODO: Add logging
+                        return default;
+                    },
+                    ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
+                        .Handle<HttpRequestException>()
+                        .Handle<TimeoutRejectedException>()
+                        .HandleResult(response => response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                });
+            });
+
+            #endregion Polly
+
+            return services.BuildServiceProvider();
+        }
     }
+
+    private static readonly string[] trEncodings = ["deflate", "gzip"];
 
     public override void Initialize()
     {

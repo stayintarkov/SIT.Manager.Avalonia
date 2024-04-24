@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.Linq;
 using System.Reflection;
 
 namespace SIT.Manager.ViewModels;

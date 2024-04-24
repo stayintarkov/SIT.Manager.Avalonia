@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using SIT.Manager.Interfaces;
-using SIT.Manager.ManagedProcess;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.ViewModels.Settings;

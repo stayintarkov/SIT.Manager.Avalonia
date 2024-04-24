@@ -1,8 +1,7 @@
 ﻿using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using SIT.Manager.Interfaces;
-using SIT.Manager.ManagedProcess;
-using SIT.Manager.Models;
+using SIT.Manager.Models.Config;
 using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;

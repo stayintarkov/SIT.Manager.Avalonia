@@ -3,7 +3,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Microsoft.Extensions.Logging;
 using SIT.Manager.Extentions;
 using SIT.Manager.Interfaces;
-using SIT.Manager.ManagedProcess;
 using SIT.Manager.Models.Github;
 using System;
 using System.Collections.Generic;

@@ -1,4 +1,4 @@
-using SIT.Manager.Models;
+using SIT.Manager.Models.Config;
 using SIT.Manager.Native.Linux.Managers;
 using System.Collections.Generic;
 using System.Linq;
