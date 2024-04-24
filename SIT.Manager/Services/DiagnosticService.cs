@@ -86,7 +86,7 @@ public class DiagnosticService : IDiagnosticService
                 if (serverLogDirectory.Exists)
                 {
                     IEnumerable<FileInfo> files = serverLogDirectory.GetFiles("*.log");
-                    files = files.OrderBy(x => x.LastWriteTime);
+                    files = files.OrderByDescending(x => x.LastWriteTime);
                     if (files.Any())
                     {
                         string serverLogFile = files.First().FullName;
