@@ -14,8 +14,7 @@
 					<TextBlock Text="{DynamicResource SettingsSPTAKIPathTitle}"  VerticalAlignment="Center"/>
 					<TextBox Watermark="{DynamicResource SettingsSPTAKIInstallPathPlaceholder}"
 							 Margin="5"
-							 MinWidth="397"
-							 MaxWidth="425"
+							 MaxWidth="400"
 							 IsReadOnly="True"
 							 Text="{Binding Config.AkiServerPath}"/>
 					<Button Name="ChangeAkiServerPath"

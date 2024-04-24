@@ -12,8 +12,7 @@
 				<TextBlock Text="{DynamicResource SettingsEFTInstallPathTitle}" Margin="0,0,10,0" VerticalAlignment="Center"/>
 				<TextBox Watermark="{DynamicResource SettingsEFTInstallPathPlaceholder}"
 						 Margin="0,0,10,0"
-						 MinWidth="425"
-						 MaxWidth="425"
+						 MaxWidth="400"
 						 IsReadOnly="True"
 						 Text="{Binding Config.InstallPath}"/>
 				<Button Name="ChangeInstallButton"

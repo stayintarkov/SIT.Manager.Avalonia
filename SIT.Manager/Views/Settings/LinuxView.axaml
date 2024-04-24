@@ -8,7 +8,7 @@
 			 x:DataType="vm:LinuxViewModel">
 	<Grid RowDefinitions="*,Auto">
 		<ScrollViewer Grid.Row="0">
-			<StackPanel Margin="10">
+			<StackPanel Margin="0,0,12,0">
 				<!-- TODO: Make the boxes responsive with the selected language -->
 				<!-- Wine Settings-->
 				<TextBlock Text="{DynamicResource LinuxSettingsPageTitle}"
@@ -24,8 +24,7 @@
 							<TextBlock Text="{DynamicResource LinuxSettingsWinePrefixTitle}" Margin="0,0,10,0" VerticalAlignment="Center"/>
 							<TextBox Watermark="{DynamicResource LinuxSettingsWinePrefixPlaceholder}"
                                      Margin="10,0,10,0"
-                                     MinWidth="425"
-                                     MaxWidth="425"
+									 MaxWidth="400"
                                      ToolTip.Tip="{DynamicResource LinuxSettingsWinePrefixToolTip}"
                                      Text="{Binding LinuxConfig.WinePrefix}"/>
 							<Button Name="ChangePrefixButton"
@@ -38,9 +37,8 @@
 						<StackPanel Orientation="Horizontal" Margin="0,10,0,0">
 							<TextBlock Text="{DynamicResource LinuxSettingsWineRunnerTitle}" Margin="0,0,10,0" VerticalAlignment="Center"/>
 							<TextBox Watermark="{DynamicResource LinuxSettingsWineRunnerPlaceholder}"
-                                     MinWidth="425"
-                                     MaxWidth="425"
                                      ToolTip.Tip="{DynamicResource LinuxSettingsWineRunnerToolTip}"
+									 MaxWidth="400"
                                      Text="{Binding LinuxConfig.WineRunner}"/>
 							<Button Name="ChangeRunnerButton"
                                     Content="{DynamicResource SettingsEFTSettingsButtonChangeTitle}"
@@ -57,8 +55,8 @@
                                       AutoGenerateColumns="False"
                                       Margin="7,0,0,0">
 								<DataGrid.Columns>
-									<DataGridTextColumn Header="{DynamicResource Key}" Width="255"/>
-									<DataGridTextColumn Header="{DynamicResource Value}" Width="255"/>
+									<DataGridTextColumn Header="{DynamicResource Key}" MinWidth="100" MaxWidth="200"/>
+									<DataGridTextColumn Header="{DynamicResource Value}" MinWidth="100" MaxWidth="200"/>
 								</DataGrid.Columns>
 							</DataGrid>
 							<!-- <TextBox Watermark="{DynamicResource LinuxSettingsWineEnvPlaceholder}" -->
@@ -69,18 +67,20 @@
 							<!--          Text="{Binding Config.WineEnv}" -->
 							<!--          IsEnabled="False"/> -->
 						</StackPanel>
-						<StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+						<Grid ColumnDefinitions="*,Auto, Auto"
+							  Margin="0,8,0,0">
 							<Button Name="AddEnvButton"
+									Margin="0,0,8,0"
+									Grid.Column="1"
                                     Content="{DynamicResource LinuxSettingsWineEnvAddButton}"
-                                    Margin="467,10,10,0"
                                     MinWidth="66"
                                     Command="{Binding AddEnvCommand}"/>
 							<Button Name="RemoveEnvButton"
+									Grid.Column="2"
                                     Content="{DynamicResource LinuxSettingsWineEnvDeleteButton}"
-                                    Margin="0,10,0,0"
                                     MinWidth="66"
                                     Command="{Binding DeleteEnvCommand}"/>
-						</StackPanel>
+						</Grid>
 					</StackPanel>
 				</Border>
 
