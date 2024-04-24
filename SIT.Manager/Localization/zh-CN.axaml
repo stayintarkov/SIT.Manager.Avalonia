@@ -442,10 +442,9 @@
 	<system:String x:Key="LoginDialogViewViewTitle">Character Login</system:String>
 	<system:String x:Key="LoginDialogViewViewPrimaryButtonText">Login</system:String>
 	<system:String x:Key="LoginDialogViewViewCloseButtonText">Close</system:String>
-	<system:String x:Key="LoginDialogViewViewUsernameBoxTitle">Username</system:String>
-	<system:String x:Key="LoginDialogViewViewEnterUserNamePlaceholder">Enter Username...</system:String>
-	<system:String x:Key="LoginDialogViewViewPasswordBoxTitle">Username</system:String>
-	<system:String x:Key="LoginDialogViewViewEnterPasswordPlaceholder">Enter Username...</system:String>
+	<system:String x:Key="LoginDialogViewViewUsernameBoxTitle">Username: </system:String>
+	<system:String x:Key="LoginDialogViewViewPasswordBoxTitle">Password</system:String>
+	<system:String x:Key="LoginDialogViewViewEnterPasswordPlaceholder">Enter Password...</system:String>
 	<system:String x:Key="LoginDialogViewRememberMeCheckBoxTitle">Remember Me</system:String>
 
 	<!-- ServerSelectionView -->

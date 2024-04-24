@@ -13,11 +13,13 @@
 				  x:DataType="vm:LoginDialogViewModel">
 	<StackPanel>
 		<!--Username box-->
-		<Label Content="{DynamicResource LoginDialogViewViewUsernameBoxTitle}" Margin="8 8 8 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
-		<TextBox Name="UsernameBox" Text="{Binding Username, Mode=TwoWay}" MinWidth="150" Margin="8 4 8 8" HorizontalAlignment="Left" Watermark="{DynamicResource LoginDialogViewViewEnterUserNamePlaceholder}" IsReadOnly="True"/>
+		<TextBlock Margin="8 8 8 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique">
+			<Run Text="{DynamicResource LoginDialogViewViewUsernameBoxTitle}"/>
+			<Run Text="{Binding Username}"/>
+		</TextBlock>
 
 		<!--Password box-->
-		<Label Content="{DynamicResource LoginDialogViewViewPasswordBoxTitle}" Margin="10 10 10 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
+		<Label Content="{DynamicResource LoginDialogViewViewPasswordBoxTitle}" Margin="8 8 8 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
 		<TextBox Name="PasswordBox" Text="{Binding Password, Mode=TwoWay}" MinWidth="150" Margin="8 4 8 8" HorizontalAlignment="Left" PasswordChar="●" Watermark="{DynamicResource LoginDialogViewViewEnterPasswordPlaceholder}"/>
 
 		<CheckBox Name="RememberMeCheck" Content="{DynamicResource LoginDialogViewRememberMeCheckBoxTitle}" Margin="8" IsChecked="{Binding RememberMe}"/>
