@@ -162,22 +162,13 @@ public partial class ServerSummaryViewModel : ObservableRecipient
 
     private void UpdatePingColor()
     {
-        if (Ping < 0)
+        PingColor = Ping switch
         {
-            PingColor = new SolidColorBrush(Colors.White);
-        }
-        else if (Ping < 50)
-        {
-            PingColor = new SolidColorBrush(Colors.Green);
-        }
-        else if (Ping < 150)
-        {
-            PingColor = new SolidColorBrush(Colors.Orange);
-        }
-        else
-        {
-            PingColor = new SolidColorBrush(Colors.Red);
-        }
+            <= 0 => new SolidColorBrush(Colors.White),
+            <= 50 => new SolidColorBrush(Colors.Green),
+            <= 150 => new SolidColorBrush(Colors.Orange),
+            _ => new SolidColorBrush(Colors.Red),
+        };
     }
 
     protected override async void OnActivated()
