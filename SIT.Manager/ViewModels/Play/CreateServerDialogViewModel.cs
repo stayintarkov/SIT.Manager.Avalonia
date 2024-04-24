@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Timers;
 
 namespace SIT.Manager.ViewModels.Play;
 
