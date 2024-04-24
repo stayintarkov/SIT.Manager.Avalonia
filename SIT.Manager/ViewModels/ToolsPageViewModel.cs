@@ -6,7 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using FluentAvalonia.UI.Controls;
 using SIT.Manager.Interfaces;
-using SIT.Manager.ManagedProcess;
+using SIT.Manager.Interfaces.ManagedProcesses;
 using SIT.Manager.Models;
 using SIT.Manager.Models.Messages;
 using SIT.Manager.Services;

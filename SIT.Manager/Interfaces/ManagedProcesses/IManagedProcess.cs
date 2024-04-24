@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SIT.Manager.ManagedProcess;
+namespace SIT.Manager.Interfaces.ManagedProcesses;
 
 public interface IManagedProcess
 {

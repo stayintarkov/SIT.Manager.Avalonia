@@ -1,6 +1,5 @@
 ﻿using Microsoft.Win32;
 using SIT.Manager.Interfaces;
-using SIT.Manager.ManagedProcess;
 using SIT.Manager.Models;
 using System;
 using System.Collections.Generic;

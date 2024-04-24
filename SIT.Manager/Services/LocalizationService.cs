@@ -1,6 +1,5 @@
 ﻿using Avalonia.Markup.Xaml.Styling;
 using SIT.Manager.Interfaces;
-using SIT.Manager.ManagedProcess;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

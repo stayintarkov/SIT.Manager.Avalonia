@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
-using SIT.Manager.Classes;
 using SIT.Manager.Interfaces;
-using SIT.Manager.ManagedProcess;
+using SIT.Manager.Interfaces.ManagedProcesses;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,11 +12,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SIT.Manager.Services;
+namespace SIT.Manager.Services.ManagedProcesses;
 
 public class AkiServerService(IBarNotificationService barNotificationService,
                               IManagerConfigService configService,
-                              IServiceProvider serviceProvider) : ManagedProcess.ManagedProcess(barNotificationService, configService), IAkiServerService
+                              IServiceProvider serviceProvider) : ManagedProcess(barNotificationService, configService), IAkiServerService
 {
     private const string SERVER_EXE = "Aki.Server.exe";
     private const int SERVER_LINE_LIMIT = 10_000;
@@ -160,7 +159,7 @@ public class AkiServerService(IBarNotificationService barNotificationService,
                 }
             }
 
-            TarkovRequesting requesting = ActivatorUtilities.CreateInstance<TarkovRequesting>(_serviceProvider, serverUri);
+            // requesting = ActivatorUtilities.CreateInstance<TarkovRequesting>(_serviceProvider, serverUri);
             try
             {
                 using (CancellationTokenSource cts = new(TimeSpan.FromSeconds(120)))
@@ -170,7 +169,8 @@ public class AkiServerService(IBarNotificationService barNotificationService,
                     {
                         try
                         {
-                            pingReponse = await requesting.PingServer(cts.Token);
+                            //TODO: REPLACE THIS. COMMENTED OUT FOR BUILDING
+                            pingReponse = true; //await requesting.PingServer(cts.Token);
                         }
                         catch (HttpRequestException) { }
 

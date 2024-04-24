@@ -1,9 +1,10 @@
 ﻿using SIT.Manager.Interfaces;
+using SIT.Manager.Interfaces.ManagedProcesses;
 using System;
 using System.Diagnostics;
 using System.IO;
 
-namespace SIT.Manager.ManagedProcess;
+namespace SIT.Manager.Services.ManagedProcesses;
 
 public abstract class ManagedProcess(IBarNotificationService barNotificationService, IManagerConfigService configService) : IManagedProcess
 {
@@ -21,7 +22,7 @@ public abstract class ManagedProcess(IBarNotificationService barNotificationServ
     public event EventHandler<RunningState>? RunningStateChanged;
     protected virtual void ExitedEvent(object? sender, EventArgs e)
     {
-        RunningState newState = (State == RunningState.Running && !_stopRequest) ? RunningState.StoppedUnexpectedly : RunningState.NotRunning;
+        RunningState newState = State == RunningState.Running && !_stopRequest ? RunningState.StoppedUnexpectedly : RunningState.NotRunning;
         _stopRequest = false;
         UpdateRunningState(newState);
     }

@@ -16,10 +16,10 @@ public class ActivatableUserControl : UserControl
     {
         base.OnAttachedToVisualTree(e);
 
+        OnActivated();
         if (ViewModel != null)
         {
             ViewModel.IsActive = true;
-            OnActivated();
         }
     }
 
@@ -27,10 +27,10 @@ public class ActivatableUserControl : UserControl
     {
         base.OnDetachedFromVisualTree(e);
 
+        OnDeactivated();
         if (ViewModel != null)
         {
             ViewModel.IsActive = false;
-            OnDeactivated();
         }
     }
 

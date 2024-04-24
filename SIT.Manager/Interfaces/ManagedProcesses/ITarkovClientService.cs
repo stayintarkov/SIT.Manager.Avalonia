@@ -1,10 +1,13 @@
-﻿namespace SIT.Manager.ManagedProcess;
+﻿using SIT.Manager.Models.Aki;
+using System.Threading.Tasks;
 
-// Trust microsoft to not have name registration unlike every other DI library
+namespace SIT.Manager.Interfaces.ManagedProcesses;
+
 public interface ITarkovClientService : IManagedProcess
 {
     /// <summary>
     /// Clear just the EFT local cache.
     /// </summary>
     void ClearLocalCache();
+    Task ConnectToServer(AkiCharacter character);
 }

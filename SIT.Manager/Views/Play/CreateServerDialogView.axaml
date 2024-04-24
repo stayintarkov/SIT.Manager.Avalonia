@@ -1,0 +1,26 @@
+<ui:ContentDialog xmlns="https://github.com/avaloniaui"
+				  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+				  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+				  xmlns:ui="using:FluentAvalonia.UI.Controls"
+				  xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Play"
+				  mc:Ignorable="d"
+				  Title="{DynamicResource CreateServerDialogViewTitle}"
+				  FullSizeDesired="False"
+				  CloseButtonText="{DynamicResource CreateServerDialogViewCloseButtonText}"
+				  PrimaryButtonText="{DynamicResource CreateServerDialogViewPrimaryButtonText}"
+				  IsPrimaryButtonEnabled="{Binding CanCreateServer}"
+				  x:Class="SIT.Manager.Views.Play.CreateServerDialogView"
+				  x:DataType="vm:CreateServerDialogViewModel">
+	<StackPanel>
+		<Label Content="{DynamicResource CreateServerDialogViewAddressLabel}" 
+			   Margin="10 10 10 0" 
+			   FontFamily="{StaticResource BenderFont}"
+			   FontStyle="Oblique"/>
+		<TextBox Text="{Binding ServerAddress, Mode=TwoWay}" 
+				 MinWidth="300" 
+				 Margin="10 5 10 10" 
+				 HorizontalAlignment="Left" 
+				 Watermark="{DynamicResource CreateServerDialogViewAddressTextBoxWatermark}"/>
+	</StackPanel>
+</ui:ContentDialog>

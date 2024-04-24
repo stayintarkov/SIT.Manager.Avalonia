@@ -1,0 +1,46 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="clr-namespace:SIT.Manager.Controls"
+			 xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Play"
+			 xmlns:pv="clr-namespace:SIT.Manager.Views.Play"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:DataType="vm:ServerSelectionViewModel"
+             x:Class="SIT.Manager.Views.Play.ServerSelectionView">
+	<Grid RowDefinitions="Auto, *"
+		  Margin="0,8">
+		<Border Grid.Row="0"
+				Margin="4,0,4,8"
+				Background="Black"
+				Classes="StandardFrame">
+			<Grid ColumnDefinitions="Auto, *">
+				<Button Grid.Column="0"
+						VerticalAlignment="Center"
+						Content="{DynamicResource ServerSelectionViewAddServerButtonText}"
+						Command="{Binding CreateServerCommand}"/>
+			</Grid>
+		</Border>
+
+		<ScrollViewer Grid.Row="1"
+					  HorizontalScrollBarVisibility="Disabled"
+					  Margin="0,8,0,0">
+			<ItemsControl Name="ConsoleLogItemsControl"
+						  ItemsSource="{Binding ServerList}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<VirtualizingStackPanel Orientation="Vertical"/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<StackPanel>
+							<pv:ServerSummaryView DataContext="{Binding}"/>
+						</StackPanel>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</ScrollViewer>
+	</Grid>
+</UserControl>

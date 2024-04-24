@@ -1,12 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace SIT.Manager.Classes;
-
-public class AkiServerConnectionResponse
+namespace SIT.Manager.Models.Aki;
+public class AkiServerInfo
 {
-    [JsonPropertyName("backendUrl")]
-    public string BackendUrl { get; init; } = string.Empty;
     [JsonPropertyName("name")]
     public string Name { get; init; } = string.Empty;
     [JsonPropertyName("editions")]

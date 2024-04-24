@@ -149,6 +149,24 @@ internal abstract class CachingProviderBase : ICachingProvider
 
         return Get<T>(key);
     }
+
+    //TODO: Make this based off synchro version
+    public virtual async Task<CacheValue<T>> GetOrComputeAsync<T>(string key, Func<string, Task<T>> computor, TimeSpan? expiaryTime = null)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
+
+        bool success = TryGet(key, out CacheValue<T> valOut);
+        if (success)
+            return valOut;
+
+        T computedValue = await computor(key);
+        bool addSuccess = Add(key, computedValue, expiaryTime);
+
+        if (!addSuccess)
+            throw new Exception("Cached value did not exist but could not be added to the cache");
+
+        return Get<T>(key);
+    }
     public virtual bool TryGet<T>(string key, out CacheValue<T> cacheValue)
     {
         cacheValue = Get<T>(key);

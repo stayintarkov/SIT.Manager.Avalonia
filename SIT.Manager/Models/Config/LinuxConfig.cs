@@ -3,13 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace SIT.Manager.Models;
+namespace SIT.Manager.Models.Config;
 
 public partial class LinuxConfig : ObservableObject
 {
     public static readonly string BaseDir = AppContext.BaseDirectory;
     public static readonly string RuntimeDir = Path.Combine(BaseDir, "runtime");
-    
+
     [ObservableProperty]
     public string _winePrefix = string.Empty;
     [ObservableProperty]

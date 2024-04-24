@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using SIT.Manager.Interfaces;
-using SIT.Manager.ManagedProcess;
 using SIT.Manager.Models.Installation;
 using System.IO;
 
