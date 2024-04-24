@@ -16,6 +16,7 @@ using SIT.Manager.Services.ManagedProcesses;
 using SIT.Manager.ViewModels;
 using SIT.Manager.ViewModels.Installation;
 using SIT.Manager.ViewModels.Play;
+using SIT.Manager.ViewModels.Settings;
 using SIT.Manager.Views;
 using System;
 using System.Diagnostics;
@@ -108,7 +109,6 @@ public sealed partial class App : Application
 
             // Page Viewmodels
             services.AddTransient<InstallPageViewModel>()
-                .AddTransient<LinuxSettingsPageViewModel>()
                 .AddTransient<LocationEditorViewModel>()
                 .AddTransient<MainViewModel>()
                 .AddTransient<ModsPageViewModel>()
@@ -130,6 +130,12 @@ public sealed partial class App : Application
             services.AddTransient<CharacterSelectionViewModel>()
                 .AddTransient<DirectConnectViewModel>()
                 .AddTransient<ServerSelectionViewModel>();
+
+            // Settings View Models
+            services.AddTransient<EftViewModel>()
+                .AddTransient<LauncherViewModel>()
+                .AddTransient<LinuxViewModel>()
+                .AddTransient<SptAkiViewModel>();
 
             #endregion ViewModels
 

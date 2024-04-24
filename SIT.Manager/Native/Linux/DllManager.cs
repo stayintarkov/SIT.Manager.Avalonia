@@ -1,10 +1,10 @@
-using SIT.Manager.Linux.Managers;
 using SIT.Manager.Models.Config;
+using SIT.Manager.Native.Linux.Managers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace SIT.Manager.Linux;
+namespace SIT.Manager.Native.Linux;
 
 public abstract class DllManager(string component, IEnumerable<string> dlls, string baseDir, string releaseUrl, IEnumerable<string>? managedAppDataFiles = null)
 {

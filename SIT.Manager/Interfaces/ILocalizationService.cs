@@ -6,7 +6,14 @@ namespace SIT.Manager.Interfaces;
 
 public interface ILocalizationService
 {
+    CultureInfo DefaultLocale { get; }
+
     event EventHandler<EventArgs>? LocalizationChanged;
+
+    /// <summary>
+    /// Function that loads the Available Localizations when program starts.
+    /// </summary>
+    List<CultureInfo> GetAvailableLocalizations();
     /// <summary>
     /// Changes the localization based on your culture info. This specific function changes it inside of Settings. And mainly changes all dynamic Resources in pages.
     /// </summary>
@@ -21,8 +28,4 @@ public interface ILocalizationService
     /// <param name="key">string that you are accessing in Localization\*culture-info*.axaml file</param>
     /// <param name="replaces">parameters in hierarchy, example: %1, %2, %3, "10", "20, "30" | output: 10, 20, 30</param>
     string TranslateSource(string key, params string[] replaces);
-    /// <summary>
-    /// Function that loads the Available Localizations when program starts.
-    /// </summary>
-    List<CultureInfo> GetAvailableLocalizations();
 }

@@ -1,6 +1,7 @@
+using SIT.Manager.Native.Linux;
 using System.Collections.Generic;
 
-namespace SIT.Manager.Linux.Managers;
+namespace SIT.Manager.Native.Linux.Managers;
 
 public class D3DExtrasManager() : DllManager("D3DExtras",
     [
