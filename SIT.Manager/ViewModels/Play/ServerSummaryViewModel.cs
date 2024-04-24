@@ -100,7 +100,12 @@ public partial class ServerSummaryViewModel : ObservableRecipient
 
         EditCommand = new AsyncRelayCommand(Edit);
 
-        _dispatcherTimer = new DispatcherTimer(TimeSpan.FromSeconds(5), DispatcherPriority.Normal, DispatcherTimer_Tick);
+        _dispatcherTimer = new DispatcherTimer(TimeSpan.FromSeconds(15), DispatcherPriority.Normal, DispatcherTimer_Tick);
+        Task.Run(() =>
+        {
+            System.Threading.Thread.Sleep(2000);
+            Dispatcher.UIThread.Invoke(() => DispatcherTimer_Tick(null, new EventArgs()));
+        });
     }
 
     [RelayCommand]
