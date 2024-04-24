@@ -152,7 +152,7 @@ public class DiagnosticService : IDiagnosticService
             {
                 foreach (string valueName in key.GetValueNames())
                 {
-                    sb.Append($"{valueName}: {key.GetValue(valueName)}");
+                    sb.AppendLine($"{valueName}: {key.GetValue(valueName)}");
                 }
             }
         }
