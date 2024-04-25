@@ -59,7 +59,7 @@
 					   Text="{DynamicResource SettingsSITVersionTitle}"
 					   Margin="0,12,8,0"
 					   VerticalAlignment="Center"/>
-			<SelectableTextBlock Grid.Column="0"
+			<SelectableTextBlock Grid.Column="1"
 								 Grid.Row="3"
 								 Margin="0,12,8,0"
 								 Text="{Binding Config.SitVersion}"
