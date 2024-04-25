@@ -13,7 +13,7 @@
 			<!--BSG EFT Install Path-->
 			<TextBlock Grid.Column="0"
 					   Grid.Row="0"
-					   Text="BSG EFT Install Path:"
+					   Text="{DynamicResource EftViewBsgEftInstallPath}"
 					   Margin="0,0,12,0"
 					   VerticalAlignment="Center"/>
 			<TextBlock Margin="0,0,12,0"

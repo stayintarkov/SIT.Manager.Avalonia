@@ -34,11 +34,11 @@ public partial class EftViewModel : SettingsViewModelBase
         _localizationService = localizationService;
         _versionService = versionService;
 
-        BsgEftInstallPath = Path.GetDirectoryName(_installerService.GetEFTInstallPath()) ?? "Unable to detect BSG EFT install...";
+        BsgEftInstallPath = Path.GetDirectoryName(_installerService.GetEFTInstallPath()) ?? _localizationService.TranslateSource("EftViewModelBsgEftInstallPathMissing");
         SitEftInstallPath = _configsService.Config.SitEftInstallPath;
         if (string.IsNullOrEmpty(SitEftInstallPath))
         {
-            SitEftInstallPath = "SIT install not found. Please point to existing install here, or install by clicking the install button on the left";
+            SitEftInstallPath = _localizationService.TranslateSource("EftViewModelSitEftInstallPathMissing");
         }
 
         ChangeInstallLocationCommand = new AsyncRelayCommand(ChangeInstallLocation);

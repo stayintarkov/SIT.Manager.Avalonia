@@ -115,6 +115,13 @@
 	<system:String x:Key="SettingsServerConsoleFontColorTitle">Колір Шрифту:</system:String>
 	<system:String x:Key="SettingsManagerVersionTitle">Версія Менеджера (Лаунчера):</system:String>
 
+	<!-- EftView -->
+	<system:String x:Key="EftViewBsgEftInstallPath">BSG EFT Install Path:</system:String>
+
+	<!-- EftViewModel -->
+	<system:String x:Key="EftViewModelBsgEftInstallPathMissing">Unable to detect BSG EFT install...</system:String>
+	<system:String x:Key="EftViewModelSitEftInstallPathMissing">SIT install not found. Please point to existing install here, or install by clicking the install button on the left</system:String>
+
 	<!-- Linux Settings Page -->
 	<system:String x:Key="Key">Key</system:String>
 	<system:String x:Key="Value">Value</system:String>
