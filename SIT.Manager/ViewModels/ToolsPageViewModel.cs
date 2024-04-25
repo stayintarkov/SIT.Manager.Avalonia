@@ -75,7 +75,7 @@ public partial class ToolsPageViewModel : ObservableObject
 
     private async Task OpenEFTFolder()
     {
-        if (string.IsNullOrEmpty(_configService.Config.InstallPath))
+        if (string.IsNullOrEmpty(_configService.Config.SitEftInstallPath))
         {
             ContentDialog contentDialog = new()
             {
@@ -87,13 +87,13 @@ public partial class ToolsPageViewModel : ObservableObject
         }
         else
         {
-            await _fileService.OpenDirectoryAsync(_configService.Config.InstallPath);
+            await _fileService.OpenDirectoryAsync(_configService.Config.SitEftInstallPath);
         }
     }
 
     private async Task OpenBepInExFolder()
     {
-        if (string.IsNullOrEmpty(_configService.Config.InstallPath))
+        if (string.IsNullOrEmpty(_configService.Config.SitEftInstallPath))
         {
             ContentDialog contentDialog = new()
             {
@@ -105,7 +105,7 @@ public partial class ToolsPageViewModel : ObservableObject
         }
         else
         {
-            string dirPath = Path.Combine(_configService.Config.InstallPath, "BepInEx", "plugins");
+            string dirPath = Path.Combine(_configService.Config.SitEftInstallPath, "BepInEx", "plugins");
             if (Directory.Exists(dirPath))
             {
                 await _fileService.OpenDirectoryAsync(dirPath);
@@ -133,7 +133,7 @@ public partial class ToolsPageViewModel : ObservableObject
 
     private async Task OpenSITConfig()
     {
-        string path = Path.Combine(_configService.Config.InstallPath, "BepInEx", "config");
+        string path = Path.Combine(_configService.Config.SitEftInstallPath, "BepInEx", "config");
         if (!Directory.Exists(path))
         {
             ContentDialog contentDialog = new()

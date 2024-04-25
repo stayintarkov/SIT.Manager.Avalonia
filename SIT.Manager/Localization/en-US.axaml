@@ -91,9 +91,8 @@
 	<system:String x:Key="SettingsAccentColorToolTip">Changes color of selected visuals to your choice!</system:String>
 	<system:String x:Key="SettingsEFTSettingsTitle">EFT</system:String>
 	<system:String x:Key="SettingsEFTSettingsButtonChangeTitle">Change</system:String>
-	<system:String x:Key="SettingsEFTInstallPathTitle">EFT Path:</system:String>
-	<system:String x:Key="SettingsEFTInstallPathPlaceholder">EFT Install Path...</system:String>
-	<system:String x:Key="SettingsEFTChangeInstallPathToolTip">Change the EFT Install Path.</system:String>
+	<system:String x:Key="SettingsEFTInstallPathTitle">SIT EFT Path:</system:String>
+	<system:String x:Key="SettingsEFTChangeInstallPathToolTip">Change the SIT EFT Install Path.</system:String>
 	<system:String x:Key="SettingsEFTVersionTitle">EFT Version:</system:String>
 	<system:String x:Key="SettingsSITVersionTitle">SIT Version:</system:String>
 	<system:String x:Key="SettingsSPTAKITitle">SPT-AKI</system:String>

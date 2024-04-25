@@ -33,7 +33,7 @@ public partial class SelectViewModel : InstallationViewModelBase
 
     private void EstablishEFTInstallStatus()
     {
-        if (string.IsNullOrEmpty(_configService.Config.InstallPath))
+        if (string.IsNullOrEmpty(_configService.Config.SitEftInstallPath))
         {
             string detectedBSGInstallPath = Path.GetDirectoryName(_installerService.GetEFTInstallPath()) ?? string.Empty;
             if (!string.IsNullOrEmpty(detectedBSGInstallPath))
@@ -45,7 +45,7 @@ public partial class SelectViewModel : InstallationViewModelBase
         }
         else
         {
-            CurrentInstallProcessState.EftInstallPath = _configService.Config.InstallPath;
+            CurrentInstallProcessState.EftInstallPath = _configService.Config.SitEftInstallPath;
             CurrentInstallProcessState.UsingBsgInstallPath = false;
         }
 

@@ -98,9 +98,8 @@
 	<system:String x:Key="SettingsLinuxWineRunnerToolTip">設置用於啟動 EFT 的 wine runner</system:String>
 	<system:String x:Key="SettingsEFTSettingsTitle">EFT 設定</system:String>
 	<system:String x:Key="SettingsEFTSettingsButtonChangeTitle">更改</system:String>
-	<system:String x:Key="SettingsEFTInstallPathTitle">EFT 路徑:</system:String>
-	<system:String x:Key="SettingsEFTInstallPathPlaceholder">EFT 安裝路徑...</system:String>
-	<system:String x:Key="SettingsEFTChangeInstallPathToolTip">更改 EFT 安裝路徑</system:String>
+	<system:String x:Key="SettingsEFTInstallPathTitle">SIT EFT Path:</system:String>
+	<system:String x:Key="SettingsEFTChangeInstallPathToolTip">Change the SIT EFT Install Path.</system:String>
 	<system:String x:Key="SettingsEFTVersionTitle">EFT 版本:</system:String>
 	<system:String x:Key="SettingsSITVersionTitle">SIT 版本:</system:String>
 	<system:String x:Key="SettingsSPTAKITitle">SPT-AKI 設定</system:String>

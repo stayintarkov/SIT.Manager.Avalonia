@@ -31,13 +31,13 @@ public class TarkovClientService(IAkiServerRequestingService serverRequestingSer
     private readonly ILocalizationService _localizationService = localizationService;
     private readonly ILogger<TarkovClientService> _logger = logger;
 
-    public override string ExecutableDirectory => !string.IsNullOrEmpty(_configService.Config.InstallPath) ? _configService.Config.InstallPath : string.Empty;
+    public override string ExecutableDirectory => !string.IsNullOrEmpty(_configService.Config.SitEftInstallPath) ? _configService.Config.SitEftInstallPath : string.Empty;
 
     protected override string EXECUTABLE_NAME => TARKOV_EXE;
 
     private void ClearModCache()
     {
-        string cachePath = _configService.Config.InstallPath;
+        string cachePath = _configService.Config.SitEftInstallPath;
         if (!string.IsNullOrEmpty(cachePath) && Directory.Exists(cachePath))
         {
             // Combine the installPath with the additional subpath.
