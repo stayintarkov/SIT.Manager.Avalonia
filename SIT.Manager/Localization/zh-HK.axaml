@@ -343,6 +343,7 @@
 	<system:String x:Key="ConfigureViewVersionSelectionGroupTitle">版本選擇</system:String>
 
 	<!-- Install - Configure Server View -->
+	<system:String x:Key="ConfigureServerViewVersionSelectionErrorMessage">Unable to determine available SIT Server versions...</system:String>
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathToolTip">更改 SPT-AKI 的安裝路徑。</system:String>
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathTitle">更改</system:String>
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathPlaceholder">SPT-AKI 安裝路徑...</system:String>

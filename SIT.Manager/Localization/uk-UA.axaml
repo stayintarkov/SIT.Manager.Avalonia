@@ -344,6 +344,7 @@
 	<system:String x:Key="ConfigureViewPersonalizationOptions">Персоналізація та Імпорт Налаштувань</system:String>
 
 	<!-- Install - Configure Server View -->
+	<system:String x:Key="ConfigureServerViewVersionSelectionErrorMessage">Unable to determine available SIT Server versions...</system:String>
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathToolTip">Змінити шлях установки SPT-AKI.</system:String>
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathTitle">Змінити</system:String>
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathPlaceholder">Шлях установки SPT-AKI...</system:String>

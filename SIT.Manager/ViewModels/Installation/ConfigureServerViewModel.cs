@@ -1,10 +1,10 @@
 ﻿using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using SIT.Manager.Extentions;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Models.Github;
-using SIT.Manager.Models.Installation;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -15,6 +15,7 @@ namespace SIT.Manager.ViewModels.Installation;
 public partial class ConfigureServerViewModel : InstallationViewModelBase
 {
     private readonly IInstallerService _installerService;
+    private readonly ILogger<ConfigureServerViewModel> _logger;
     private readonly IPickerDialogService _pickerDialogService;
 
     [ObservableProperty]
@@ -26,13 +27,17 @@ public partial class ConfigureServerViewModel : InstallationViewModelBase
     [ObservableProperty]
     private bool _isConfigurationValid = false;
 
+    [ObservableProperty]
+    private bool _hasVersionsAvailable = false;
+
     public ObservableCollection<GithubRelease> AvailableVersions { get; } = [];
 
     public IAsyncRelayCommand ChangeServerInstallLocationCommand { get; }
 
-    public ConfigureServerViewModel(IInstallerService installerService, IPickerDialogService pickerDialogService)
+    public ConfigureServerViewModel(IInstallerService installerService, ILogger<ConfigureServerViewModel> logger, IPickerDialogService pickerDialogService)
     {
         _installerService = installerService;
+        _logger = logger;
         _pickerDialogService = pickerDialogService;
 
         ChangeServerInstallLocationCommand = new AsyncRelayCommand(ChangeServerInstallLocation);
@@ -51,22 +56,21 @@ public partial class ConfigureServerViewModel : InstallationViewModelBase
     private async Task LoadAvailableVersionData()
     {
         IsLoading = true;
+
         AvailableVersions.Clear();
+        HasVersionsAvailable = false;
 
         List<GithubRelease> releases = await _installerService.GetServerReleases();
-        if (CurrentInstallProcessState.RequestedInstallOperation == RequestedInstallOperation.UpdateServer)
-        {
-            // TODO filter results for updating server to versions higher than currently
-        }
-
         AvailableVersions.AddRange(releases);
+
         if (AvailableVersions.Any())
         {
             SelectedVersion = AvailableVersions[0];
+            HasVersionsAvailable = true;
         }
         else
         {
-            // TODO add some logging here and an alert somehow in case it fails to load any versions
+            _logger.LogWarning("Available SIT version count {availableVersions} and 0 marked as available to use so will display error message", AvailableVersions.Count);
         }
 
         IsLoading = false;
