@@ -506,4 +506,8 @@
 	<system:String x:Key="DirectConnectViewModelAccountNotFoundDescription">Your account has not been found, would you like to register a new account with these credentials?</system:String>
 	<system:String x:Key="DirectConnectViewModelButtonYes">Yes</system:String>
 	<system:String x:Key="DirectConnectViewModelButtonNo">No</system:String>
+
+	<!-- MainViewModel -->
+	<system:String x:Key="MainViewModelUpdateErrorTitle">Error</system:String>
+	<system:String x:Key="MainViewModelUpdateErrorMessage">Failed when checking for updates</system:String>
 </ResourceDictionary>

@@ -69,7 +69,7 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
 
         _localizationService.Translate(new CultureInfo(_managerConfigService.Config.CurrentLanguageSelected));
 
-        var faTheme = Application.Current?.Styles.OfType<FluentAvaloniaTheme>().FirstOrDefault();
+        FluentAvaloniaTheme? faTheme = Application.Current?.Styles.OfType<FluentAvaloniaTheme>().FirstOrDefault();
         if (faTheme != null) faTheme.CustomAccentColor = _managerConfigService.Config.AccentColor;
 
         _actionNotificationService.ActionNotificationReceived += ActionNotificationService_ActionNotificationReceived;
@@ -92,9 +92,10 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
             UpdateAvailable = await _appUpdaterService.CheckForUpdate();
             SitUpdateAvailable = await _installerService.IsSitUpdateAvailable();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-
+            _logger.LogError(ex, "Error checking for update to either Manager or SIT");
+            _barNotificationService.ShowError(_localizationService.TranslateSource("MainViewModelUpdateErrorTitle"), _localizationService.TranslateSource("MainViewModelUpdateErrorMessage"));
         }
     }
 
