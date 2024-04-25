@@ -1,14 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SIT.Manager.Interfaces;
+using SIT.Manager.Interfaces.ManagedProcesses;
 using SIT.Manager.Models.Aki;
 using SIT.Manager.Models.Play;
-using SIT.Manager.Services;
-using SIT.Manager.Views.Play;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -24,6 +22,7 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
     private readonly ILocalizationService _localizationService;
     private readonly IManagerConfigService _configService;
     private readonly IServiceProvider _serviceProvider;
+    private readonly ITarkovClientService _tarkovClientService;
 
     private AkiServer _connectedServer;
 
@@ -36,13 +35,15 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
         ILocalizationService localizationService,
         ILogger<CharacterSelectionViewModel> logger,
         IAkiServerRequestingService serverService,
-        IManagerConfigService configService)
+        IManagerConfigService configService,
+        ITarkovClientService tarkovClientService)
     {
         _serviceProvider = serviceProvider;
         _logger = logger;
         _localizationService = localizationService;
         _serverService = serverService;
         _configService = configService;
+        _tarkovClientService = tarkovClientService;
 
         try
         {
@@ -69,39 +70,7 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
 
     private async Task CreateCharacter()
     {
-        (ContentDialogResult result, string username, string password, bool saveLoginDetails) = await new CreateCharacterDialogView().ShowAsync();
-        if (result != ContentDialogResult.Primary)
-        {
-            return;
-        }
-
-        AkiCharacter character = new(_connectedServer, username, password);
-
-        _logger.LogInformation("Registering new character...");
-        (string _, AkiLoginStatus status) = await _serverService.RegisterCharacterAsync(character);
-        if (status != AkiLoginStatus.Success)
-        {
-            await new ContentDialog()
-            {
-                Title = _localizationService.TranslateSource("DirectConnectViewModelLoginErrorTitle"),
-                Content = _localizationService.TranslateSource("DirectConnectViewModelLoginErrorDescription"),
-                CloseButtonText = _localizationService.TranslateSource("DirectConnectViewModelButtonOk")
-            }.ShowAsync();
-            _logger.LogDebug("Register character failed with {status}", status);
-            return;
-        }
-
-        if (saveLoginDetails)
-        {
-            character.ParentServer.Characters.Add(character);
-            int index = _configService.Config.BookmarkedServers.FindIndex(x => x.Address == character.ParentServer.Address);
-            if (index != -1 && !_configService.Config.BookmarkedServers[index].Characters.Any(x => x.Username == character.Username))
-            {
-                _configService.Config.BookmarkedServers[index].Characters.Add(character);
-            }
-            _configService.UpdateConfig(_configService.Config);
-        }
-
+        await _tarkovClientService.CreateCharacter(_connectedServer);
         await ReloadCharacterList();
     }
 

@@ -5,7 +5,7 @@
 				  xmlns:ui="using:FluentAvalonia.UI.Controls"
 				  xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Play"
 				  mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-				  Title="{DynamicResource CreateServerDialogViewTitle}"
+				  Title="{DynamicResource CreateCharacterDialogViewTitle}"
 				  CloseButtonText="{DynamicResource CreateServerDialogViewCloseButtonText}"
 				  PrimaryButtonText="{DynamicResource CreateServerDialogViewPrimaryButtonText}"
 				  IsPrimaryButtonEnabled="{Binding CanCreateCharacter}"
@@ -18,6 +18,20 @@
 		<!--Password box-->
 		<Label Content="{DynamicResource DirectConnectViewPasswordBoxTitle}" Margin="10 10 10 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
 		<TextBox Name="PasswordBox" Text="{Binding Password, Mode=TwoWay}" MinWidth="150" Margin="8 4 8 8" HorizontalAlignment="Left" Watermark="{DynamicResource DirectConnectViewEnterPasswordPlaceholder}"/>
+
+		<TextBlock Text="{DynamicResource SelectEditionDialogTextBlockTitle}" Margin="5"/>
+		<ComboBox Name="EditionsList"
+				  Width="200"
+				  ItemsSource="{Binding Editions}"
+				  SelectedItem="{Binding SelectedEdition, Mode=TwoWay}">
+			<ComboBox.ItemTemplate>
+				<DataTemplate>
+					<StackPanel>
+						<TextBlock Text="{Binding Edition}" ToolTip.Tip="{Binding Description}"/>
+					</StackPanel>
+				</DataTemplate>
+			</ComboBox.ItemTemplate>
+		</ComboBox>
 
 		<CheckBox Content="{DynamicResource DirectConnectViewRememberMeCheckBoxTitle}" 
 				  Margin="8" 

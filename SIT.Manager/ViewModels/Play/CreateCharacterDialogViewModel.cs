@@ -1,5 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using SIT.Manager.Extentions;
+using SIT.Manager.Models;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace SIT.Manager.ViewModels.Play;
 
@@ -33,5 +37,16 @@ public partial class CreateCharacterDialogViewModel : ObservableValidator
         }
     }
 
+    [ObservableProperty]
+    private TarkovEdition _selectedEdition;
+
+    public ObservableCollection<TarkovEdition> Editions { get; } = [];
+
     public bool CanCreateCharacter => !HasErrors;
+
+    public CreateCharacterDialogViewModel(TarkovEdition[] editions)
+    {
+        Editions.AddRange(editions);
+        SelectedEdition = Editions.First();
+    }
 }

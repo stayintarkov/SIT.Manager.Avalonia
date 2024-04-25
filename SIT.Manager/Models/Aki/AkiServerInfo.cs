@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 
 namespace SIT.Manager.Models.Aki;
+
 public class AkiServerInfo
 {
     [JsonPropertyName("name")]

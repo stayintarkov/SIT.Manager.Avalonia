@@ -5,9 +5,11 @@ using SIT.Manager.Exceptions;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Interfaces.ManagedProcesses;
 using SIT.Manager.Linux;
+using SIT.Manager.Models;
 using SIT.Manager.Models.Aki;
 using SIT.Manager.Models.Config;
 using SIT.Manager.Models.Play;
+using SIT.Manager.Views.Play;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -266,5 +268,54 @@ public class TarkovClientService(IAkiServerRequestingService serverRequestingSer
             }
         }
         UpdateRunningState(RunningState.Running);
+    }
+
+    public async Task CreateCharacter(AkiServer server)
+    {
+        List<TarkovEdition> editions = [];
+        AkiServerInfo? serverInfo = await _serverRequestingService.GetAkiServerInfoAsync(server);
+        if (serverInfo != null)
+        {
+            foreach (string edition in serverInfo.Editions)
+            {
+                editions.Add(new TarkovEdition(edition, serverInfo.Descriptions[edition]));
+            }
+        }
+
+        CreateCharacterDialogResult result = await new CreateCharacterDialogView([.. editions]).ShowAsync();
+        if (result.DialogResult != ContentDialogResult.Primary)
+        {
+            return;
+        }
+
+        AkiCharacter character = new(server, result.Username, result.Password)
+        {
+            Edition = result.TarkovEdition.Edition
+        };
+
+        _logger.LogInformation("Registering new character...");
+        (string _, AkiLoginStatus status) = await _serverRequestingService.RegisterCharacterAsync(character);
+        if (status != AkiLoginStatus.Success)
+        {
+            await new ContentDialog()
+            {
+                Title = _localizationService.TranslateSource("DirectConnectViewModelLoginErrorTitle"),
+                Content = _localizationService.TranslateSource("DirectConnectViewModelLoginErrorDescription"),
+                CloseButtonText = _localizationService.TranslateSource("DirectConnectViewModelButtonOk")
+            }.ShowAsync();
+            _logger.LogDebug("Register character failed with {status}", status);
+            return;
+        }
+
+        if (result.SaveLogin)
+        {
+            character.ParentServer.Characters.Add(character);
+            int index = _configService.Config.BookmarkedServers.FindIndex(x => x.Address == character.ParentServer.Address);
+            if (index != -1 && !_configService.Config.BookmarkedServers[index].Characters.Any(x => x.Username == character.Username))
+            {
+                _configService.Config.BookmarkedServers[index].Characters.Add(character);
+            }
+            _configService.UpdateConfig(_configService.Config);
+        }
     }
 }
