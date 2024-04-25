@@ -19,7 +19,6 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
 {
     private readonly ILogger _logger;
     private readonly IAkiServerRequestingService _serverService;
-    private readonly ILocalizationService _localizationService;
     private readonly IManagerConfigService _configService;
     private readonly IServiceProvider _serviceProvider;
     private readonly ITarkovClientService _tarkovClientService;
@@ -32,7 +31,6 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
     public IAsyncRelayCommand CreateCharacterCommand { get; }
 
     public CharacterSelectionViewModel(IServiceProvider serviceProvider,
-        ILocalizationService localizationService,
         ILogger<CharacterSelectionViewModel> logger,
         IAkiServerRequestingService serverService,
         IManagerConfigService configService,
@@ -40,7 +38,6 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
     {
         _serviceProvider = serviceProvider;
         _logger = logger;
-        _localizationService = localizationService;
         _serverService = serverService;
         _configService = configService;
         _tarkovClientService = tarkovClientService;

@@ -13,9 +13,9 @@ public partial class CreateCharacterDialogView : ContentDialog
 
     protected override Type StyleKeyOverride => typeof(ContentDialog);
 
-    public CreateCharacterDialogView(TarkovEdition[] editions)
+    public CreateCharacterDialogView(string username, string password, bool rememberLogin, TarkovEdition[] editions)
     {
-        dc = new CreateCharacterDialogViewModel(editions);
+        dc = new CreateCharacterDialogViewModel(username, password, rememberLogin, editions);
         DataContext = dc;
         InitializeComponent();
     }

@@ -44,8 +44,12 @@ public partial class CreateCharacterDialogViewModel : ObservableValidator
 
     public bool CanCreateCharacter => !HasErrors;
 
-    public CreateCharacterDialogViewModel(TarkovEdition[] editions)
+    public CreateCharacterDialogViewModel(string username, string password, bool rememberLogin, TarkovEdition[] editions)
     {
+        Username = username;
+        Password = password;
+        SaveLoginDetails = rememberLogin;
+
         Editions.AddRange(editions);
         SelectedEdition = Editions.First();
     }

@@ -124,17 +124,18 @@ public partial class DirectConnectViewModel : ObservableRecipient
             {
                 ContentDialogResult createAccountResponse = await new ContentDialog()
                 {
-                    Title = _localizationService.TranslateSource("PlayPageViewModelAccountNotFound"),
-                    Content = _localizationService.TranslateSource("PlayPageViewModelAccountNotFoundDescription"),
-                    IsPrimaryButtonEnabled = true,
-                    PrimaryButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonYes"),
-                    CloseButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonNo")
+                    Title = _localizationService.TranslateSource("DirectConnectViewModelAccountNotFound"),
+                    Content = _localizationService.TranslateSource("DirectConnectViewModelAccountNotFoundDescription"),
+                    PrimaryButtonText = _localizationService.TranslateSource("DirectConnectViewModelButtonYes"),
+                    CloseButtonText = _localizationService.TranslateSource("DirectConnectViewModelButtonNo")
                 }.ShowAsync();
                 if (createAccountResponse == ContentDialogResult.Primary)
                 {
-                    // TODO probably return character and then loop so that we attempt to login again? but at least we make one now.
-                    // TODO make it so that the username, password and remember functionality is passed to this function to pre populate dialog values.
-                    await _tarkovClientService.CreateCharacter(server);
+                    AkiCharacter? newCharacter = await _tarkovClientService.CreateCharacter(server, Username, Password, RememberMe);
+                    if (newCharacter != null)
+                    {
+                        await ConnectToServer(false);
+                    }
                 }
             }
         }

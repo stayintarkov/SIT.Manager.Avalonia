@@ -133,14 +133,18 @@ public class TarkovClientService(IAkiServerRequestingService serverRequestingSer
                 _logger.LogDebug("Login successful");
                 ProfileID = loginRespStr;
             }
+            else if (status == AkiLoginStatus.AccountNotFound)
+            {
+                throw new AccountNotFoundException();
+            }
             else
             {
                 _logger.LogDebug("Failed to login with error {status}", status);
                 await new ContentDialog()
                 {
-                    Title = _localizationService.TranslateSource("PlayPageViewModelLoginErrorTitle"),
-                    Content = _localizationService.TranslateSource("PlayPageViewModelLoginIncorrectPassword"),
-                    CloseButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonOk")
+                    Title = _localizationService.TranslateSource("DirectConnectViewModelLoginErrorTitle"),
+                    Content = _localizationService.TranslateSource("DirectConnectViewModelLoginIncorrectPassword"),
+                    CloseButtonText = _localizationService.TranslateSource("DirectConnectViewModelButtonOk")
                 }.ShowAsync();
                 return;
             }
@@ -270,7 +274,7 @@ public class TarkovClientService(IAkiServerRequestingService serverRequestingSer
         UpdateRunningState(RunningState.Running);
     }
 
-    public async Task CreateCharacter(AkiServer server)
+    public async Task<AkiCharacter?> CreateCharacter(AkiServer server, string username, string password, bool rememberLogin)
     {
         List<TarkovEdition> editions = [];
         AkiServerInfo? serverInfo = await _serverRequestingService.GetAkiServerInfoAsync(server);
@@ -282,10 +286,10 @@ public class TarkovClientService(IAkiServerRequestingService serverRequestingSer
             }
         }
 
-        CreateCharacterDialogResult result = await new CreateCharacterDialogView([.. editions]).ShowAsync();
+        CreateCharacterDialogResult result = await new CreateCharacterDialogView(username, password, rememberLogin, [.. editions]).ShowAsync();
         if (result.DialogResult != ContentDialogResult.Primary)
         {
-            return;
+            return null;
         }
 
         AkiCharacter character = new(server, result.Username, result.Password)
@@ -304,7 +308,7 @@ public class TarkovClientService(IAkiServerRequestingService serverRequestingSer
                 CloseButtonText = _localizationService.TranslateSource("DirectConnectViewModelButtonOk")
             }.ShowAsync();
             _logger.LogDebug("Register character failed with {status}", status);
-            return;
+            return null;
         }
 
         if (result.SaveLogin)
@@ -317,5 +321,12 @@ public class TarkovClientService(IAkiServerRequestingService serverRequestingSer
             }
             _configService.UpdateConfig(_configService.Config);
         }
+
+        return character;
+    }
+
+    public async Task<AkiCharacter?> CreateCharacter(AkiServer server)
+    {
+        return await CreateCharacter(server, string.Empty, string.Empty, false).ConfigureAwait(false);
     }
 }
