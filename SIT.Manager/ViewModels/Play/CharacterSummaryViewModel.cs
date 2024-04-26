@@ -1,4 +1,5 @@
 ﻿using Avalonia.Media.Imaging;
+using Avalonia.Styling;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
@@ -29,7 +30,7 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
     private AkiMiniProfile _profile;
 
     [ObservableProperty]
-    private Bitmap _sideImage;
+    private Bitmap? _sideImage;
 
     [ObservableProperty]
     private double _levelProgressPercentage = 0;
@@ -68,21 +69,28 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
             NextLevel = Profile.MaxLevel;
         }
 
-        Task.Run(async () =>
-        {
-            if(!string.IsNullOrEmpty(profile.Side) && !profile.Side.Equals("unknown", StringComparison.InvariantCultureIgnoreCase))
-            {
-                string cacheKey = $"side_{Profile.Side} icon";
-                CacheValue<Bitmap> cacheVal = await _cachingService.InMemory.GetOrComputeAsync<Bitmap>(cacheKey, async (key) =>
-                {
-                    return new(await _akiServerRequestingService.GetAkiServerImage(server, $"launcher/side_{profile.Side.ToLower()}.png"));
-                });
-                if(cacheVal.HasValue && cacheVal.Value != null)
-                    SideImage = cacheVal.Value;
-            }
-        });
+        Task.Run(SetSideImage);
 
         PlayCommand = new AsyncRelayCommand(Play);
+    }
+
+    private async Task SetSideImage()
+    {
+        if (!string.IsNullOrEmpty(Profile.Side) && !Profile.Side.Equals("unknown", StringComparison.InvariantCultureIgnoreCase))
+        {
+            string cacheKey = $"side_{Profile.Side} icon";
+            //TODO: Change this from bitmap to memorystream and load it into bitmap. This will allow us to save to disk
+            CacheValue<Bitmap> cacheVal = await _cachingService.InMemory.GetOrComputeAsync<Bitmap>(cacheKey, async (key) =>
+            {
+                return new(await _akiServerRequestingService.GetAkiServerImage(_connectedServer, $"launcher/side_{Profile.Side.ToLower()}.png"));
+            });
+            if (cacheVal.HasValue && cacheVal.Value != null)
+                SideImage = cacheVal.Value;
+        }
+        else
+        {
+            //TODO: Set a default. Not done because idk what to set it to
+        }
     }
 
     private async Task Play()
