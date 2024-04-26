@@ -503,6 +503,7 @@
 	<system:String x:Key="DirectConnectViewModelUnhandledAkiInstanceDescription">SPT-AKI запущен в данный момент. Пожалуйста, закройте все запущенные экземпляры SPT-AKI.</system:String>
 	<system:String x:Key="DirectConnectViewModelMissingAKIInstallationTitle">Отсутствует установка AKI</system:String>
 	<system:String x:Key="DirectConnectViewModelMissingAKIInstallationDescription">Отсутствует исполняемый файл сервера SPT-AKI.</system:String>
+	<system:String x:Key="DirectConnectViewModelLoginServerNotAvailable">Сервер не доступный! Попробуйте ещё раз.</system:String>
 	<system:String x:Key="DirectConnectViewModelLoginIncorrectPassword">Неверный пароль</system:String>
 	<system:String x:Key="DirectConnectViewModelLoginErrorTitle">Ошибка входа</system:String>
 	<system:String x:Key="DirectConnectViewModelLoginErrorDescription">Невозможно связаться с сервером %1</system:String>
