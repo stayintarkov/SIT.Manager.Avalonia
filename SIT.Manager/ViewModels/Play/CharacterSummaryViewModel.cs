@@ -25,6 +25,7 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
     private readonly IAkiServerRequestingService _akiServerRequestingService;
 
     private readonly AkiServer _connectedServer;
+    private readonly AkiCharacter? character;
 
     [ObservableProperty]
     private AkiMiniProfile _profile;
@@ -37,6 +38,9 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
 
     [ObservableProperty]
     private int _nextLevel = 0;
+
+    [ObservableProperty]
+    private bool _requireLogin = true;
 
     public IAsyncRelayCommand PlayCommand { get; }
 
@@ -67,6 +71,17 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
         if (Profile.CurrentLevel == Profile.MaxLevel)
         {
             NextLevel = Profile.MaxLevel;
+        }
+
+        character = _connectedServer.Characters.FirstOrDefault(x => x.Username == Profile.Username);
+        if (character != null)
+        {
+            int serverIndex = _configService.Config.BookmarkedServers.FindIndex(x => x.Address == character.ParentServer.Address);
+            if (serverIndex != -1)
+            {
+                character = _configService.Config.BookmarkedServers[serverIndex].Characters.FirstOrDefault(x => x?.Username == character.Username, null);
+                RequireLogin = string.IsNullOrEmpty(character?.Password);
+            }
         }
 
         Task.Run(SetSideImage);
@@ -121,6 +136,7 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
                 {
                     _configService.Config.BookmarkedServers[index].Characters.Add(character);
                 }
+                _configService.UpdateConfig(_configService.Config);
             }
         }
         catch (Exception ex)

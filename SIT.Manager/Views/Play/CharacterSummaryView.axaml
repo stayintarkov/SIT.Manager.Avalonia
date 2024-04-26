@@ -32,9 +32,6 @@
 					<TextBlock FontSize="24"
 							   FontWeight="Bold"
 							   Text="{Binding Profile.Nickname}"/>
-					<ui:SymbolIcon Height="32" 
-								   Width="32"
-								   Symbol="Star"/>
 				</StackPanel>
 
 				<TextBlock FontStyle="Italic"
@@ -56,8 +53,14 @@
 			</StackPanel>
 
 			<Button Grid.Column="2"
-					Content="{DynamicResource CharacterSummaryViewPlayButtonText}"
-					Command="{Binding PlayCommand}"/>
+					Command="{Binding PlayCommand}">
+				<Panel>
+					<TextBlock IsVisible="{Binding !RequireLogin}"
+							   Text="{DynamicResource CharacterSummaryViewPlayButtonText}"/>
+					<TextBlock IsVisible="{Binding RequireLogin}" 
+							   Text="{DynamicResource CharacterSummaryViewLoginButtonText}"/>
+				</Panel>
+			</Button>
 		</Grid>
 	</Border>
 </UserControl>

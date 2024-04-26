@@ -422,9 +422,11 @@
 	
 	<!-- CharacterSummaryView -->
 	<system:String x:Key="CharacterSummaryViewPlayButtonText">Play</system:String>
+	<system:String x:Key="CharacterSummaryViewLoginButtonText">Login</system:String>
 	
 	<!-- CreateServerDialogView -->
-	<system:String x:Key="CreateServerDialogViewTitle">Add Server</system:String>
+	<system:String x:Key="CreateServerDialogViewAddTitle">Add Server</system:String>
+	<system:String x:Key="CreateServerDialogViewEditTitle">Edit Server</system:String>
 	<system:String x:Key="CreateServerDialogViewPrimaryButtonText">Save</system:String>
 	<system:String x:Key="CreateServerDialogViewCloseButtonText">Close</system:String>
 	<system:String x:Key="CreateServerDialogViewAddressLabel">Address</system:String>
@@ -446,10 +448,9 @@
 	<system:String x:Key="LoginDialogViewViewTitle">Character Login</system:String>
 	<system:String x:Key="LoginDialogViewViewPrimaryButtonText">Login</system:String>
 	<system:String x:Key="LoginDialogViewViewCloseButtonText">Close</system:String>
-	<system:String x:Key="LoginDialogViewViewUsernameBoxTitle">Username</system:String>
-	<system:String x:Key="LoginDialogViewViewEnterUserNamePlaceholder">Enter Username...</system:String>
-	<system:String x:Key="LoginDialogViewViewPasswordBoxTitle">Username</system:String>
-	<system:String x:Key="LoginDialogViewViewEnterPasswordPlaceholder">Enter Username...</system:String>
+	<system:String x:Key="LoginDialogViewViewUsernameBoxTitle">Username: </system:String>
+	<system:String x:Key="LoginDialogViewViewPasswordBoxTitle">Password</system:String>
+	<system:String x:Key="LoginDialogViewViewEnterPasswordPlaceholder">Enter Password...</system:String>
 	<system:String x:Key="LoginDialogViewRememberMeCheckBoxTitle">Remember Me</system:String>
 
 	<!-- ServerSelectionView -->
@@ -510,6 +511,12 @@
 	<system:String x:Key="DirectConnectViewModelAccountNotFoundDescription">Your account has not been found, would you like to register a new account with these credentials?</system:String>
 	<system:String x:Key="DirectConnectViewModelButtonYes">Yes</system:String>
 	<system:String x:Key="DirectConnectViewModelButtonNo">No</system:String>
+
+	<!-- CreateCharacterDialogView -->
+	<system:String x:Key="CreateCharacterDialogViewTitle">Create New Character</system:String>
+	<system:String x:Key="CreateCharacterDialogViewCloseButtonText">Cancel</system:String>
+	<system:String x:Key="CreateCharacterDialogViewPrimaryButtonText">Create</system:String>
+	<system:String x:Key="CreateCharacterDialogViewSaveLoginDetailsCheckBoxTitle">Save Login Details</system:String>
 
 	<!-- MainViewModel -->
 	<system:String x:Key="MainViewModelUpdateErrorTitle">Error</system:String>

@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SIT.Manager.Interfaces;
+using SIT.Manager.Interfaces.ManagedProcesses;
 using SIT.Manager.Models.Aki;
 using SIT.Manager.Models.Play;
 using System;
@@ -20,20 +21,26 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
     private readonly IAkiServerRequestingService _serverService;
     private readonly IManagerConfigService _configService;
     private readonly IServiceProvider _serviceProvider;
+    private readonly ITarkovClientService _tarkovClientService;
 
-    private readonly AkiServer _connectedServer;
+    private AkiServer _connectedServer;
 
     public ObservableCollection<CharacterSummaryViewModel> SavedCharacterList { get; } = [];
     public ObservableCollection<CharacterSummaryViewModel> CharacterList { get; } = [];
 
     public IAsyncRelayCommand CreateCharacterCommand { get; }
 
-    public CharacterSelectionViewModel(IServiceProvider serviceProvider, ILogger<CharacterSelectionViewModel> logger, IAkiServerRequestingService serverService, IManagerConfigService configService)
+    public CharacterSelectionViewModel(IServiceProvider serviceProvider,
+        ILogger<CharacterSelectionViewModel> logger,
+        IAkiServerRequestingService serverService,
+        IManagerConfigService configService,
+        ITarkovClientService tarkovClientService)
     {
         _serviceProvider = serviceProvider;
         _logger = logger;
         _serverService = serverService;
         _configService = configService;
+        _tarkovClientService = tarkovClientService;
 
         try
         {
@@ -60,21 +67,18 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
 
     private async Task CreateCharacter()
     {
-        // TODO
+        await _tarkovClientService.CreateCharacter(_connectedServer);
+        await ReloadCharacterList();
     }
 
-    protected override async void OnActivated()
+    private async Task ReloadCharacterList()
     {
-        base.OnActivated();
-
-        AkiServer? currentServer = _configService.Config.BookmarkedServers.FirstOrDefault(x => x.Address == _connectedServer.Address);
-
         CharacterList.Clear();
         List<AkiMiniProfile> miniProfiles = await _serverService.GetMiniProfilesAsync(_connectedServer);
         foreach (AkiMiniProfile profile in miniProfiles)
         {
             CharacterSummaryViewModel characterSummaryViewModel = ActivatorUtilities.CreateInstance<CharacterSummaryViewModel>(_serviceProvider, _connectedServer, profile);
-            if (currentServer?.Characters.Any(x => x.Username == profile.Username) == true)
+            if (_connectedServer.Characters.Any(x => x.Username == profile.Username) == true)
             {
                 SavedCharacterList.Add(characterSummaryViewModel);
             }
@@ -83,7 +87,19 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
                 CharacterList.Add(characterSummaryViewModel);
             }
         }
-
         _logger.LogDebug("{profileCount} mini profiles retrieved from {name}", miniProfiles.Count, _connectedServer.Name);
+    }
+
+    protected override async void OnActivated()
+    {
+        base.OnActivated();
+
+        AkiServer? currentServer = _configService.Config.BookmarkedServers.FirstOrDefault(x => x.Address == _connectedServer.Address);
+        if (currentServer != null)
+        {
+            _connectedServer = currentServer;
+        }
+
+        await ReloadCharacterList();
     }
 }

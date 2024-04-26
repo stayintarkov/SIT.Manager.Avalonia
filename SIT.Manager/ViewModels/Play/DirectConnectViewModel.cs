@@ -9,7 +9,6 @@ using SIT.Manager.Interfaces.ManagedProcesses;
 using SIT.Manager.Models;
 using SIT.Manager.Models.Aki;
 using SIT.Manager.Models.Config;
-using SIT.Manager.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -123,7 +122,21 @@ public partial class DirectConnectViewModel : ObservableRecipient
             }
             catch (AccountNotFoundException)
             {
-                // TODO handle account not found (register?)
+                ContentDialogResult createAccountResponse = await new ContentDialog()
+                {
+                    Title = _localizationService.TranslateSource("DirectConnectViewModelAccountNotFound"),
+                    Content = _localizationService.TranslateSource("DirectConnectViewModelAccountNotFoundDescription"),
+                    PrimaryButtonText = _localizationService.TranslateSource("DirectConnectViewModelButtonYes"),
+                    CloseButtonText = _localizationService.TranslateSource("DirectConnectViewModelButtonNo")
+                }.ShowAsync();
+                if (createAccountResponse == ContentDialogResult.Primary)
+                {
+                    AkiCharacter? newCharacter = await _tarkovClientService.CreateCharacter(server, Username, Password, RememberMe);
+                    if (newCharacter != null)
+                    {
+                        await ConnectToServer(false);
+                    }
+                }
             }
         }
     }
@@ -213,35 +226,6 @@ public partial class DirectConnectViewModel : ObservableRecipient
         return validationRules;
     }
 
-    private async Task HandleFailedStatus(AkiLoginStatus status)
-    {
-        switch (status)
-        {
-            case AkiLoginStatus.IncorrectPassword:
-                {
-                    await new ContentDialog()
-                    {
-                        Title = _localizationService.TranslateSource("DirectConnectViewModelLoginErrorTitle"),
-                        Content = _localizationService.TranslateSource("DirectConnectViewModelLoginIncorrectPassword"),
-                        CloseButtonText = _localizationService.TranslateSource("DirectConnectViewModelButtonOk")
-                    }.ShowAsync();
-                    break;
-                }
-            case AkiLoginStatus.UsernameTaken:
-            default:
-                {
-                    await new ContentDialog()
-                    {
-                        Title = _localizationService.TranslateSource("DirectConnectViewModelLoginErrorTitle"),
-                        Content = _localizationService.TranslateSource("DirectConnectViewModelLoginErrorDescription"),
-                        CloseButtonText = _localizationService.TranslateSource("DirectConnectViewModelButtonOk")
-                    }.ShowAsync();
-                    break;
-                }
-        }
-
-    }
-
     private async Task<bool> LaunchServer()
     {
         _akiServerService.Start();
@@ -278,37 +262,6 @@ public partial class DirectConnectViewModel : ObservableRecipient
 
         QuickPlayText = _localizationService.TranslateSource("DirectConnectViewModelQuickPlayText");
         return aborted;
-    }
-
-    private async Task<string> RegisterUser(AkiCharacter character)
-    {
-        _logger.LogDebug("Username {Username} not found....", character.Username);
-        ContentDialogResult createAccountResponse = await new ContentDialog()
-        {
-            Title = _localizationService.TranslateSource("DirectConnectViewModelAccountNotFound"),
-            Content = _localizationService.TranslateSource("DirectConnectViewModelAccountNotFoundDescription"),
-            IsPrimaryButtonEnabled = true,
-            PrimaryButtonText = _localizationService.TranslateSource("DirectConnectViewModelButtonYes"),
-            CloseButtonText = _localizationService.TranslateSource("DirectConnectViewModelButtonNo")
-        }.ShowAsync();
-
-        if (createAccountResponse == ContentDialogResult.Primary)
-        {
-            _logger.LogDebug("Registering...");
-            (string registerRespStr, AkiLoginStatus status) = await _serverRequestingService.RegisterCharacterAsync(character);
-            if (status == AkiLoginStatus.Success)
-            {
-                _logger.LogDebug("Register successful");
-                return registerRespStr;
-            }
-            else
-            {
-                _logger.LogDebug("Register failed with {status}", status);
-                await HandleFailedStatus(status);
-            }
-        }
-
-        return string.Empty;
     }
 
     protected override void OnActivated()

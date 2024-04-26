@@ -35,7 +35,7 @@ public partial class ServerSelectionViewModel : ObservableRecipient, IRecipient<
 
     private async Task CreateServer()
     {
-        CreateServerDialogView dialog = new();
+        CreateServerDialogView dialog = new(_localizationService, false);
         (ContentDialogResult result, Uri serverUri) = await dialog.ShowAsync();
         if (result == ContentDialogResult.Primary)
         {

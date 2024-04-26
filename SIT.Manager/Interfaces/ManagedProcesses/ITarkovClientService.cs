@@ -10,4 +10,6 @@ public interface ITarkovClientService : IManagedProcess
     /// </summary>
     void ClearLocalCache();
     Task ConnectToServer(AkiCharacter character);
+    Task<AkiCharacter?> CreateCharacter(AkiServer server, string username, string password, bool rememberLogin);
+    Task<AkiCharacter?> CreateCharacter(AkiServer server);
 }

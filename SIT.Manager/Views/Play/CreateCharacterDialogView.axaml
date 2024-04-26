@@ -1,0 +1,40 @@
+<ui:ContentDialog xmlns="https://github.com/avaloniaui"
+				  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+				  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+				  xmlns:ui="using:FluentAvalonia.UI.Controls"
+				  xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Play"
+				  mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+				  Title="{DynamicResource CreateCharacterDialogViewTitle}"
+				  CloseButtonText="{DynamicResource CreateServerDialogViewCloseButtonText}"
+				  PrimaryButtonText="{DynamicResource CreateServerDialogViewPrimaryButtonText}"
+				  IsPrimaryButtonEnabled="{Binding CanCreateCharacter}"
+				  x:Class="SIT.Manager.Views.Play.CreateCharacterDialogView"
+				  x:DataType="vm:CreateCharacterDialogViewModel">
+	<StackPanel>
+		<!--Username box-->
+		<Label Content="{DynamicResource DirectConnectViewUsernameBoxTitle}" Margin="8 8 8 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
+		<TextBox Name="UsernameBox" Text="{Binding Username, Mode=TwoWay}" MinWidth="150" Margin="8 4 8 8" HorizontalAlignment="Left" Watermark="{DynamicResource DirectConnectViewEnterUserNamePlaceholder}"/>
+		<!--Password box-->
+		<Label Content="{DynamicResource DirectConnectViewPasswordBoxTitle}" Margin="10 10 10 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
+		<TextBox Name="PasswordBox" Text="{Binding Password, Mode=TwoWay}" MinWidth="150" Margin="8 4 8 8" HorizontalAlignment="Left" Watermark="{DynamicResource DirectConnectViewEnterPasswordPlaceholder}"/>
+
+		<TextBlock Text="{DynamicResource SelectEditionDialogTextBlockTitle}" Margin="5"/>
+		<ComboBox Name="EditionsList"
+				  Width="200"
+				  ItemsSource="{Binding Editions}"
+				  SelectedItem="{Binding SelectedEdition, Mode=TwoWay}">
+			<ComboBox.ItemTemplate>
+				<DataTemplate>
+					<StackPanel>
+						<TextBlock Text="{Binding Edition}" ToolTip.Tip="{Binding Description}"/>
+					</StackPanel>
+				</DataTemplate>
+			</ComboBox.ItemTemplate>
+		</ComboBox>
+
+		<CheckBox Content="{DynamicResource DirectConnectViewRememberMeCheckBoxTitle}" 
+				  Margin="8" 
+				  IsChecked="{Binding SaveLoginDetails}"/>
+	</StackPanel>
+</ui:ContentDialog>
