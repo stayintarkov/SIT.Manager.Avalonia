@@ -9,10 +9,11 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Services;
-public class DiagnosticService : IDiagnosticService
+public partial class DiagnosticService : IDiagnosticService
 {
     private readonly IManagerConfigService _configService;
     private readonly HttpClient _httpClient;
@@ -30,12 +31,39 @@ public class DiagnosticService : IDiagnosticService
         });
     }
 
-    public async Task<string> CleanseLogFile(string fileData)
+    [GeneratedRegex(@"(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})([^.0-9])")]
+    private static partial Regex ipv4Regex();
+
+    public async Task<string> CleanseLogFile(string fileData, bool bleachIt)
     {
-        return fileData.Replace(await _externalIP.Value, "[REDACTED]");
+        var data = fileData.Replace(await _externalIP.Value, "xx.xx.xx.xx");
+
+        if (bleachIt)
+        {
+            // cf. RFC1918 Address Allocation for Private Internets
+            data = ipv4Regex().Replace(data, (match) =>
+            {
+                var g1 = int.Parse(match.Groups[1].Value);
+                var g2 = int.Parse(match.Groups[2].Value);
+                var g3 = int.Parse(match.Groups[3].Value);
+                var g4 = int.Parse(match.Groups[4].Value);
+                var is172Private = g1 == 172 && g2 >= 16 && g2 <= 31;
+                var isInvalidIP = g1 == 0 || g4 == 0;
+                var isLocalhost = g1 == 127 && g2 == 0 && g3 == 0 && g4 == 1;
+                if (g1 == 192 && g2 == 168 || g1 == 10 || is172Private || isLocalhost || isInvalidIP)
+                {
+                    return match.Value;
+                }
+
+                var g5 = match.Groups[5];
+                return "xx.xx.xx.xx" + g5.Value;
+            });
+        }
+
+        return data;
     }
 
-    public async Task<string> GetLogFile(string logFilePath)
+    public async Task<string> GetLogFile(string logFilePath, bool bleachIt = false)
     {
         string logFileName = Path.GetFileName(logFilePath);
         if (File.Exists(logFilePath))
@@ -47,7 +75,7 @@ public class DiagnosticService : IDiagnosticService
                 {
                     using (StreamReader sr = new(fs))
                     {
-                        fileData = await CleanseLogFile(await sr.ReadToEndAsync());
+                        fileData = await CleanseLogFile(await sr.ReadToEndAsync(), bleachIt);
                     }
                 }
                 return fileData;
@@ -74,7 +102,7 @@ public class DiagnosticService : IDiagnosticService
         if (options.IncludeClientLog)
         {
             string eftLogPath = EFTLogPath;
-            string eftLogData = await GetLogFile(eftLogPath);
+            string eftLogData = await GetLogFile(eftLogPath, bleachIt: true);
             diagnosticLogs.Add(new(Path.GetFileName(eftLogPath), eftLogData));
         }
 
@@ -90,7 +118,7 @@ public class DiagnosticService : IDiagnosticService
                     if (files.Any())
                     {
                         string serverLogFile = files.First().FullName;
-                        string serverLogData = await GetLogFile(serverLogFile);
+                        string serverLogData = await GetLogFile(serverLogFile, bleachIt: true);
                         diagnosticLogs.Add(new(Path.GetFileName(serverLogFile), serverLogData));
                     }
                 }
