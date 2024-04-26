@@ -160,8 +160,8 @@
 	<system:String x:Key="LinuxSettingsEnableFsrToolTip">使用 FSR 提升游戏性能</system:String>
 	<system:String x:Key="LinuxSettingsEnableMangoHudTitle">啟用 MangoHud</system:String>
 	<system:String x:Key="LinuxSettingsEnableMangoHudToolTip">MangoHud 是 Mesa Vulkan 覆盖的修改版本，它包含 GUI 改进、温度监控等功能</system:String>
-	<system:String x:XKey="LinuxSettingsEnableGameModeTitle">啟用 Feral GameMode</system:String>
-	<system:String x:XKey="LinuxSettingsEnableGameModeToolTip">GameMode 是 Linux 的守护进程/库组合，允许游戏请求临时将一系列优化应用于主机操作系统</system:String>
+	<system:String x:Key="LinuxSettingsEnableGameModeTitle">啟用 Feral GameMode</system:String>
+	<system:String x:Key="LinuxSettingsEnableGameModeToolTip">GameMode 是 Linux 的守护进程/库组合，允许游戏请求临时将一系列优化应用于主机操作系统</system:String>
 	
 	<!-- Linux Settings View Model -->
 	<system:String x:Key="LinuxSettingsPageViewModelConfigErrorRunner">所選的資料夾无效。請確保它是一個正確的 Wine Runner 資料夾，其中包含一個 bin 資料夾</system:String>
