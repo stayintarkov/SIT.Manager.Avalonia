@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace SIT.Manager.Models.Github;
 
-public class Asset
+public class GithubAsset
 {
     [JsonPropertyName("url")]
     public string? Url { get; set; }
@@ -30,5 +30,5 @@ public class Asset
     [JsonPropertyName("updated_at")]
     public DateTime UpdatedAt { get; set; }
     [JsonPropertyName("uploader")]
-    public Uploader? Uploader { get; set; }
+    public GithubUploader? Uploader { get; set; }
 }

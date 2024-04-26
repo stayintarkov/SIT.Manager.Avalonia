@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Models;
 using SIT.Manager.Models.Config;
+using SIT.Manager.Models.Gitea;
 using SIT.Manager.Models.Github;
 using SIT.Manager.Models.Installation;
 using System;
@@ -168,7 +169,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             GiteaRelease? compatibleDowngradePatcher = null;
             foreach (GiteaRelease? release in giteaReleases)
             {
-                string[] splitRelease = release.name.Split("to");
+                string[] splitRelease = release.Name.Split("to");
                 if (splitRelease.Length != 2)
                 {
                     continue;
@@ -186,7 +187,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
 
             if (compatibleDowngradePatcher != null)
             {
-                string mirrorsUrl = compatibleDowngradePatcher.assets.Find(q => q.name == "mirrors.json")?.browser_download_url ?? string.Empty;
+                string mirrorsUrl = compatibleDowngradePatcher.Assets.Find(q => q.Name == "mirrors.json")?.BrowserDownloadUrl ?? string.Empty;
                 string mirrorsJsonString = await GetHttpStringWithRetryAsync(() => _httpClient.GetStringAsync(mirrorsUrl), TimeSpan.FromSeconds(3), 3);
                 List<Mirrors> mirrors = JsonSerializer.Deserialize<List<Mirrors>>(mirrorsJsonString) ?? [];
                 if (mirrors.Count == 0)
@@ -419,7 +420,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                     fileExtention = ".tar.gz";
                 }
 
-                Asset? releaseAsset = release.Assets.Find(asset => asset.Name.EndsWith(fileExtention));
+                GithubAsset? releaseAsset = release.Assets.Find(asset => asset.Name.EndsWith(fileExtention));
                 if (releaseAsset != null)
                 {
                     Match match = ServerReleaseVersionRegex().Match(release.Body);
@@ -572,7 +573,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             fileExtention = ".tar.gz";
         }
 
-        Asset? releaseAsset = selectedVersion.Assets.FirstOrDefault(a => a.Name.StartsWith("SITCoop") && a.Name.EndsWith(fileExtention));
+        GithubAsset? releaseAsset = selectedVersion.Assets.FirstOrDefault(a => a.Name.StartsWith("SITCoop") && a.Name.EndsWith(fileExtention));
         if (releaseAsset == null)
         {
             _barNotificationService.ShowError("Error", "No server release found to download");
