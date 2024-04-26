@@ -46,16 +46,6 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
     [GeneratedRegex("This version works with version [0]{1,}\\.[0-9]{1,2}\\.[0-9]{1,2}\\.[0-9]{1,2}\\.[0-9]{1,5}")]
     private static partial Regex SITReleaseVersionRegex();
 
-    private static readonly Dictionary<int, string> _patcherResultMessages = new() {
-        { 0, "Patcher was closed." },
-        { 10, "Patcher was successful." },
-        { 11, "Could not find 'EscapeFromTarkov.exe'." },
-        { 12, "'Aki_Patches' is missing." },
-        { 13, "Install folder is missing a file." },
-        { 14, "Install folder is missing a folder." },
-        { 15, "Patcher failed." }
-    };
-
     private List<SitInstallVersion>? _availableSitUpdateVersions;
 
     /// <summary>
@@ -211,7 +201,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             }
             else
             {
-                _logger.LogWarning($"No applicable patcher found for the specified SIT version ({sitVersions[i].SitVersion} and Tarkov version {tarkovVersion}.");
+                _logger.LogWarning("No applicable patcher found for the specified SIT version ({sitVersion} and Tarkov version {tarkovVersion}.", sitVersions[i].SitVersion, tarkovVersion);
             }
         }
 
@@ -285,7 +275,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                 }
                 else
                 {
-                    _logger.LogWarning($"FetchReleases: There was a SIT release without a version defined: {release.HtmlUrl}");
+                    _logger.LogWarning("FetchReleases: There was a SIT release without a version defined: {url}", release.HtmlUrl);
                 }
             }
         }
@@ -433,7 +423,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                     }
                     else
                     {
-                        _logger.LogWarning($"FetchReleases: There was a server release without a version defined: {release.HtmlUrl}");
+                        _logger.LogWarning("FetchReleases: There was a server release without a version defined: {url}", release.HtmlUrl);
                     }
                 }
             }
@@ -552,7 +542,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             _configService.UpdateConfig(_configService.Config);
         }
 
-        return _availableSitUpdateVersions != null && _availableSitUpdateVersions.Any();
+        return _availableSitUpdateVersions != null && _availableSitUpdateVersions.Count != 0;
     }
 
 
