@@ -128,9 +128,11 @@ public partial class ServerSummaryViewModel : ObservableRecipient
 
                 AkiServer updatedServer = new(serverUri)
                 {
-                    Characters = server.Characters
+                    Characters = server.Characters,
+                    Name = server.Name,
+                    Ping = server.Ping
                 };
-                _configService.Config.BookmarkedServers.Add(server);
+                _configService.Config.BookmarkedServers.Add(updatedServer);
 
                 _server = updatedServer;
                 _configService.UpdateConfig(_configService.Config);
