@@ -77,6 +77,17 @@ public partial class DirectConnectViewModel : ObservableRecipient
 
     private async Task ConnectToServer(bool launchServer = false)
     {
+        if (string.IsNullOrEmpty(_configService.Config.SitVersion) && string.IsNullOrEmpty(_configService.Config.SitTarkovVersion))
+        {
+            await new ContentDialog()
+            {
+                Title = _localizationService.TranslateSource("DirectConnectViewModelInstallNotFoundTitle"),
+                Content = _localizationService.TranslateSource("DirectConnectViewModelInstallNotFoundMessage"),
+                PrimaryButtonText = _localizationService.TranslateSource("DirectConnectViewModelButtonOk"),
+            }.ShowAsync();
+            return;
+        }
+
         ManagerConfig config = _configService.Config;
         config.Username = Username;
         config.Password = Password;

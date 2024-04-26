@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SIT.Manager.Interfaces;
@@ -17,8 +18,9 @@ namespace SIT.Manager.ViewModels.Play;
 
 public partial class CharacterSelectionViewModel : ObservableRecipient
 {
-    private readonly ILogger _logger;
+    private readonly ILogger<CharacterSelectionViewModel> _logger;
     private readonly IAkiServerRequestingService _serverService;
+    private readonly ILocalizationService _localizationService;
     private readonly IManagerConfigService _configService;
     private readonly IServiceProvider _serviceProvider;
     private readonly ITarkovClientService _tarkovClientService;
@@ -33,11 +35,13 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
     public CharacterSelectionViewModel(IServiceProvider serviceProvider,
         ILogger<CharacterSelectionViewModel> logger,
         IAkiServerRequestingService serverService,
+        ILocalizationService localizationService,
         IManagerConfigService configService,
         ITarkovClientService tarkovClientService)
     {
         _serviceProvider = serviceProvider;
         _logger = logger;
+        _localizationService = localizationService;
         _serverService = serverService;
         _configService = configService;
         _tarkovClientService = tarkovClientService;
@@ -67,6 +71,17 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
 
     private async Task CreateCharacter()
     {
+        if (string.IsNullOrEmpty(_configService.Config.SitVersion) && string.IsNullOrEmpty(_configService.Config.SitTarkovVersion))
+        {
+            await new ContentDialog()
+            {
+                Title = _localizationService.TranslateSource("DirectConnectViewModelInstallNotFoundTitle"),
+                Content = _localizationService.TranslateSource("DirectConnectViewModelInstallNotFoundMessage"),
+                PrimaryButtonText = _localizationService.TranslateSource("DirectConnectViewModelButtonOk"),
+            }.ShowAsync();
+            return;
+        }
+
         await _tarkovClientService.CreateCharacter(_connectedServer);
         await ReloadCharacterList();
     }
