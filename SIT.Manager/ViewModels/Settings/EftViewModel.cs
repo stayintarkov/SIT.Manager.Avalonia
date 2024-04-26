@@ -63,7 +63,7 @@ public partial class EftViewModel : SettingsViewModelBase
 
             SitEftInstallPath = targetPath;
 
-            Config.SitTarkovVersion = targetPath;
+            Config.SitEftInstallPath = targetPath;
             Config.SitTarkovVersion = _versionService.GetEFTVersion(targetPath);
             Config.SitVersion = _versionService.GetSITVersion(targetPath);
 
