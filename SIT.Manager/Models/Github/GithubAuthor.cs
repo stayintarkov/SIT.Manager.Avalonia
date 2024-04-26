@@ -2,7 +2,7 @@
 
 namespace SIT.Manager.Models.Github;
 
-public class Uploader
+public class GithubAuthor
 {
     [JsonPropertyName("login")]
     public string? Login { get; set; }

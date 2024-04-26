@@ -39,7 +39,7 @@ public class GithubRelease
     [JsonPropertyName("published_at")]
     public DateTime PublishedAt { get; set; }
     [JsonPropertyName("author")]
-    public Author? Author { get; set; }
+    public GithubAuthor? Author { get; set; }
     [JsonPropertyName("assets")]
-    public List<Asset> Assets { get; set; } = [];
+    public List<GithubAsset> Assets { get; set; } = [];
 }
