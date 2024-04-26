@@ -66,32 +66,32 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         _logger.LogInformation("Cleaning up EFT directory...");
         try
         {
-            string battlEyeDir = Path.Combine(_configService.Config.InstallPath, "BattlEye");
+            string battlEyeDir = Path.Combine(_configService.Config.SitEftInstallPath, "BattlEye");
             if (Directory.Exists(battlEyeDir))
             {
                 Directory.Delete(battlEyeDir, true);
             }
-            string battlEyeExe = Path.Combine(_configService.Config.InstallPath, "EscapeFromTarkov_BE.exe");
+            string battlEyeExe = Path.Combine(_configService.Config.SitEftInstallPath, "EscapeFromTarkov_BE.exe");
             if (File.Exists(battlEyeExe))
             {
                 File.Delete(battlEyeExe);
             }
-            string cacheDir = Path.Combine(_configService.Config.InstallPath, "cache");
+            string cacheDir = Path.Combine(_configService.Config.SitEftInstallPath, "cache");
             if (Directory.Exists(cacheDir))
             {
                 Directory.Delete(cacheDir, true);
             }
-            string consistencyPath = Path.Combine(_configService.Config.InstallPath, "ConsistencyInfo");
+            string consistencyPath = Path.Combine(_configService.Config.SitEftInstallPath, "ConsistencyInfo");
             if (File.Exists(consistencyPath))
             {
                 File.Delete(consistencyPath);
             }
-            string uninstallPath = Path.Combine(_configService.Config.InstallPath, "Uninstall.exe");
+            string uninstallPath = Path.Combine(_configService.Config.SitEftInstallPath, "Uninstall.exe");
             if (File.Exists(uninstallPath))
             {
                 File.Delete(uninstallPath);
             }
-            string logsDirPath = Path.Combine(_configService.Config.InstallPath, "Logs");
+            string logsDirPath = Path.Combine(_configService.Config.SitEftInstallPath, "Logs");
             if (Directory.Exists(logsDirPath))
             {
                 Directory.Delete(logsDirPath);
@@ -153,7 +153,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             return sitVersions;
         }
 
-        string tarkovBuild = tarkovVersion ?? _configService.Config.TarkovVersion;
+        string tarkovBuild = tarkovVersion ?? _configService.Config.SitTarkovVersion;
         tarkovBuild = tarkovBuild.Split(".").Last();
 
         for (int i = 0; i < sitVersions.Count; i++)
@@ -530,20 +530,20 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
 
     public async Task<bool> IsSitUpdateAvailable()
     {
-        if (string.IsNullOrEmpty(_configService.Config.TarkovVersion) || string.IsNullOrEmpty(_configService.Config.SitVersion)) return false;
+        if (string.IsNullOrEmpty(_configService.Config.SitTarkovVersion) || string.IsNullOrEmpty(_configService.Config.SitVersion)) return false;
 
         TimeSpan timeSinceLastCheck = DateTime.Now - _configService.Config.LastSitUpdateCheckTime;
 
         if (timeSinceLastCheck.TotalHours >= 1)
         {
-            _availableSitUpdateVersions = await GetAvailableSitReleases(_configService.Config.TarkovVersion);
+            _availableSitUpdateVersions = await GetAvailableSitReleases(_configService.Config.SitTarkovVersion);
 
             if (_availableSitUpdateVersions != null)
             {
                 _availableSitUpdateVersions = _availableSitUpdateVersions
                     .Where(x => Version.TryParse(x.SitVersion.Replace("StayInTarkov.Client-", ""), out Version? sitVersion) &&
                                 sitVersion > Version.Parse(_configService.Config.SitVersion) &&
-                                _configService.Config.TarkovVersion == x.EftVersion)
+                                _configService.Config.SitTarkovVersion == x.EftVersion)
                     .ToList();
             }
 
@@ -745,8 +745,8 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             extractionProgress.Report(100);
 
             ManagerConfig config = _configService.Config;
-            config.InstallPath = targetInstallDir;
-            config.TarkovVersion = _versionService.GetEFTVersion(targetInstallDir);
+            config.SitEftInstallPath = targetInstallDir;
+            config.SitTarkovVersion = _versionService.GetEFTVersion(targetInstallDir);
             config.SitVersion = _versionService.GetSITVersion(targetInstallDir);
             _configService.UpdateConfig(config);
         }

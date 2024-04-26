@@ -1,0 +1,50 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Settings"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SIT.Manager.Views.Settings.LauncherView"
+			 x:DataType="vm:LauncherViewModel">
+	<Border Classes="StandardFrame">
+		<StackPanel>
+			<CheckBox Content="{DynamicResource SettingsCloseLauncherAfterGameLaunchTitle}"
+					  ToolTip.Tip="{DynamicResource SettingsCloseLauncherAfterGameLaunchToolTip}"
+					  IsChecked="{Binding Config.CloseAfterLaunch, Mode=TwoWay}"/>
+			<CheckBox Content="{DynamicResource SettingsLookForUpdatesTitle}"
+					  ToolTip.Tip="{DynamicResource SettingsLookForUpdatesTitleToolTip}"
+					  IsChecked="{Binding Config.LookForUpdates, Mode=TwoWay}"/>
+			<CheckBox Content="{DynamicResource SettingsHideIpAddressTitle}"
+					  ToolTip.Tip="{DynamicResource SettingsHideIpAddressToolTip}"
+					  IsChecked="{Binding Config.HideIpAddress, Mode=TwoWay}"/>
+			<CheckBox Content="{DynamicResource SettingsEnableDeveloperMode}"
+					  ToolTip.Tip="{DynamicResource SettingsEnableDeveloperModeToolTip}"
+					  IsChecked="{Binding IsDeveloperModeEnabled, Mode=TwoWay}"/>
+			<Grid ColumnDefinitions="auto, *">
+				<TextBlock Text="{DynamicResource SettingsLanguageTitle}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+				<ComboBox Margin="5,0,0,0" 
+						  Grid.Column="1" 
+						  ToolTip.Tip="{DynamicResource SettingsLanguageTitleToolTip}" 
+						  ItemsSource="{Binding AvailableLocalizations}" 
+						  SelectedItem="{Binding CurrentLocalization}">
+					<ComboBox.ItemTemplate>
+						<DataTemplate>
+							<TextBlock Text="{Binding NativeName}" Tag="{Binding Name}"/>
+						</DataTemplate>
+					</ComboBox.ItemTemplate>
+				</ComboBox>
+			</Grid>
+			<Grid Margin="0,5,0,0" ColumnDefinitions="auto, *">
+				<TextBlock Text="{DynamicResource SettingsAccentColorTitle}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+				<ui:ColorPickerButton Margin="5,0,0,0" Grid.Column="1" ToolTip.Tip="{DynamicResource SettingsAccentColorToolTip}"
+									  IsCompact="True"
+									  IsMoreButtonVisible="False"
+									  UseColorPalette="False"
+									  UseColorWheel="False"
+									  UseSpectrum="True"
+									  Color="{Binding Config.AccentColor, Mode=TwoWay}"/>
+			</Grid>
+		</StackPanel>
+	</Border>
+</UserControl>

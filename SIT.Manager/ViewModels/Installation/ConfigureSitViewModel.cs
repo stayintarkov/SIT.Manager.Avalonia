@@ -48,6 +48,9 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
     [ObservableProperty]
     private bool _hasMirrorsAvailable = false;
 
+    [ObservableProperty]
+    private bool _hasRecommendedModsAvailable = false;
+
     public ObservableCollection<SitInstallVersion> AvailableVersions { get; } = [];
     public ObservableCollection<KeyValuePair<string, string>> AvailableMirrors { get; } = [];
     public ObservableCollection<ModInfo> Mods { get; } = [];
@@ -214,19 +217,30 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
     {
         IsModsSelectionLoading = true;
 
-        await _modService.LoadMasterModList();
-        if (_modService.ModList.Count <= 1)
+        try
         {
-            await _modService.DownloadModsCollection();
             await _modService.LoadMasterModList();
+            if (_modService.ModList.Count <= 1)
+            {
+                await _modService.DownloadModsCollection();
+                await _modService.LoadMasterModList();
+            }
+
+            Mods.Clear();
+            Mods.AddRange(_modService.ModList.Where(x => _modService.RecommendedModInstalls.Contains(x.Name)));
+
+            // Make sure that all the recommended mods are selected to start with
+            CurrentInstallProcessState.RequestedMods = [.. Mods];
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error when trying to evaluate available mod list");
+
+            Mods.Clear();
+            CurrentInstallProcessState.RequestedMods = [];
         }
 
-        Mods.Clear();
-        Mods.AddRange(_modService.ModList.Where(x => _modService.RecommendedModInstalls.Contains(x.Name)));
-
-        // Make sure that all the recommended mods are selected to start with
-        CurrentInstallProcessState.RequestedMods = [.. Mods];
-
+        HasRecommendedModsAvailable = Mods.Count > 0;
         IsModsSelectionLoading = false;
     }
 

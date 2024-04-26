@@ -98,9 +98,8 @@
 	<system:String x:Key="SettingsLinuxWineRunnerToolTip">設置用於啟動 EFT 的 wine runner</system:String>
 	<system:String x:Key="SettingsEFTSettingsTitle">EFT 設定</system:String>
 	<system:String x:Key="SettingsEFTSettingsButtonChangeTitle">更改</system:String>
-	<system:String x:Key="SettingsEFTInstallPathTitle">EFT 路徑:</system:String>
-	<system:String x:Key="SettingsEFTInstallPathPlaceholder">EFT 安裝路徑...</system:String>
-	<system:String x:Key="SettingsEFTChangeInstallPathToolTip">更改 EFT 安裝路徑</system:String>
+	<system:String x:Key="SettingsEFTInstallPathTitle">SIT EFT Path:</system:String>
+	<system:String x:Key="SettingsEFTChangeInstallPathToolTip">Change the SIT EFT Install Path.</system:String>
 	<system:String x:Key="SettingsEFTVersionTitle">EFT 版本:</system:String>
 	<system:String x:Key="SettingsSITVersionTitle">SIT 版本:</system:String>
 	<system:String x:Key="SettingsSPTAKITitle">SPT-AKI 設定</system:String>
@@ -111,6 +110,13 @@
 	<system:String x:Key="SettingsServerConsoleFontFamilyTitle">字型:</system:String>
 	<system:String x:Key="SettingsServerConsoleFontColorTitle">字型顏色:</system:String>
 	<system:String x:Key="SettingsManagerVersionTitle">當前 SIT Manager 版本:</system:String>
+
+	<!-- EftView -->
+	<system:String x:Key="EftViewBsgEftInstallPath">BSG EFT Install Path:</system:String>
+
+	<!-- EftViewModel -->
+	<system:String x:Key="EftViewModelBsgEftInstallPathMissing">Unable to detect BSG EFT install...</system:String>
+	<system:String x:Key="EftViewModelSitEftInstallPathMissing">SIT install not found. Please point to existing install here, or install by clicking the install button on the left</system:String>
 
 	<!-- Linux Settings Page -->
 	<system:String x:Key="Key">Key</system:String>
@@ -343,6 +349,7 @@
 	<system:String x:Key="ConfigureViewVersionSelectionGroupTitle">版本選擇</system:String>
 
 	<!-- Install - Configure Server View -->
+	<system:String x:Key="ConfigureServerViewVersionSelectionErrorMessage">Unable to determine available SIT Server versions...</system:String>
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathToolTip">更改 SPT-AKI 的安裝路徑。</system:String>
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathTitle">更改</system:String>
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathPlaceholder">SPT-AKI 安裝路徑...</system:String>
@@ -512,4 +519,8 @@
 	<system:String x:Key="CreateCharacterDialogViewCloseButtonText">Cancel</system:String>
 	<system:String x:Key="CreateCharacterDialogViewPrimaryButtonText">Create</system:String>
 	<system:String x:Key="CreateCharacterDialogViewSaveLoginDetailsCheckBoxTitle">Save Login Details</system:String>
+
+	<!-- MainViewModel -->
+	<system:String x:Key="MainViewModelUpdateErrorTitle">Error</system:String>
+	<system:String x:Key="MainViewModelUpdateErrorMessage">Failed when checking for updates</system:String>
 </ResourceDictionary>

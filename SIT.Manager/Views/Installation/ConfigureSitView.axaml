@@ -136,7 +136,7 @@
 				</Border>
 			</StackPanel>
 
-			<StackPanel>
+			<StackPanel IsVisible="{Binding HasRecommendedModsAvailable}">
 				<TextBlock Text="{DynamicResource ConfigureSitViewRecommendedModsTitle}" Classes="FrameHeading"/>
 				<Border Classes="StandardFrame">
 					<StackPanel>

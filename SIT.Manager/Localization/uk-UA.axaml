@@ -102,9 +102,8 @@
 	<system:String x:Key="SettingsLinuxWineRunnerToolTip">Встановіть використовуваний запускач Wine для EFT</system:String>
 	<system:String x:Key="SettingsEFTSettingsTitle">Налаштування EFT</system:String>
 	<system:String x:Key="SettingsEFTSettingsButtonChangeTitle">Змінити</system:String>
-	<system:String x:Key="SettingsEFTInstallPathTitle">Шлях EFT:</system:String>
-	<system:String x:Key="SettingsEFTInstallPathPlaceholder">Шлях Встановлення EFT...</system:String>
-	<system:String x:Key="SettingsEFTChangeInstallPathToolTip">Змінити Шлях Встановлення EFT.</system:String>
+	<system:String x:Key="SettingsEFTInstallPathTitle">SIT EFT Path:</system:String>
+	<system:String x:Key="SettingsEFTChangeInstallPathToolTip">Change the SIT EFT Install Path.</system:String>
 	<system:String x:Key="SettingsEFTVersionTitle">Версія EFT:</system:String>
 	<system:String x:Key="SettingsSITVersionTitle">Версія SIT:</system:String>
 	<system:String x:Key="SettingsSPTAKITitle">Налаштування SPT-AKI</system:String>
@@ -115,6 +114,13 @@
 	<system:String x:Key="SettingsServerConsoleFontFamilyTitle">Шрифт:</system:String>
 	<system:String x:Key="SettingsServerConsoleFontColorTitle">Колір Шрифту:</system:String>
 	<system:String x:Key="SettingsManagerVersionTitle">Версія Менеджера (Лаунчера):</system:String>
+
+	<!-- EftView -->
+	<system:String x:Key="EftViewBsgEftInstallPath">BSG EFT Install Path:</system:String>
+
+	<!-- EftViewModel -->
+	<system:String x:Key="EftViewModelBsgEftInstallPathMissing">Unable to detect BSG EFT install...</system:String>
+	<system:String x:Key="EftViewModelSitEftInstallPathMissing">SIT install not found. Please point to existing install here, or install by clicking the install button on the left</system:String>
 
 	<!-- Linux Settings Page -->
 	<system:String x:Key="Key">Key</system:String>
@@ -344,6 +350,7 @@
 	<system:String x:Key="ConfigureViewPersonalizationOptions">Персоналізація та Імпорт Налаштувань</system:String>
 
 	<!-- Install - Configure Server View -->
+	<system:String x:Key="ConfigureServerViewVersionSelectionErrorMessage">Unable to determine available SIT Server versions...</system:String>
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathToolTip">Змінити шлях установки SPT-AKI.</system:String>
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathTitle">Змінити</system:String>
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathPlaceholder">Шлях установки SPT-AKI...</system:String>
@@ -513,4 +520,8 @@
 	<system:String x:Key="CreateCharacterDialogViewCloseButtonText">Cancel</system:String>
 	<system:String x:Key="CreateCharacterDialogViewPrimaryButtonText">Create</system:String>
 	<system:String x:Key="CreateCharacterDialogViewSaveLoginDetailsCheckBoxTitle">Save Login Details</system:String>
+
+	<!-- MainViewModel -->
+	<system:String x:Key="MainViewModelUpdateErrorTitle">Error</system:String>
+	<system:String x:Key="MainViewModelUpdateErrorMessage">Failed when checking for updates</system:String>
 </ResourceDictionary>

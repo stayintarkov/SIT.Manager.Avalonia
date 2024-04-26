@@ -177,21 +177,21 @@ public partial class DirectConnectViewModel : ObservableRecipient
             {
                 Name = _localizationService.TranslateSource("DirectConnectViewModelInstallPathTitle"),
                 ErrorMessage = _localizationService.TranslateSource("DirectConnectViewModelInstallPathDescription"),
-                Check = () => { return !string.IsNullOrEmpty(_configService.Config.InstallPath); }
+                Check = () => { return !string.IsNullOrEmpty(_configService.Config.SitEftInstallPath); }
             },
             //SIT check
             new()
             {
                 Name = _localizationService.TranslateSource("DirectConnectViewModelSITInstallationTitle"),
                 ErrorMessage = _localizationService.TranslateSource("DirectConnectViewModelSITInstallationDescription", SIT_DLL_FILENAME),
-                Check = () => { return File.Exists(Path.Combine(_configService.Config.InstallPath, "BepInEx", "plugins", SIT_DLL_FILENAME)); }
+                Check = () => { return File.Exists(Path.Combine(_configService.Config.SitEftInstallPath, "BepInEx", "plugins", SIT_DLL_FILENAME)); }
             },
             //EFT Check
             new()
             {
                 Name = _localizationService.TranslateSource("DirectConnectViewModelEFTInstallationTitle"),
                 ErrorMessage = _localizationService.TranslateSource("DirectConnectViewModelEFTInstallationDescription", EFT_EXE_FILENAME),
-                Check = () => { return File.Exists(Path.Combine(_configService.Config.InstallPath, EFT_EXE_FILENAME)); }
+                Check = () => { return File.Exists(Path.Combine(_configService.Config.SitEftInstallPath, EFT_EXE_FILENAME)); }
             },
             //Field Check
             new()
