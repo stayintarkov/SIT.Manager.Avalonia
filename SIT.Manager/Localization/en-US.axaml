@@ -12,6 +12,7 @@
 	<system:String x:Key="ServerTitle">Server</system:String>
 	<system:String x:Key="ModsTitle">Mods</system:String>
 	<system:String x:Key="SettingsTitle">Settings</system:String>
+	<system:String x:Key="HelpTitle">Help</system:String>
 	<system:String x:Key="PlayTitleToolTip">Connect and play.</system:String>
 	<system:String x:Key="InstallTitleToolTip">Install/Update SIT and SIT Server</system:String>
 	<system:String x:Key="ToolsTitleToolTip">Tools to manage SIT and Tarkov.</system:String>
