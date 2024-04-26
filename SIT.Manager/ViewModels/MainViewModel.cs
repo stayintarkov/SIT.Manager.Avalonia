@@ -29,6 +29,7 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
     private readonly IManagerConfigService _managerConfigService;
     private readonly ILocalizationService _localizationService;
     private readonly ILogger<MainViewModel> _logger;
+    private readonly IVersionService _versionService;
 
     private Frame? contentFrame;
 
@@ -57,7 +58,8 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
         IInstallerService installerService,
         IManagerConfigService managerConfigService,
         ILocalizationService localizationService,
-        ILogger<MainViewModel> logger)
+        ILogger<MainViewModel> logger,
+        IVersionService versionService)
     {
         _actionNotificationService = actionNotificationService;
         _appUpdaterService = appUpdaterService;
@@ -66,6 +68,7 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
         _managerConfigService = managerConfigService;
         _localizationService = localizationService;
         _logger = logger;
+        _versionService = versionService;
 
         _localizationService.Translate(new CultureInfo(_managerConfigService.Config.CurrentLanguageSelected));
 
@@ -78,6 +81,31 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
         CloseButtonCommand = new RelayCommand(() => { UpdateAvailable = false; });
 
         _managerConfigService.ConfigChanged += ManagerConfigService_ConfigChanged;
+    }
+
+    private void CheckInstallVersion()
+    {
+        ManagerConfig config = _managerConfigService.Config;
+        if (!string.IsNullOrEmpty(_managerConfigService.Config.SitTarkovVersion))
+        {
+            config.SitTarkovVersion = _versionService.GetEFTVersion(config.SitEftInstallPath);
+            config.SitVersion = _versionService.GetSITVersion(config.SitEftInstallPath);
+            if (string.IsNullOrEmpty(config.SitTarkovVersion) || string.IsNullOrEmpty(config.SitVersion))
+            {
+                config.SitEftInstallPath = string.Empty;
+                _managerConfigService.UpdateConfig(config);
+            }
+        }
+        if (!string.IsNullOrEmpty(_managerConfigService.Config.SptAkiVersion))
+        {
+            config.SptAkiVersion = _versionService.GetSptAkiVersion(config.AkiServerPath);
+            config.SitModVersion = _versionService.GetSitModVersion(config.AkiServerPath);
+            if (string.IsNullOrEmpty(config.SptAkiVersion) || string.IsNullOrEmpty(config.SptAkiVersion))
+            {
+                config.AkiServerPath = string.Empty;
+                _managerConfigService.UpdateConfig(config);
+            }
+        }
     }
 
     private void ManagerConfigService_ConfigChanged(object? sender, ManagerConfig e)
@@ -134,6 +162,9 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
     protected override async void OnActivated()
     {
         base.OnActivated();
+
+        CheckInstallVersion();
+
         await CheckForUpdate();
     }
 
