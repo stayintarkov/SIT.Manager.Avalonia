@@ -98,9 +98,8 @@
 	<system:String x:Key="SettingsLinuxWineRunnerToolTip">设置用于启动 EFT 的 wine runner</system:String>
 	<system:String x:Key="SettingsEFTSettingsTitle">EFT 设置</system:String>
 	<system:String x:Key="SettingsEFTSettingsButtonChangeTitle">更改</system:String>
-	<system:String x:Key="SettingsEFTInstallPathTitle">EFT 路径:</system:String>
-	<system:String x:Key="SettingsEFTInstallPathPlaceholder">EFT 安装路径...</system:String>
-	<system:String x:Key="SettingsEFTChangeInstallPathToolTip">更改 EFT 安装路径</system:String>
+	<system:String x:Key="SettingsEFTInstallPathTitle">SIT EFT Path:</system:String>
+	<system:String x:Key="SettingsEFTChangeInstallPathToolTip">Change the SIT EFT Install Path.</system:String>
 	<system:String x:Key="SettingsEFTVersionTitle">EFT 版本:</system:String>
 	<system:String x:Key="SettingsSITVersionTitle">SIT 版本:</system:String>
 	<system:String x:Key="SettingsSPTAKITitle">SPT-AKI 设置</system:String>
@@ -111,6 +110,13 @@
 	<system:String x:Key="SettingsServerConsoleFontFamilyTitle">字体:</system:String>
 	<system:String x:Key="SettingsServerConsoleFontColorTitle">字体颜色:</system:String>
 	<system:String x:Key="SettingsManagerVersionTitle">当前 SIT Manager 版本:</system:String>
+
+	<!-- EftView -->
+	<system:String x:Key="EftViewBsgEftInstallPath">BSG EFT Install Path:</system:String>
+
+	<!-- EftViewModel -->
+	<system:String x:Key="EftViewModelBsgEftInstallPathMissing">Unable to detect BSG EFT install...</system:String>
+	<system:String x:Key="EftViewModelSitEftInstallPathMissing">SIT install not found. Please point to existing install here, or install by clicking the install button on the left</system:String>
 
 	<!-- Linux Settings Page -->
 	<system:String x:Key="Key">Key</system:String>

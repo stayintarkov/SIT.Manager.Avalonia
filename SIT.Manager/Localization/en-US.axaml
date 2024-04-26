@@ -91,9 +91,8 @@
 	<system:String x:Key="SettingsAccentColorToolTip">Changes color of selected visuals to your choice!</system:String>
 	<system:String x:Key="SettingsEFTSettingsTitle">EFT</system:String>
 	<system:String x:Key="SettingsEFTSettingsButtonChangeTitle">Change</system:String>
-	<system:String x:Key="SettingsEFTInstallPathTitle">EFT Path:</system:String>
-	<system:String x:Key="SettingsEFTInstallPathPlaceholder">EFT Install Path...</system:String>
-	<system:String x:Key="SettingsEFTChangeInstallPathToolTip">Change the EFT Install Path.</system:String>
+	<system:String x:Key="SettingsEFTInstallPathTitle">SIT EFT Path:</system:String>
+	<system:String x:Key="SettingsEFTChangeInstallPathToolTip">Change the SIT EFT Install Path.</system:String>
 	<system:String x:Key="SettingsEFTVersionTitle">EFT Version:</system:String>
 	<system:String x:Key="SettingsSITVersionTitle">SIT Version:</system:String>
 	<system:String x:Key="SettingsSPTAKITitle">SPT-AKI</system:String>
@@ -105,7 +104,14 @@
 	<system:String x:Key="SettingsServerConsoleTitle">Server Console</system:String>
 	<system:String x:Key="SettingsServerConsoleFontFamilyTitle">Font Family:</system:String>
 	<system:String x:Key="SettingsServerConsoleFontColorTitle">Font Color:</system:String>
-	<system:String x:Key="SettingsManagerVersionTitle">Manager Version:</system:String>	
+	<system:String x:Key="SettingsManagerVersionTitle">Manager Version:</system:String>
+
+	<!-- EftView -->
+	<system:String x:Key="EftViewBsgEftInstallPath">BSG EFT Install Path:</system:String>
+	
+	<!-- EftViewModel -->
+	<system:String x:Key="EftViewModelBsgEftInstallPathMissing">Unable to detect BSG EFT install...</system:String>
+	<system:String x:Key="EftViewModelSitEftInstallPathMissing">SIT install not found. Please point to existing install here, or install by clicking the install button on the left</system:String>
 	
 	<!-- Linux Settings Page -->
 	<system:String x:Key="Key">Key</system:String>

@@ -37,9 +37,9 @@ public partial class ManagerConfig : ObservableObject
 
     // SIT settings
     [ObservableProperty]
-    public string _installPath = string.Empty;
+    public string _sitEftInstallPath = string.Empty;
     [ObservableProperty]
-    public string _tarkovVersion = string.Empty;
+    public string _sitTarkovVersion = string.Empty;
     [ObservableProperty]
     public string _sitVersion = string.Empty;
     [ObservableProperty]

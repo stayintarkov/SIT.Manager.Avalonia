@@ -67,7 +67,7 @@ public partial class ModsPageViewModel : ObservableRecipient
 
     private async Task LoadMasterList()
     {
-        if (string.IsNullOrEmpty(_managerConfigService.Config.InstallPath))
+        if (string.IsNullOrEmpty(_managerConfigService.Config.SitEftInstallPath))
         {
             _barNotificationService.ShowError(_localizationService.TranslateSource("ModsPageViewModelErrorTitle"), _localizationService.TranslateSource("ModsPageViewModelErrorInstallPathDescription"));
             return;
@@ -119,7 +119,7 @@ public partial class ModsPageViewModel : ObservableRecipient
 
     private async Task DownloadModPackage()
     {
-        if (string.IsNullOrEmpty(_managerConfigService.Config.InstallPath))
+        if (string.IsNullOrEmpty(_managerConfigService.Config.SitEftInstallPath))
         {
             _barNotificationService.ShowError(_localizationService.TranslateSource("ModsPageViewModelErrorTitle"), _localizationService.TranslateSource("ModsPageViewModelErrorInstallPathDescription"));
             return;
@@ -156,7 +156,7 @@ public partial class ModsPageViewModel : ObservableRecipient
             return;
         }
 
-        bool installSuccessful = await _modService.InstallMod(_managerConfigService.Config.InstallPath, SelectedMod);
+        bool installSuccessful = await _modService.InstallMod(_managerConfigService.Config.SitEftInstallPath, SelectedMod);
         EnableInstall = !installSuccessful;
     }
 
@@ -167,7 +167,7 @@ public partial class ModsPageViewModel : ObservableRecipient
             return;
         }
 
-        bool uninstallSuccessful = await _modService.UninstallMod(_managerConfigService.Config.InstallPath, SelectedMod);
+        bool uninstallSuccessful = await _modService.UninstallMod(_managerConfigService.Config.SitEftInstallPath, SelectedMod);
         EnableInstall = uninstallSuccessful;
     }
 

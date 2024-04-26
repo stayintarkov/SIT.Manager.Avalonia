@@ -128,7 +128,7 @@ public class ModService(IBarNotificationService barNotificationService,
                 ManagerConfig config = _configService.Config;
                 config.InstalledMods.Remove(mod.Name);
                 _configService.UpdateConfig(config);
-                await InstallMod(_configService.Config.InstallPath, mod, true).ConfigureAwait(false);
+                await InstallMod(_configService.Config.SitEftInstallPath, mod, true).ConfigureAwait(false);
             }
         }
         else
