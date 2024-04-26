@@ -24,25 +24,16 @@
 				   Stretch="Uniform"
 				   StretchDirection="Both"
 				   VerticalAlignment="Center"
-				   IsVisible="{Binding !IsLoading}"
 				   Source="{Binding ServerImage}"/>
 
-			<controls:LoadingSpinner Grid.Column="1"
-									 Width="64"
-									 Height="{Binding $self.Width}"
-									 IsVisible="{Binding IsLoading}"
-									 Margin="0,8,0,0"
-									 HorizontalAlignment="Center"
-									 VerticalAlignment="Center"
-									 Foreground="{DynamicResource TextControlForeground}"
-									 StrokeWidth="8"/>
-
 			<StackPanel Grid.Column="1"
-						IsVisible="{Binding !IsLoading}"
 						Margin="8,0">
 				<TextBlock Text="{Binding Name}"
 						   FontSize="24"
-						   FontWeight="Bold"/>
+						   IsVisible="{Binding !IsLoading}"/>
+				<TextBlock Text="Connecting..."
+						   FontSize="24"
+						   IsVisible="{Binding IsLoading}"/>
 
 				<Grid ColumnDefinitions="*, Auto, Auto, Auto, Auto"
 					  Margin="0,4,0,0">
@@ -85,12 +76,23 @@
 						<ui:SymbolIcon Symbol="Edit"/>
 					</Button>
 					<Button Grid.Column="4"
+							IsVisible="{Binding !IsLoading}"
 							Margin="4,0"
 							Content="{DynamicResource ServerSummaryViewModelConnectButtonText}"
 							Command="{Binding ConnectCommand}"/>
 				</Grid>
 			</StackPanel>
 
+			<controls:LoadingSpinner Grid.Column="2"
+									 Width="32"
+									 Height="{Binding $self.Width}"
+									 IsVisible="{Binding IsLoading}"
+									 Margin="4,8"
+									 HorizontalAlignment="Center"
+									 VerticalAlignment="Center"
+									 Foreground="{DynamicResource TextControlForeground}"
+									 StrokeWidth="4"/>
+			
 			<StackPanel Grid.Column="2"
 						IsVisible="{Binding !IsLoading}"
 						VerticalAlignment="Center">

@@ -1,5 +1,4 @@
 ﻿using Avalonia.Media.Imaging;
-using Avalonia.Styling;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
@@ -110,6 +109,17 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
 
     private async Task Play()
     {
+        if (string.IsNullOrEmpty(_configService.Config.SitVersion) && string.IsNullOrEmpty(_configService.Config.SitTarkovVersion))
+        {
+            await new ContentDialog()
+            {
+                Title = _localizationService.TranslateSource("DirectConnectViewModelInstallNotFoundTitle"),
+                Content = _localizationService.TranslateSource("DirectConnectViewModelInstallNotFoundMessage"),
+                PrimaryButtonText = _localizationService.TranslateSource("DirectConnectViewModelButtonOk"),
+            }.ShowAsync();
+            return;
+        }
+
         AkiCharacter? character = _connectedServer.Characters.FirstOrDefault(x => x.Username == Profile.Username);
         bool rememberLogin = true;
 

@@ -471,7 +471,7 @@
 	<system:String x:Key="ServerSummaryViewModelEditDialogTitle">Edit Server Error</system:String>
 	<system:String x:Key="ServerSummaryViewModelEditDialogContent">Failed to edit server</system:String>
 	<system:String x:Key="ServerSummaryViewModelEditDialogPrimaryButtonText">Ok</system:String>
-	<system:String x:Key="ServerSummaryViewModelNoServerNameText">N/A</system:String>
+	<system:String x:Key="ServerSummaryViewModelNoServerNameText">Failed connecting to address...</system:String>
 
 	<!-- ServerSelectionViewModel -->
 	<system:String x:Key="ServerSelectionViewModelAddServerDialogTitle">Add Server Error</system:String>
@@ -514,7 +514,9 @@
 	<system:String x:Key="DirectConnectViewModelAccountNotFoundDescription">Your account has not been found, would you like to register a new account with these credentials?</system:String>
 	<system:String x:Key="DirectConnectViewModelButtonYes">Yes</system:String>
 	<system:String x:Key="DirectConnectViewModelButtonNo">No</system:String>
-	
+	<system:String x:Key="DirectConnectViewModelInstallNotFoundTitle">SIT Install Not Found</system:String>
+	<system:String x:Key="DirectConnectViewModelInstallNotFoundMessage">Unable to find your SIT install, please set this in settings or install SIT using the install button on the left</system:String>
+
 	<!-- CreateCharacterDialogView -->
 	<system:String x:Key="CreateCharacterDialogViewTitle">Create New Character</system:String>
 	<system:String x:Key="CreateCharacterDialogViewCloseButtonText">Cancel</system:String>
