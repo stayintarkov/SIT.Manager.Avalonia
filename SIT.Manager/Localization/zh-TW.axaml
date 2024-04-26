@@ -344,6 +344,7 @@
 	<system:String x:Key="ConfigureViewPersonalizationOptions">個人化和匯入選項</system:String>
 
 	<!-- Install - Configure Server View -->
+	<system:String x:Key="ConfigureServerViewVersionSelectionErrorMessage">Unable to determine available SIT Server versions...</system:String>
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathToolTip">更改 SPT-AKI 的安裝路徑。</system:String>
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathTitle">更改</system:String>
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathPlaceholder">SPT-AKI 安裝路徑...</system:String>
@@ -506,4 +507,8 @@
 	<system:String x:Key="DirectConnectViewModelAccountNotFoundDescription">Your account has not been found, would you like to register a new account with these credentials?</system:String>
 	<system:String x:Key="DirectConnectViewModelButtonYes">Yes</system:String>
 	<system:String x:Key="DirectConnectViewModelButtonNo">No</system:String>
+
+	<!-- MainViewModel -->
+	<system:String x:Key="MainViewModelUpdateErrorTitle">Error</system:String>
+	<system:String x:Key="MainViewModelUpdateErrorMessage">Failed when checking for updates</system:String>
 </ResourceDictionary>
