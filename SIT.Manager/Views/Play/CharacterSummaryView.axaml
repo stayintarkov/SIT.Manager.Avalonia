@@ -11,12 +11,23 @@
 			Margin="0,8"
 			Background="Black">
 		<Grid ColumnDefinitions="Auto, *, Auto">
-			<TextBlock Grid.Column="0"
-					   VerticalAlignment="Center"
-					   Text="{Binding Profile.Side}"/>
+			<StackPanel Grid.Column="0">
+				<Image Grid.Column="0"
+					VerticalAlignment="Center"
+					Source="{Binding SideImage}"
+					MaxHeight="40"
+					Stretch="UniformToFill"/>
 
+				<TextBlock 
+					VerticalAlignment="Center"
+					Text="{Binding Profile.Side}"
+					Margin="0 5 0 0"
+					FontSize="14"
+					FontWeight="DemiBold"/>
+			</StackPanel>
+			
 			<StackPanel Grid.Column="1"
-						Margin="8,0">
+						Margin="14,0">
 				<StackPanel Orientation="Horizontal">
 					<TextBlock FontSize="24"
 							   FontWeight="Bold"
