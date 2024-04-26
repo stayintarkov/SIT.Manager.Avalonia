@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Interfaces.ManagedProcesses;
+using SIT.Manager.Models.Aki;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,14 +18,17 @@ namespace SIT.Manager.Services.ManagedProcesses;
 
 public class AkiServerService(IBarNotificationService barNotificationService,
                               IManagerConfigService configService,
-                              IServiceProvider serviceProvider) : ManagedProcess(barNotificationService, configService), IAkiServerService
+                              ILogger<AkiServerService> logger,
+                              IAkiServerRequestingService requestingService) : ManagedProcess(barNotificationService, configService), IAkiServerService
 {
     private const string SERVER_EXE = "Aki.Server.exe";
     private const int SERVER_LINE_LIMIT = 10_000;
 
-    private readonly IServiceProvider _serviceProvider = serviceProvider;
+    private readonly ILogger<AkiServerService> _logger = logger;
+    private readonly IAkiServerRequestingService _requestingService = requestingService;
 
     private readonly List<string> cachedServerOutput = [];
+    private AkiServer? _selfServer;
 
     protected override string EXECUTABLE_NAME => SERVER_EXE;
     public override string ExecutableDirectory => !string.IsNullOrEmpty(_configService.Config.AkiServerPath) ? _configService.Config.AkiServerPath : string.Empty;
@@ -137,65 +142,54 @@ public class AkiServerService(IBarNotificationService barNotificationService,
             _process.BeginOutputReadLine();
         }
 
-        Task.Run(async () =>
+        Uri serverUri = new("http://127.0.0.1:6969");
+
+        string httpConfigPath = Path.Combine(_configService.Config.AkiServerPath, "Aki_Data", "Server", "configs", "http.json");
+        if (File.Exists(httpConfigPath))
         {
-            Uri serverUri = new("http://127.0.0.1:6969");
-
-            string httpConfigPath = Path.Combine(_configService.Config.AkiServerPath, "Aki_Data", "Server", "configs", "http.json");
-            if (File.Exists(httpConfigPath))
+            JObject httpConfig = JObject.Parse(File.ReadAllText(httpConfigPath));
+            if (httpConfig.TryGetValue("ip", out JToken IPToken) && httpConfig.TryGetValue("port", out JToken PortToken))
             {
-                JObject httpConfig = JObject.Parse(File.ReadAllText(httpConfigPath));
-                if (httpConfig.TryGetValue("ip", out JToken IPToken) && httpConfig.TryGetValue("port", out JToken PortToken))
+                string ipAddress = IPToken.ToString();
+                string addressToUse = $"http://{(ipAddress == "0.0.0.0" ? serverUri.Host : IPToken)}:{PortToken}";
+                serverUri = new(addressToUse);
+            }
+        }
+
+        _selfServer = new(serverUri);
+
+        Task.Run(ListenForHeartbeat);
+    }
+
+    private async Task ListenForHeartbeat()
+    {
+        try
+        {
+            if (_selfServer == null)
+                return;
+
+            int ping = await _requestingService.GetPingAsync(_selfServer);
+            if(ping != -1)
+            {
+                if(_process?.HasExited == true)
                 {
-                    string ipAddress = IPToken.ToString();
-                    if (ipAddress == "0.0.0.0")
-                    {
-                        serverUri = new Uri($"{serverUri}:{PortToken}");
-                    }
-                    else
-                    {
-                        serverUri = new Uri($"http://{IPToken}:{PortToken}");
-                    }
+                    UpdateRunningState(RunningState.NotRunning);
                 }
-            }
-
-            // requesting = ActivatorUtilities.CreateInstance<TarkovRequesting>(_serviceProvider, serverUri);
-            try
-            {
-                using (CancellationTokenSource cts = new(TimeSpan.FromSeconds(120)))
+                else
                 {
-                    bool pingReponse = false;
-                    while (!pingReponse)
-                    {
-                        try
-                        {
-                            //TODO: REPLACE THIS. COMMENTED OUT FOR BUILDING
-                            pingReponse = true; //await requesting.PingServer(cts.Token);
-                        }
-                        catch (HttpRequestException) { }
-
-                        if (pingReponse && _process?.HasExited == false)
-                        {
-                            IsStarted = true;
-                            ServerStarted?.Invoke(this, new EventArgs());
-                            UpdateRunningState(RunningState.Running);
-                            return;
-                        }
-                        else if (_process?.HasExited == true)
-                        {
-                            UpdateRunningState(RunningState.NotRunning);
-                            return;
-                        }
-
-                        await Task.Delay(3 * 1000);
-                    }
+                    //TODO: Refactor this
+                    IsStarted = true;
+                    ServerStarted?.Invoke(this, new EventArgs());
+                    UpdateRunningState(RunningState.Running);
                 }
+                return;
             }
-            catch (TaskCanceledException)
-            {
-                //TODO: add feedback for why we killed it. Our logging for processes is kinda skuffed
-                _process?.Kill();
-            }
-        });
+        }
+        catch(HttpRequestException ex)
+        {
+            _logger.LogError(ex, "Exception throw while attempting to ping local server.");
+        }
+
+        _process?.Kill();
     }
 }
