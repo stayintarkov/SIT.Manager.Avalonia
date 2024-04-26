@@ -149,10 +149,17 @@ public partial class DiagnosticService : IDiagnosticService
         return ms;
     }
 
-    private static string GenerateDiagnosticLog()
+    private string GenerateDiagnosticLog()
     {
         //TODO: Add more diagnostics if needed
         StringBuilder sb = new("#--- DIAGNOSTICS LOG ---#\n\n");
+
+        //Versioning information
+        sb.AppendLine("#-- Versions --#");
+        sb.AppendLine($"SIT: {_configService.Config.SitVersion}");
+        sb.AppendLine($"EFT: {_configService.Config.SitTarkovVersion}");
+        sb.AppendLine($"AKI: {_configService.Config.SptAkiVersion}");
+        sb.AppendLine();
 
         //Get all networks adaptors local address if they're online
         sb.AppendLine("#-- Network Information: --#\n");
@@ -171,6 +178,7 @@ public partial class DiagnosticService : IDiagnosticService
                 }
             }
         }
+        sb.AppendLine();
 
         sb.AppendLine("#-- Registry Information --#");
         using (RegistryKey? key = Registry.LocalMachine.OpenSubKey(@"Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\EscapeFromTarkov"))
