@@ -360,11 +360,11 @@
 
 	<!-- Install - Configure Sit View -->
 	<system:String x:Key="ConfigureSitViewLoadingVersionSelectionText">Визначення доступних версій SIT, будь ласка, зачекайте...</system:String>
-	<system:String x:Key="ConfigureSitViewEFTChangeInstallPathToolTip">Змінити шлях установки EFT.</system:String>
 	<system:String x:Key="ConfigureSitViewVersionSelectionErrorMessage">Unable to determine available SIT versions...</system:String>
+	<system:String x:Key="ConfigureSitViewEFTChangeInstallPathToolTip">Change the SIT EFT Install Path.</system:String>
 	<system:String x:Key="ConfigureSitViewEFTSettingsButtonChangeTitle">Змінити</system:String>
-	<system:String x:Key="ConfigureSitViewEFTInstallPathPlaceholder">Шлях установки EFT...</system:String>
-	<system:String x:Key="ConfigureSitViewEFTInstallPathTitle">Шлях EFT:</system:String>
+	<system:String x:Key="ConfigureSitViewEFTInstallPathPlaceholder">SIT EFT Install Path...</system:String>
+	<system:String x:Key="ConfigureSitViewEFTInstallPathTitle">SIT EFT Install Path:</system:String>
 	<system:String x:Key="ConfigureSitViewEFTPathWarningNoPath">Наразі використовується місце встановлення BSG EFT. Будь ласка, встановіть EFT в інше місце, щоб уникнути можливих проблем з SIT</system:String>
 	<system:String x:Key="ConfigureSitViewMirrorSelectionTitle">Виберіть дзеркало для використання:</system:String>
 	<system:String x:Key="ConfigureSitViewVersionSelectionTitle">Версія для установки:</system:String>

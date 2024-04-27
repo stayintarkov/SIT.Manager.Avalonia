@@ -9,7 +9,12 @@ public interface ITarkovClientService : IManagedProcess
     /// Clear just the EFT local cache.
     /// </summary>
     void ClearLocalCache();
-    Task ConnectToServer(AkiCharacter character);
+    /// <summary>
+    /// Connect to the SPT-AKI server and launch Escape from Tarkov
+    /// </summary>
+    /// <param name="character">The EFT character we are trying to login as</param>
+    /// <returns>true if successfully logged in and launched otherwise false</returns>
+    Task<bool> ConnectToServer(AkiCharacter character);
     Task<AkiCharacter?> CreateCharacter(AkiServer server, string username, string password, bool rememberLogin);
     Task<AkiCharacter?> CreateCharacter(AkiServer server);
 }

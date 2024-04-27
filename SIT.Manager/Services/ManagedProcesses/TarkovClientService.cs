@@ -120,7 +120,7 @@ public class TarkovClientService(IAkiServerRequestingService serverRequestingSer
         _barNotificationService.ShowInformational(_localizationService.TranslateSource("TarkovClientServiceCacheClearedTitle"), _localizationService.TranslateSource("TarkovClientServiceCacheClearedEFTDescription"));
     }
 
-    public async Task ConnectToServer(AkiCharacter character)
+    public async Task<bool> ConnectToServer(AkiCharacter character)
     {
         string? ProfileID = null;
         List<AkiMiniProfile> miniProfiles = await _serverRequestingService.GetMiniProfilesAsync(character.ParentServer);
@@ -146,7 +146,7 @@ public class TarkovClientService(IAkiServerRequestingService serverRequestingSer
                     Content = _localizationService.TranslateSource("DirectConnectViewModelLoginIncorrectPassword"),
                     CloseButtonText = _localizationService.TranslateSource("DirectConnectViewModelButtonOk")
                 }.ShowAsync();
-                return;
+                return false;
             }
         }
         else
@@ -178,13 +178,14 @@ public class TarkovClientService(IAkiServerRequestingService serverRequestingSer
                 Title = _localizationService.TranslateSource("ModsPageViewModelErrorTitle"),
                 Content = ex.Message
             }.ShowAsync();
-            return;
+            return false;
         }
 
         if (_configService.Config.CloseAfterLaunch)
         {
             CloseManager();
         }
+        return true;
     }
 
     public override void Start(string? arguments)
