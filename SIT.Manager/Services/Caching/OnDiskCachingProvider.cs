@@ -1,9 +1,6 @@
-﻿using Avalonia.Controls.ApplicationLifetimes;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using PeNet;
-using SIT.Manager.Interfaces;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,6 +9,7 @@ using System.Text;
 using System.Text.Json;
 
 namespace SIT.Manager.Services.Caching;
+
 internal class OnDiskCachingProvider(string cachePath, ILogger<OnDiskCachingProvider> logger) : CachingProviderBase(cachePath)
 {
     private const string RESTORE_FILE_NAME = "fileCache.dat";
@@ -20,10 +18,10 @@ internal class OnDiskCachingProvider(string cachePath, ILogger<OnDiskCachingProv
 
     protected override void RemoveExpiredKey(string key)
     {
-        if(_cacheMap.TryGetValue(key, out CacheEntry? cacheEntry))
+        if (_cacheMap.TryGetValue(key, out CacheEntry? cacheEntry))
         {
             string cacheFilePath = cacheEntry.GetValue<string>() ?? string.Empty;
-            if(File.Exists(cacheFilePath))
+            if (File.Exists(cacheFilePath))
                 File.Delete(cacheFilePath);
         }
         base.RemoveExpiredKey(key);
@@ -53,28 +51,30 @@ internal class OnDiskCachingProvider(string cachePath, ILogger<OnDiskCachingProv
 
         string filename = MD5.HashData(Encoding.UTF8.GetBytes(key)).ToHexString();
         string filePath = Path.Combine(_cachePath.FullName, filename);
-        using FileStream fs = File.OpenWrite(filePath);
-        if (value is Stream inputStream)
+        using (FileStream fs = File.OpenWrite(filePath))
         {
-            if (inputStream.CanSeek)
-                inputStream.Seek(0, SeekOrigin.Begin);
-
-            inputStream.CopyTo(fs);
-        }
-        else
-        {
-            byte[] buffer;
-            if (typeof(T) == typeof(byte[]))
+            if (value is Stream inputStream)
             {
-                buffer = value as byte[] ?? [];
+                if (inputStream.CanSeek)
+                    inputStream.Seek(0, SeekOrigin.Begin);
+
+                inputStream.CopyTo(fs);
             }
             else
             {
-                string serializedData = JsonSerializer.Serialize(value);
-                buffer = Encoding.UTF8.GetBytes(serializedData);
-            }
+                byte[] buffer;
+                if (typeof(T) == typeof(byte[]))
+                {
+                    buffer = value as byte[] ?? [];
+                }
+                else
+                {
+                    string serializedData = JsonSerializer.Serialize(value);
+                    buffer = Encoding.UTF8.GetBytes(serializedData);
+                }
 
-            fs.Write(buffer, 0, buffer.Length);
+                fs.Write(buffer, 0, buffer.Length);
+            }
         }
 
         DateTime expiryDate = DateTime.UtcNow + (expiryTime ?? TimeSpan.FromMinutes(15));
@@ -107,41 +107,43 @@ internal class OnDiskCachingProvider(string cachePath, ILogger<OnDiskCachingProv
                 return CacheValue<T>.Null;
 
             Type tType = typeof(T);
-            FileStream fs = File.OpenRead(filePath);
-            if (tType == typeof(FileStream))
+            using (FileStream fs = File.OpenRead(filePath))
             {
-                return new CacheValue<T>((T) (object) fs, true);
-            }
-
-            byte[] fileBytes;
-            MemoryStream ms = new MemoryStream();
-            try
-            {
-                byte[] buffer = new byte[1024 * 8];
-                int bytesRead;
-                while ((bytesRead = fs.Read(buffer, 0, buffer.Length)) > 0)
+                if (tType == typeof(FileStream))
                 {
-                    ms.Write(buffer, 0, bytesRead);
+                    return new CacheValue<T>((T) (object) fs, true);
                 }
 
-                fileBytes = ms.ToArray();
-                if (tType == typeof(byte[]))
+                byte[] fileBytes;
+                MemoryStream ms = new MemoryStream();
+                try
                 {
-                    return new CacheValue<T>((T) (object) fileBytes, true);
-                }
-            }
-            catch (Exception ex)
-            {
-                ms.Dispose();
-                _logger.LogError(ex, "Error occured during reading or casting file bytes.");
-                return CacheValue<T>.Null;
-            }
+                    byte[] buffer = new byte[1024 * 8];
+                    int bytesRead;
+                    while ((bytesRead = fs.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        ms.Write(buffer, 0, bytesRead);
+                    }
 
-            if (tType == typeof(string))
-            {
-                return new CacheValue<T>((T) (object) Encoding.UTF8.GetString(fileBytes), true);
+                    fileBytes = ms.ToArray();
+                    if (tType == typeof(byte[]))
+                    {
+                        return new CacheValue<T>((T) (object) fileBytes, true);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ms.Dispose();
+                    _logger.LogError(ex, "Error occured during reading or casting file bytes.");
+                    return CacheValue<T>.Null;
+                }
+
+                if (tType == typeof(string))
+                {
+                    return new CacheValue<T>((T) (object) Encoding.UTF8.GetString(fileBytes), true);
+                }
+                return new CacheValue<T>(JsonSerializer.Deserialize<T>(fileBytes), true);
             }
-            return new CacheValue<T>(JsonSerializer.Deserialize<T>(fileBytes), true);
         }
         catch (Exception ex)
         {
