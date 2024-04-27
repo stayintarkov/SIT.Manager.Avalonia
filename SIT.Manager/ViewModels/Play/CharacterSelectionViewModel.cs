@@ -89,11 +89,7 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
     private async Task ReloadCharacterList()
     {
         CharacterList.Clear();
-        List<AkiMiniProfile>? miniProfiles = await _serverService.GetMiniProfilesAsync(_connectedServer);
-        if (miniProfiles == null)
-        {
-            return;
-        }
+        List<AkiMiniProfile> miniProfiles = await _serverService.GetMiniProfilesAsync(_connectedServer);
         foreach (AkiMiniProfile profile in miniProfiles)
         {
             CharacterSummaryViewModel characterSummaryViewModel = ActivatorUtilities.CreateInstance<CharacterSummaryViewModel>(_serviceProvider, _connectedServer, profile);

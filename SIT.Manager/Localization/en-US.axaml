@@ -502,7 +502,6 @@
 	<system:String x:Key="DirectConnectViewModelMissingAKIInstallationTitle">Missing AKI Installation</system:String>
 	<system:String x:Key="DirectConnectViewModelMissingAKIInstallationDescription">SPT-AKI server executable is missing.</system:String>
 	<system:String x:Key="DirectConnectViewModelLoginIncorrectPassword">Incorrect password</system:String>
-	<system:String x:Key="DirectConnectViewModelLoginServerNotAvailable">Server is not available! Try again.</system:String>
 	<system:String x:Key="DirectConnectViewModelLoginErrorTitle">Login Error</system:String>
 	<system:String x:Key="DirectConnectViewModelLoginErrorDescription">Unable to communicate with the server %1</system:String>
 	<system:String x:Key="DirectConnectViewModelWaitingForServerTitle">Waiting for server</system:String>

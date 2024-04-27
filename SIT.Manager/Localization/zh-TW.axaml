@@ -504,7 +504,6 @@
 	<system:String x:Key="DirectConnectViewModelUnhandledAkiInstanceDescription">SPT-AKI 當前正在運行。請关闭任何正在运行的 SPT-AKI 实例。</system:String>
 	<system:String x:Key="DirectConnectViewModelMissingAKIInstallationTitle">缺少 AKI 安裝</system:String>
 	<system:String x:Key="DirectConnectViewModelMissingAKIInstallationDescription">缺少 SPT-AKI 服务器可执行文件。</system:String>
-	<system:String x:Key="DirectConnectViewModelLoginServerNotAvailable">伺服器不可用！請重試.</system:String>
 	<system:String x:Key="DirectConnectViewModelLoginIncorrectPassword">密碼错误</system:String>
 	<system:String x:Key="DirectConnectViewModelLoginErrorTitle">登錄错误</system:String>
 	<system:String x:Key="DirectConnectViewModelLoginErrorDescription">無法與服务器 %1 通信</system:String>

@@ -123,33 +123,11 @@ public class TarkovClientService(IAkiServerRequestingService serverRequestingSer
     public async Task ConnectToServer(AkiCharacter character)
     {
         string? ProfileID = null;
-        List<AkiMiniProfile>? miniProfiles = await _serverRequestingService.GetMiniProfilesAsync(character.ParentServer);
-        if (miniProfiles == null)
-        {
-            await new ContentDialog()
-            {
-                Title = _localizationService.TranslateSource("DirectConnectViewModelLoginErrorTitle"),
-                Content = _localizationService.TranslateSource("DirectConnectViewModelLoginServerNotAvailable"),
-                CloseButtonText = _localizationService.TranslateSource("DirectConnectViewModelButtonOk")
-            }.ShowAsync();
-            return;
-        }
+        List<AkiMiniProfile> miniProfiles = await _serverRequestingService.GetMiniProfilesAsync(character.ParentServer);
         if (miniProfiles.Select(x => x.Username == character.Username).Any())
         {
             _logger.LogDebug("Username {Username} was already found on server. Attempting to login...", character.Username);
-#pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
-            (string loginRespStr, AkiLoginStatus status) = await _serverRequestingService.LoginAsync(character) ?? (null, AkiLoginStatus.AccountNotFound);
-#pragma warning restore CS8619 // Nullability of reference types in value doesn't match target type.
-            if (loginRespStr == null)
-            {
-                await new ContentDialog()
-                {
-                    Title = _localizationService.TranslateSource("DirectConnectViewModelLoginErrorTitle"),
-                    Content = _localizationService.TranslateSource("DirectConnectViewModelLoginServerNotAvailable"),
-                    CloseButtonText = _localizationService.TranslateSource("DirectConnectViewModelButtonOk")
-                }.ShowAsync();
-                return;
-            }
+            (string loginRespStr, AkiLoginStatus status) = await _serverRequestingService.LoginAsync(character);
             if (status == AkiLoginStatus.Success)
             {
                 _logger.LogDebug("Login successful");
@@ -320,19 +298,7 @@ public class TarkovClientService(IAkiServerRequestingService serverRequestingSer
         };
 
         _logger.LogInformation("Registering new character...");
-#pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
-        (string loginRespStr, AkiLoginStatus status) = (await _serverRequestingService.RegisterCharacterAsync(character)) ?? (null, AkiLoginStatus.AccountNotFound);
-#pragma warning restore CS8619 // Nullability of reference types in value doesn't match target type.
-        if (loginRespStr == null)
-        {
-            await new ContentDialog()
-            {
-                Title = _localizationService.TranslateSource("DirectConnectViewModelLoginErrorTitle"),
-                Content = _localizationService.TranslateSource("DirectConnectViewModelLoginServerNotAvailable"),
-                CloseButtonText = _localizationService.TranslateSource("DirectConnectViewModelButtonOk")
-            }.ShowAsync();
-            return null;
-        }
+        (string _, AkiLoginStatus status) = await _serverRequestingService.RegisterCharacterAsync(character);
         if (status != AkiLoginStatus.Success)
         {
             await new ContentDialog()

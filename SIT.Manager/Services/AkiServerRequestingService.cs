@@ -1,15 +1,17 @@
 ﻿using Polly;
 using Polly.Registry;
+using SIT.Manager.Exceptions;
 using SIT.Manager.Extentions;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Models.Aki;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -31,7 +33,7 @@ public class AkiServerRequestingService(
     private readonly ResiliencePipelineProvider<string> _resiliencePipelineProvider = resiliencePipelineProvider;
     private readonly IManagerConfigService _configService = configService;
 
-    private async Task<MemoryStream?> SendAsync(Uri remoteAddress, string path, HttpMethod? method = null, string? data = null, ResiliencePipeline<HttpResponseMessage>? strategy = null, CancellationToken cancellationToken = default)
+    private async Task<MemoryStream> SendAsync(Uri remoteAddress, string path, HttpMethod? method = null, string? data = null, ResiliencePipeline<HttpResponseMessage>? strategy = null, CancellationToken cancellationToken = default)
     {
         if (strategy == null && !_resiliencePipelineProvider.TryGetPipeline("default-pipeline", out strategy))
             throw new ArgumentNullException(nameof(strategy), "No default pipeline was specified and argument was null.");
@@ -54,44 +56,32 @@ public class AkiServerRequestingService(
                 req.Content.Headers.ContentEncoding.Add("deflate");
                 req.Content.Headers.Add("Content-Length", contentBytes.Length.ToString());
             }
-            try
-            {
-                return await _httpClient.SendAsync(req, cancellationToken: ct);
-            }
-            catch
-            {
-                HttpResponseMessage errorResponse = new (HttpStatusCode.ServiceUnavailable)
-                {
-                    Content = new StringContent("The server is currently unavailable.")
-                };
-                return errorResponse;
-            }
+
+            return await _httpClient.SendAsync(req, cancellationToken: ct);
         }, cancellationToken);
-        if (reqResp.IsSuccessStatusCode)
+        reqResp.EnsureSuccessStatusCode();
+        Stream respStream = await reqResp.Content.ReadAsStreamAsync(cancellationToken);
+
+        Memory<byte> magicNumber = new(new byte[2]);
+        await respStream.ReadAsync(magicNumber, cancellationToken);
+        respStream.Seek(0, SeekOrigin.Begin);
+
+        if (magicNumber.Span[0] == 0x78 && zlibMagicBytes.Contains(magicNumber.Span[1]))
         {
-            Stream respStream = await reqResp.Content.ReadAsStreamAsync(cancellationToken);
-
-            Memory<byte> magicNumber = new(new byte[2]);
-            await respStream.ReadAsync(magicNumber, cancellationToken);
-            respStream.Seek(0, SeekOrigin.Begin);
-
-            if (magicNumber.Span[0] == 0x78 && zlibMagicBytes.Contains(magicNumber.Span[1]))
-            {
-                return await respStream.InflateAsync(cancellationToken);
-            }
-            else
-            {
-                return respStream as MemoryStream ?? new MemoryStream();
-            }
+            return await respStream.InflateAsync(cancellationToken);
         }
-        return null;
+        else
+        {
+            return respStream as MemoryStream ?? new MemoryStream();
+        }
+
     }
 
-    private Task<MemoryStream?> SendAsync(AkiServer server, string path, HttpMethod? method = null, string? data = null, ResiliencePipeline<HttpResponseMessage>? strategy = null, CancellationToken cancellationToken = default)
+    private Task<MemoryStream> SendAsync(AkiServer server, string path, HttpMethod? method = null, string? data = null, ResiliencePipeline<HttpResponseMessage>? strategy = null, CancellationToken cancellationToken = default)
         => SendAsync(server.Address, path, method, data, strategy, cancellationToken);
 
     //TODO: Add error handling
-    public async Task<AkiServer?> GetAkiServerAsync(Uri serverAddresss, bool fetchInformation = true, CancellationToken cancellationToken = default)
+    public async Task<AkiServer> GetAkiServerAsync(Uri serverAddresss, bool fetchInformation = true, CancellationToken cancellationToken = default)
     {
         AkiServer ret = new(serverAddresss);
         if (fetchInformation)
@@ -110,13 +100,8 @@ public class AkiServerRequestingService(
     {
         var strategy = _resiliencePipelineProvider.GetPipeline<HttpResponseMessage>("ping-pipeline");
         Stopwatch stopwatch = Stopwatch.StartNew();
-        using MemoryStream? respStream = await SendAsync(akiServer, "/launcher/ping", strategy: strategy, cancellationToken: cancellationToken);
+        using MemoryStream respStream = await SendAsync(akiServer, "/launcher/ping", strategy: strategy, cancellationToken: cancellationToken);
         stopwatch.Stop();
-
-        if (respStream == null)
-        {
-            return -1;
-        }
 
         using (StreamReader streamReader = new(respStream))
         {
@@ -127,14 +112,10 @@ public class AkiServerRequestingService(
         }
     }
 
-    public async Task<List<AkiMiniProfile>?> GetMiniProfilesAsync(AkiServer server, CancellationToken cancellationToken = default)
+    public async Task<List<AkiMiniProfile>> GetMiniProfilesAsync(AkiServer server, CancellationToken cancellationToken = default)
     {
-        using MemoryStream? respStream = await SendAsync(server, "/launcher/profiles", cancellationToken: cancellationToken);
-        if (respStream == null)
-        {
-            return null;
-        }
-        return await JsonSerializer.DeserializeAsync<List<AkiMiniProfile>?>(respStream, cancellationToken: cancellationToken) ?? [];
+        using MemoryStream respStream = await SendAsync(server, "/launcher/profiles", cancellationToken: cancellationToken);
+        return await JsonSerializer.DeserializeAsync<List<AkiMiniProfile>>(respStream, cancellationToken: cancellationToken) ?? [];
     }
 
     private string CreateLoginData(AkiCharacter character)
@@ -152,29 +133,18 @@ public class AkiServerRequestingService(
         return loginData.ToJsonString();
     }
 
-    private async Task<string?> LoginOrRegisterAsync(AkiCharacter character, string operation, CancellationToken cancellationToken = default)
+    private async Task<string> LoginOrRegisterAsync(AkiCharacter character, string operation, CancellationToken cancellationToken = default)
     {
-        MemoryStream? ms;
-        using (ms = await SendAsync(character.ParentServer, Path.Combine("/launcher/profile", operation), HttpMethod.Post, CreateLoginData(character), cancellationToken: cancellationToken))
-
-        if (ms == null)
-        {
-            return null;
-        }
-
+        using (MemoryStream ms = await SendAsync(character.ParentServer, Path.Combine("/launcher/profile", operation), HttpMethod.Post, CreateLoginData(character), cancellationToken: cancellationToken))
         using (StreamReader streamReader = new StreamReader(ms))
         {
             return await streamReader.ReadToEndAsync(cancellationToken);
         }
     }
 
-    public async Task<(string, AkiLoginStatus)?> LoginAsync(AkiCharacter character, CancellationToken cancellationToken = default)
+    public async Task<(string, AkiLoginStatus)> LoginAsync(AkiCharacter character, CancellationToken cancellationToken = default)
     {
-        string? resp = await LoginOrRegisterAsync(character, "login", cancellationToken);
-        if (resp == null)
-        {
-            return null;
-        }
+        string resp = await LoginOrRegisterAsync(character, "login", cancellationToken);
         AkiLoginStatus status = resp.ToLowerInvariant() switch
         {
             "invalid_password" => AkiLoginStatus.IncorrectPassword,
@@ -184,13 +154,9 @@ public class AkiServerRequestingService(
         return (resp, status);
     }
 
-    public async Task<(string, AkiLoginStatus)?> RegisterCharacterAsync(AkiCharacter character, CancellationToken cancellationToken = default)
+    public async Task<(string, AkiLoginStatus)> RegisterCharacterAsync(AkiCharacter character, CancellationToken cancellationToken = default)
     {
-        string? resp = await LoginOrRegisterAsync(character, "register", cancellationToken);
-        if (resp == null)
-        {
-            return null;
-        }
+        string resp = await LoginOrRegisterAsync(character, "register", cancellationToken);
         AkiLoginStatus status = resp.ToLowerInvariant() switch
         {
             "ok" => AkiLoginStatus.Success,
@@ -203,18 +169,14 @@ public class AkiServerRequestingService(
 
     public async Task<AkiServerInfo?> GetAkiServerInfoAsync(AkiServer server, CancellationToken cancellationToken = default)
     {
-        using MemoryStream? respStream = await SendAsync(server.Address, "/launcher/server/connect", cancellationToken: cancellationToken);
-        if (respStream == null)
-        {
-            return null;
-        }
+        using MemoryStream respStream = await SendAsync(server.Address, "/launcher/server/connect", cancellationToken: cancellationToken);
         using (StreamReader sr = new(respStream))
         {
             return await JsonSerializer.DeserializeAsync<AkiServerInfo>(respStream, cancellationToken: cancellationToken);
         }
     }
 
-    public Task<MemoryStream?> GetAkiServerImage(AkiServer server, string assetPath, CancellationToken cancellationToken = default)
+    public Task<MemoryStream> GetAkiServerImage(AkiServer server, string assetPath, CancellationToken cancellationToken = default)
     {
         return SendAsync(server.Address, Path.Combine("/files/", assetPath), cancellationToken: cancellationToken);
     }
@@ -226,5 +188,5 @@ public enum AkiLoginStatus
     Success,
     AccountNotFound,
     UsernameTaken,
-    IncorrectPassword,
+    IncorrectPassword
 }
