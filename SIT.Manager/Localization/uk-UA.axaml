@@ -376,6 +376,7 @@
 	<!-- Install - Configure Sit View Model -->
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorTitle">Помилка вибору місця розташування</system:String>
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorDescription">Ви вибрали ту саму теку, що і встановлення BSG EFT, оберіть інше місце для встановлення SIT</system:String>
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionSPTErrorDescription">You've selected the same folder as an existing SPT install, please choose a different location to install SIT to</system:String>
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorOk">Ok</system:String>
 
 	<!-- Install - Install View -->
