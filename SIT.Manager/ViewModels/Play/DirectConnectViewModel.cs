@@ -12,6 +12,7 @@ using SIT.Manager.Models.Config;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.ViewModels.Play;
@@ -124,7 +125,7 @@ public partial class DirectConnectViewModel : ObservableRecipient
 
         if (serverAddress != null)
         {
-            AkiServer server = await _serverRequestingService.GetAkiServerAsync(serverAddress);
+            AkiServer server = await _serverRequestingService.GetAkiServerAsync(serverAddress, false);
             AkiCharacter character = new(server, Username, Password);
 
             try
@@ -148,6 +149,15 @@ public partial class DirectConnectViewModel : ObservableRecipient
                         await ConnectToServer(false);
                     }
                 }
+            }
+            catch(HttpRequestException ex)
+            {
+                await new ContentDialog()
+                {
+                    Title = _localizationService.TranslateSource("DirectConnectViewModelLoginErrorTitle"),
+                    Content = _localizationService.TranslateSource("DirectConnectViewModelLoginErrorDescription", ex.Message),
+                    CloseButtonText = _localizationService.TranslateSource("DirectConnectViewModelButtonOk")
+                }.ShowAsync();
             }
         }
     }
