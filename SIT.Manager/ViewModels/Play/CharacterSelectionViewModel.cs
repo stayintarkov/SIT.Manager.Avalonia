@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.ViewModels.Play;
@@ -89,20 +90,29 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
     private async Task ReloadCharacterList()
     {
         CharacterList.Clear();
-        List<AkiMiniProfile> miniProfiles = await _serverService.GetMiniProfilesAsync(_connectedServer);
-        foreach (AkiMiniProfile profile in miniProfiles)
+        try
         {
-            CharacterSummaryViewModel characterSummaryViewModel = ActivatorUtilities.CreateInstance<CharacterSummaryViewModel>(_serviceProvider, _connectedServer, profile);
-            if (_connectedServer.Characters.Any(x => x.Username == profile.Username) == true)
+            //TODO: This is currently listing *all* server characters. We should narrow this to saved only
+            List<AkiMiniProfile> miniProfiles = await _serverService.GetMiniProfilesAsync(_connectedServer);
+            foreach (AkiMiniProfile profile in miniProfiles)
             {
-                SavedCharacterList.Add(characterSummaryViewModel);
+                CharacterSummaryViewModel characterSummaryViewModel = ActivatorUtilities.CreateInstance<CharacterSummaryViewModel>(_serviceProvider, _connectedServer, profile);
+                if (_connectedServer.Characters.Any(x => x.Username == profile.Username) == true)
+                {
+                    SavedCharacterList.Add(characterSummaryViewModel);
+                }
+                else
+                {
+                    CharacterList.Add(characterSummaryViewModel);
+                }
             }
-            else
-            {
-                CharacterList.Add(characterSummaryViewModel);
-            }
+
+            _logger.LogDebug("{profileCount} mini profiles retrieved from {name}", miniProfiles.Count, _connectedServer.Name);
         }
-        _logger.LogDebug("{profileCount} mini profiles retrieved from {name}", miniProfiles.Count, _connectedServer.Name);
+        catch(HttpRequestException ex)
+        {
+            _logger.LogError(ex, "An error occured while fetching characters");
+        }
     }
 
     protected override async void OnActivated()

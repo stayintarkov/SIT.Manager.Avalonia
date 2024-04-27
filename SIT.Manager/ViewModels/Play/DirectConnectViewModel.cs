@@ -124,7 +124,7 @@ public partial class DirectConnectViewModel : ObservableRecipient
 
         if (serverAddress != null)
         {
-            AkiServer server = await _serverRequestingService.GetAkiServerAsync(serverAddress);
+            AkiServer server = await _serverRequestingService.GetAkiServerAsync(serverAddress, false);
             AkiCharacter character = new(server, Username, Password);
 
             try
