@@ -23,9 +23,9 @@ public class AkiCharacter : ObservableObject
     }
 
     [JsonConstructor]
-    AkiCharacter(AkiServer parent, string username, string password, string edition, string profileID)
+    public AkiCharacter(AkiServer parentServer, string username, string password, string edition, string profileID)
     {
-        this.ParentServer = parent;
+        this.ParentServer = parentServer;
         this.Username = username;
         this.Password = password;
         this.Edition = edition;
