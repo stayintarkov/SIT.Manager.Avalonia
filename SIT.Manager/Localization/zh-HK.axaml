@@ -12,6 +12,7 @@
 	<system:String x:Key="ServerTitle">伺服器</system:String>
 	<system:String x:Key="ModsTitle">模組</system:String>
 	<system:String x:Key="SettingsTitle">設定</system:String>
+	<system:String x:Key="HelpTitle">幫助</system:String>
 	<system:String x:Key="PlayTitleToolTip">連線並遊玩。</system:String>
 	<system:String x:Key="InstallTitleToolTip">安裝/更新 SIT 和 SIT 伺服器</system:String>
 	<system:String x:Key="ToolsTitleToolTip">管理 SIT 和 Tarkov 的工具。</system:String>
@@ -112,59 +113,59 @@
 	<system:String x:Key="SettingsManagerVersionTitle">當前 SIT Manager 版本:</system:String>
 
 	<!-- EftView -->
-	<system:String x:Key="EftViewBsgEftInstallPath">BSG EFT Install Path:</system:String>
+	<system:String x:Key="EftViewBsgEftInstallPath">BSG EFT 安裝路徑:</system:String>
 
 	<!-- EftViewModel -->
-	<system:String x:Key="EftViewModelBsgEftInstallPathMissing">Unable to detect BSG EFT install...</system:String>
-	<system:String x:Key="EftViewModelSitEftInstallPathMissing">SIT install not found. Please point to existing install here, or install by clicking the install button on the left</system:String>
+	<system:String x:Key="EftViewModelBsgEftInstallPathMissing">未找到 SIT 安裝。請在此處指向現有安裝，或按一下左側的安裝按鈕進行安裝</system:String>
+	<system:String x:Key="EftViewModelSitEftInstallPathMissing">未找到 SIT 安裝。請在此處指向現有安裝，或按一下左側的安裝按鈕進行安裝</system:String>
 
 	<!-- Linux Settings Page -->
-	<system:String x:Key="Key">Key</system:String>
-	<system:String x:Key="Value">Value</system:String>
-	<system:String x:Key="LinuxSettingsPageTitle">Linux Settings</system:String>
-	<system:String x:Key="LinuxSettingsExperimentalWarning">Experimental Linux settings. Some might not work or are not implemented yet. Use at your own risk.</system:String>
-	
-	<system:String x:Key="LinuxSettingsWinePrefixTitle">Wine Prefix:</system:String>
-	<system:String x:Key="LinuxSettingsWinePrefixPlaceholder">Wine Prefix Path</system:String>
-	<system:String x:Key="LinuxSettingsWinePrefixToolTip">Change the WINEPREFIX used for EFT</system:String>
-	<system:String x:Key="LinuxSettingsWineRunnerTitle">Wine Runner:</system:String>
-	<system:String x:Key="LinuxSettingsWineRunnerPlaceholder">Wine Runner Path</system:String>
-	<system:String x:Key="LinuxSettingsWineRunnerToolTip">Set the wine runner used for EFT. Leave blank to download the recommended SPT wine runner into the same folder as the bottle</system:String>
-	<system:String x:Key="LinuxSettingsWineEnvTitle">Environment: </system:String>
-	<system:String x:Key="LinuxSettingsWineEnvPlaceholder">Wine Environment Variables</system:String>
-	<system:String x:Key="LinuxSettingsWineEnvToolTip">Set custom environment variables used for wine</system:String>
-	<system:String x:Key="LinuxSettingsWineEnvAddButton">Add</system:String>
-	<system:String x:Key="LinuxSettingsWineEnvDeleteButton">Delete</system:String>
-	
-	<system:String x:Key="LinuxSettingsGraphicsTitle">Graphics</system:String>
-	<system:String x:Key="LinuxSettingsEnableDxvkTitle">Enable DXVK</system:String>
-	<system:String x:Key="LinuxSettingsEnableDxvkToolTip">Use DXVK to increase compatibility and performance in Direct3D 11, 10 and 9 applications by translating their calls to Vulkan.</system:String>
-	<system:String x:Key="LinuxSettingsDxvkVersionTitle">DXVK Version</system:String>
-	<system:String x:Key="LinuxSettingsDxvkVersionToolTip">Select the version of DXVK to use</system:String>
-	<system:String x:Key="LinuxSettingsEnableVkd3DTitle">Enable VKD3D</system:String>
-	<system:String x:Key="LinuxSettingsEnableVkd3DToolTip">Use VKD3D to translate Direct3D 12 to Vulkan</system:String>
-	<system:String x:Key="LinuxSettingsEnableD3DExtrasTitle">Enable D3D Extras</system:String>
-	<system:String x:Key="LinuxSettingsEnableD3DExtrasToolTip">Enable additional Direct3D features</system:String>
-	<system:String x:Key="LinuxSettingsEnableDxvkNvapiTitle">Enable DXVK NVAPI / DLSS [TO BE IMPLEMENTED]</system:String>
-	<system:String x:Key="LinuxSettingsEnableDxvkNvapiToolTip">Enable NVAPI support in DXVK [TO BE IMPLEMENTED/DOES NOT WORK]</system:String>
-	<system:String x:Key="LinuxSettingsEnableDgVoodoo2Title">Enable dgvoodoo2</system:String>
-	<system:String x:Key="LinuxSettingsEnableDgVoodoo2ToolTip">Use dgvoodoo2 to translate Direct3D 1-11 to OpenGL</system:String>
-	
-	<system:String x:Key="LinuxSettingsLaunchOptionsTitle">Launch Options</system:String>
-	<system:String x:Key="LinuxSettingsEnableEsyncTitle">Enable Esync</system:String>
-	<system:String x:Key="LinuxSettingsEnableEsyncToolTip">Use Esync to improve performance in Wine</system:String>
-	<system:String x:Key="LinuxSettingsEnableFsyncTitle">Enable Fsync</system:String>
-	<system:String x:Key="LinuxSettingsEnableFsyncToolTip">Use Fsync to improve performance in Wine</system:String>
-	<system:String x:Key="LinuxSettingsEnableFsrTitle">Enable AMD FidelityFX Super Resolution (FSR)</system:String>
-	<system:String x:Key="LinuxSettingsEnableFsrToolTip">Use FSR to improve performance in games</system:String>
-	<system:String x:Key="LinuxSettingsEnableMangoHudTitle">Enable MangoHud</system:String>
-	<system:String x:Key="LinuxSettingsEnableMangoHudToolTip">MangoHud is a modification of the Mesa Vulkan overlay that includes GUI improvements, temperature monitoring, and more</system:String>
-	<system:String x:Key="LinuxSettingsEnableGameModeTitle">Enable Feral GameMode</system:String>
-	<system:String x:Key="LinuxSettingsEnableGameModeToolTip">GameMode is a daemon/lib combo for Linux that allows games to request a set of optimisations be temporarily applied to the host OS</system:String>
+	<system:String x:Key="Key">鍵</system:String>
+	<system:String x:Key="Value">值</system:String>
+	<system:String x:Key="LinuxSettingsPageTitle">Linux 設定</system:String>
+	<system:String x:Key="LinuxSettingsExperimentalWarning">實驗性 Linux 設定。某些設定可能無法運行或尚未實現。請自擔風險使用。</system:String>
+
+	<system:String x:Key="LinuxSettingsWinePrefixTitle">Wine 前缀:</system:String>
+	<system:String x:Key="LinuxSettingsWinePrefixPlaceholder">Wine 前缀路徑</system:String>
+	<system:String x:Key="LinuxSettingsWinePrefixToolTip">更改用于 EFT 的 WINEPREFIX</system:String>
+	<system:String x:Key="LinuxSettingsWineRunnerTitle">Wine 執行庫:</system:String>
+	<system:String x:Key="LinuxSettingsWineRunnerPlaceholder">Wine 執行庫路徑</system:String>
+	<system:String x:Key="LinuxSettingsWineRunnerToolTip">设置用于 EFT 的 Wine 執行庫。留空以将推荐的 SPT Wine 執行庫下载到与容器相同的文件夹中</system:String>
+	<system:String x:Key="LinuxSettingsWineEnvTitle">環境: </system:String>
+	<system:String x:Key="LinuxSettingsWineEnvPlaceholder">Wine 環境变量</system:String>
+	<system:String x:Key="LinuxSettingsWineEnvToolTip">设置用于 Wine 的自定义环境变量</system:String>
+	<system:String x:Key="LinuxSettingsWineEnvAddButton">添加</system:String>
+	<system:String x:Key="LinuxSettingsWineEnvDeleteButton">刪除</system:String>
+
+	<system:String x:Key="LinuxSettingsGraphicsTitle">圖形</system:String>
+	<system:String x:Key="LinuxSettingsEnableDxvkTitle">啟用 DXVK</system:String>
+	<system:String x:Key="LinuxSettingsEnableDxvkToolTip">使用 DXVK 通過將 Direct3D 11、10 和 9 應用程式的調用轉換為 Vulkan 來提高兼容性和性能。</system:String>
+	<system:String x:Key="LinuxSettingsDxvkVersionTitle">DXVK 版本</system:String>
+	<system:String x:Key="LinuxSettingsDxvkVersionToolTip">選擇要使用的 DXVK 版本</system:String>
+	<system:String x:Key="LinuxSettingsEnableVkd3DTitle">啟用 VKD3D</system:String>
+	<system:String x:Key="LinuxSettingsEnableVkd3DToolTip">使用 VKD3D 將 Direct3D 12 转换为 Vulkan</system:String>
+	<system:String x:Key="LinuxSettingsEnableD3DExtrasTitle">啟用 D3D 扩展功能</system:String>
+	<system:String x:Key="LinuxSettingsEnableD3DExtrasToolTip">启用额外的 Direct3D 功能</system:String>
+	<system:String x:Key="LinuxSettingsEnableDxvkNvapiTitle">启用 DXVK NVAPI / DLSS [即将实现]</system:String>
+	<system:String x:Key="LinuxSettingsEnableDxvkNvapiToolTip">启用 DXVK 中的 NVAPI 支持 [即将实现/无法运行]</system:String>
+	<system:String x:Key="LinuxSettingsEnableDgVoodoo2Title">啟用 dgvoodoo2</system:String>
+	<system:String x:Key="LinuxSettingsEnableDgVoodoo2ToolTip">使用 dgvoodoo2 將 Direct3D 1-11 转换为 OpenGL</system:String>
+
+	<system:String x:Key="LinuxSettingsLaunchOptionsTitle">启动选项</system:String>
+	<system:String x:Key="LinuxSettingsEnableEsyncTitle">啟用 Esync</system:String>
+	<system:String x:Key="LinuxSettingsEnableEsyncToolTip">使用 Esync 提升 Wine 的性能</system:String>
+	<system:String x:Key="LinuxSettingsEnableFsyncTitle">啟用 Fsync</system:String>
+	<system:String x:Key="LinuxSettingsEnableFsyncToolTip">使用 Fsync 提升 Wine 的性能</system:String>
+	<system:String x:Key="LinuxSettingsEnableFsrTitle">啟用 AMD FidelityFX 超级分辨率 (FSR)</system:String>
+	<system:String x:Key="LinuxSettingsEnableFsrToolTip">使用 FSR 提升游戏性能</system:String>
+	<system:String x:Key="LinuxSettingsEnableMangoHudTitle">啟用 MangoHud</system:String>
+	<system:String x:Key="LinuxSettingsEnableMangoHudToolTip">MangoHud 是 Mesa Vulkan 覆盖的修改版本，它包含 GUI 改进、温度监控等功能</system:String>
+	<system:String x:Key="LinuxSettingsEnableGameModeTitle">啟用 Feral GameMode</system:String>
+	<system:String x:Key="LinuxSettingsEnableGameModeToolTip">GameMode 是 Linux 的守护进程/库组合，允许游戏请求临时将一系列优化应用于主机操作系统</system:String>
 	
 	<!-- Linux Settings View Model -->
-	<system:String x:Key="LinuxSettingsPageViewModelConfigErrorRunner">The selected folder was invalid. Make sure it's a proper wine runner folder with a bin folder inside</system:String>
-	<system:String x:Key="LinuxSettingsPageViewModelConfigErrorPrefix">The selected folder was invalid. Make sure the folder exists</system:String>
+	<system:String x:Key="LinuxSettingsPageViewModelConfigErrorRunner">所選的資料夾无效。請確保它是一個正確的 Wine Runner 資料夾，其中包含一個 bin 資料夾</system:String>
+	<system:String x:Key="LinuxSettingsPageViewModelConfigErrorPrefix">所選的資料夾无效。請確保資料夾存在</system:String>
 	
 	<!-- Location Editor View -->
 	<system:String x:Key="LocationEditorLoadButtonTitle">載入</system:String>
@@ -359,11 +360,11 @@
 
 	<!-- Install - Configure Sit View -->
 	<system:String x:Key="ConfigureSitViewLoadingVersionSelectionText">正在確定可用的 SIT 版本，請稍候...</system:String>
-	<system:String x:Key="ConfigureSitViewVersionSelectionErrorMessage">Unable to determine available SIT versions...</system:String>
+	<system:String x:Key="ConfigureSitViewVersionSelectionErrorMessage">無法確定可用的 SIT 服务器版本...</system:String>
 	<system:String x:Key="ConfigureSitViewEFTChangeInstallPathToolTip">更改 EFT 的安裝路徑。</system:String>
 	<system:String x:Key="ConfigureSitViewEFTSettingsButtonChangeTitle">更改</system:String>
-	<system:String x:Key="ConfigureSitViewEFTInstallPathPlaceholder">EFT 安裝路徑...</system:String>
-	<system:String x:Key="ConfigureSitViewEFTInstallPathTitle">EFT 路徑：</system:String>
+	<system:String x:Key="ConfigureSitViewEFTInstallPathPlaceholder">SIT EFT Install Path...</system:String>
+	<system:String x:Key="ConfigureSitViewEFTInstallPathTitle">SIT EFT Install Path:</system:String>
 	<system:String x:Key="ConfigureSitViewEFTPathWarningNoPath">目前使用 BSG EFT 的安裝位置。請將 EFT 安裝到其他位置以避免與 SIT 的潛在問題</system:String>
 	<system:String x:Key="ConfigureSitViewMirrorSelectionTitle">選擇要使用的鏡像：</system:String>
 	<system:String x:Key="ConfigureSitViewVersionSelectionTitle">要安裝的版本：</system:String>
@@ -375,6 +376,7 @@
 	<!-- Install - Configure Sit View Model -->
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorTitle">位置選擇錯誤</system:String>
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorDescription">您選擇了與 BSG EFT 安裝相同的目錄，請選擇另一個位置以安裝 SIT</system:String>
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionSPTErrorDescription">You've selected the same folder as an existing SPT install, please choose a different location to install SIT to</system:String>
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorOk">好的</system:String>
 
 	<!-- Install - Install View -->
@@ -419,110 +421,111 @@
 	<system:String x:Key="InstallPageViewModelCompleteText">完成</system:String>
 
 	<!-- CharacterSelectionView -->
-	<system:String x:Key="CharacterSelectionViewBackButtonText">Back</system:String>
-	<system:String x:Key="CharacterSelectionViewAddCharacterButtonText">Add Character</system:String>
+	<system:String x:Key="CharacterSelectionViewBackButtonText">返回</system:String>
+	<system:String x:Key="CharacterSelectionViewAddCharacterButtonText">添加角色</system:String>
 
 	<!-- CharacterSummaryView -->
-	<system:String x:Key="CharacterSummaryViewPlayButtonText">Play</system:String>
-	<system:String x:Key="CharacterSummaryViewLoginButtonText">Login</system:String>
+	<system:String x:Key="CharacterSummaryViewPlayButtonText">玩</system:String>
+	<system:String x:Key="CharacterSummaryViewLoginButtonText">登錄</system:String>
 
 	<!-- CreateServerDialogView -->
-	<system:String x:Key="CreateServerDialogViewAddTitle">Add Server</system:String>
-	<system:String x:Key="CreateServerDialogViewEditTitle">Edit Server</system:String>
-	<system:String x:Key="CreateServerDialogViewPrimaryButtonText">Save</system:String>
-	<system:String x:Key="CreateServerDialogViewCloseButtonText">Close</system:String>
-	<system:String x:Key="CreateServerDialogViewAddressLabel">Address</system:String>
-	<system:String x:Key="CreateServerDialogViewAddressTextBoxWatermark">Enter Server Address...</system:String>
+	<system:String x:Key="CreateServerDialogViewAddTitle">添加伺服器</system:String>
+	<system:String x:Key="CreateServerDialogViewEditTitle">編輯伺服器</system:String>
+	<system:String x:Key="CreateServerDialogViewPrimaryButtonText">儲存</system:String>
+	<system:String x:Key="CreateServerDialogViewCloseButtonText">關閉</system:String>
+	<system:String x:Key="CreateServerDialogViewAddressLabel">地址</system:String>
+	<system:String x:Key="CreateServerDialogViewAddressTextBoxWatermark">输入服务器地址...</system:String>
 
 	<!-- DirectConnectView -->
-	<system:String x:Key="DirectConnectViewAddressBoxTitle">Address</system:String>
-	<system:String x:Key="DirectConnectViewEnterServerAddressPlaceholder">Enter Server Address...</system:String>
-	<system:String x:Key="DirectConnectViewUsernameBoxTitle">Username</system:String>
-	<system:String x:Key="DirectConnectViewEnterUserNamePlaceholder">Enter Username...</system:String>
-	<system:String x:Key="DirectConnectViewPasswordBoxTitle">Password</system:String>
-	<system:String x:Key="DirectConnectViewEnterPasswordPlaceholder">Enter Password...</system:String>
-	<system:String x:Key="DirectConnectViewRememberMeCheckBoxTitle">Remember Me</system:String>
-	<system:String x:Key="DirectConnectViewConnectButtonTitle">Connect</system:String>
-	<system:String x:Key="DirectConnectViewConnectButtonTitleToolTip">Connect to the server</system:String>
-	<system:String x:Key="DirectConnectViewStartServerAndConnectButtonTitleToolTip">Start the Aki server and connect to the server</system:String>
+	<system:String x:Key="DirectConnectViewAddressBoxTitle">地址</system:String>
+	<system:String x:Key="DirectConnectViewEnterServerAddressPlaceholder">輸入服务器地址...</system:String>
+	<system:String x:Key="DirectConnectViewUsernameBoxTitle">用户名</system:String>
+	<system:String x:Key="DirectConnectViewEnterUserNamePlaceholder">輸入用户名...</system:String>
+	<system:String x:Key="DirectConnectViewPasswordBoxTitle">密碼</system:String>
+	<system:String x:Key="DirectConnectViewEnterPasswordPlaceholder">輸入密碼...</system:String>
+	<system:String x:Key="DirectConnectViewRememberMeCheckBoxTitle">记住我</system:String>
+	<system:String x:Key="DirectConnectViewConnectButtonTitle">連接</system:String>
+	<system:String x:Key="CDirectConnectViewonnectButtonTitleToolTip">連接到服务器</system:String>
+	<system:String x:Key="DirectConnectViewStartServerAndConnectButtonTitleToolTip">啟動 Aki 服务器并連接到服务器</system:String>
 
 	<!-- LoginDialogView -->
-	<system:String x:Key="LoginDialogViewViewTitle">Character Login</system:String>
-	<system:String x:Key="LoginDialogViewViewPrimaryButtonText">Login</system:String>
-	<system:String x:Key="LoginDialogViewViewCloseButtonText">Close</system:String>
-	<system:String x:Key="LoginDialogViewViewUsernameBoxTitle">Username: </system:String>
-	<system:String x:Key="LoginDialogViewViewPasswordBoxTitle">Password</system:String>
-	<system:String x:Key="LoginDialogViewViewEnterPasswordPlaceholder">Enter Password...</system:String>
-	<system:String x:Key="LoginDialogViewRememberMeCheckBoxTitle">Remember Me</system:String>
+	<system:String x:Key="LoginDialogViewViewTitle">角色登錄</system:String>
+	<system:String x:Key="LoginDialogViewViewPrimaryButtonText">登錄</system:String>
+	<system:String x:Key="LoginDialogViewViewCloseButtonText">關閉</system:String>
+	<system:String x:Key="LoginDialogViewViewUsernameBoxTitle">用户名: </system:String>
+	<system:String x:Key="LoginDialogViewViewPasswordBoxTitle">密碼</system:String>
+	<system:String x:Key="LoginDialogViewViewEnterPasswordPlaceholder">輸入密碼...</system:String>
+	<system:String x:Key="LoginDialogViewRememberMeCheckBoxTitle">记住我</system:String>
 
 	<!-- ServerSelectionView -->
-	<system:String x:Key="ServerSelectionViewAddServerButtonText">Add Server</system:String>
+	<system:String x:Key="ServerSelectionViewAddServerButtonText">添加伺服器</system:String>
 
 	<!-- ServerSummaryView -->
-	<system:String x:Key="ServerSummaryViewModelConnectButtonText">Connect</system:String>
-	<system:String x:Key="ServerSummaryViewModelPingUnitsText">ms</system:String>
+	<system:String x:Key="ServerSummaryViewModelConnectButtonText">連接</system:String>
+	<system:String x:Key="ServerSummaryViewModelPingUnitsText">毫秒</system:String>
 
 	<!-- PlayPage -->
-	<system:String x:Key="PlayPageBookmarksTabHeader">Bookmarks</system:String>
-	<system:String x:Key="PlayPageDirectConnectTabHeader">Direct Connect</system:String>
+	<system:String x:Key="PlayPageBookmarksTabHeader">書籤</system:String>
+	<system:String x:Key="PlayPageDirectConnectTabHeader">直接連接</system:String>
 
 	<!-- ServerSummaryViewModel -->
-	<system:String x:Key="ServerSummaryViewModelEditDialogTitle">Edit Server Error</system:String>
-	<system:String x:Key="ServerSummaryViewModelEditDialogContent">Failed to edit server</system:String>
-	<system:String x:Key="ServerSummaryViewModelEditDialogPrimaryButtonText">Ok</system:String>
-	<system:String x:Key="ServerSummaryViewModelNoServerNameText">Failed connecting to address...</system:String>
+	<system:String x:Key="ServerSummaryViewModelEditDialogTitle">編輯伺服器錯誤</system:String>
+	<system:String x:Key="ServerSummaryViewModelEditDialogContent">編輯伺服器失敗</system:String>
+	<system:String x:Key="ServerSummaryViewModelEditDialogPrimaryButtonText">確定</system:String>
+	<system:String x:Key="ServerSummaryViewModelNoServerNameText">無法連接到地址...</system:String>
 
 	<!-- ServerSelectionViewModel -->
-	<system:String x:Key="ServerSelectionViewModelAddServerDialogTitle">Add Server Error</system:String>
-	<system:String x:Key="ServerSelectionViewModelAddServerDialogContent">Failed to add server as it already exists</system:String>
-	<system:String x:Key="ServerSelectionViewModelAddServerPrimaryButtonText">Ok</system:String>
-	<system:String x:Key="ServerSelectionViewModelDeleteServerDialogTitle">Delete Server</system:String>
-	<system:String x:Key="ServerSelectionViewModelDeleteServerDialogContent">Are you sure you want to delete this server?</system:String>
-	<system:String x:Key="ServerSelectionViewModelDeleteServerPrimaryButtonText">Yes</system:String>
-	<system:String x:Key="ServerSelectionViewModelDeleteServerCloseButtonText">No</system:String>
+	<system:String x:Key="ServerSelectionViewModelAddServerDialogTitle">添加伺服器錯誤</system:String>
+	<system:String x:Key="ServerSelectionViewModelAddServerDialogContent">由於伺服器已存在，無法添加伺服器</system:String>
+	<system:String x:Key="ServerSelectionViewModelAddServerPrimaryButtonText">確定</system:String>
+	<system:String x:Key="ServerSelectionViewModelDeleteServerDialogTitle">刪除伺服器</system:String>
+	<system:String x:Key="ServerSelectionViewModelDeleteServerDialogContent">您確定要刪除此伺服器嗎？</system:String>
+	<system:String x:Key="ServerSelectionViewModelDeleteServerPrimaryButtonText">是</system:String>
+	<system:String x:Key="ServerSelectionViewModelDeleteServerCloseButtonText">否</system:String>
 
 	<!-- CharacterSummaryViewModel -->
-	<system:String x:Key="CharacterSummaryViewModelPlayErrorDialogTitle">Error</system:String>
-	<system:String x:Key="CharacterSummaryViewModelPlayErrorDialogContent">Error launching Tarkov; consult log for details</system:String>
-	<system:String x:Key="CharacterSummaryViewModelPlayErrorDialogPrimaryButtonText">Ok</system:String>
+	<system:String x:Key="CharacterSummaryViewModelPlayErrorDialogTitle">錯誤</system:String>
+	<system:String x:Key="CharacterSummaryViewModelPlayErrorDialogContent">啟動 Tarkov 時出错；請查閱日志了解详细信息</system:String>
+	<system:String x:Key="CharacterSummaryViewModelPlayErrorDialogPrimaryButtonText">確定</system:String>
 
 	<!-- DirectConnectViewModel -->
-	<system:String x:Key="DirectConnectViewModelButtonOk">Ok</system:String>
-	<system:String x:Key="DirectConnectViewModelServerAddressTitle">Server Address</system:String>
-	<system:String x:Key="DirectConnectViewModelServerAddressDescription">Please fix your server address and try again</system:String>
-	<system:String x:Key="DirectConnectViewModelInstallPathTitle">Install Path</system:String>
-	<system:String x:Key="DirectConnectViewModelInstallPathDescription">'Install Path' is not configured. Go to settings and configure the installtion path.</system:String>
-	<system:String x:Key="DirectConnectViewModelSITInstallationTitle">SIT Installation</system:String>
-	<system:String x:Key="DirectConnectViewModelSITInstallationDescription">Unable to find '%1'. Install SIT before connecting.</system:String>
-	<system:String x:Key="DirectConnectViewModelEFTInstallationTitle">EFT Installation</system:String>
-	<system:String x:Key="DirectConnectViewModelEFTInstallationDescription">Unable to find '%1' in the installation path.</system:String>
-	<system:String x:Key="DirectConnectViewModelInputValidationTitle">Input Validation</system:String>
-	<system:String x:Key="DirectConnectViewModelInputValidationDescription">Missing input field.</system:String>
-	<system:String x:Key="DirectConnectViewModelUnhandledAkiInstanceTitle">Unhandled Aki Instance</system:String>
-	<system:String x:Key="DirectConnectViewModelUnhandledAkiInstanceDescription">SPT-AKI is currently running. Please close any running instance of SPT-AKI.</system:String>
-	<system:String x:Key="DirectConnectViewModelMissingAKIInstallationTitle">Missing AKI Installation</system:String>
-	<system:String x:Key="DirectConnectViewModelMissingAKIInstallationDescription">SPT-AKI server executable is missing.</system:String>
-	<system:String x:Key="DirectConnectViewModelLoginIncorrectPassword">Incorrect password</system:String>
-	<system:String x:Key="DirectConnectViewModelLoginErrorTitle">Login Error</system:String>
-	<system:String x:Key="DirectConnectViewModelLoginErrorDescription">Unable to communicate with the server %1</system:String>
-	<system:String x:Key="DirectConnectViewModelWaitingForServerTitle">Waiting for server</system:String>
-	<system:String x:Key="DirectConnectViewModelServerErrorTitle">Server Error</system:String>
-	<system:String x:Key="DirectConnectViewModelServerErrorDescription">The server never started. Please check the logs for more information.</system:String>
-	<system:String x:Key="DirectConnectViewModelQuickPlayText">Start Server and Connect</system:String>
-	<system:String x:Key="DirectConnectViewModelAccountNotFound">Account Not Found</system:String>
-	<system:String x:Key="DirectConnectViewModelAccountNotFoundDescription">Your account has not been found, would you like to register a new account with these credentials?</system:String>
-	<system:String x:Key="DirectConnectViewModelButtonYes">Yes</system:String>
-	<system:String x:Key="DirectConnectViewModelButtonNo">No</system:String>
-	<system:String x:Key="DirectConnectViewModelInstallNotFoundTitle">SIT Install Not Found</system:String>
-	<system:String x:Key="DirectConnectViewModelInstallNotFoundMessage">Unable to find your SIT install, please set this in settings or install SIT using the install button on the left</system:String>
+	<system:String x:Key="DirectConnectViewModelButtonOk">確定</system:String>
+	<system:String x:Key="DirectConnectViewModelServerAddressTitle">伺服器地址</system:String>
+	<system:String x:Key="DirectConnectViewModelServerAddressDescription">請修復您的伺服器地址並重試</system:String>
+	<system:String x:Key="DirectConnectViewModelInstallPathTitle">安裝路徑</system:String>
+	<system:String x:Key="DirectConnectViewModelInstallPathDescription">「安裝路徑」未配置。請前往設定並配置安裝路徑。</system:String>
+	<system:String x:Key="DirectConnectViewModelSITInstallationTitle">SIT 安裝</system:String>
+	<system:String x:Key="DirectConnectViewModelSITInstallationDescription">找不到「%1」。請在连接之前安裝 SIT。</system:String>
+	<system:String x:Key="DirectConnectViewModelEFTInstallationTitle">EFT 安裝</system:String>
+	<system:String x:Key="DirectConnectViewModelEFTInstallationDescription">在安裝路徑中找不到「%1」。</system:String>
+	<system:String x:Key="DirectConnectViewModelInputValidationTitle">輸入驗證</system:String>
+	<system:String x:Key="DirectConnectViewModelInputValidationDescription">缺少輸入字段。</system:String>
+	<system:String x:Key="DirectConnectViewModelUnhandledAkiInstanceTitle">未處理的 Aki 實例</system:String>
+	<system:String x:Key="DirectConnectViewModelUnhandledAkiInstanceDescription">SPT-AKI 当前正在运行。請关闭任何正在运行的 SPT-AKI 实例。</system:String>
+	<system:String x:Key="DirectConnectViewModelMissingAKIInstallationTitle">缺少 AKI 安裝</system:String>
+	<system:String x:Key="DirectConnectViewModelMissingAKIInstallationDescription">缺少 SPT-AKI 服务器可执行文件。</system:String>
+	<system:String x:Key="DirectConnectViewModelLoginIncorrectPassword">密碼错误</system:String>
+	<system:String x:Key="DirectConnectViewModelLoginErrorTitle">登錄错误</system:String>
+	<system:String x:Key="DirectConnectViewModelLoginErrorDescription">無法與服务器 %1 通信</system:String>
+	<system:String x:Key="DirectConnectViewModelWaitingForServerTitle">等待伺服器</system:String>
+	<system:String x:Key="DirectConnectViewModelServerErrorTitle">伺服器错误</system:String>
+	<system:String x:Key="DirectConnectViewModelServerErrorDescription">伺服器从未启动。请查看日志了解更多信息。</system:String>
+	<system:String x:Key="DirectConnectViewModelQuickPlayText">啟動伺服器並連接</system:String>
+	<system:String x:Key="DirectConnectViewModelAccountNotFound">找不到帳戶</system:String>
+	<system:String x:Key="DirectConnectViewModelAccountNotFoundDescription">未找到您的帳戶，您是否要使用這些憑據註冊新帳戶？</system:String>
+	<system:String x:Key="DirectConnectViewModelButtonYes">是</system:String>
+	<system:String x:Key="DirectConnectViewModelButtonNo">否</system:String>
+	<system:String x:Key="DirectConnectViewModelInstallNotFoundTitle">找不到 SIT 安裝</system:String>
+	<system:String x:Key="DirectConnectViewModelInstallNotFoundMessage">找不到您的 SIT 安裝，請在設定中设置它，或使用左側的安裝按钮安裝 SIT。</system:String>
 
 	<!-- CreateCharacterDialogView -->
-	<system:String x:Key="CreateCharacterDialogViewTitle">Create New Character</system:String>
-	<system:String x:Key="CreateCharacterDialogViewCloseButtonText">Cancel</system:String>
-	<system:String x:Key="CreateCharacterDialogViewPrimaryButtonText">Create</system:String>
-	<system:String x:Key="CreateCharacterDialogViewSaveLoginDetailsCheckBoxTitle">Save Login Details</system:String>
+	<system:String x:Key="CreateCharacterDialogViewTitle">創建新角色</system:String>
+	<system:String x:Key="CreateCharacterDialogViewCloseButtonText">取消</system:String>
+	<system:String x:Key="CreateCharacterDialogViewPrimaryButtonText">創建</system:String>
+	<system:String x:Key="CreateCharacterDialogViewSaveLoginDetailsCheckBoxTitle">保存登錄详细信息</system:String>
 
 	<!-- MainViewModel -->
-	<system:String x:Key="MainViewModelUpdateErrorTitle">Error</system:String>
-	<system:String x:Key="MainViewModelUpdateErrorMessage">Failed when checking for updates</system:String>
+	<system:String x:Key="MainViewModelUpdateErrorTitle">錯誤</system:String>
+	<system:String x:Key="MainViewModelUpdateErrorMessage">檢查更新時出現錯誤</system:String>
+	
 </ResourceDictionary>

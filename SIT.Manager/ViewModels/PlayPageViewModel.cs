@@ -1,8 +1,10 @@
 ﻿using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using SIT.Manager.Interfaces;
 using SIT.Manager.Models.Aki;
 using SIT.Manager.Models.Play;
+using SIT.Manager.Services.Caching;
 using SIT.Manager.Views.Play;
 using System;
 
@@ -13,14 +15,37 @@ public partial class PlayPageViewModel : ObservableRecipient,
                                          IRecipient<ConnectedServerRequestMessage>,
                                          IRecipient<ServerDisconnectMessage>
 {
+    private const string SELECTED_TAB_INDEX_CACHE_KEY = "LastSelectedPlayPageTabIndex";
+
+    private readonly ICachingService _cachingService;
+
     private AkiServer? _connectedServer;
 
     [ObservableProperty]
     private UserControl _playControl;
 
-    public PlayPageViewModel()
+    [ObservableProperty]
+    private int _selectedTabIndex = 0;
+
+    public PlayPageViewModel(ICachingService cachingService)
     {
+        _cachingService = cachingService;
+
+        if (_cachingService.OnDisk.TryGet(SELECTED_TAB_INDEX_CACHE_KEY, out CacheValue<int> indexValue))
+        {
+            SelectedTabIndex = indexValue.Value;
+        }
+
         PlayControl = new ServerSelectionView();
+    }
+
+    partial void OnSelectedTabIndexChanged(int value)
+    {
+        if (_cachingService.OnDisk.Exists(SELECTED_TAB_INDEX_CACHE_KEY))
+        {
+            _cachingService.OnDisk.Remove(SELECTED_TAB_INDEX_CACHE_KEY);
+        }
+        _cachingService.OnDisk.Add(SELECTED_TAB_INDEX_CACHE_KEY, value);
     }
 
     public void Receive(ServerConnectMessage message)

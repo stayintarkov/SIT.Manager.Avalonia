@@ -7,7 +7,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:DataType="vm:PlayPageViewModel"
              x:Class="SIT.Manager.Views.PlayPage">
-	<TabControl Margin="2">
+	<TabControl Margin="2" SelectedIndex="{Binding SelectedTabIndex}">
 		<TabItem Header="{DynamicResource PlayPageBookmarksTabHeader}">
 			<ContentControl Content="{Binding PlayControl}"/>
 		</TabItem>

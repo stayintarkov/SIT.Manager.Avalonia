@@ -10,6 +10,7 @@ using SIT.Manager.Models.Installation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -80,6 +81,7 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
         IStorageFolder? directorySelected = await _pickerDialogService.GetDirectoryFromPickerAsync();
         if (directorySelected != null)
         {
+            bool usingInvalidLocatiion = false;
             if (directorySelected.Path.LocalPath == CurrentInstallProcessState.BsgInstallPath)
             {
                 // Using the same location as the current BSG install and we don't want this the same as the SIT install.
@@ -89,8 +91,22 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
                     Content = _localizationService.TranslateSource("ConfigureSitViewModelLocationSelectionErrorDescription"),
                     PrimaryButtonText = _localizationService.TranslateSource("ConfigureSitViewModelLocationSelectionErrorOk")
                 }.ShowAsync();
+                usingInvalidLocatiion = true;
             }
-            else
+
+            if (HasSelectedSPTInstallPath(directorySelected.Path.LocalPath))
+            {
+                // Using the same location as an existing SPT install and we don't want this the same as the SIT install.
+                await new ContentDialog()
+                {
+                    Title = _localizationService.TranslateSource("ConfigureSitViewModelLocationSelectionErrorTitle"),
+                    Content = _localizationService.TranslateSource("ConfigureSitViewModelLocationSelectionSPTErrorDescription"),
+                    PrimaryButtonText = _localizationService.TranslateSource("ConfigureSitViewModelLocationSelectionErrorOk")
+                }.ShowAsync();
+                usingInvalidLocatiion = true;
+            }
+
+            if (!usingInvalidLocatiion)
             {
                 CurrentInstallProcessState.EftInstallPath = directorySelected.Path.LocalPath;
                 OverridenBsgInstallPath = true;
@@ -163,6 +179,21 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
         ValidateConfiguration();
     }
 
+    /// <summary>
+    /// Check if the currently selected EFT diretory has indicators of an SPT install and if so return true, otherwise return false
+    /// </summary>
+    /// <returns>True if this is an SPT install directory otherwise false</returns>
+    private bool HasSelectedSPTInstallPath(string requestedDirectory)
+    {
+        string sptLauncherPath = Path.Combine(requestedDirectory, "Aki.Launcher.exe");
+        string sptServerPath = Path.Combine(requestedDirectory, "Aki.Server.exe");
+        if (File.Exists(sptLauncherPath) || File.Exists(sptServerPath))
+        {
+            return true;
+        }
+        return false;
+    }
+
     [RelayCommand]
     private void Back()
     {
@@ -175,6 +206,7 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
         ProgressInstall();
     }
 
+    // TODO convert this view model into some kind of validator or something to make this part shorter and easier to handle
     private void ValidateConfiguration()
     {
         IsConfigurationValid = true;
@@ -207,6 +239,12 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
         }
 
         if (IsModsSelectionLoading || IsVersionSelectionLoading)
+        {
+            IsConfigurationValid = false;
+            return;
+        }
+
+        if (HasSelectedSPTInstallPath(CurrentInstallProcessState.EftInstallPath))
         {
             IsConfigurationValid = false;
             return;

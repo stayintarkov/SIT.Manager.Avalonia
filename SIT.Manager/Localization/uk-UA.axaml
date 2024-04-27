@@ -12,6 +12,7 @@
 	<system:String x:Key="ServerTitle">Сервер</system:String>
 	<system:String x:Key="ModsTitle">Моди</system:String>
 	<system:String x:Key="SettingsTitle">Налаштування</system:String>
+	<system:String x:Key="HelpTitle">Допомога</system:String>
 	<system:String x:Key="PlayTitleToolTip">Підключитися та грати.</system:String>
 	<system:String x:Key="InstallTitleToolTip">Встановити/оновити SIT та SIT Server</system:String>
 	<system:String x:Key="ToolsTitleToolTip">Інструменти для управління SIT та Tarkov.</system:String>
@@ -116,59 +117,59 @@
 	<system:String x:Key="SettingsManagerVersionTitle">Версія Менеджера (Лаунчера):</system:String>
 
 	<!-- EftView -->
-	<system:String x:Key="EftViewBsgEftInstallPath">BSG EFT Install Path:</system:String>
+	<system:String x:Key="EftViewBsgEftInstallPath">Шлях встановлення BSG EFT:</system:String>
 
 	<!-- EftViewModel -->
-	<system:String x:Key="EftViewModelBsgEftInstallPathMissing">Unable to detect BSG EFT install...</system:String>
-	<system:String x:Key="EftViewModelSitEftInstallPathMissing">SIT install not found. Please point to existing install here, or install by clicking the install button on the left</system:String>
+	<system:String x:Key="EftViewModelBsgEftInstallPathMissing">Неможливо виявити встановлення BSG EFT...</system:String>
+	<system:String x:Key="EftViewModelSitEftInstallPathMissing">Не знайдено встановлення SIT. Будь ласка, вкажіть тут наявний шлях встановлення або встановіть його, натиснувши кнопку встановлення ліворуч</system:String>
 
 	<!-- Linux Settings Page -->
-	<system:String x:Key="Key">Key</system:String>
-	<system:String x:Key="Value">Value</system:String>
-	<system:String x:Key="LinuxSettingsPageTitle">Linux Settings</system:String>
-	<system:String x:Key="LinuxSettingsExperimentalWarning">Experimental Linux settings. Some might not work or are not implemented yet. Use at your own risk.</system:String>
-	
-	<system:String x:Key="LinuxSettingsWinePrefixTitle">Wine Prefix:</system:String>
-	<system:String x:Key="LinuxSettingsWinePrefixPlaceholder">Wine Prefix Path</system:String>
-	<system:String x:Key="LinuxSettingsWinePrefixToolTip">Change the WINEPREFIX used for EFT</system:String>
-	<system:String x:Key="LinuxSettingsWineRunnerTitle">Wine Runner:</system:String>
-	<system:String x:Key="LinuxSettingsWineRunnerPlaceholder">Wine Runner Path</system:String>
-	<system:String x:Key="LinuxSettingsWineRunnerToolTip">Set the wine runner used for EFT. Leave blank to download the recommended SPT wine runner into the same folder as the bottle</system:String>
-	<system:String x:Key="LinuxSettingsWineEnvTitle">Environment: </system:String>
-	<system:String x:Key="LinuxSettingsWineEnvPlaceholder">Wine Environment Variables</system:String>
-	<system:String x:Key="LinuxSettingsWineEnvToolTip">Set custom environment variables used for wine</system:String>
-	<system:String x:Key="LinuxSettingsWineEnvAddButton">Add</system:String>
-	<system:String x:Key="LinuxSettingsWineEnvDeleteButton">Delete</system:String>
-	
-	<system:String x:Key="LinuxSettingsGraphicsTitle">Graphics</system:String>
-	<system:String x:Key="LinuxSettingsEnableDxvkTitle">Enable DXVK</system:String>
-	<system:String x:Key="LinuxSettingsEnableDxvkToolTip">Use DXVK to increase compatibility and performance in Direct3D 11, 10 and 9 applications by translating their calls to Vulkan.</system:String>
-	<system:String x:Key="LinuxSettingsDxvkVersionTitle">DXVK Version</system:String>
-	<system:String x:Key="LinuxSettingsDxvkVersionToolTip">Select the version of DXVK to use</system:String>
-	<system:String x:Key="LinuxSettingsEnableVkd3DTitle">Enable VKD3D</system:String>
-	<system:String x:Key="LinuxSettingsEnableVkd3DToolTip">Use VKD3D to translate Direct3D 12 to Vulkan</system:String>
-	<system:String x:Key="LinuxSettingsEnableD3DExtrasTitle">Enable D3D Extras</system:String>
-	<system:String x:Key="LinuxSettingsEnableD3DExtrasToolTip">Enable additional Direct3D features</system:String>
-	<system:String x:Key="LinuxSettingsEnableDxvkNvapiTitle">Enable DXVK NVAPI / DLSS [TO BE IMPLEMENTED]</system:String>
-	<system:String x:Key="LinuxSettingsEnableDxvkNvapiToolTip">Enable NVAPI support in DXVK [TO BE IMPLEMENTED/DOES NOT WORK]</system:String>
-	<system:String x:Key="LinuxSettingsEnableDgVoodoo2Title">Enable dgvoodoo2</system:String>
-	<system:String x:Key="LinuxSettingsEnableDgVoodoo2ToolTip">Use dgvoodoo2 to translate Direct3D 1-11 to OpenGL</system:String>
-	
-	<system:String x:Key="LinuxSettingsLaunchOptionsTitle">Launch Options</system:String>
-	<system:String x:Key="LinuxSettingsEnableEsyncTitle">Enable Esync</system:String>
-	<system:String x:Key="LinuxSettingsEnableEsyncToolTip">Use Esync to improve performance in Wine</system:String>
-	<system:String x:Key="LinuxSettingsEnableFsyncTitle">Enable Fsync</system:String>
-	<system:String x:Key="LinuxSettingsEnableFsyncToolTip">Use Fsync to improve performance in Wine</system:String>
-	<system:String x:Key="LinuxSettingsEnableFsrTitle">Enable AMD FidelityFX Super Resolution (FSR)</system:String>
-	<system:String x:Key="LinuxSettingsEnableFsrToolTip">Use FSR to improve performance in games</system:String>
-	<system:String x:Key="LinuxSettingsEnableMangoHudTitle">Enable MangoHud</system:String>
-	<system:String x:Key="LinuxSettingsEnableMangoHudToolTip">MangoHud is a modification of the Mesa Vulkan overlay that includes GUI improvements, temperature monitoring, and more</system:String>
-	<system:String x:Key="LinuxSettingsEnableGameModeTitle">Enable Feral GameMode</system:String>
-	<system:String x:Key="LinuxSettingsEnableGameModeToolTip">GameMode is a daemon/lib combo for Linux that allows games to request a set of optimisations be temporarily applied to the host OS</system:String>
+	<system:String x:Key="Key">Ключ</system:String>
+	<system:String x:Key="Value">Значення</system:String>
+	<system:String x:Key="LinuxSettingsPageTitle">Налаштування Linux</system:String>
+	<system:String x:Key="LinuxSettingsExperimentalWarning">Експериментальні налаштування Linux. Деякі з них можуть не працювати або ще не реалізовані. Використовуйте на власний ризик.</system:String>
+
+	<system:String x:Key="LinuxSettingsWinePrefixTitle">Префікс Wine:</system:String>
+	<system:String x:Key="LinuxSettingsWinePrefixPlaceholder">Шлях префіксу Wine</system:String>
+	<system:String x:Key="LinuxSettingsWinePrefixToolTip">Змінити WINEPREFIX, що використовується для EFT</system:String>
+	<system:String x:Key="LinuxSettingsWineRunnerTitle">Виконавець Wine:</system:String>
+	<system:String x:Key="LinuxSettingsWineRunnerPlaceholder">Шлях виконувача Wine</system:String>
+	<system:String x:Key="LinuxSettingsWineRunnerToolTip">Встановити виконувач Wine, що використовується для EFT. Залиште поле пустим, щоб завантажити рекомендований виконувач SPT Wine в ту саму папку, що й контейнер</system:String>
+	<system:String x:Key="LinuxSettingsWineEnvTitle">Середовище: </system:String>
+	<system:String x:Key="LinuxSettingsWineEnvPlaceholder">Змінні середовища Wine</system:String>
+	<system:String x:Key="LinuxSettingsWineEnvToolTip">Встановити власні змінні середовища, які використовуються для Wine</system:String>
+	<system:String x:Key="LinuxSettingsWineEnvAddButton">Додати</system:String>
+	<system:String x:Key="LinuxSettingsWineEnvDeleteButton">Видалити</system:String>
+
+	<system:String x:Key="LinuxSettingsGraphicsTitle">Графіка</system:String>
+	<system:String x:Key="LinuxSettingsEnableDxvkTitle">Включити DXVK</system:String>
+	<system:String x:Key="LinuxSettingsEnableDxvkToolTip">Використовуйте DXVK для підвищення сумісності та продуктивності в програмах Direct3D 11, 10 і 9, перекладаючи їхні виклики в Vulkan.</system:String>
+	<system:String x:Key="LinuxSettingsDxvkVersionTitle">Версія DXVK</system:String>
+	<system:String x:Key="LinuxSettingsDxvkVersionToolTip">Виберіть версію DXVK для використання</system:String>
+	<system:String x:Key="LinuxSettingsEnableVkd3DTitle">Включити VKD3D</system:String>
+	<system:String x:Key="LinuxSettingsEnableVkd3DToolTip">Використовуйте VKD3D для перекладу Direct3D 12 у Vulkan</system:String>
+	<system:String x:Key="LinuxSettingsEnableD3DExtrasTitle">Включити додаткові функції D3D</system:String>
+	<system:String x:Key="LinuxSettingsEnableD3DExtrasToolTip">Увімкнути додаткові функції Direct3D</system:String>
+	<system:String x:Key="LinuxSettingsEnableDxvkNvapiTitle">Увімкнути DXVK NVAPI / DLSS [В РОЗРОБЦІ]</system:String>
+	<system:String x:Key="LinuxSettingsEnableDxvkNvapiToolTip">Увімкнути підтримку NVAPI в DXVK [В РОЗРОБЦІ/ НЕ ПРАЦЮЄ]</system:String>
+	<system:String x:Key="LinuxSettingsEnableDgVoodoo2Title">Включити dgvoodoo2</system:String>
+	<system:String x:Key="LinuxSettingsEnableDgVoodoo2ToolTip">Використовуйте dgvoodoo2 для перекладу Direct3D 1-11 в OpenGL</system:String>
+
+	<system:String x:Key="LinuxSettingsLaunchOptionsTitle">Параметри запуску</system:String>
+	<system:String x:Key="LinuxSettingsEnableEsyncTitle">Увімкнути Esync</system:String>
+	<system:String x:Key="LinuxSettingsEnableEsyncToolTip">Використовуйте Esync для покращення продуктивності в Wine</system:String>
+	<system:String x:Key="LinuxSettingsEnableFsyncTitle">Увімкнути Fsync</system:String>
+	<system:String x:Key="LinuxSettingsEnableFsyncToolTip">Використовуйте Fsync для покращення продуктивності в Wine</system:String>
+	<system:String x:Key="LinuxSettingsEnableFsrTitle">Увімкнути AMD FidelityFX Super Resolution (FSR)</system:String>
+	<system:String x:Key="LinuxSettingsEnableFsrToolTip">Використовуйте FSR для покращення продуктивності в іграх</system:String>
+	<system:String x:Key="LinuxSettingsEnableMangoHudTitle">Увімкнути MangoHud</system:String>
+	<system:String x:Key="LinuxSettingsEnableMangoHudToolTip">MangoHud - це модифікація оверлею Mesa Vulkan, яка включає покращення інтерфейсу, моніторинг температури та багато іншого</system:String>
+	<system:String x:Key="LinuxSettingsEnableGameModeTitle">Увімкнути Feral GameMode</system:String>
+	<system:String x:Key="LinuxSettingsEnableGameModeToolTip">GameMode - це комбінація демона та бібліотеки для Linux, яка дозволяє іграм тимчасово застосовувати набір оптимізацій до ОС хоста</system:String>
 	
 	<!-- Linux Settings View Model -->
-	<system:String x:Key="LinuxSettingsPageViewModelConfigErrorRunner">The selected folder was invalid. Make sure it's a proper wine runner folder with a bin folder inside</system:String>
-	<system:String x:Key="LinuxSettingsPageViewModelConfigErrorPrefix">The selected folder was invalid. Make sure the folder exists</system:String>
+	<system:String x:Key="LinuxSettingsPageViewModelConfigErrorRunner">Вибрана папка є недійсною. Переконайтеся, що це папка Wine Runner із папкою bin всередині</system:String>
+	<system:String x:Key="LinuxSettingsPageViewModelConfigErrorPrefix">Вибрана папка є недійсною. Переконайтеся, що папка існує</system:String>
 	
 	<!-- Location Editor View -->
 	<system:String x:Key="LocationEditorLoadButtonTitle">Завантажити</system:String>
@@ -350,7 +351,7 @@
 	<system:String x:Key="ConfigureViewPersonalizationOptions">Персоналізація та Імпорт Налаштувань</system:String>
 
 	<!-- Install - Configure Server View -->
-	<system:String x:Key="ConfigureServerViewVersionSelectionErrorMessage">Unable to determine available SIT Server versions...</system:String>
+	<system:String x:Key="ConfigureServerViewVersionSelectionErrorMessage">Неможливо визначити доступні версії сервера SIT...</system:String>
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathToolTip">Змінити шлях установки SPT-AKI.</system:String>
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathTitle">Змінити</system:String>
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathPlaceholder">Шлях установки SPT-AKI...</system:String>
@@ -360,11 +361,11 @@
 
 	<!-- Install - Configure Sit View -->
 	<system:String x:Key="ConfigureSitViewLoadingVersionSelectionText">Визначення доступних версій SIT, будь ласка, зачекайте...</system:String>
-	<system:String x:Key="ConfigureSitViewEFTChangeInstallPathToolTip">Змінити шлях установки EFT.</system:String>
 	<system:String x:Key="ConfigureSitViewVersionSelectionErrorMessage">Unable to determine available SIT versions...</system:String>
+	<system:String x:Key="ConfigureSitViewEFTChangeInstallPathToolTip">Change the SIT EFT Install Path.</system:String>
 	<system:String x:Key="ConfigureSitViewEFTSettingsButtonChangeTitle">Змінити</system:String>
-	<system:String x:Key="ConfigureSitViewEFTInstallPathPlaceholder">Шлях установки EFT...</system:String>
-	<system:String x:Key="ConfigureSitViewEFTInstallPathTitle">Шлях EFT:</system:String>
+	<system:String x:Key="ConfigureSitViewEFTInstallPathPlaceholder">SIT EFT Install Path...</system:String>
+	<system:String x:Key="ConfigureSitViewEFTInstallPathTitle">SIT EFT Install Path:</system:String>
 	<system:String x:Key="ConfigureSitViewEFTPathWarningNoPath">Наразі використовується місце встановлення BSG EFT. Будь ласка, встановіть EFT в інше місце, щоб уникнути можливих проблем з SIT</system:String>
 	<system:String x:Key="ConfigureSitViewMirrorSelectionTitle">Виберіть дзеркало для використання:</system:String>
 	<system:String x:Key="ConfigureSitViewVersionSelectionTitle">Версія для установки:</system:String>
@@ -376,6 +377,7 @@
 	<!-- Install - Configure Sit View Model -->
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorTitle">Помилка вибору місця розташування</system:String>
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorDescription">Ви вибрали ту саму теку, що і встановлення BSG EFT, оберіть інше місце для встановлення SIT</system:String>
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionSPTErrorDescription">You've selected the same folder as an existing SPT install, please choose a different location to install SIT to</system:String>
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorOk">Ok</system:String>
 
 	<!-- Install - Install View -->
@@ -420,110 +422,111 @@
 	<system:String x:Key="InstallPageViewModelCompleteText">Завершення</system:String>
 
 	<!-- CharacterSelectionView -->
-	<system:String x:Key="CharacterSelectionViewBackButtonText">Back</system:String>
-	<system:String x:Key="CharacterSelectionViewAddCharacterButtonText">Add Character</system:String>
+	<system:String x:Key="CharacterSelectionViewBackButtonText">Назад</system:String>
+	<system:String x:Key="CharacterSelectionViewAddCharacterButtonText">Додати персонажа</system:String>
 
 	<!-- CharacterSummaryView -->
-	<system:String x:Key="CharacterSummaryViewPlayButtonText">Play</system:String>
-	<system:String x:Key="CharacterSummaryViewLoginButtonText">Login</system:String>
+	<system:String x:Key="CharacterSummaryViewPlayButtonText">Грати</system:String>
+	<system:String x:Key="CharacterSummaryViewLoginButtonText">Ввійти</system:String>
 
 	<!-- CreateServerDialogView -->
-	<system:String x:Key="CreateServerDialogViewAddTitle">Add Server</system:String>
-	<system:String x:Key="CreateServerDialogViewEditTitle">Edit Server</system:String>
-	<system:String x:Key="CreateServerDialogViewPrimaryButtonText">Save</system:String>
-	<system:String x:Key="CreateServerDialogViewCloseButtonText">Close</system:String>
-	<system:String x:Key="CreateServerDialogViewAddressLabel">Address</system:String>
-	<system:String x:Key="CreateServerDialogViewAddressTextBoxWatermark">Enter Server Address...</system:String>
+	<system:String x:Key="CreateServerDialogViewAddTitle">Додати сервер</system:String>
+	<system:String x:Key="CreateServerDialogViewEditTitle">Редагувати сервер</system:String>
+	<system:String x:Key="CreateServerDialogViewPrimaryButtonText">Зберегти</system:String>
+	<system:String x:Key="CreateServerDialogViewCloseButtonText">Закрити</system:String>
+	<system:String x:Key="CreateServerDialogViewAddressLabel">Адреса</system:String>
+	<system:String x:Key="CreateServerDialogViewAddressTextBoxWatermark">Введіть адресу сервера...</system:String>
 
 	<!-- DirectConnectView -->
-	<system:String x:Key="DirectConnectViewAddressBoxTitle">Address</system:String>
-	<system:String x:Key="DirectConnectViewEnterServerAddressPlaceholder">Enter Server Address...</system:String>
-	<system:String x:Key="DirectConnectViewUsernameBoxTitle">Username</system:String>
-	<system:String x:Key="DirectConnectViewEnterUserNamePlaceholder">Enter Username...</system:String>
-	<system:String x:Key="DirectConnectViewPasswordBoxTitle">Password</system:String>
-	<system:String x:Key="DirectConnectViewEnterPasswordPlaceholder">Enter Password...</system:String>
-	<system:String x:Key="DirectConnectViewRememberMeCheckBoxTitle">Remember Me</system:String>
-	<system:String x:Key="DirectConnectViewConnectButtonTitle">Connect</system:String>
-	<system:String x:Key="DirectConnectViewConnectButtonTitleToolTip">Connect to the server</system:String>
-	<system:String x:Key="DirectConnectViewStartServerAndConnectButtonTitleToolTip">Start the Aki server and connect to the server</system:String>
+	<system:String x:Key="DirectConnectViewAddressBoxTitle">Адреса</system:String>
+	<system:String x:Key="DirectConnectViewEnterServerAddressPlaceholder">Введіть адресу сервера...</system:String>
+	<system:String x:Key="DirectConnectViewUsernameBoxTitle">Ім'я користувача</system:String>
+	<system:String x:Key="DirectConnectViewEnterUserNamePlaceholder">Введіть ім'я користувача...</system:String>
+	<system:String x:Key="DirectConnectViewPasswordBoxTitle">Пароль</system:String>
+	<system:String x:Key="DirectConnectViewEnterPasswordPlaceholder">Введіть пароль...</system:String>
+	<system:String x:Key="DirectConnectViewRememberMeCheckBoxTitle">Запам'ятати мене</system:String>
+	<system:String x:Key="DirectConnectViewConnectButtonTitle">Підключитися</system:String>
+	<system:String x:Key="CDirectConnectViewonnectButtonTitleToolTip">Підключитися до сервера</system:String>
+	<system:String x:Key="DirectConnectViewStartServerAndConnectButtonTitleToolTip">Запустити сервер Aki та підключитися до сервера</system:String>
 
 	<!-- LoginDialogView -->
-	<system:String x:Key="LoginDialogViewViewTitle">Character Login</system:String>
-	<system:String x:Key="LoginDialogViewViewPrimaryButtonText">Login</system:String>
-	<system:String x:Key="LoginDialogViewViewCloseButtonText">Close</system:String>
-	<system:String x:Key="LoginDialogViewViewUsernameBoxTitle">Username: </system:String>
-	<system:String x:Key="LoginDialogViewViewPasswordBoxTitle">Password</system:String>
-	<system:String x:Key="LoginDialogViewViewEnterPasswordPlaceholder">Enter Password...</system:String>
-	<system:String x:Key="LoginDialogViewRememberMeCheckBoxTitle">Remember Me</system:String>
+	<system:String x:Key="LoginDialogViewViewTitle">Вхід персонажа</system:String>
+	<system:String x:Key="LoginDialogViewViewPrimaryButtonText">Ввійти</system:String>
+	<system:String x:Key="LoginDialogViewViewCloseButtonText">Закрити</system:String>
+	<system:String x:Key="LoginDialogViewViewUsernameBoxTitle">Ім'я користувача: </system:String>
+	<system:String x:Key="LoginDialogViewViewPasswordBoxTitle">Пароль</system:String>
+	<system:String x:Key="LoginDialogViewViewEnterPasswordPlaceholder">Введіть пароль...</system:String>
+	<system:String x:Key="LoginDialogViewRememberMeCheckBoxTitle">Запам'ятати мене</system:String>
 
 	<!-- ServerSelectionView -->
-	<system:String x:Key="ServerSelectionViewAddServerButtonText">Add Server</system:String>
+	<system:String x:Key="ServerSelectionViewAddServerButtonText">Додати сервер</system:String>
 
 	<!-- ServerSummaryView -->
-	<system:String x:Key="ServerSummaryViewModelConnectButtonText">Connect</system:String>
-	<system:String x:Key="ServerSummaryViewModelPingUnitsText">ms</system:String>
+	<system:String x:Key="ServerSummaryViewModelConnectButtonText">Підключитися</system:String>
+	<system:String x:Key="ServerSummaryViewModelPingUnitsText">мс</system:String>
 
 	<!-- PlayPage -->
-	<system:String x:Key="PlayPageBookmarksTabHeader">Bookmarks</system:String>
-	<system:String x:Key="PlayPageDirectConnectTabHeader">Direct Connect</system:String>
+	<system:String x:Key="PlayPageBookmarksTabHeader">Закладки</system:String>
+	<system:String x:Key="PlayPageDirectConnectTabHeader">Пряме підключення</system:String>
 
 	<!-- ServerSummaryViewModel -->
-	<system:String x:Key="ServerSummaryViewModelEditDialogTitle">Edit Server Error</system:String>
-	<system:String x:Key="ServerSummaryViewModelEditDialogContent">Failed to edit server</system:String>
-	<system:String x:Key="ServerSummaryViewModelEditDialogPrimaryButtonText">Ok</system:String>
-	<system:String x:Key="ServerSummaryViewModelNoServerNameText">Failed connecting to address...</system:String>
+	<system:String x:Key="ServerSummaryViewModelEditDialogTitle">Помилка редагування сервера</system:String>
+	<system:String x:Key="ServerSummaryViewModelEditDialogContent">Не вдалося редагувати сервер</system:String>
+	<system:String x:Key="ServerSummaryViewModelEditDialogPrimaryButtonText">Гаразд</system:String>
+	<system:String x:Key="ServerSummaryViewModelNoServerNameText">Не вдалося підключитися до адреси...</system:String>
 
 	<!-- ServerSelectionViewModel -->
-	<system:String x:Key="ServerSelectionViewModelAddServerDialogTitle">Add Server Error</system:String>
-	<system:String x:Key="ServerSelectionViewModelAddServerDialogContent">Failed to add server as it already exists</system:String>
-	<system:String x:Key="ServerSelectionViewModelAddServerPrimaryButtonText">Ok</system:String>
-	<system:String x:Key="ServerSelectionViewModelDeleteServerDialogTitle">Delete Server</system:String>
-	<system:String x:Key="ServerSelectionViewModelDeleteServerDialogContent">Are you sure you want to delete this server?</system:String>
-	<system:String x:Key="ServerSelectionViewModelDeleteServerPrimaryButtonText">Yes</system:String>
-	<system:String x:Key="ServerSelectionViewModelDeleteServerCloseButtonText">No</system:String>
+	<system:String x:Key="ServerSelectionViewModelAddServerDialogTitle">Помилка додавання сервера</system:String>
+	<system:String x:Key="ServerSelectionViewModelAddServerDialogContent">Не вдалося додати сервер, оскільки він уже існує</system:String>
+	<system:String x:Key="ServerSelectionViewModelAddServerPrimaryButtonText">Гаразд</system:String>
+	<system:String x:Key="ServerSelectionViewModelDeleteServerDialogTitle">Видалити сервер</system:String>
+	<system:String x:Key="ServerSelectionViewModelDeleteServerDialogContent">Ви впевнені, що хочете видалити цей сервер?</system:String>
+	<system:String x:Key="ServerSelectionViewModelDeleteServerPrimaryButtonText">Так</system:String>
+	<system:String x:Key="ServerSelectionViewModelDeleteServerCloseButtonText">Ні</system:String>
 
 	<!-- CharacterSummaryViewModel -->
-	<system:String x:Key="CharacterSummaryViewModelPlayErrorDialogTitle">Error</system:String>
-	<system:String x:Key="CharacterSummaryViewModelPlayErrorDialogContent">Error launching Tarkov; consult log for details</system:String>
-	<system:String x:Key="CharacterSummaryViewModelPlayErrorDialogPrimaryButtonText">Ok</system:String>
+	<system:String x:Key="CharacterSummaryViewModelPlayErrorDialogTitle">Помилка</system:String>
+	<system:String x:Key="CharacterSummaryViewModelPlayErrorDialogContent">Помилка запуску Tarkov; деталі в журналі</system:String>
+	<system:String x:Key="CharacterSummaryViewModelPlayErrorDialogPrimaryButtonText">Гаразд</system:String>
 
 	<!-- DirectConnectViewModel -->
-	<system:String x:Key="DirectConnectViewModelButtonOk">Ok</system:String>
-	<system:String x:Key="DirectConnectViewModelServerAddressTitle">Server Address</system:String>
-	<system:String x:Key="DirectConnectViewModelServerAddressDescription">Please fix your server address and try again</system:String>
-	<system:String x:Key="DirectConnectViewModelInstallPathTitle">Install Path</system:String>
-	<system:String x:Key="DirectConnectViewModelInstallPathDescription">'Install Path' is not configured. Go to settings and configure the installtion path.</system:String>
-	<system:String x:Key="DirectConnectViewModelSITInstallationTitle">SIT Installation</system:String>
-	<system:String x:Key="DirectConnectViewModelSITInstallationDescription">Unable to find '%1'. Install SIT before connecting.</system:String>
-	<system:String x:Key="DirectConnectViewModelEFTInstallationTitle">EFT Installation</system:String>
-	<system:String x:Key="DirectConnectViewModelEFTInstallationDescription">Unable to find '%1' in the installation path.</system:String>
-	<system:String x:Key="DirectConnectViewModelInputValidationTitle">Input Validation</system:String>
-	<system:String x:Key="DirectConnectViewModelInputValidationDescription">Missing input field.</system:String>
-	<system:String x:Key="DirectConnectViewModelUnhandledAkiInstanceTitle">Unhandled Aki Instance</system:String>
-	<system:String x:Key="DirectConnectViewModelUnhandledAkiInstanceDescription">SPT-AKI is currently running. Please close any running instance of SPT-AKI.</system:String>
-	<system:String x:Key="DirectConnectViewModelMissingAKIInstallationTitle">Missing AKI Installation</system:String>
-	<system:String x:Key="DirectConnectViewModelMissingAKIInstallationDescription">SPT-AKI server executable is missing.</system:String>
-	<system:String x:Key="DirectConnectViewModelLoginIncorrectPassword">Incorrect password</system:String>
-	<system:String x:Key="DirectConnectViewModelLoginErrorTitle">Login Error</system:String>
-	<system:String x:Key="DirectConnectViewModelLoginErrorDescription">Unable to communicate with the server %1</system:String>
-	<system:String x:Key="DirectConnectViewModelWaitingForServerTitle">Waiting for server</system:String>
-	<system:String x:Key="DirectConnectViewModelServerErrorTitle">Server Error</system:String>
-	<system:String x:Key="DirectConnectViewModelServerErrorDescription">The server never started. Please check the logs for more information.</system:String>
-	<system:String x:Key="DirectConnectViewModelQuickPlayText">Start Server and Connect</system:String>
-	<system:String x:Key="DirectConnectViewModelAccountNotFound">Account Not Found</system:String>
-	<system:String x:Key="DirectConnectViewModelAccountNotFoundDescription">Your account has not been found, would you like to register a new account with these credentials?</system:String>
-	<system:String x:Key="DirectConnectViewModelButtonYes">Yes</system:String>
-	<system:String x:Key="DirectConnectViewModelButtonNo">No</system:String>
-	<system:String x:Key="DirectConnectViewModelInstallNotFoundTitle">SIT Install Not Found</system:String>
-	<system:String x:Key="DirectConnectViewModelInstallNotFoundMessage">Unable to find your SIT install, please set this in settings or install SIT using the install button on the left</system:String>
+	<system:String x:Key="DirectConnectViewModelButtonOk">Oк</system:String>
+	<system:String x:Key="DirectConnectViewModelServerAddressTitle">Адреса сервера</system:String>
+	<system:String x:Key="DirectConnectViewModelServerAddressDescription">Будь ласка, виправте адресу сервера та спробуйте ще раз</system:String>
+	<system:String x:Key="DirectConnectViewModelInstallPathTitle">Шлях встановлення</system:String>
+	<system:String x:Key="DirectConnectViewModelInstallPathDescription">«Шлях встановлення» не налаштовано. Перейдіть до налаштувань і налаштуйте шлях встановлення.</system:String>
+	<system:String x:Key="DirectConnectViewModelSITInstallationTitle">Встановлення SIT</system:String>
+	<system:String x:Key="DirectConnectViewModelSITInstallationDescription">Не вдалося знайти "%1". Встановіть SIT перед підключенням.</system:String>
+	<system:String x:Key="DirectConnectViewModelEFTInstallationTitle">Встановлення EFT</system:String>
+	<system:String x:Key="DirectConnectViewModelEFTInstallationDescription">Не вдалося знайти "%1" у шляху встановлення.</system:String>
+	<system:String x:Key="DirectConnectViewModelInputValidationTitle">Перевірка вхідних даних</system:String>
+	<system:String x:Key="DirectConnectViewModelInputValidationDescription">Відсутнє поле вводу.</system:String>
+	<system:String x:Key="DirectConnectViewModelUnhandledAkiInstanceTitle">Необроблений екземпляр Aki</system:String>
+	<system:String x:Key="DirectConnectViewModelUnhandledAkiInstanceDescription">SPT-AKI наразі працює. Будь ласка, закрийте будь-які запущені екземпляри SPT-AKI.</system:String>
+	<system:String x:Key="DirectConnectViewModelMissingAKIInstallationTitle">Відсутня установка AKI</system:String>
+	<system:String x:Key="DirectConnectViewModelMissingAKIInstallationDescription">Виконаний файл сервера SPT-AKI відсутній.</system:String>
+	<system:String x:Key="DirectConnectViewModelLoginIncorrectPassword">Неправильний пароль</system:String>
+	<system:String x:Key="DirectConnectViewModelLoginErrorTitle">Помилка входу</system:String>
+	<system:String x:Key="DirectConnectViewModelLoginErrorDescription">Неможливо зв'язатися з сервером %1</system:String>
+	<system:String x:Key="DirectConnectViewModelWaitingForServerTitle">Очікування на сервер</system:String>
+	<system:String x:Key="DirectConnectViewModelServerErrorTitle">Помилка сервера</system:String>
+	<system:String x:Key="DirectConnectViewModelServerErrorDescription">Сервер ніколи не запускався. Будь ласка, перегляньте журнали для отримання додаткової інформації.</system:String>
+	<system:String x:Key="DirectConnectViewModelQuickPlayText">Запустити сервер і підключитися</system:String>
+	<system:String x:Key="DirectConnectViewModelAccountNotFound">Обліковий запис не знайдено</system:String>
+	<system:String x:Key="DirectConnectViewModelAccountNotFoundDescription">Ваш обліковий запис не знайдено. Ви хочете зареєструвати новий обліковий запис із цими обліковими даними?</system:String>
+	<system:String x:Key="DirectConnectViewModelButtonYes">Так</system:String>
+	<system:String x:Key="DirectConnectViewModelButtonNo">Ні</system:String>
+	<system:String x:Key="DirectConnectViewModelInstallNotFoundTitle">Встановлення SIT не знайдено</system:String>
+	<system:String x:Key="DirectConnectViewModelInstallNotFoundMessage">Не вдається знайти встановлення SIT. Будь ласка, встановіть його в налаштуваннях або встановіть SIT за допомогою кнопки встановлення ліворуч.</system:String>
 
 	<!-- CreateCharacterDialogView -->
-	<system:String x:Key="CreateCharacterDialogViewTitle">Create New Character</system:String>
-	<system:String x:Key="CreateCharacterDialogViewCloseButtonText">Cancel</system:String>
-	<system:String x:Key="CreateCharacterDialogViewPrimaryButtonText">Create</system:String>
-	<system:String x:Key="CreateCharacterDialogViewSaveLoginDetailsCheckBoxTitle">Save Login Details</system:String>
+	<system:String x:Key="CreateCharacterDialogViewTitle">Створити нового персонажа</system:String>
+	<system:String x:Key="CreateCharacterDialogViewCloseButtonText">Відмінити</system:String>
+	<system:String x:Key="CreateCharacterDialogViewPrimaryButtonText">Створити</system:String>
+	<system:String x:Key="CreateCharacterDialogViewSaveLoginDetailsCheckBoxTitle">Зберегти дані для входу</system:String>
 
 	<!-- MainViewModel -->
-	<system:String x:Key="MainViewModelUpdateErrorTitle">Error</system:String>
-	<system:String x:Key="MainViewModelUpdateErrorMessage">Failed when checking for updates</system:String>
+	<system:String x:Key="MainViewModelUpdateErrorTitle">Помилка</system:String>
+	<system:String x:Key="MainViewModelUpdateErrorMessage">Виникла помилка під час перевірки оновлень</system:String>
+	
 </ResourceDictionary>

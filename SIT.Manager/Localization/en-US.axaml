@@ -12,6 +12,7 @@
 	<system:String x:Key="ServerTitle">Server</system:String>
 	<system:String x:Key="ModsTitle">Mods</system:String>
 	<system:String x:Key="SettingsTitle">Settings</system:String>
+	<system:String x:Key="HelpTitle">Help</system:String>
 	<system:String x:Key="PlayTitleToolTip">Connect and play.</system:String>
 	<system:String x:Key="InstallTitleToolTip">Install/Update SIT and SIT Server</system:String>
 	<system:String x:Key="ToolsTitleToolTip">Tools to manage SIT and Tarkov.</system:String>
@@ -356,10 +357,10 @@
 	<!-- Install - Configure Sit View -->
 	<system:String x:Key="ConfigureSitViewLoadingVersionSelectionText">Working out available SIT versions please wait...</system:String>
 	<system:String x:Key="ConfigureSitViewVersionSelectionErrorMessage">Unable to determine available SIT versions...</system:String>
-	<system:String x:Key="ConfigureSitViewEFTChangeInstallPathToolTip">Change the EFT Install Path.</system:String>
+	<system:String x:Key="ConfigureSitViewEFTChangeInstallPathToolTip">Change the SIT EFT Install Path.</system:String>
 	<system:String x:Key="ConfigureSitViewEFTSettingsButtonChangeTitle">Change</system:String>
-	<system:String x:Key="ConfigureSitViewEFTInstallPathPlaceholder">EFT Install Path...</system:String>
-	<system:String x:Key="ConfigureSitViewEFTInstallPathTitle">EFT Path:</system:String>
+	<system:String x:Key="ConfigureSitViewEFTInstallPathPlaceholder">SIT EFT Install Path...</system:String>
+	<system:String x:Key="ConfigureSitViewEFTInstallPathTitle">SIT EFT Install Path:</system:String>
 	<system:String x:Key="ConfigureSitViewEFTPathWarningNoPath">Currently using the BSG EFT install location please install EFT to a different location to avoid any possible issues with SIT</system:String>
 	<system:String x:Key="ConfigureSitViewMirrorSelectionTitle">Select the mirror to use:</system:String>
 	<system:String x:Key="ConfigureSitViewVersionSelectionTitle">Version to install:</system:String>
@@ -371,6 +372,7 @@
 	<!-- Install - Configure Sit View Model -->
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorTitle">Location Selection Error</system:String>
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorDescription">You've selected the same folder as the BSG install of EFT, please choose a different location to install SIT to</system:String>
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionSPTErrorDescription">You've selected the same folder as an existing SPT install, please choose a different location to install SIT to</system:String>
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorOk">Ok</system:String>
 
 	<!-- Install - Install View -->

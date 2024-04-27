@@ -136,9 +136,8 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
 
         try
         {
-            await _tarkovClientService.ConnectToServer(character);
-
-            if (rememberLogin)
+            bool success = await _tarkovClientService.ConnectToServer(character);
+            if (success && rememberLogin)
             {
                 character.ParentServer.Characters.Add(character);
                 int index = _configService.Config.BookmarkedServers.FindIndex(x => x.Address == character.ParentServer.Address);
@@ -147,6 +146,7 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
                     _configService.Config.BookmarkedServers[index].Characters.Add(character);
                 }
                 _configService.UpdateConfig(_configService.Config);
+                RequireLogin = false;
             }
         }
         catch (Exception ex)
