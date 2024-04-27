@@ -444,7 +444,7 @@
 	<system:String x:Key="DirectConnectViewEnterPasswordPlaceholder">Enter Password...</system:String>
 	<system:String x:Key="DirectConnectViewRememberMeCheckBoxTitle">Remember Me</system:String>
 	<system:String x:Key="DirectConnectViewConnectButtonTitle">Connect</system:String>
-	<system:String x:Key="DirectConnectViewonnectButtonTitleToolTip">Connect to the server</system:String>
+	<system:String x:Key="DirectConnectViewConnectButtonTitleToolTip">Connect to the server</system:String>
 	<system:String x:Key="DirectConnectViewStartServerAndConnectButtonTitleToolTip">Start the Aki server and connect to the server</system:String>
 
 	<!-- LoginDialogView -->

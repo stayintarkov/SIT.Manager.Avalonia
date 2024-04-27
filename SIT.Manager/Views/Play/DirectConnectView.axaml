@@ -31,7 +31,7 @@
 				<Button Name="ConnectButton" 
 						Command="{Binding ConnectToServerCommand}" 
 						Content="{DynamicResource DirectConnectViewConnectButtonTitle}" 
-						ToolTip.Tip="{DynamicResource DirectConnectViewonnectButtonTitleToolTip}"
+						ToolTip.Tip="{DynamicResource DirectConnectViewConnectButtonTitleToolTip}"
 						Margin="0,0,4,0"/>
 				<Button Name="QuickPlayButton" 
 						Command="{Binding QuickPlayCommand}" 
