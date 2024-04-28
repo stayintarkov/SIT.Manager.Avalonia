@@ -395,8 +395,8 @@
 	<system:String x:Key="SelectViewServerModVersionTitle">SIT Mod Version:</system:String>
 	<system:String x:Key="SelectViewServerVersionTitle">SPT-AKI Version:</system:String>
 	<system:String x:Key="SelectViewSPTAKIPathTitle">SPT-AKI Path:</system:String>
-	<system:String x:Key="SelectViewSPTAKINoPathWarningMessage">Unable to find SPT-AKI install if you have already installed AKI-SPT please go to the Settings page and set the SPT-AKI install path. Otherwise you will be asked to provide an empty folder to install SPT-AKI to</system:String>
-	<system:String x:Key="SelectViewServerSectionHeading">SPT-AKI</system:String>
+	<system:String x:Key="SelectViewSPTAKINoPathWarningMessage">If you already have SPT-AKI installed please set the SPT-AKI Path in settings to the path where it is installed. If you have not already installed SPT-AKI, press Install Server + SIT Mod below and you will be prompted to provide an empty folder to install SPT-AKI to.</system:String>
+	<system:String x:Key="SelectViewServerSectionHeading">SPT-AKI - Server</system:String>
 	<system:String x:Key="SelectViewInstallSITButtonTitle">Install SIT</system:String>
 	<system:String x:Key="SelectViewInstallSITButtonToolTip">Downgrade EFT if needed, install SIT and mod support.</system:String>
 	<system:String x:Key="SelectViewUpdateSITButtonTitle">Update SIT</system:String>
@@ -404,11 +404,12 @@
 	<system:String x:Key="SelectViewInstallEFTButtonTitle">Install EFT</system:String>
 	<system:String x:Key="SelectViewInstallEFTButtonToolTip">Install EFT using the BSG Launcher, similar to the Lutris installer</system:String>
 	<system:String x:Key="SelectViewSITVersionTitle">SIT Version:</system:String>
-	<system:String x:Key="SelectViewEFTVersionTitle">EFT Version:</system:String>
-	<system:String x:Key="SelectViewEFTPathTitle">EFT Path:</system:String>
+	<system:String x:Key="SelectViewVersionMissingMessage">NOT INSTALLED</system:String>
+	<system:String x:Key="SelectViewEFTVersionTitle">SIT EFT Version:</system:String>
+	<system:String x:Key="SelectViewEFTPathTitle">SIT EFT Path:</system:String>
 	<system:String x:Key="SelectViewEFTNoPathWarningMessage">Unable to find EFT install and/or version please go and set this manually in the Settings page</system:String>
-	<system:String x:Key="SelectViewEFTUsingBSGInstallWarningMessage">Detected BSG Escape From Tarkov install, if you have already installed SIT please go to the Settings page and change the EFT install path to this folder. Otherwise you will be asked to provide an empty folder to copy BSG EFT installation and install SIT to</system:String>
-	<system:String x:Key="SelectViewEFTSectionHeading">Escape From Tarkov</system:String>
+	<system:String x:Key="SelectViewEFTUsingBSGInstallWarningMessage">Selected path is the main installation of EFT, if you've already installed SIT head to settings and set the SIT EFT Path to the existing copy of SIT. If you have not already installed SIT, press Install SIT below and you will be prompted to provide an empty folder to install SIT to.</system:String>
+	<system:String x:Key="SelectViewEFTSectionHeading">Escape From Tarkov - Client</system:String>
 
 	<!-- Install - View Model -->
 	<system:String x:Key="InstallPageViewModelSelectText">Select</system:String>

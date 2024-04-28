@@ -55,11 +55,15 @@
 							<Run Text="{Binding CurrentInstallProcessState.EftVersion}"/>
 						</TextBlock>
 
-						<TextBlock>
-							<Run Text="{DynamicResource SelectViewSITVersionTitle}"/>
-							<Run Text=" "/>
-							<Run Text="{Binding CurrentInstallProcessState.SitVersion}"/>
-						</TextBlock>
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Margin="0,0,4,0" 
+									   Text="{DynamicResource SelectViewSITVersionTitle}"/>
+
+							<TextBlock IsVisible="{Binding !CurrentInstallProcessState.SitVersion, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+									   Text="{DynamicResource SelectViewVersionMissingMessage}"/>
+							<SelectableTextBlock IsVisible="{Binding CurrentInstallProcessState.SitVersion, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+												 Text="{Binding CurrentInstallProcessState.SitVersion}"/>
+						</StackPanel>
 						
 						<Grid ColumnDefinitions="*,*">
 							<Button Grid.Column="0"
@@ -110,24 +114,36 @@
 								   TextTrimming="CharacterEllipsis"
 								   IsVisible="{Binding NoAkiInstallPathSet}"
 								   Classes="WarningMessage"/>
+						
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Margin="0,0,4,0"
+									   Text="{DynamicResource SelectViewSPTAKIPathTitle}"/>
 
-						<TextBlock TextTrimming="CharacterEllipsis">
-							<Run Text="{DynamicResource SelectViewSPTAKIPathTitle}"/>
-							<Run Text=" "/>
-							<Run Text="{Binding CurrentInstallProcessState.SptAkiInstallPath}"/>
-						</TextBlock>
+							<TextBlock IsVisible="{Binding !CurrentInstallProcessState.SptAkiInstallPath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+									   Text="{DynamicResource SelectViewVersionMissingMessage}"/>
+							<SelectableTextBlock IsVisible="{Binding CurrentInstallProcessState.SptAkiInstallPath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+												 Text="{Binding CurrentInstallProcessState.SptAkiInstallPath}"/>
+						</StackPanel>
 
-						<TextBlock TextTrimming="CharacterEllipsis">
-							<Run Text="{DynamicResource SelectViewServerVersionTitle}"/>
-							<Run Text=" "/>
-							<Run Text="{Binding CurrentInstallProcessState.SptAkiVersion}"/>
-						</TextBlock>
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Margin="0,0,4,0"
+									   Text="{DynamicResource SelectViewServerVersionTitle}"/>
 
-						<TextBlock TextTrimming="CharacterEllipsis">
-							<Run Text="{DynamicResource SelectViewServerModVersionTitle}"/>
-							<Run Text=" "/>
-							<Run Text="{Binding CurrentInstallProcessState.SitModVersion}"/>
-						</TextBlock>
+							<TextBlock IsVisible="{Binding !CurrentInstallProcessState.SptAkiVersion, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+									   Text="{DynamicResource SelectViewVersionMissingMessage}"/>
+							<SelectableTextBlock IsVisible="{Binding CurrentInstallProcessState.SptAkiVersion, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+												 Text="{Binding CurrentInstallProcessState.SptAkiVersion}"/>
+						</StackPanel>
+						
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Margin="0,0,4,0"
+									   Text="{DynamicResource SelectViewServerModVersionTitle}"/>
+
+							<TextBlock IsVisible="{Binding !CurrentInstallProcessState.SitModVersion, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+									   Text="{DynamicResource SelectViewVersionMissingMessage}"/>
+							<SelectableTextBlock IsVisible="{Binding CurrentInstallProcessState.SitModVersion, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+												 Text="{Binding CurrentInstallProcessState.SitModVersion}"/>
+						</StackPanel>
 
 						<Button
 								HorizontalAlignment="Left"

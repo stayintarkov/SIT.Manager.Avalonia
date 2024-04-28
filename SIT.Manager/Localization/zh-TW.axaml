@@ -400,19 +400,19 @@
 	<system:String x:Key="SelectViewServerModVersionTitle">SIT 模組版本：</system:String>
 	<system:String x:Key="SelectViewServerVersionTitle">SPT-AKI 版本：</system:String>
 	<system:String x:Key="SelectViewSPTAKIPathTitle">SPT-AKI 路徑：</system:String>
-	<system:String x:Key="SelectViewSPTAKINoPathWarningMessage">找不到 SPT-AKI 安裝。如果您已經安裝了 AKI-SPT，請轉到設置頁面並設置 SPT-AKI 安裝路徑。否則，您將被要求指定一個空目錄以安裝 SPT-AKI</system:String>
-	<system:String x:Key="SelectViewServerSectionHeading">SPT-AKI</system:String>
-
+	<system:String x:Key="SelectViewSPTAKINoPathWarningMessage">If you already have SPT-AKI installed please set the SPT-AKI Path in settings to the path where it is installed. If you have not already installed SPT-AKI, press Install Server + SIT Mod below and you will be prompted to provide an empty folder to install SPT-AKI to.</system:String>
+	<system:String x:Key="SelectViewServerSectionHeading">SPT-AKI - Server</system:String>
 	<system:String x:Key="SelectViewInstallSITButtonTitle">安裝 SIT</system:String>
 	<system:String x:Key="SelectViewInstallSITButtonToolTip">根據需要降級 EFT 版本，並安裝 SIT 和模組支援。</system:String>
 	<system:String x:Key="SelectViewUpdateSITButtonTitle">Update SIT</system:String>
 	<system:String x:Key="SelectViewUpdateSITButtonToolTip">Update SIT to the latest version available for your current EFT version</system:String>
 	<system:String x:Key="SelectViewSITVersionTitle">SIT 版本：</system:String>
-	<system:String x:Key="SelectViewEFTVersionTitle">EFT 版本：</system:String>
-	<system:String x:Key="SelectViewEFTPathTitle">EFT 路徑：</system:String>
+	<system:String x:Key="SelectViewVersionMissingMessage">NOT INSTALLED</system:String>
+	<system:String x:Key="SelectViewEFTVersionTitle">SIT EFT Version:</system:String>
+	<system:String x:Key="SelectViewEFTPathTitle">SIT EFT Path:</system:String>
 	<system:String x:Key="SelectViewEFTNoPathWarningMessage">找不到 EFT 安裝。請手動在設置頁面上安裝它</system:String>
-	<system:String x:Key="SelectViewEFTUsingBSGInstallWarningMessage">檢測到 BSG 逃離塔科夫的安裝。如果您已安裝了 SIT，請轉到設置頁面並將 EFT 安裝路徑更改為此目錄。否則，您將被要求指定一個空目錄以複製 BSG EFT 安裝並安裝 SIT</system:String>
-	<system:String x:Key="SelectViewEFTSectionHeading">逃離塔科夫</system:String>
+	<system:String x:Key="SelectViewEFTUsingBSGInstallWarningMessage">Selected path is the main installation of EFT, if you've already installed SIT head to settings and set the SIT EFT Path to the existing copy of SIT. If you have not already installed SIT, press Install SIT below and you will be prompted to provide an empty folder to install SIT to.</system:String>
+	<system:String x:Key="SelectViewEFTSectionHeading">Escape From Tarkov - Client</system:String>
 
 	<!-- Install - View Model -->
 	<system:String x:Key="InstallPageViewModelSelectText">選擇</system:String>

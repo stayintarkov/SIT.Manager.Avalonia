@@ -149,7 +149,8 @@ public class ModService(IBarNotificationService barNotificationService,
 
         try
         {
-            if (mod.SupportedVersion != _configService.Config.SitVersion && !suppressCompatibilityWarning)
+            // Ignore the mod compatibility alert if the version is set to '*' and/or we have supressed the compatibility notice.
+            if (mod.SupportedVersion != "*" && mod.SupportedVersion != _configService.Config.SitVersion && !suppressCompatibilityWarning)
             {
                 ContentDialog contentDialog = new()
                 {
