@@ -50,6 +50,8 @@
 	<system:String x:Key="ToolsOpenEFTFolderButtonTitle">Відкрити теку EFT</system:String>
 	<system:String x:Key="ToolsOpenBepInExFolderButtonToolTip">Відкрити теку плагінів BepInEx.</system:String>
 	<system:String x:Key="ToolsOpenBepInExFolderButtonTitle">Відкрити теку плагінів</system:String>
+	<system:String x:Key="ToolsOpenServerFolderButtonToolTip">Open the SPT-AKI Server Folder.</system:String>
+	<system:String x:Key="ToolsOpenServerFolderButtonTitle">Open Server Folder</system:String>
 	<system:String x:Key="ToolsOpenSITConfigButtonToolTip">Відкрити файл конфігурації SIT за допомогою текстового редактора за замовчуванням.</system:String>
 	<system:String x:Key="ToolsOpenSITConfigButtonTitle">Відкрити конфігурацію SIT</system:String>
 	<system:String x:Key="ToolsOpenEFTLogButtonToolTip">Відкрити 'Player.log' EFT за допомогою текстового редактора за замовчуванням.</system:String>
@@ -249,6 +251,7 @@
 	<system:String x:Key="ToolsPageViewModelErrorMessageDescription">Не вдалося отримати релізи</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigTitle">Помилка конфігурації</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigDescription">'Шлях встановлення' не налаштований. Перейдіть до налаштувань, щоб налаштувати шлях встановлення.</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageServerConfigDescription">'Server Path' is not configured. Go to settings to configure the server path.</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigBepInExDescription">Не вдалося знайти вказаний шлях. Чи встановлено BepInEx? Шлях: %1</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigSITDescription">Не вдалося знайти '%1'. Переконайтеся, що SIT встановлено і що ви один раз запускали гру.</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigLogDescription">Файл журналу не вдалося знайти.</system:String>
