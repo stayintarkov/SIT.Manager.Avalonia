@@ -50,8 +50,8 @@
 	<system:String x:Key="ToolsOpenEFTFolderButtonTitle">打开 EFT 文件夹</system:String>
 	<system:String x:Key="ToolsOpenBepInExFolderButtonToolTip">打开 BepInEx 插件文件夹</system:String>
 	<system:String x:Key="ToolsOpenBepInExFolderButtonTitle">打开插件文件夹</system:String>
-	<system:String x:Key="ToolsOpenServerFolderButtonToolTip">Open the SPT-AKI Server Folder.</system:String>
-	<system:String x:Key="ToolsOpenServerFolderButtonTitle">Open Server Folder</system:String>
+	<system:String x:Key="ToolsOpenServerFolderButtonToolTip">打开 SPT-AKI 服务器文件夹。</system:String>
+	<system:String x:Key="ToolsOpenServerFolderButtonTitle">打开服务器文件夹</system:String>
 	<system:String x:Key="ToolsOpenSITConfigButtonToolTip">使用默认文本编辑器打开 SIT 配置文件</system:String>
 	<system:String x:Key="ToolsOpenSITConfigButtonTitle">打开 SIT 配置文件</system:String>
 	<system:String x:Key="ToolsOpenEFTLogButtonToolTip">使用默认文本编辑器打开 EFT 的 'Player.log' 文件</system:String>
@@ -69,7 +69,7 @@
 	<system:String x:Key="ToolsSelectLogsProceedButtonText">生成日志捆绑包</system:String>
 	<system:String x:Key="ToolsSelectLogsCloseButtonText">取消</system:String>
 	<system:String x:Key="ToolsDiagnosticReportSaveFileTitle">保存 zip 文件</system:String>
-	<system:String x:Key="ToolsManagerLogCheckboxContent">Include Manager Logs</system:String>
+	<system:String x:Key="ToolsManagerLogCheckboxContent">包括管理器日志</system:String>
 
 	<!-- Server Page -->
 	<system:String x:Key="ServerConsoleOutputTitle">控制台输出</system:String>
@@ -247,7 +247,7 @@
 	<system:String x:Key="ToolsPageViewModelErrorMessageDescription">无法获取发布版本</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigTitle">配置错误</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigDescription">未配置 EFT 安装路径，前往设置以配置安装路径！</system:String>
-	<system:String x:Key="ToolsPageViewModelErrorMessageServerConfigDescription">'Server Path' is not configured. Go to settings to configure the server path.</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageServerConfigDescription">'服务器路径' 未配置。请前往设置以配置服务器路径。</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigBepInExDescription">找不到指定的路径，请确认 BepInEx 是否已安装？路径：%1</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigSITDescription">找不到“%1”，确保 SIT 已安装并且您已经启动过游戏！</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigLogDescription">找不到日志文件！</system:String>
@@ -381,7 +381,7 @@
 	<!-- Install - Configure Sit View Model -->
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorTitle">位置选择错误</system:String>
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorDescription">您选择了与 BSG EFT 安装相同的目录，请选择另一个位置以安装 SIT</system:String>
-	<system:String x:Key="ConfigureSitViewModelLocationSelectionSPTErrorDescription">You've selected the same folder as an existing SPT install, please choose a different location to install SIT to</system:String>
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionSPTErrorDescription">您选择了与现有的 SPT 安装相同的文件夹，请选择其他位置来安装 SIT。</system:String>
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorOk">好的</system:String>
 
 	<!-- Install - Install View -->
@@ -404,19 +404,19 @@
 	<system:String x:Key="SelectViewServerModVersionTitle">SIT 模组版本：</system:String>
 	<system:String x:Key="SelectViewServerVersionTitle">SPT-AKI 版本：</system:String>
 	<system:String x:Key="SelectViewSPTAKIPathTitle">SPT-AKI 路径：</system:String>
-	<system:String x:Key="SelectViewSPTAKINoPathWarningMessage">If you already have SPT-AKI installed please set the SPT-AKI Path in settings to the path where it is installed. If you have not already installed SPT-AKI, press Install Server + SIT Mod below and you will be prompted to provide an empty folder to install SPT-AKI to.</system:String>
-	<system:String x:Key="SelectViewServerSectionHeading">SPT-AKI - Server</system:String>
+	<system:String x:Key="SelectViewSPTAKINoPathWarningMessage">如果您已经安装了 SPT-AKI，请在设置中设置 SPT-AKI 路径为其安装路径。如果您尚未安装 SPT-AKI，请在下方点击“安装服务器 + SIT 模组”，然后您将被提示提供一个空文件夹来安装 SPT-AKI。</system:String>
+	<system:String x:Key="SelectViewServerSectionHeading">SPT-AKI - 服务器</system:String>
 	<system:String x:Key="SelectViewInstallSITButtonTitle">安装 SIT</system:String>
 	<system:String x:Key="SelectViewInstallSITButtonToolTip">根据需要降级 EFT 版本，并安装 SIT 和模组支持。</system:String>
-	<system:String x:Key="SelectViewUpdateSITButtonTitle">Update SIT</system:String>
-	<system:String x:Key="SelectViewUpdateSITButtonToolTip">Update SIT to the latest version available for your current EFT version</system:String>
+	<system:String x:Key="SelectViewUpdateSITButtonTitle">更新 SIT</system:String>
+	<system:String x:Key="SelectViewUpdateSITButtonToolTip">将 SIT 更新到当前 EFT 版本的最新版本</system:String>
 	<system:String x:Key="SelectViewSITVersionTitle">SIT 版本：</system:String>
-	<system:String x:Key="SelectViewVersionMissingMessage">NOT INSTALLED</system:String>
-	<system:String x:Key="SelectViewEFTVersionTitle">SIT EFT Version:</system:String>
-	<system:String x:Key="SelectViewEFTPathTitle">SIT EFT Path:</system:String>
+	<system:String x:Key="SelectViewVersionMissingMessage">未安装</system:String>
+	<system:String x:Key="SelectViewEFTVersionTitle">SIT EFT 版本：</system:String>
+	<system:String x:Key="SelectViewEFTPathTitle">SIT EFT 路径：</system:String>
 	<system:String x:Key="SelectViewEFTNoPathWarningMessage">找不到 EFT 安装。请手动在设置页面上安装它</system:String>
-	<system:String x:Key="SelectViewEFTUsingBSGInstallWarningMessage">Selected path is the main installation of EFT, if you've already installed SIT head to settings and set the SIT EFT Path to the existing copy of SIT. If you have not already installed SIT, press Install SIT below and you will be prompted to provide an empty folder to install SIT to.</system:String>
-	<system:String x:Key="SelectViewEFTSectionHeading">Escape From Tarkov - Client</system:String>
+	<system:String x:Key="SelectViewEFTUsingBSGInstallWarningMessage">选择的路径是 EFT 的主要安装路径。如果您已经安装了 SIT，请前往设置并将 SIT EFT 路径设置为现有的 SIT 副本。如果您尚未安装 SIT，请按下方的 "安装 SIT" 按钮，然后您将被提示选择一个空文件夹以安装 SIT。</system:String>
+	<system:String x:Key="SelectViewEFTSectionHeading">逃离塔科夫 - 客户端</system:String>
 
 	<!-- Install - View Model -->
 	<system:String x:Key="InstallPageViewModelSelectText">选择</system:String>
