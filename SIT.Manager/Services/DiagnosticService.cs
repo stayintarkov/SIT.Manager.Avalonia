@@ -104,6 +104,37 @@ public partial class DiagnosticService : IDiagnosticService
             string eftLogPath = EFTLogPath;
             string eftLogData = await GetLogFile(eftLogPath, bleachIt: true);
             diagnosticLogs.Add(new(Path.GetFileName(eftLogPath), eftLogData));
+
+            string bepinexLogOutputPath = Path.Combine(_configService.Config.SitEftInstallPath, "BepInEx", "LogOutput.log");
+            if (File.Exists(bepinexLogOutputPath))
+            {
+                string crashFileData = await GetLogFile(bepinexLogOutputPath, bleachIt: true);
+                diagnosticLogs.Add(new(Path.GetFileName(bepinexLogOutputPath), crashFileData));
+            }
+
+            string bepinexFullLogOutputPath = Path.Combine(_configService.Config.SitEftInstallPath, "BepInEx", "FullLogOutput.log");
+            if (File.Exists(bepinexFullLogOutputPath))
+            {
+                string crashFileData = await GetLogFile(bepinexFullLogOutputPath, bleachIt: true);
+                diagnosticLogs.Add(new(Path.GetFileName(bepinexFullLogOutputPath), crashFileData));
+            }
+        }
+
+        if (options.IncludeManagerLog)
+        {
+            string managerLogPath = "Logs";
+            foreach (string logFile in Directory.GetFiles(managerLogPath))
+            {
+                string logFileData = await GetLogFile(logFile, bleachIt: true);
+                diagnosticLogs.Add(new(Path.GetFileName(logFile), logFileData));
+            }
+
+            string crashLogPath = "crash.log";
+            if (File.Exists(crashLogPath))
+            {
+                string crashFileData = await GetLogFile(crashLogPath, bleachIt: true);
+                diagnosticLogs.Add(new(Path.GetFileName(crashLogPath), crashFileData));
+            }
         }
 
         if (!string.IsNullOrEmpty(_configService.Config.AkiServerPath))

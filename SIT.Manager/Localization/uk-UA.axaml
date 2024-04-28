@@ -67,6 +67,7 @@
 	<system:String x:Key="ToolsSelectLogsProceedButtonText">Створити пакет логів</system:String>
 	<system:String x:Key="ToolsSelectLogsCloseButtonText">Скасувати</system:String>
 	<system:String x:Key="ToolsBugReportSaveFileTitle">Зберегти архів Zip</system:String>
+	<system:String x:Key="ToolsManagerLogCheckboxContent">Include Manager Logs</system:String>
 
 	<!-- Server Page -->
 	<system:String x:Key="ServerConsoleOutputTitle">Виведення консолі</system:String>

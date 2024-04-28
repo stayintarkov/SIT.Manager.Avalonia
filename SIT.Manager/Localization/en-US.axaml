@@ -67,6 +67,7 @@
 	<system:String x:Key="ToolsSelectLogsProceedButtonText">Generate Log Bundle</system:String>
 	<system:String x:Key="ToolsSelectLogsCloseButtonText">Cancel</system:String>
 	<system:String x:Key="ToolsDiagnosticReportSaveFileTitle">Save zip file</system:String>
+	<system:String x:Key="ToolsManagerLogCheckboxContent">Include Manager Logs</system:String>
 	
 	<!-- Server Page -->
 	<system:String x:Key="ServerConsoleOutputTitle">Console Output</system:String>
