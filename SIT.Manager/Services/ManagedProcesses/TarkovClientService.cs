@@ -164,7 +164,7 @@ public class TarkovClientService(IAkiServerRequestingService serverRequestingSer
         }
 
         // Launch game
-        string launchArguments = CreateLaunchArguments(new TarkovLaunchConfig { BackendUrl = server.Address.AbsoluteUri }, character.ProfileID);
+        string launchArguments = CreateLaunchArguments(new TarkovLaunchConfig { BackendUrl = server.Address.AbsoluteUri.TrimEnd('/') }, character.ProfileID);
         try
         {
             Start(launchArguments);
