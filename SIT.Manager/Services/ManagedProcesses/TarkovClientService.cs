@@ -77,7 +77,10 @@ public class TarkovClientService(IAkiServerRequestingService serverRequestingSer
 
         // The json needs single quotes on Linux for some reason even though not valid json
         // but this seems to work fine on Windows too so might as well do it on both ¯\_(ツ)_/¯
-        jsonConfig = jsonConfig.Replace('\"', '\'');
+        if (OperatingSystem.IsLinux())
+        {
+            jsonConfig = jsonConfig.Replace('\"', '\'');
+        }
 
         Dictionary<string, string> argumentList = new()
         {
@@ -161,7 +164,7 @@ public class TarkovClientService(IAkiServerRequestingService serverRequestingSer
         }
 
         // Launch game
-        string launchArguments = CreateLaunchArguments(new TarkovLaunchConfig { BackendUrl = server.Address.AbsoluteUri }, character.ProfileID);
+        string launchArguments = CreateLaunchArguments(new TarkovLaunchConfig { BackendUrl = server.Address.AbsoluteUri.TrimEnd('/') }, character.ProfileID);
         try
         {
             Start(launchArguments);
