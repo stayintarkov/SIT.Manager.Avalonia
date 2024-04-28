@@ -222,7 +222,7 @@ public sealed partial class App : Application
         base.OnFrameworkInitializationCompleted();
     }
 
-    private Task ParseArguments(string[] args)
+    private Task<int> ParseArguments(string[] args)
     {
         var addressOption = new Option<string>
             ("--address", "AKI server to connect to. If omitted this will start a local server.");
@@ -244,11 +244,15 @@ public sealed partial class App : Application
             passwordOption,
         };
 
-        rootCommand.SetHandler((addressValue, usernameValue, passwordValue) =>
+        rootCommand.SetHandler(async (addressValue, usernameValue, passwordValue) =>
         {
-            var dcvm = Services.GetService<DirectConnectViewModel>();
 
-            return dcvm.ConnectToServer(addressValue, usernameValue, passwordValue);
+            if (usernameValue != null && passwordValue != null)
+            {
+                var dcvm = Services.GetService<DirectConnectViewModel>();
+
+                await dcvm.ConnectToServer(addressValue, usernameValue, passwordValue);
+            }
 
         }, addressOption, usernameOption, passwordOption);
 
