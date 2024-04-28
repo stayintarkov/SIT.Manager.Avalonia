@@ -50,8 +50,8 @@
 	<system:String x:Key="ToolsOpenEFTFolderButtonTitle">Відкрити теку EFT</system:String>
 	<system:String x:Key="ToolsOpenBepInExFolderButtonToolTip">Відкрити теку плагінів BepInEx.</system:String>
 	<system:String x:Key="ToolsOpenBepInExFolderButtonTitle">Відкрити теку плагінів</system:String>
-	<system:String x:Key="ToolsOpenServerFolderButtonToolTip">Open the SPT-AKI Server Folder.</system:String>
-	<system:String x:Key="ToolsOpenServerFolderButtonTitle">Open Server Folder</system:String>
+	<system:String x:Key="ToolsOpenServerFolderButtonToolTip">Відкрити теку сервера SPT-AKI.</system:String>
+	<system:String x:Key="ToolsOpenServerFolderButtonTitle">Відкрити теку сервера</system:String>
 	<system:String x:Key="ToolsOpenSITConfigButtonToolTip">Відкрити файл конфігурації SIT за допомогою текстового редактора за замовчуванням.</system:String>
 	<system:String x:Key="ToolsOpenSITConfigButtonTitle">Відкрити конфігурацію SIT</system:String>
 	<system:String x:Key="ToolsOpenEFTLogButtonToolTip">Відкрити 'Player.log' EFT за допомогою текстового редактора за замовчуванням.</system:String>
@@ -69,7 +69,7 @@
 	<system:String x:Key="ToolsSelectLogsProceedButtonText">Створити пакет логів</system:String>
 	<system:String x:Key="ToolsSelectLogsCloseButtonText">Скасувати</system:String>
 	<system:String x:Key="ToolsBugReportSaveFileTitle">Зберегти архів Zip</system:String>
-	<system:String x:Key="ToolsManagerLogCheckboxContent">Include Manager Logs</system:String>
+	<system:String x:Key="ToolsManagerLogCheckboxContent">Включити журнали менеджера</system:String>
 
 	<!-- Server Page -->
 	<system:String x:Key="ServerConsoleOutputTitle">Виведення консолі</system:String>
@@ -251,7 +251,7 @@
 	<system:String x:Key="ToolsPageViewModelErrorMessageDescription">Не вдалося отримати релізи</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigTitle">Помилка конфігурації</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigDescription">'Шлях встановлення' не налаштований. Перейдіть до налаштувань, щоб налаштувати шлях встановлення.</system:String>
-	<system:String x:Key="ToolsPageViewModelErrorMessageServerConfigDescription">'Server Path' is not configured. Go to settings to configure the server path.</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageServerConfigDescription">'Шлях Сервера' не налаштований. Перейдіть до налаштувань, щоб налаштувати шлях до серверу.</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigBepInExDescription">Не вдалося знайти вказаний шлях. Чи встановлено BepInEx? Шлях: %1</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigSITDescription">Не вдалося знайти '%1'. Переконайтеся, що SIT встановлено і що ви один раз запускали гру.</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigLogDescription">Файл журналу не вдалося знайти.</system:String>
@@ -381,8 +381,8 @@
 	<!-- Install - Configure Sit View Model -->
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorTitle">Помилка вибору місця розташування</system:String>
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorDescription">Ви вибрали ту саму теку, що і встановлення BSG EFT, оберіть інше місце для встановлення SIT</system:String>
-	<system:String x:Key="ConfigureSitViewModelLocationSelectionSPTErrorDescription">You've selected the same folder as an existing SPT install, please choose a different location to install SIT to</system:String>
-	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorOk">Ok</system:String>
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionSPTErrorDescription">Ви обрали ту саму теку, що і існуюча установка SPT. Виберіть інше місце для установки SIT.</system:String>
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorOk">Oк</system:String>
 
 	<!-- Install - Install View -->
 	<system:String x:Key="InstallViewDownloadingTitle">Завантаження</system:String>
@@ -404,19 +404,19 @@
 	<system:String x:Key="SelectViewServerModVersionTitle">Версія моду SIT:</system:String>
 	<system:String x:Key="SelectViewServerVersionTitle">Версія SPT-AKI:</system:String>
 	<system:String x:Key="SelectViewSPTAKIPathTitle">Шлях SPT-AKI:</system:String>
-	<system:String x:Key="SelectViewSPTAKINoPathWarningMessage">If you already have SPT-AKI installed please set the SPT-AKI Path in settings to the path where it is installed. If you have not already installed SPT-AKI, press Install Server + SIT Mod below and you will be prompted to provide an empty folder to install SPT-AKI to.</system:String>
-	<system:String x:Key="SelectViewServerSectionHeading">SPT-AKI - Server</system:String>
+	<system:String x:Key="SelectViewSPTAKINoPathWarningMessage">Якщо у вас вже встановлено SPT-AKI, вкажіть шлях до SPT-AKI в налаштуваннях, де він встановлений. Якщо ви ще не встановили SPT-AKI, натисніть "Встановити сервер + мод SIT" нижче, і вам буде запропоновано вказати порожню теку для встановлення SPT-AKI.</system:String>
+	<system:String x:Key="SelectViewServerSectionHeading">SPT-AKI - Сервер</system:String>
 	<system:String x:Key="SelectViewInstallSITButtonTitle">Встановити SIT</system:String>
 	<system:String x:Key="SelectViewInstallSITButtonToolTip">Понизити версію EFT за потреби, встановити SIT та підтримку модів.</system:String>
 	<system:String x:Key="SelectViewUpdateSITButtonTitle">Оновлення SIT</system:String>
 	<system:String x:Key="SelectViewUpdateSITButtonToolTip">Оновіть SIT до останньої версії, доступної для вашої поточної версії EFT</system:String>
 	<system:String x:Key="SelectViewSITVersionTitle">Версія SIT:</system:String>
-	<system:String x:Key="SelectViewVersionMissingMessage">NOT INSTALLED</system:String>
-	<system:String x:Key="SelectViewEFTVersionTitle">SIT EFT Version:</system:String>
-	<system:String x:Key="SelectViewEFTPathTitle">SIT EFT Path:</system:String>
+	<system:String x:Key="SelectViewVersionMissingMessage">НЕ ВСТАНОВЛЕНО</system:String>
+	<system:String x:Key="SelectViewEFTVersionTitle">SIT EFT Версія:</system:String>
+	<system:String x:Key="SelectViewEFTPathTitle">SIT EFT Шлях:</system:String>
 	<system:String x:Key="SelectViewEFTNoPathWarningMessage">Не вдалося знайти установку EFT. Будь ласка, встановіть його вручну на сторінці налаштувань</system:String>
-	<system:String x:Key="SelectViewEFTUsingBSGInstallWarningMessage">Selected path is the main installation of EFT, if you've already installed SIT head to settings and set the SIT EFT Path to the existing copy of SIT. If you have not already installed SIT, press Install SIT below and you will be prompted to provide an empty folder to install SIT to.</system:String>
-	<system:String x:Key="SelectViewEFTSectionHeading">Escape From Tarkov - Client</system:String>
+	<system:String x:Key="SelectViewEFTUsingBSGInstallWarningMessage">Обраний шлях - основна установка EFT. Якщо SIT вже встановлено, перейдіть до налаштувань та встановіть шлях до існуючої копії SIT в параметрі "Шлях до SIT EFT". Якщо ви ще не встановили SIT, натисніть "Встановити SIT" нижче, і вам буде запропоновано вибрати порожню теку для встановлення SIT.</system:String>
+	<system:String x:Key="SelectViewEFTSectionHeading">Escape From Tarkov - Кліент</system:String>
 
 	<!-- Install - View Model -->
 	<system:String x:Key="InstallPageViewModelSelectText">Вибрати</system:String>
