@@ -67,6 +67,8 @@
 	<system:String x:Key="ToolsSelectLogsProceedButtonText">生成日志捆绑包</system:String>
 	<system:String x:Key="ToolsSelectLogsCloseButtonText">取消</system:String>
 	<system:String x:Key="ToolsDiagnosticReportSaveFileTitle">保存 zip 文件</system:String>
+	<system:String x:Key="ToolsManagerLogCheckboxContent">Include Manager Logs</system:String>
+	<system:String x:Key="ToolsManagerCrashLogCheckboxContent">Include Manager Crash Logs</system:String>
 
 	<!-- Server Page -->
 	<system:String x:Key="ServerConsoleOutputTitle">控制台输出</system:String>

@@ -67,6 +67,8 @@
 	<system:String x:Key="ToolsSelectLogsProceedButtonText">生成日誌套件</system:String>
 	<system:String x:Key="ToolsSelectLogsCloseButtonText">取消</system:String>
 	<system:String x:Key="ToolsBugReportSaveFileTitle">保存 Zip 檔案</system:String>
+	<system:String x:Key="ToolsManagerLogCheckboxContent">Include Manager Logs</system:String>
+	<system:String x:Key="ToolsManagerCrashLogCheckboxContent">Include Manager Crash Logs</system:String>
 
 	<!-- Server Page -->
 	<system:String x:Key="ServerConsoleOutputTitle">控制臺輸出</system:String>

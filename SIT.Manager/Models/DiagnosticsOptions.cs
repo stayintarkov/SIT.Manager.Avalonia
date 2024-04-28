@@ -16,4 +16,8 @@ public partial class DiagnosticsOptions : ObservableObject
     public bool _includeDiagnosticLog = true;
     [ObservableProperty]
     public bool _includeHttpJson = true;
+    [ObservableProperty]
+    public bool _includeManagerLog = true;
+    [ObservableProperty]
+    public bool _includeManagerCrash = true;
 }

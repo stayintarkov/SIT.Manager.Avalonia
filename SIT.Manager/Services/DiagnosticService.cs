@@ -106,6 +106,26 @@ public partial class DiagnosticService : IDiagnosticService
             diagnosticLogs.Add(new(Path.GetFileName(eftLogPath), eftLogData));
         }
 
+        if(options.IncludeManagerLog)
+        {
+            string managerLogPath = "Logs";
+            foreach(string logFile in Directory.GetFiles(managerLogPath))
+            {
+                string logFileData = await GetLogFile(logFile, bleachIt: true);
+                diagnosticLogs.Add(new(Path.GetFileName(logFile), logFileData));
+            }
+        }
+
+        if (options.IncludeManagerCrash)
+        {
+            string crashLogPath = "crash.log";
+            if (File.Exists(crashLogPath))
+            {
+                string crashFileData = await GetLogFile(crashLogPath, bleachIt: true);
+                diagnosticLogs.Add(new(Path.GetFileName(crashLogPath), crashFileData));
+            }
+        }
+
         if (!string.IsNullOrEmpty(_configService.Config.AkiServerPath))
         {
             if (options.IncludeServerLog)
