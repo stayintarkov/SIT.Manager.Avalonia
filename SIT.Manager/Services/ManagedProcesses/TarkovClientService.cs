@@ -120,14 +120,14 @@ public class TarkovClientService(IAkiServerRequestingService serverRequestingSer
         _barNotificationService.ShowInformational(_localizationService.TranslateSource("TarkovClientServiceCacheClearedTitle"), _localizationService.TranslateSource("TarkovClientServiceCacheClearedEFTDescription"));
     }
 
-    public async Task<bool> ConnectToServer(AkiCharacter character)
+    public async Task<bool> ConnectToServer(AkiServer server, AkiCharacter character)
     {
         string? ProfileID = null;
-        List<AkiMiniProfile> miniProfiles = await _serverRequestingService.GetMiniProfilesAsync(character.ParentServer);
+        List<AkiMiniProfile> miniProfiles = await _serverRequestingService.GetMiniProfilesAsync(server);
         if (miniProfiles.Select(x => x.Username == character.Username).Any())
         {
             _logger.LogDebug("Username {Username} was already found on server. Attempting to login...", character.Username);
-            (string loginRespStr, AkiLoginStatus status) = await _serverRequestingService.LoginAsync(character);
+            (string loginRespStr, AkiLoginStatus status) = await _serverRequestingService.LoginAsync(server, character);
             if (status == AkiLoginStatus.Success)
             {
                 _logger.LogDebug("Login successful");
@@ -161,7 +161,7 @@ public class TarkovClientService(IAkiServerRequestingService serverRequestingSer
         }
 
         // Launch game
-        string launchArguments = CreateLaunchArguments(new TarkovLaunchConfig { BackendUrl = character.ParentServer.Address.AbsoluteUri }, character.ProfileID);
+        string launchArguments = CreateLaunchArguments(new TarkovLaunchConfig { BackendUrl = server.Address.AbsoluteUri }, character.ProfileID);
         try
         {
             Start(launchArguments);
@@ -293,13 +293,13 @@ public class TarkovClientService(IAkiServerRequestingService serverRequestingSer
             return null;
         }
 
-        AkiCharacter character = new(server, result.Username, result.Password)
+        AkiCharacter character = new(result.Username, result.Password)
         {
             Edition = result.TarkovEdition.Edition
         };
 
         _logger.LogInformation("Registering new character...");
-        (string _, AkiLoginStatus status) = await _serverRequestingService.RegisterCharacterAsync(character);
+        (string _, AkiLoginStatus status) = await _serverRequestingService.RegisterCharacterAsync(server, character);
         if (status != AkiLoginStatus.Success)
         {
             await new ContentDialog()
@@ -314,8 +314,8 @@ public class TarkovClientService(IAkiServerRequestingService serverRequestingSer
 
         if (result.SaveLogin)
         {
-            character.ParentServer.Characters.Add(character);
-            int index = _configService.Config.BookmarkedServers.FindIndex(x => x.Address == character.ParentServer.Address);
+            server.Characters.Add(character);
+            int index = _configService.Config.BookmarkedServers.FindIndex(x => x.Address == server.Address);
             if (index != -1 && !_configService.Config.BookmarkedServers[index].Characters.Any(x => x.Username == character.Username))
             {
                 _configService.Config.BookmarkedServers[index].Characters.Add(character);

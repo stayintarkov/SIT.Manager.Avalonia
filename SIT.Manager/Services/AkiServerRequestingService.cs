@@ -1,14 +1,11 @@
 ﻿using Polly;
 using Polly.Registry;
-using SIT.Manager.Exceptions;
 using SIT.Manager.Extentions;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Models.Aki;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -21,14 +18,15 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Services;
+
 public class AkiServerRequestingService(
-    HttpClient httpClient, 
+    HttpClient httpClient,
     ResiliencePipelineProvider<string> resiliencePipelineProvider,
     IManagerConfigService configService) : IAkiServerRequestingService
 {
     private static readonly MediaTypeHeaderValue _contentHeaderType = new("application/json");
     private static readonly Version standardUriFormatSupportedVersion = new Version("1.10.8827.30098");
-    private static readonly byte[] zlibMagicBytes = new byte[] { 0x01, 0x5E, 0x9C, 0xDA };
+    private static readonly byte[] zlibMagicBytes = [0x01, 0x5E, 0x9C, 0xDA];
     private readonly HttpClient _httpClient = httpClient;
     private readonly ResiliencePipelineProvider<string> _resiliencePipelineProvider = resiliencePipelineProvider;
     private readonly IManagerConfigService _configService = configService;
@@ -87,7 +85,7 @@ public class AkiServerRequestingService(
         if (fetchInformation)
         {
             AkiServerInfo? serverInfo = await GetAkiServerInfoAsync(ret, cancellationToken);
-            if(serverInfo != null)
+            if (serverInfo != null)
             {
                 ret.Name = serverInfo.Name;
             }
@@ -118,10 +116,10 @@ public class AkiServerRequestingService(
         return await JsonSerializer.DeserializeAsync<List<AkiMiniProfile>>(respStream, cancellationToken: cancellationToken) ?? [];
     }
 
-    private string CreateLoginData(AkiCharacter character)
+    private string CreateLoginData(AkiServer server, AkiCharacter character)
     {
         Version SITVersion = new(_configService.Config.SitVersion);
-        string compatibleUri = character.ParentServer.Address.AbsoluteUri[..^(SITVersion >= standardUriFormatSupportedVersion ? 0 : 1)];
+        string compatibleUri = server.Address.AbsoluteUri[..^(SITVersion >= standardUriFormatSupportedVersion ? 0 : 1)];
         JsonObject loginData = new()
         {
             ["username"] = character.Username,
@@ -133,18 +131,18 @@ public class AkiServerRequestingService(
         return loginData.ToJsonString();
     }
 
-    private async Task<string> LoginOrRegisterAsync(AkiCharacter character, string operation, CancellationToken cancellationToken = default)
+    private async Task<string> LoginOrRegisterAsync(AkiServer server, AkiCharacter character, string operation, CancellationToken cancellationToken = default)
     {
-        using (MemoryStream ms = await SendAsync(character.ParentServer, Path.Combine("/launcher/profile", operation), HttpMethod.Post, CreateLoginData(character), cancellationToken: cancellationToken))
+        using (MemoryStream ms = await SendAsync(server, Path.Combine("/launcher/profile", operation), HttpMethod.Post, CreateLoginData(server, character), cancellationToken: cancellationToken))
         using (StreamReader streamReader = new StreamReader(ms))
         {
             return await streamReader.ReadToEndAsync(cancellationToken);
         }
     }
 
-    public async Task<(string, AkiLoginStatus)> LoginAsync(AkiCharacter character, CancellationToken cancellationToken = default)
+    public async Task<(string, AkiLoginStatus)> LoginAsync(AkiServer server, AkiCharacter character, CancellationToken cancellationToken = default)
     {
-        string resp = await LoginOrRegisterAsync(character, "login", cancellationToken);
+        string resp = await LoginOrRegisterAsync(server, character, "login", cancellationToken);
         AkiLoginStatus status = resp.ToLowerInvariant() switch
         {
             "invalid_password" => AkiLoginStatus.IncorrectPassword,
@@ -154,9 +152,9 @@ public class AkiServerRequestingService(
         return (resp, status);
     }
 
-    public async Task<(string, AkiLoginStatus)> RegisterCharacterAsync(AkiCharacter character, CancellationToken cancellationToken = default)
+    public async Task<(string, AkiLoginStatus)> RegisterCharacterAsync(AkiServer server, AkiCharacter character, CancellationToken cancellationToken = default)
     {
-        string resp = await LoginOrRegisterAsync(character, "register", cancellationToken);
+        string resp = await LoginOrRegisterAsync(server, character, "register", cancellationToken);
         AkiLoginStatus status = resp.ToLowerInvariant() switch
         {
             "ok" => AkiLoginStatus.Success,
@@ -164,7 +162,7 @@ public class AkiServerRequestingService(
             _ => throw new Exception("Uh oh...")
         };
 
-        return status == AkiLoginStatus.Success ? await LoginAsync(character, cancellationToken) : (string.Empty, status);
+        return status == AkiLoginStatus.Success ? await LoginAsync(server, character, cancellationToken) : (string.Empty, status);
     }
 
     public async Task<AkiServerInfo?> GetAkiServerInfoAsync(AkiServer server, CancellationToken cancellationToken = default)

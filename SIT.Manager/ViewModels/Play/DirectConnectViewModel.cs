@@ -126,11 +126,11 @@ public partial class DirectConnectViewModel : ObservableRecipient
         if (serverAddress != null)
         {
             AkiServer server = await _serverRequestingService.GetAkiServerAsync(serverAddress, false);
-            AkiCharacter character = new(server, Username, Password);
+            AkiCharacter character = new(Username, Password);
 
             try
             {
-                await _tarkovClientService.ConnectToServer(character);
+                await _tarkovClientService.ConnectToServer(server, character);
             }
             catch (AccountNotFoundException)
             {
@@ -150,7 +150,7 @@ public partial class DirectConnectViewModel : ObservableRecipient
                     }
                 }
             }
-            catch(HttpRequestException ex)
+            catch (HttpRequestException ex)
             {
                 await new ContentDialog()
                 {

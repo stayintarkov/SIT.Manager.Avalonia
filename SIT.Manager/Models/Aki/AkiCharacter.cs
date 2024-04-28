@@ -2,33 +2,25 @@
 using System.Text.Json.Serialization;
 
 namespace SIT.Manager.Models.Aki;
+
 public class AkiCharacter : ObservableObject
 {
     [JsonPropertyName("Username")]
-    public string Username { get; init; }
+    public string Username { get; init; } = string.Empty;
     [JsonPropertyName("Password")]
-    public string Password { get; init; }
+    public string Password { get; init; } = string.Empty;
     [JsonPropertyName("ProfileID")]
-    public string ProfileID { get; internal set; } = "";
+    public string ProfileID { get; internal set; } = string.Empty;
     [JsonPropertyName("Edition")]
     public string Edition { get; internal set; } = "Edge of Darkness";
-    [JsonIgnore]
-    public AkiServer ParentServer;
 
-    public AkiCharacter(AkiServer parent, string username, string password)
+    public AkiCharacter(string username, string password)
     {
-        ParentServer = parent;
         Username = username;
         Password = password;
     }
 
-    [JsonConstructor]
-    public AkiCharacter(AkiServer parentServer, string username, string password, string edition, string profileID)
+    public AkiCharacter()
     {
-        this.ParentServer = parentServer;
-        this.Username = username;
-        this.Password = password;
-        this.Edition = edition;
-        this.ProfileID = profileID;
     }
 }
