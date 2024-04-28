@@ -75,6 +75,28 @@ public partial class DirectConnectViewModel : ObservableRecipient
         QuickPlayCommand = new AsyncRelayCommand(async () => await ConnectToServer(true));
     }
 
+    public Task ConnectToServer(string address, string username, string password) 
+    {
+        if(!string.IsNullOrEmpty(address))
+        {
+            LastServer = address;
+        }
+
+        if(!string.IsNullOrEmpty(username))
+        {
+            Username = username;
+        }
+
+        if(!string.IsNullOrEmpty(password))
+        {
+            Password = password;
+        }
+
+        var startServer = address == null;
+
+        return ConnectToServer(startServer);
+    }
+
     private async Task ConnectToServer(bool launchServer = false)
     {
         if (string.IsNullOrEmpty(_configService.Config.SitVersion) && string.IsNullOrEmpty(_configService.Config.SitTarkovVersion))

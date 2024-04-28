@@ -14,7 +14,7 @@ class Program
     [STAThread]
     public static void Main(string[] args)
     {
-        AppBuilder aB = BuildAvaloniaApp();
+        AppBuilder aB = BuildAvaloniaApp(args);
         try
         {
             aB.StartWithClassicDesktopLifetime(args);
@@ -28,8 +28,8 @@ class Program
     }
 
     // Avalonia configuration, don't remove; also used by visual designer.
-    public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure<App>()
+    public static AppBuilder BuildAvaloniaApp(string[] args)
+        => AppBuilder.Configure(() => new App(args))
             .UsePlatformDetect()
             .WithInterFont()
             .LogToTrace();
