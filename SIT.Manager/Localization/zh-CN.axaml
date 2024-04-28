@@ -365,11 +365,11 @@
 
 	<!-- Install - Configure Sit View -->
 	<system:String x:Key="ConfigureSitViewLoadingVersionSelectionText">正在确定可用的 SIT 版本，请稍候...</system:String>
-	<system:String x:Key="ConfigureSitViewVersionSelectionErrorMessage">Unable to determine available SIT versions...</system:String>
-	<system:String x:Key="ConfigureSitViewEFTChangeInstallPathToolTip">Change the SIT EFT Install Path.</system:String>
+	<system:String x:Key="ConfigureSitViewVersionSelectionErrorMessage">无法确定可用的 SIT 版本...</system:String>
+	<system:String x:Key="ConfigureSitViewEFTChangeInstallPathToolTip">更改 SIT EFT 安装路径。</system:String>
+	<system:String x:Key="ConfigureSitViewEFTInstallPathPlaceholder">SIT EFT 安装路径...</system:String>
+	<system:String x:Key="ConfigureSitViewEFTInstallPathTitle">SIT EFT 安装路径:</system:String>
 	<system:String x:Key="ConfigureSitViewEFTSettingsButtonChangeTitle">更改</system:String>
-	<system:String x:Key="ConfigureSitViewEFTInstallPathPlaceholder">SIT EFT Install Path...</system:String>
-	<system:String x:Key="ConfigureSitViewEFTInstallPathTitle">SIT EFT Install Path:</system:String>
 	<system:String x:Key="ConfigureSitViewEFTPathWarningNoPath">当前使用 BSG EFT 的安装位置。请将 EFT 安装到其他位置以避免与 SIT 的潜在问题</system:String>
 	<system:String x:Key="ConfigureSitViewMirrorSelectionTitle">选择要使用的镜像：</system:String>
 	<system:String x:Key="ConfigureSitViewVersionSelectionTitle">要安装的版本：</system:String>
