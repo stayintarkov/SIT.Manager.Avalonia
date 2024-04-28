@@ -50,6 +50,8 @@
 	<system:String x:Key="ToolsOpenEFTFolderButtonTitle">Open EFT Folder</system:String>
 	<system:String x:Key="ToolsOpenBepInExFolderButtonToolTip">Open the BepInEx Plugins folder.</system:String>
 	<system:String x:Key="ToolsOpenBepInExFolderButtonTitle">Open Plugins Folder</system:String>
+	<system:String x:Key="ToolsOpenServerFolderButtonToolTip">Open the SPT-AKI Server Folder.</system:String>
+	<system:String x:Key="ToolsOpenServerFolderButtonTitle">Open Server Folder</system:String>
 	<system:String x:Key="ToolsOpenSITConfigButtonToolTip">Open the SIT Config with the default text editor.</system:String>
 	<system:String x:Key="ToolsOpenSITConfigButtonTitle">Open SIT Config</system:String>
 	<system:String x:Key="ToolsOpenEFTLogButtonToolTip">Open the EFT 'Player.log' with the default text editor.</system:String>
@@ -240,6 +242,7 @@
 	<system:String x:Key="ToolsPageViewModelErrorMessageDescription">Unable to fetch releases</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigTitle">Config Error</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigDescription">'Install Path' is not configured. Go to settings to configure the installation path.</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageServerConfigDescription">'Server Path' is not configured. Go to settings to configure the server path.</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigBepInExDescription">Could not find the given path. Is BepInEx installed? Path: %1</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigSITDescription">Could not find '%1'. Make sure SIT is installed and that you have started the game once.</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigLogDescription">Log file could not be found.</system:String>

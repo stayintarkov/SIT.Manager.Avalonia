@@ -39,6 +39,8 @@ public partial class ToolsPageViewModel : ObservableObject
 
     public IAsyncRelayCommand OpenBepInExFolderCommand { get; }
 
+    public IAsyncRelayCommand OpenServerFolderCommand { get; }
+
     public IAsyncRelayCommand OpenSITConfigCommand { get; }
 
     public IAsyncRelayCommand OpenEFTLogCommand { get; }
@@ -67,6 +69,7 @@ public partial class ToolsPageViewModel : ObservableObject
 
         OpenEFTFolderCommand = new AsyncRelayCommand(OpenEFTFolder);
         OpenBepInExFolderCommand = new AsyncRelayCommand(OpenBepInExFolder);
+        OpenServerFolderCommand = new AsyncRelayCommand(OpenServerFolder);
         OpenSITConfigCommand = new AsyncRelayCommand(OpenSITConfig);
         OpenEFTLogCommand = new AsyncRelayCommand(OpenEFTLog);
         ClearCacheCommand = new AsyncRelayCommand(ClearCache);
@@ -88,6 +91,24 @@ public partial class ToolsPageViewModel : ObservableObject
         else
         {
             await _fileService.OpenDirectoryAsync(_configService.Config.SitEftInstallPath);
+        }
+    }
+
+    private async Task OpenServerFolder()
+    {
+        if (string.IsNullOrEmpty(_configService.Config.AkiServerPath))
+        {
+            ContentDialog contentDialog = new()
+            {
+                Title = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigTitle"),
+                Content = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageServerConfigDescription"),
+                CloseButtonText = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigButtonOk")
+            };
+            await contentDialog.ShowAsync();
+        }
+        else
+        {
+            await _fileService.OpenDirectoryAsync(_configService.Config.AkiServerPath);
         }
     }
 

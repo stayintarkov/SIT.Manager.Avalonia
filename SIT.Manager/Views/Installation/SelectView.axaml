@@ -59,7 +59,7 @@
 							<TextBlock Margin="0,0,4,0" 
 									   Text="{DynamicResource SelectViewSITVersionTitle}"/>
 
-							<TextBlock IsVisible="{Binding !CurrentInstallProcessState.SitVersion, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+							<TextBlock IsVisible="{Binding CurrentInstallProcessState.SitVersion, Converter={x:Static StringConverters.IsNullOrEmpty}}"
 									   Text="{DynamicResource SelectViewVersionMissingMessage}"/>
 							<SelectableTextBlock IsVisible="{Binding CurrentInstallProcessState.SitVersion, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
 												 Text="{Binding CurrentInstallProcessState.SitVersion}"/>
@@ -119,7 +119,7 @@
 							<TextBlock Margin="0,0,4,0"
 									   Text="{DynamicResource SelectViewSPTAKIPathTitle}"/>
 
-							<TextBlock IsVisible="{Binding !CurrentInstallProcessState.SptAkiInstallPath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+							<TextBlock IsVisible="{Binding CurrentInstallProcessState.SptAkiInstallPath, Converter={x:Static StringConverters.IsNullOrEmpty}}"
 									   Text="{DynamicResource SelectViewVersionMissingMessage}"/>
 							<SelectableTextBlock IsVisible="{Binding CurrentInstallProcessState.SptAkiInstallPath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
 												 Text="{Binding CurrentInstallProcessState.SptAkiInstallPath}"/>
@@ -129,7 +129,7 @@
 							<TextBlock Margin="0,0,4,0"
 									   Text="{DynamicResource SelectViewServerVersionTitle}"/>
 
-							<TextBlock IsVisible="{Binding !CurrentInstallProcessState.SptAkiVersion, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+							<TextBlock IsVisible="{Binding CurrentInstallProcessState.SptAkiVersion, Converter={x:Static StringConverters.IsNullOrEmpty}}"
 									   Text="{DynamicResource SelectViewVersionMissingMessage}"/>
 							<SelectableTextBlock IsVisible="{Binding CurrentInstallProcessState.SptAkiVersion, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
 												 Text="{Binding CurrentInstallProcessState.SptAkiVersion}"/>
@@ -139,7 +139,7 @@
 							<TextBlock Margin="0,0,4,0"
 									   Text="{DynamicResource SelectViewServerModVersionTitle}"/>
 
-							<TextBlock IsVisible="{Binding !CurrentInstallProcessState.SitModVersion, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+							<TextBlock IsVisible="{Binding CurrentInstallProcessState.SitModVersion, Converter={x:Static StringConverters.IsNullOrEmpty}}"
 									   Text="{DynamicResource SelectViewVersionMissingMessage}"/>
 							<SelectableTextBlock IsVisible="{Binding CurrentInstallProcessState.SitModVersion, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
 												 Text="{Binding CurrentInstallProcessState.SitModVersion}"/>

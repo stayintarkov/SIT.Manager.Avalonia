@@ -62,7 +62,6 @@
 						   OpenPaneLength="166"
 						   Grid.Row="1"
 						   Name="NavView"
-						   IsEnabled="{Binding !IsInstallRunning}"
 						   ItemInvoked="NavView_ItemInvoked">
 			<ui:NavigationView.Styles>
 				<Style Selector="ui|NavigationViewItem">
@@ -71,30 +70,53 @@
 			</ui:NavigationView.Styles>
 
 			<ui:NavigationView.MenuItems>
-				<ui:NavigationViewItem IconSource="Play" Content="{DynamicResource PlayTitle}" Tag="SIT.Manager.Views.PlayPage" ToolTip.Tip="{DynamicResource PlayTitleToolTip}"/>
+				<ui:NavigationViewItem IconSource="Play" 
+									   Content="{DynamicResource PlayTitle}" 
+									   IsEnabled="{Binding !IsInstallRunning}"
+									   Tag="SIT.Manager.Views.PlayPage" 
+									   ToolTip.Tip="{DynamicResource PlayTitleToolTip}"/>
 
-				<ui:NavigationViewItem IconSource="Sync" Content="{DynamicResource InstallTitle}" Tag="SIT.Manager.Views.InstallPage" ToolTip.Tip="{DynamicResource InstallTitleToolTip}">
+				<ui:NavigationViewItem IconSource="Sync" 
+									   Content="{DynamicResource InstallTitle}" 
+									   IsEnabled="{Binding !IsInstallRunning}"
+									   Tag="SIT.Manager.Views.InstallPage" 
+									   ToolTip.Tip="{DynamicResource InstallTitleToolTip}">
 					<ui:NavigationViewItem.InfoBadge>
 						<ui:InfoBadge IconSource="ChevronUp"
 									  IsVisible="{Binding SitUpdateAvailable}"/>
 					</ui:NavigationViewItem.InfoBadge>
 				</ui:NavigationViewItem>
 
-				<ui:NavigationViewItem IconSource="AllApps" Content="{DynamicResource ToolsTitle}" Tag="SIT.Manager.Views.ToolsPage" ToolTip.Tip="{DynamicResource ToolsTitleToolTip}"/>
-				<ui:NavigationViewItem IconSource="MapDrive" Content="{DynamicResource ServerTitle}" Tag="SIT.Manager.Views.ServerPage" ToolTip.Tip="{DynamicResource ServerTitleToolTip}"/>
+				<ui:NavigationViewItem IconSource="AllApps" 
+									   Content="{DynamicResource ToolsTitle}"
+									   IsEnabled="{Binding !IsInstallRunning}"
+									   Tag="SIT.Manager.Views.ToolsPage"
+									   ToolTip.Tip="{DynamicResource ToolsTitleToolTip}"/>
+				<ui:NavigationViewItem IconSource="MapDrive" 
+									   Content="{DynamicResource ServerTitle}" 
+									   IsEnabled="{Binding !IsInstallRunning}"
+									   Tag="SIT.Manager.Views.ServerPage" 
+									   ToolTip.Tip="{DynamicResource ServerTitleToolTip}"/>
 				<ui:NavigationViewItem IconSource="Library" 
 									   IsVisible="{Binding !IsDevloperModeEnabled}"
+									   IsEnabled="{Binding !IsInstallRunning}"
 									   Content="{DynamicResource ModsTitle}" 
 									   Tag="SIT.Manager.Views.ModsPage" 
 									   ToolTip.Tip="{DynamicResource ModsTitleToolTip}"/>
 			</ui:NavigationView.MenuItems>
 
 			<ui:NavigationView.FooterMenuItems>
-				<ui:NavigationViewItem IconSource="Help" Content="{DynamicResource HelpTitle}" Tag="Help"/>
-				<ui:NavigationViewItem IconSource="Settings" Content="{DynamicResource SettingsTitle}" Tag="SIT.Manager.Views.SettingsPage"/>			</ui:NavigationView.FooterMenuItems>		
+				<ui:NavigationViewItem IconSource="Help" 
+									   Content="{DynamicResource HelpTitle}" 
+									   Tag="Help"/>
+				<ui:NavigationViewItem IconSource="Settings" 
+									   IsEnabled="{Binding !IsInstallRunning}"
+									   Content="{DynamicResource SettingsTitle}" 
+									   Tag="SIT.Manager.Views.SettingsPage"/>			
+			</ui:NavigationView.FooterMenuItems>		
 
 			<Grid RowDefinitions="*,Auto">
-				<ui:Frame Name="ContentFrame" 
+				<ui:Frame Name="ContentFrame"
 						  CornerRadius="8">
 					<ui:Frame.Background>
 						<ImageBrush Source="/Assets/bg3.png" Stretch="Fill"/>

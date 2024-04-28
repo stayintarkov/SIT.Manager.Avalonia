@@ -50,6 +50,8 @@
 	<system:String x:Key="ToolsOpenEFTFolderButtonTitle">Открыть папку EFT</system:String>
 	<system:String x:Key="ToolsOpenBepInExFolderButtonToolTip">Открыть папку плагинов BepInEx.</system:String>
 	<system:String x:Key="ToolsOpenBepInExFolderButtonTitle">Открыть папку плагинов</system:String>
+	<system:String x:Key="ToolsOpenServerFolderButtonToolTip">Open the SPT-AKI Server Folder.</system:String>
+	<system:String x:Key="ToolsOpenServerFolderButtonTitle">Open Server Folder</system:String>
 	<system:String x:Key="ToolsOpenSITConfigButtonToolTip">Открыть файл конфигурации SIT с помощью текстового редактора по умолчанию.</system:String>
 	<system:String x:Key="ToolsOpenSITConfigButtonTitle">Открыть конфигурацию SIT</system:String>
 	<system:String x:Key="ToolsOpenEFTLogButtonToolTip">Открыть 'Player.log' EFT с помощью текстового редактора по умолчанию.</system:String>
@@ -244,6 +246,7 @@
 	<system:String x:Key="ToolsPageViewModelErrorMessageDescription">Не удалось получить релизы</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigTitle">Ошибка конфигурации</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigDescription">'Путь установки' не настроен. Перейдите в настройки, чтобы настроить путь установки.</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageServerConfigDescription">'Server Path' is not configured. Go to settings to configure the server path.</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigBepInExDescription">Не удалось найти указанный путь. Установлен ли BepInEx? Путь: %1</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigSITDescription">Не удалось найти '%1'. Убедитесь, что SIT установлен и что вы один раз запустили игру.</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigLogDescription">Не удалось найти файл журнала.</system:String>

@@ -50,6 +50,8 @@
 	<system:String x:Key="ToolsOpenEFTFolderButtonTitle">打開 EFT 資料夾</system:String>
 	<system:String x:Key="ToolsOpenBepInExFolderButtonToolTip">打開 BepInEx 插件資料夾</system:String>
 	<system:String x:Key="ToolsOpenBepInExFolderButtonTitle">打開插件資料夾</system:String>
+	<system:String x:Key="ToolsOpenServerFolderButtonToolTip">Open the SPT-AKI Server Folder.</system:String>
+	<system:String x:Key="ToolsOpenServerFolderButtonTitle">Open Server Folder</system:String>
 	<system:String x:Key="ToolsOpenSITConfigButtonToolTip">使用默認文本編輯器打開 SIT 設定檔</system:String>
 	<system:String x:Key="ToolsOpenSITConfigButtonTitle">打開 SIT 設定檔</system:String>
 	<system:String x:Key="ToolsOpenEFTLogButtonToolTip">使用默認文本編輯器打開 EFT 的 'Player.log' 檔案</system:String>
@@ -245,6 +247,7 @@
 	<system:String x:Key="ToolsPageViewModelErrorMessageDescription">無法取得發佈版本</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigTitle">配置錯誤</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigDescription">未配置 EFT 安裝路徑，請前往設置以配置安裝路徑！</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageServerConfigDescription">'Server Path' is not configured. Go to settings to configure the server path.</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigBepInExDescription">找不到指定的路徑，請確認 BepInEx 是否已安裝？路徑：%1</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigSITDescription">找不到「%1」，請確保 SIT 已安裝並且您已經啟動過遊戲！</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigLogDescription">找不到日誌文件！</system:String>
