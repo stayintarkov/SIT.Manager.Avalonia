@@ -75,7 +75,7 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
         character = _connectedServer.Characters.FirstOrDefault(x => x.Username == Profile.Username);
         if (character != null)
         {
-            int serverIndex = _configService.Config.BookmarkedServers.FindIndex(x => x.Address == character.ParentServer.Address);
+            int serverIndex = _configService.Config.BookmarkedServers.FindIndex(x => x.Address == _connectedServer.Address);
             if (serverIndex != -1)
             {
                 character = _configService.Config.BookmarkedServers[serverIndex].Characters.FirstOrDefault(x => x?.Username == character.Username, null);
@@ -131,16 +131,16 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
             {
                 return;
             }
-            character = new(_connectedServer, Profile.Username, password);
+            character = new(Profile.Username, password);
         }
 
         try
         {
-            bool success = await _tarkovClientService.ConnectToServer(character);
+            bool success = await _tarkovClientService.ConnectToServer(_connectedServer, character);
             if (success && rememberLogin)
             {
-                character.ParentServer.Characters.Add(character);
-                int index = _configService.Config.BookmarkedServers.FindIndex(x => x.Address == character.ParentServer.Address);
+                _connectedServer.Characters.Add(character);
+                int index = _configService.Config.BookmarkedServers.FindIndex(x => x.Address == _connectedServer.Address);
                 if (index != -1 && !_configService.Config.BookmarkedServers[index].Characters.Any(x => x.Username == character.Username))
                 {
                     _configService.Config.BookmarkedServers[index].Characters.Add(character);
