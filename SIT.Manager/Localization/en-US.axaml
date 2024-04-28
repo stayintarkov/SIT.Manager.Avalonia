@@ -68,7 +68,6 @@
 	<system:String x:Key="ToolsSelectLogsCloseButtonText">Cancel</system:String>
 	<system:String x:Key="ToolsDiagnosticReportSaveFileTitle">Save zip file</system:String>
 	<system:String x:Key="ToolsManagerLogCheckboxContent">Include Manager Logs</system:String>
-	<system:String x:Key="ToolsManagerCrashLogCheckboxContent">Include Manager Crash Logs</system:String>
 	
 	<!-- Server Page -->
 	<system:String x:Key="ServerConsoleOutputTitle">Console Output</system:String>

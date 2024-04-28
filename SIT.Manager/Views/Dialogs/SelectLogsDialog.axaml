@@ -18,6 +18,5 @@
 		<CheckBox Name="DiagnosticLogCheckbox" Content="{DynamicResource ToolsDiagnosticsLogCheckboxContent}" IsChecked="{Binding SelectedOptions.IncludeDiagnosticLog, Mode=TwoWay}" />
 		<CheckBox Name="HttpJsonCheckbox" Content="{DynamicResource ToolsHttpJsonCheckboxContent}" IsChecked="{Binding SelectedOptions.IncludeHttpJson, Mode=TwoWay}" />
 		<CheckBox Name="ManagerLogCheckbox" Content="{DynamicResource ToolsManagerLogCheckboxContent}" IsChecked="{Binding SelectedOptions.IncludeManagerLog, Mode=TwoWay}" />
-		<CheckBox Name="ManagerCrashLogCheckbox" Content="{DynamicResource ToolsManagerCrashLogCheckboxContent}" IsChecked="{Binding SelectedOptions.IncludeManagerCrash, Mode=TwoWay}" />
 	</StackPanel>
 </ui:ContentDialog>

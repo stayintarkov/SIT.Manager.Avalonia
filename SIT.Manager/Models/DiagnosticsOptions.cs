@@ -1,11 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SIT.Manager.Models;
+
 public partial class DiagnosticsOptions : ObservableObject
 {
     [ObservableProperty]
@@ -18,6 +14,4 @@ public partial class DiagnosticsOptions : ObservableObject
     public bool _includeHttpJson = true;
     [ObservableProperty]
     public bool _includeManagerLog = true;
-    [ObservableProperty]
-    public bool _includeManagerCrash = true;
 }
