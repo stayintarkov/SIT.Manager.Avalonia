@@ -72,7 +72,7 @@ public sealed partial class App : Application
                 .AddSingleton<ITarkovClientService, TarkovClientService>()
                 .AddSingleton<IBarNotificationService, BarNotificationService>()
                 .AddTransient<IFileService, FileService>()
-                .AddTransient<IInstallerService, InstallerService>()
+                .AddSingleton<IInstallerService, InstallerService>()
                 .AddSingleton<IManagerConfigService, ManagerConfigService>()
                 .AddTransient<IModService, ModService>()
                 .AddTransient<IPickerDialogService>(x =>
