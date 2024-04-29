@@ -16,6 +16,7 @@
 					VerticalAlignment="Center"
 					Source="{Binding SideImage}"
 					MaxHeight="40"
+					RenderOptions.BitmapInterpolationMode="HighQuality"
 					Stretch="UniformToFill"/>
 
 				<TextBlock 

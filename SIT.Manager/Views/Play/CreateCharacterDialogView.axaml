@@ -13,13 +13,13 @@
 				  x:DataType="vm:CreateCharacterDialogViewModel">
 	<StackPanel>
 		<!--Username box-->
-		<Label Content="{DynamicResource DirectConnectViewUsernameBoxTitle}" Margin="8 8 8 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
-		<TextBox Name="UsernameBox" Text="{Binding Username, Mode=TwoWay}" MinWidth="150" Margin="8 4 8 8" HorizontalAlignment="Left" Watermark="{DynamicResource DirectConnectViewEnterUserNamePlaceholder}"/>
+		<Label Content="{DynamicResource DirectConnectViewUsernameBoxTitle}" FontWeight="Bold" HorizontalAlignment="Left"/>
+		<TextBox Name="UsernameBox" Text="{Binding Username, Mode=TwoWay}" MinWidth="150" HorizontalAlignment="Left" Watermark="{DynamicResource DirectConnectViewEnterUserNamePlaceholder}"/>
 		<!--Password box-->
-		<Label Content="{DynamicResource DirectConnectViewPasswordBoxTitle}" Margin="10 10 10 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
-		<TextBox Name="PasswordBox" Text="{Binding Password, Mode=TwoWay}" MinWidth="150" Margin="8 4 8 8" HorizontalAlignment="Left" Watermark="{DynamicResource DirectConnectViewEnterPasswordPlaceholder}"/>
+		<Label Content="{DynamicResource DirectConnectViewPasswordBoxTitle}" FontWeight="Bold" HorizontalAlignment="Left"/>
+		<TextBox Name="PasswordBox" Text="{Binding Password, Mode=TwoWay}" MinWidth="150" HorizontalAlignment="Left" Watermark="{DynamicResource DirectConnectViewEnterPasswordPlaceholder}"/>
 
-		<TextBlock Text="{DynamicResource SelectEditionDialogTextBlockTitle}" Margin="5"/>
+		<TextBlock Text="{DynamicResource SelectEditionDialogTextBlockTitle}" HorizontalAlignment="Left" FontWeight="Bold"/>
 		<ComboBox Name="EditionsList"
 				  Width="200"
 				  ItemsSource="{Binding Editions}"

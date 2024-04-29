@@ -12,19 +12,12 @@
 		<Style Selector="ui|SymbolIcon">
 			<Setter Property="Margin" Value="0,0,8,0"/>
 		</Style>
-
-		<Style Selector="Button">
-			<Setter Property="Height" Value="50"/>
-			<Setter Property="HorizontalAlignment" Value="Center"/>
-			<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-			<Setter Property="Margin" Value="4"/>
-		</Style>
 	</UserControl.Styles>
 
 	<ScrollViewer>
-		<Grid RowDefinitions="*,*">
+		<StackPanel>
 			<!-- EFT Game -->
-			<StackPanel Grid.Row="0" VerticalAlignment="Center">
+			<StackPanel VerticalAlignment="Center">
 				<TextBlock Text="{DynamicResource SelectViewEFTSectionHeading}" TextTrimming="CharacterEllipsis" Classes="FrameHeading"/>
 				<Border Classes="StandardFrame">
 					<StackPanel>
@@ -43,7 +36,7 @@
 							</TextBlock.IsVisible>
 						</TextBlock>
 						
-						<TextBlock>
+						<TextBlock Margin="0,10,0,0">
 							<Run Text="{DynamicResource SelectViewEFTPathTitle}"/>
 							<Run Text=" "/>
 							<Run Text="{Binding CurrentInstallProcessState.EftInstallPath}"/>
@@ -67,7 +60,9 @@
 						
 						<Grid ColumnDefinitions="*,*">
 							<Button Grid.Column="0"
-									HorizontalAlignment="Left"
+									Height="40"
+									Margin="0,15,5,0"
+									HorizontalAlignment="Stretch"
 									ToolTip.Tip="{DynamicResource SelectViewInstallSITButtonToolTip}"
 									Command="{Binding ProgressInstallCommand}"
 									CommandParameter="{x:Static im:RequestedInstallOperation.InstallSit}">
@@ -84,7 +79,9 @@
 							</Button>
 
 							<Button Grid.Column="1"
-									HorizontalAlignment="Left"
+									Margin="0,15,0,0"
+									HorizontalAlignment="Stretch"
+									Height="40"
 									ToolTip.Tip="{DynamicResource SelectViewUpdateSITButtonToolTip}"
 									Command="{Binding ProgressInstallCommand}"
 									CommandParameter="{x:Static im:RequestedInstallOperation.UpdateSit}">
@@ -106,7 +103,7 @@
 			</StackPanel>
 
 			<!-- Server -->
-			<StackPanel Grid.Row="1" VerticalAlignment="Center">
+			<StackPanel VerticalAlignment="Center">
 				<TextBlock Text="{DynamicResource SelectViewServerSectionHeading}" TextTrimming="CharacterEllipsis" Classes="FrameHeading"/>
 				<Border Classes="StandardFrame">
 					<StackPanel>
@@ -115,7 +112,7 @@
 								   IsVisible="{Binding NoAkiInstallPathSet}"
 								   Classes="WarningMessage"/>
 						
-						<StackPanel Orientation="Horizontal">
+						<StackPanel Orientation="Horizontal" Margin="0,10,0,0">
 							<TextBlock Margin="0,0,4,0"
 									   Text="{DynamicResource SelectViewSPTAKIPathTitle}"/>
 
@@ -146,7 +143,9 @@
 						</StackPanel>
 
 						<Button
-								HorizontalAlignment="Left"
+								HorizontalAlignment="Stretch"
+								Height="40"
+								Margin="0,15,0,0"
 								ToolTip.Tip="{DynamicResource SelectViewInstallServerButtonToolTip}"
 								Command="{Binding ProgressInstallCommand}"
 								CommandParameter="{x:Static im:RequestedInstallOperation.InstallServer}">
@@ -158,6 +157,6 @@
 					</StackPanel>
 				</Border>
 			</StackPanel>
-		</Grid>
+		</StackPanel>
 	</ScrollViewer>
 </UserControl>

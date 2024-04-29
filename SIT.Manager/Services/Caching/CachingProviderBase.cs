@@ -49,6 +49,7 @@ internal abstract class CachingProviderBase : ICachingProvider
 
     protected virtual void SaveKeysToFile(string restoreFileName)
     {
+        if (!Directory.Exists(_cachePath.FullName)) Directory.CreateDirectory(_cachePath.FullName);
         string keyDataPath = Path.Combine(_cachePath.FullName, restoreFileName);
         if (_cacheMap.IsEmpty)
         {
@@ -56,7 +57,6 @@ internal abstract class CachingProviderBase : ICachingProvider
                 File.Delete(keyDataPath);
             return;
         }
-
         File.WriteAllText(keyDataPath, JsonSerializer.Serialize(_cacheMap));
     }
     protected virtual void EvictTenents(object? state)

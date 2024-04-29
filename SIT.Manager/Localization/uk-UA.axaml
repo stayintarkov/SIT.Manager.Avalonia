@@ -106,8 +106,8 @@
 	<system:String x:Key="SettingsLinuxWineRunnerToolTip">Встановіть використовуваний запускач Wine для EFT</system:String>
 	<system:String x:Key="SettingsEFTSettingsTitle">Налаштування EFT</system:String>
 	<system:String x:Key="SettingsEFTSettingsButtonChangeTitle">Змінити</system:String>
-	<system:String x:Key="SettingsEFTInstallPathTitle">SIT EFT Path:</system:String>
-	<system:String x:Key="SettingsEFTChangeInstallPathToolTip">Change the SIT EFT Install Path.</system:String>
+	<system:String x:Key="SettingsEFTInstallPathTitle">Шлях до SIT EFT:</system:String>
+	<system:String x:Key="SettingsEFTChangeInstallPathToolTip">Змінити шлях встановлення SIT EFT.</system:String>
 	<system:String x:Key="SettingsEFTVersionTitle">Версія EFT:</system:String>
 	<system:String x:Key="SettingsSITVersionTitle">Версія SIT:</system:String>
 	<system:String x:Key="SettingsSPTAKITitle">Налаштування SPT-AKI</system:String>

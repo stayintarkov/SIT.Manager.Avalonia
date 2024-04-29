@@ -13,13 +13,9 @@
 				  x:Class="SIT.Manager.Views.Play.CreateServerDialogView"
 				  x:DataType="vm:CreateServerDialogViewModel">
 	<StackPanel>
-		<Label Content="{DynamicResource CreateServerDialogViewAddressLabel}" 
-			   Margin="10 10 10 0" 
-			   FontFamily="{StaticResource BenderFont}"
-			   FontStyle="Oblique"/>
+		<Label Content="{DynamicResource CreateServerDialogViewAddressLabel}" FontWeight="Bold"/>
 		<TextBox Text="{Binding ServerAddress, Mode=TwoWay}" 
 				 MinWidth="300" 
-				 Margin="10 5 10 10" 
 				 HorizontalAlignment="Left" 
 				 Watermark="{DynamicResource CreateServerDialogViewAddressTextBoxWatermark}"/>
 	</StackPanel>

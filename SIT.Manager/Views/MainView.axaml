@@ -63,12 +63,6 @@
 						   Grid.Row="1"
 						   Name="NavView"
 						   ItemInvoked="NavView_ItemInvoked">
-			<ui:NavigationView.Styles>
-				<Style Selector="ui|NavigationViewItem">
-					<Setter Property="FontFamily" Value="{StaticResource BenderFont}"/>
-				</Style>
-			</ui:NavigationView.Styles>
-
 			<ui:NavigationView.MenuItems>
 				<ui:NavigationViewItem IconSource="Play" 
 									   Content="{DynamicResource PlayTitle}" 
@@ -119,7 +113,7 @@
 				<ui:Frame Name="ContentFrame"
 						  CornerRadius="8">
 					<ui:Frame.Background>
-						<ImageBrush Source="/Assets/bg3.png" Stretch="Fill"/>
+						<ImageBrush Source="/Assets/bg3.png" Stretch="UniformToFill"/>
 					</ui:Frame.Background>
 				</ui:Frame>
 				<StackPanel Name="ActionPanel" 

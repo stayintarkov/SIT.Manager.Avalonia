@@ -7,8 +7,6 @@
 
 	<Styles.Resources>
 		<ResourceDictionary>
-			<FontFamily x:Key="BenderFont">/Assets/Fonts/Bender.otf#Bender</FontFamily>
-
 			<Color x:Key="AppAccentColor">#FF7F7F7F</Color>
 			<Color x:Key="AppBlueColor">#3399FFFF</Color>
 			<Color x:Key="AppWhiteColor">#FFFFFFFF</Color>

@@ -14,8 +14,8 @@
 				Margin="4,0,4,8"
 				Background="Black"
 				Classes="StandardFrame">
-			<Grid ColumnDefinitions="Auto, *">
-				<Button Grid.Column="0"
+			<Grid>
+				<Button HorizontalAlignment="Stretch"
 						VerticalAlignment="Center"
 						Content="{DynamicResource ServerSelectionViewAddServerButtonText}"
 						Command="{Binding CreateServerCommand}"/>
