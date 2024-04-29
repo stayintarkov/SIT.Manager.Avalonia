@@ -8,8 +8,7 @@
 			 xmlns:vm="clr-namespace:SIT.Manager.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SIT.Manager.Views.InstallPage"
-			 x:DataType="vm:InstallPageViewModel"
-			 Background="Black">
+			 x:DataType="vm:InstallPageViewModel">
 	<UserControl.Styles>
 		<Style Selector="labs|StepBarItem:selected">
 			<Setter Property="Foreground" Value="{StaticResource TextControlForeground}"/>

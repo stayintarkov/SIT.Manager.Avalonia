@@ -533,4 +533,6 @@
 	<system:String x:Key="MainViewModelUpdateErrorTitle">错误</system:String>
 	<system:String x:Key="MainViewModelUpdateErrorMessage">检查更新时出现错误</system:String>
 	
+	<!-- HelpDialog -->
+	<system:String x:Key="HelpDialogDescription">您确定要在默认浏览器中打开 SIT 文档 (%1) 吗？</system:String>
 </ResourceDictionary>

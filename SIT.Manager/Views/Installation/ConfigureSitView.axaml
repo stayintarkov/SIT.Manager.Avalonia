@@ -18,7 +18,7 @@
 		<StackPanel Margin="0,0,16,0">
 			<StackPanel>
 				<TextBlock Text="{DynamicResource ConfigureViewVersionSelectionGroupTitle}" Classes="FrameHeading"/>
-				<Border Classes="StandardFrame">
+				<Border Background="Black" Classes="StandardFrame">
 					<StackPanel>
 						<TextBlock Text="{DynamicResource ConfigureSitViewVersionSelectionErrorMessage}"
 								   Classes="ErrorMessage"
@@ -142,7 +142,7 @@
 
 			<StackPanel IsVisible="{Binding HasRecommendedModsAvailable}">
 				<TextBlock Text="{DynamicResource ConfigureSitViewRecommendedModsTitle}" Classes="FrameHeading"/>
-				<Border Classes="StandardFrame">
+				<Border Background="Black" Classes="StandardFrame">
 					<StackPanel>
 						<StackPanel IsVisible="{Binding !IsModsSelectionLoading}">
 							<TextBlock Text="{DynamicResource ConfigureSitViewRecommendedModsDescription}"
@@ -179,7 +179,7 @@
 					</StackPanel>
 				</Border>
 				<TextBlock Text="{DynamicResource ConfigureViewPersonalizationOptions}" Classes="FrameHeading"/>
-				<Border Classes="StandardFrame">
+				<Border Background="Black" Classes="StandardFrame">
 					<CheckBox HorizontalAlignment="Left"
 							  Margin="8,0,0,0"
 							  ToolTip.Tip="{DynamicResource ConfigureSitViewEFTSettingsCheckboxTip}"
@@ -197,6 +197,7 @@
 			<Grid ColumnDefinitions="*, *"
 				  Margin="4,8">
 				<Button Grid.Column="0"
+						Background="Black"
 						Height="50"
 						Margin="0,0,5,0"
 						HorizontalAlignment="Stretch"
@@ -209,6 +210,7 @@
 				</Button>
 
 				<Button Grid.Column="1"
+						Background="Black"
 						Height="50"
 						HorizontalAlignment="Stretch"
 						HorizontalContentAlignment="Center"

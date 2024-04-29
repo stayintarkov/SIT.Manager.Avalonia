@@ -531,5 +531,8 @@
 	<!-- MainViewModel -->
 	<system:String x:Key="MainViewModelUpdateErrorTitle">Ошибка</system:String>
 	<system:String x:Key="MainViewModelUpdateErrorMessage">Ошибка при проверке обновлений</system:String>
-	
+
+	<!-- HelpDialog -->
+	<system:String x:Key="HelpDialogDescription">Вы уверены, что хотите открыть документацию SIT (%1) в вашем браузере по умолчанию?</system:String>
+
 </ResourceDictionary>

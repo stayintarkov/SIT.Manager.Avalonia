@@ -531,5 +531,7 @@
 	<!-- MainViewModel -->
 	<system:String x:Key="MainViewModelUpdateErrorTitle">錯誤</system:String>
 	<system:String x:Key="MainViewModelUpdateErrorMessage">檢查更新時出現錯誤</system:String>
-	
+
+	<!-- HelpDialog -->
+	<system:String x:Key="HelpDialogDescription">您確定要在您的預設瀏覽器中打開 SIT 文件 (%1) 嗎？</system:String>
 </ResourceDictionary>

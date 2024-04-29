@@ -6,7 +6,7 @@
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SIT.Manager.Views.Installation.InstallView"
 			 x:DataType="vm:InstallViewModel">
-	<Border Classes="StandardFrame" Grid.Row="0">
+	<Border Background="Black" Classes="StandardFrame" Grid.Row="0">
 		<Grid RowDefinitions="*, *, *" 
 			  ColumnDefinitions="*, 2*, *">
 			<!-- Downloading Row -->

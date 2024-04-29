@@ -19,7 +19,7 @@
 			<!-- EFT Game -->
 			<StackPanel VerticalAlignment="Center">
 				<TextBlock Text="{DynamicResource SelectViewEFTSectionHeading}" TextTrimming="CharacterEllipsis" Classes="FrameHeading"/>
-				<Border Classes="StandardFrame">
+				<Border Background="Black" Classes="StandardFrame">
 					<StackPanel>
 						<TextBlock Text="{DynamicResource SelectViewEFTUsingBSGInstallWarningMessage}"
 								   TextTrimming="CharacterEllipsis"
@@ -105,7 +105,7 @@
 			<!-- Server -->
 			<StackPanel VerticalAlignment="Center">
 				<TextBlock Text="{DynamicResource SelectViewServerSectionHeading}" TextTrimming="CharacterEllipsis" Classes="FrameHeading"/>
-				<Border Classes="StandardFrame">
+				<Border Classes="StandardFrame" Background="Black">
 					<StackPanel>
 						<TextBlock Text="{DynamicResource SelectViewSPTAKINoPathWarningMessage}"
 								   TextTrimming="CharacterEllipsis"

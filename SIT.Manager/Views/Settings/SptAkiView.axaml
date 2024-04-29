@@ -8,7 +8,7 @@
              x:Class="SIT.Manager.Views.Settings.SptAkiView"
 			 x:DataType="vm:SptAkiViewModel">
 	<StackPanel>
-		<Border Classes="StandardFrame">
+		<Border Background="Black" Classes="StandardFrame">
 			<StackPanel>
 				<StackPanel Orientation="Horizontal">
 					<TextBlock Text="{DynamicResource SettingsSPTAKIPathTitle}"  VerticalAlignment="Center"/>
@@ -42,7 +42,7 @@
 		
 		<!--Server Console-->
 		<TextBlock Text="{DynamicResource SettingsServerConsoleTitle}" Classes="FrameHeading"/>
-		<Border Classes="StandardFrame">
+		<Border Background="Black" Classes="StandardFrame">
 			<StackPanel>
 				<StackPanel Orientation="Horizontal">
 					<TextBlock Text="{DynamicResource SettingsServerConsoleFontFamilyTitle}" Margin="0,0,10,0" VerticalAlignment="Center"/>

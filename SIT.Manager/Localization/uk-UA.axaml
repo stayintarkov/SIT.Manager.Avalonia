@@ -533,4 +533,6 @@
 	<system:String x:Key="MainViewModelUpdateErrorTitle">Помилка</system:String>
 	<system:String x:Key="MainViewModelUpdateErrorMessage">Виникла помилка під час перевірки оновлень</system:String>
 	
+	<!-- HelpDialog -->
+	<system:String x:Key="HelpDialogDescription">Ви впевнені, що хочете відкрити документацію SIT (%1) у вашому браузері за замовчуванням?</system:String>
 </ResourceDictionary>

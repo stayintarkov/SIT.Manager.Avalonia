@@ -9,7 +9,6 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SIT.Manager.Views.ModsPage"
 			 x:CompileBindings="True"
-			 Background="{DynamicResource ApplicationPageBackgroundThemeBrush}"
 			 x:DataType="vm:ModsPageViewModel">
 	<Grid>
 		<Grid Name="DisclaimerGrid"

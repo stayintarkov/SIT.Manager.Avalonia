@@ -530,4 +530,8 @@
 	<!-- MainViewModel -->
 	<system:String x:Key="MainViewModelUpdateErrorTitle">Error</system:String>
 	<system:String x:Key="MainViewModelUpdateErrorMessage">Failed when checking for updates</system:String>
+
+	<!-- HelpDialog -->
+	<system:String x:Key="HelpDialogDescription">Are you sure you want to open the SIT Documentation (%1) in your default browser?</system:String>
+	
 </ResourceDictionary>
