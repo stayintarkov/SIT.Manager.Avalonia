@@ -7,7 +7,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SIT.Manager.Views.Settings.LauncherView"
 			 x:DataType="vm:LauncherViewModel">
-	<Border Background="Black" Classes="StandardFrame">
+	<Border Classes="StandardFrame">
 		<StackPanel>
 			<CheckBox Content="{DynamicResource SettingsCloseLauncherAfterGameLaunchTitle}"
 					  ToolTip.Tip="{DynamicResource SettingsCloseLauncherAfterGameLaunchToolTip}"

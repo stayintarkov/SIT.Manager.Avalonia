@@ -18,7 +18,7 @@
 		<StackPanel Grid.Row="0">
 			<StackPanel>
 				<TextBlock Text="{DynamicResource ConfigureViewVersionSelectionGroupTitle}" Classes="FrameHeading"/>
-				<Border Background="Black" Classes="StandardFrame">
+				<Border Classes="StandardFrame">
 					<StackPanel>
 						<TextBlock Text="{DynamicResource ConfigureServerViewVersionSelectionErrorMessage}"
 								   Classes="ErrorMessage"
@@ -51,7 +51,7 @@
 									  ItemsSource="{Binding AvailableVersions}">
 								<ComboBox.ItemTemplate>
 									<DataTemplate>
-										<TextBlock Text="{Binding TagName}"/>
+										<TextBlock Text="{Binding TagName}" TextTrimming="CharacterEllipsis" TextWrapping="WrapWithOverflow"/>
 									</DataTemplate>
 								</ComboBox.ItemTemplate>
 							</ComboBox>

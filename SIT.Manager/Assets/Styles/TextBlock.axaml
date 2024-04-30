@@ -12,6 +12,12 @@
 	<Style Selector="TextBlock.FrameHeading">
 		<Setter Property="VerticalAlignment" Value="Center"/>
 		<Setter Property="Margin" Value="8,0,0,0"/>
+		<Setter Property="FontWeight" Value="SemiBold"/>
+		<Setter Property="Effect">
+			<Setter.Value>
+				<DropShadowEffect BlurRadius="0" OffsetX="0" OffsetY="3"/>
+			</Setter.Value>
+		</Setter>
 	</Style>
 
 	<Style Selector="TextBlock.WarningMessage">

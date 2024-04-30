@@ -13,13 +13,13 @@
 				  x:DataType="vm:CreateCharacterDialogViewModel">
 	<StackPanel>
 		<!--Username box-->
-		<Label Content="{DynamicResource DirectConnectViewUsernameBoxTitle}" FontWeight="Bold" HorizontalAlignment="Left"/>
+		<Label Content="{DynamicResource DirectConnectViewUsernameBoxTitle}" FontWeight="SemiBold" HorizontalAlignment="Left"/>
 		<TextBox Name="UsernameBox" Text="{Binding Username, Mode=TwoWay}" MinWidth="150" HorizontalAlignment="Left" Watermark="{DynamicResource DirectConnectViewEnterUserNamePlaceholder}"/>
 		<!--Password box-->
-		<Label Content="{DynamicResource DirectConnectViewPasswordBoxTitle}" FontWeight="Bold" HorizontalAlignment="Left"/>
+		<Label Content="{DynamicResource DirectConnectViewPasswordBoxTitle}" FontWeight="SemiBold" HorizontalAlignment="Left"/>
 		<TextBox Name="PasswordBox" Text="{Binding Password, Mode=TwoWay}" MinWidth="150" HorizontalAlignment="Left" Watermark="{DynamicResource DirectConnectViewEnterPasswordPlaceholder}"/>
 
-		<TextBlock Text="{DynamicResource SelectEditionDialogTextBlockTitle}" HorizontalAlignment="Left" FontWeight="Bold"/>
+		<TextBlock Text="{DynamicResource SelectEditionDialogTextBlockTitle}" HorizontalAlignment="Left" FontWeight="SemiBold"/>
 		<ComboBox Name="EditionsList"
 				  Width="200"
 				  ItemsSource="{Binding Editions}"

@@ -7,7 +7,7 @@
              x:Class="SIT.Manager.Views.Installation.PatchView"
 			 x:DataType="vm:PatchViewModel">
 	<Grid RowDefinitions="Auto, *">
-		<Border Background="Black" Classes="StandardFrame" Grid.Row="0">
+		<Border Classes="StandardFrame" Grid.Row="0">
 			<Grid RowDefinitions="Auto, Auto, Auto, Auto"
 				  ColumnDefinitions="*, 2*, *">
 				<TextBlock Grid.Row="0"

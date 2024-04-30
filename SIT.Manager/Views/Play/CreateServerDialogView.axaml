@@ -13,7 +13,7 @@
 				  x:Class="SIT.Manager.Views.Play.CreateServerDialogView"
 				  x:DataType="vm:CreateServerDialogViewModel">
 	<StackPanel>
-		<Label Content="{DynamicResource CreateServerDialogViewAddressLabel}" FontWeight="Bold"/>
+		<Label Content="{DynamicResource CreateServerDialogViewAddressLabel}" FontWeight="SemiBold"/>
 		<TextBox Text="{Binding ServerAddress, Mode=TwoWay}" 
 				 MinWidth="300" 
 				 HorizontalAlignment="Left" 

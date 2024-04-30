@@ -18,7 +18,7 @@
                            TextTrimming="CharacterEllipsis"
                            Margin="8,0,0,0"
                            Classes="WarningMessage"/>
-				<Border Background="Black" Classes="StandardFrame">
+				<Border Classes="StandardFrame">
 					<StackPanel>
 						<StackPanel Orientation="Horizontal">
 							<TextBlock Text="{DynamicResource LinuxSettingsWinePrefixTitle}" Margin="0,0,10,0" VerticalAlignment="Center"/>
@@ -85,7 +85,7 @@
 				</Border>
 
 				<TextBlock Text="{DynamicResource LinuxSettingsGraphicsTitle}" Classes="FrameHeading"/>
-				<Border Background="Black" Classes="StandardFrame">
+				<Border Classes="StandardFrame">
 					<StackPanel>
 						<!-- Graphics -->
 						<CheckBox Content="{DynamicResource LinuxSettingsEnableDxvkTitle}"
@@ -117,7 +117,7 @@
 				</Border>
 				<!-- Launch Options -->
 				<TextBlock Text="{DynamicResource LinuxSettingsLaunchOptionsTitle}" Classes="FrameHeading"/>
-				<Border Background="Black" Classes="StandardFrame">
+				<Border Classes="StandardFrame">
 					<StackPanel>
 						<CheckBox Content="{DynamicResource LinuxSettingsEnableEsyncTitle}"
                                   ToolTip.Tip="{DynamicResource LinuxSettingsEnableEsyncToolTip}"

@@ -8,7 +8,7 @@
 			 x:DataType="vm:DirectConnectViewModel"
              x:Class="SIT.Manager.Views.Play.DirectConnectView">
 	<Grid Margin="10" Height="365" MaxHeight="360" MaxWidth="600" HorizontalAlignment="Left" VerticalAlignment="Top">
-		<Border Background="Black" Classes="StandardFrame">
+		<Border Classes="StandardFrame">
 			<ScrollViewer>
 				<StackPanel>
 					<!--Address box-->
