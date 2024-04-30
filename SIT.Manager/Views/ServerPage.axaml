@@ -21,7 +21,7 @@
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="*"/>
 				</Grid.RowDefinitions>
-				<TextBlock Margin="10 5 0 0" Grid.Row="0" Name="ConsoleOutput" Text="{DynamicResource ServerConsoleOutputTitle}" FontSize="16" FontFamily="{StaticResource BenderFont}" FontWeight="Bold"/>
+				<TextBlock Margin="10 5 0 0" Grid.Row="0" Name="ConsoleOutput" Text="{DynamicResource ServerConsoleOutputTitle}" FontSize="16"  FontWeight="Bold"/>
 				
 				<ScrollViewer Name="ConsoleLogScroller" 
 							  Grid.Row="1"

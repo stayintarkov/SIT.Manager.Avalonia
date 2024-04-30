@@ -12,8 +12,9 @@
 			<!-- Downloading Row -->
 			<TextBlock Grid.Row="0"
 					   Grid.Column="0"
-					   HorizontalAlignment="Center"
+					   HorizontalAlignment="Right"
 					   VerticalAlignment="Center"
+					   TextTrimming="CharacterEllipsis"
 					   Text="{DynamicResource InstallViewDownloadingTitle}"/>
 			<ProgressBar Grid.Row="0"
 						 Grid.Column="1"
@@ -26,6 +27,7 @@
 			<TextBlock Grid.Row="0"
 					   Grid.Column="2"
 					   Margin="16 0 0 0"
+					   TextTrimming="CharacterEllipsis"
 					   HorizontalAlignment="Left"
 					   Text="{Binding DownloadProgressPercentage, StringFormat={}{0:N2}%}"
 					   VerticalAlignment="Center"/>
@@ -34,7 +36,8 @@
 			<TextBlock Grid.Row="1"
 					   Grid.Column="0"
 					   VerticalAlignment="Center"
-					   HorizontalAlignment="Center"
+					   HorizontalAlignment="Right"
+					   TextTrimming="CharacterEllipsis"
 					   Text="{DynamicResource InstallViewExtractingTitle}"/>
 			<ProgressBar Grid.Row="1"
 						 Grid.Column="1"
@@ -47,6 +50,7 @@
 			<TextBlock Grid.Row="1"
 					   Grid.Column="2"
 					   HorizontalAlignment="Left"
+					   TextTrimming="CharacterEllipsis"
 					   Margin="16 0 0 0"
 					   Text="{Binding ExtractionProgressPercentage, StringFormat={}{0:N2}%}"
 					   VerticalAlignment="Center"/>
@@ -54,7 +58,8 @@
 			<!-- Install Row -->
 			<TextBlock Grid.Row="2"
 					   Grid.Column="0"
-					   HorizontalAlignment="Center"
+					   HorizontalAlignment="Right"
+					   TextTrimming="CharacterEllipsis"
 					   VerticalAlignment="Center"
 					   Text="{DynamicResource InstallViewInstallTitle}"/>
 			<ProgressBar Grid.Row="2"
@@ -68,6 +73,7 @@
 			<TextBlock Grid.Row="2"
 					   Grid.Column="2"
 					   HorizontalAlignment="Left"
+					   TextTrimming="CharacterEllipsis"
 					   Margin="16 0 0 0"
 					   Text="{Binding InstallProgressPercentage, StringFormat={}{0:N2}%}"
 					   VerticalAlignment="Center"/>

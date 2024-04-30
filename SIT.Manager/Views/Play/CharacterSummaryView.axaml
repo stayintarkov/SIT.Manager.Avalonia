@@ -7,15 +7,14 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SIT.Manager.Views.Play.CharacterSummaryView"
 			 x:DataType="vm:CharacterSummaryViewModel">
-	<Border Classes="StandardFrame"
-			Margin="0,8"
-			Background="Black">
+	<Border Classes="StandardFrame" Margin="0,8">
 		<Grid ColumnDefinitions="Auto, *, Auto">
 			<StackPanel Grid.Column="0">
 				<Image Grid.Column="0"
 					VerticalAlignment="Center"
 					Source="{Binding SideImage}"
 					MaxHeight="40"
+					RenderOptions.BitmapInterpolationMode="HighQuality"
 					Stretch="UniformToFill"/>
 
 				<TextBlock 

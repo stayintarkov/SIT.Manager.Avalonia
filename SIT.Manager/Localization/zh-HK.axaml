@@ -102,8 +102,8 @@
 	<system:String x:Key="SettingsLinuxWineRunnerToolTip">設置用於啟動 EFT 的 wine runner</system:String>
 	<system:String x:Key="SettingsEFTSettingsTitle">EFT 設定</system:String>
 	<system:String x:Key="SettingsEFTSettingsButtonChangeTitle">更改</system:String>
-	<system:String x:Key="SettingsEFTInstallPathTitle">SIT EFT Path:</system:String>
-	<system:String x:Key="SettingsEFTChangeInstallPathToolTip">Change the SIT EFT Install Path.</system:String>
+	<system:String x:Key="SettingsEFTInstallPathTitle">SIT EFT 路徑:</system:String>
+	<system:String x:Key="SettingsEFTChangeInstallPathToolTip">更改 SIT EFT 安裝路徑。</system:String>
 	<system:String x:Key="SettingsEFTVersionTitle">EFT 版本:</system:String>
 	<system:String x:Key="SettingsSITVersionTitle">SIT 版本:</system:String>
 	<system:String x:Key="SettingsSPTAKITitle">SPT-AKI 設定</system:String>
@@ -531,5 +531,7 @@
 	<!-- MainViewModel -->
 	<system:String x:Key="MainViewModelUpdateErrorTitle">錯誤</system:String>
 	<system:String x:Key="MainViewModelUpdateErrorMessage">檢查更新時出現錯誤</system:String>
-	
+
+	<!-- HelpDialog -->
+	<system:String x:Key="HelpDialogDescription">您確定要在您的預設瀏覽器中打開 SIT 文件 (%1) 嗎？</system:String>
 </ResourceDictionary>

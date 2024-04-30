@@ -4,21 +4,24 @@ using FluentAvalonia.UI.Navigation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SIT.Manager.Controls;
+using SIT.Manager.Interfaces;
 using SIT.Manager.Models;
 using SIT.Manager.Models.Messages;
 using SIT.Manager.ViewModels;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SIT.Manager.Views;
 
 public partial class MainView : ActivatableUserControl
 {
+    private readonly ILocalizationService _localizationService;
     public MainView()
     {
         InitializeComponent();
-
+        _localizationService = App.Current.Services.GetRequiredService<ILocalizationService>();
         // Set the initially loaded page to be the play page and highlight this
         // in the nav view.
         ContentFrame.Navigated += ContentFrame_Navigated;
@@ -37,7 +40,7 @@ public partial class MainView : ActivatableUserControl
     }
 
     // I hate this so much, Please if someone knows of a better way to do this make a pull request. Even microsoft docs recommend this heathenry
-    private void NavView_ItemInvoked(object? sender, NavigationViewItemInvokedEventArgs e)
+    private async void NavView_ItemInvoked(object? sender, NavigationViewItemInvokedEventArgs e)
     {
         PageNavigation? pageNavigation = null;
         if (e.IsSettingsInvoked == true)
@@ -49,7 +52,7 @@ public partial class MainView : ActivatableUserControl
             string tag = e.InvokedItemContainer.Tag?.ToString() ?? string.Empty;
             if (tag == "Help")
             {
-                OpenUrl("https://docs.stayintarkov.com");
+                await OpenUrlAsync("https://docs.stayintarkov.com");
             }
             else
             {
@@ -67,10 +70,20 @@ public partial class MainView : ActivatableUserControl
         }
     }
 
-    private static void OpenUrl(string url)
+    private async Task OpenUrlAsync(string url)
     {
         try
         {
+            ContentDialog contentDialog = new()
+            {
+                Title = _localizationService.TranslateSource("HelpTitle"),
+                Content = _localizationService.TranslateSource("HelpDialogDescription", url),
+                PrimaryButtonText = _localizationService.TranslateSource("ModServiceButtonYes"),
+                SecondaryButtonText = _localizationService.TranslateSource("ModServiceButtonNo")
+            };
+            var result = await contentDialog.ShowAsync();
+            if (result != ContentDialogResult.Primary) return;
+
             if (OperatingSystem.IsWindows())
             {
                 Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });

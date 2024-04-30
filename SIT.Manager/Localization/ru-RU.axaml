@@ -102,8 +102,8 @@
 	<system:String x:Key="SettingsLinuxWineRunnerToolTip">Установите используемую запускалку Wine для EFT</system:String>
 	<system:String x:Key="SettingsEFTSettingsTitle">Настройки EFT</system:String>
 	<system:String x:Key="SettingsEFTSettingsButtonChangeTitle">Сменить</system:String>
-	<system:String x:Key="SettingsEFTInstallPathTitle">SIT EFT Path:</system:String>
-	<system:String x:Key="SettingsEFTChangeInstallPathToolTip">Change the SIT EFT Install Path.</system:String>
+	<system:String x:Key="SettingsEFTInstallPathTitle">Путь к SIT EFT:</system:String>
+	<system:String x:Key="SettingsEFTChangeInstallPathToolTip">Изменить путь установки SIT EFT.</system:String>
 	<system:String x:Key="SettingsEFTVersionTitle">Версия EFT:</system:String>
 	<system:String x:Key="SettingsSITVersionTitle">Версия SIT:</system:String>
 	<system:String x:Key="SettingsSPTAKITitle">Настройки SPT-AKI</system:String>
@@ -531,5 +531,8 @@
 	<!-- MainViewModel -->
 	<system:String x:Key="MainViewModelUpdateErrorTitle">Ошибка</system:String>
 	<system:String x:Key="MainViewModelUpdateErrorMessage">Ошибка при проверке обновлений</system:String>
-	
+
+	<!-- HelpDialog -->
+	<system:String x:Key="HelpDialogDescription">Вы уверены, что хотите открыть документацию SIT (%1) в вашем браузере по умолчанию?</system:String>
+
 </ResourceDictionary>

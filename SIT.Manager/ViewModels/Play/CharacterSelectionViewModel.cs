@@ -90,6 +90,7 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
     private async Task ReloadCharacterList()
     {
         CharacterList.Clear();
+        SavedCharacterList.Clear();
         try
         {
             //TODO: This is currently listing *all* server characters. We should narrow this to saved only

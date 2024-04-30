@@ -14,7 +14,7 @@
 		</Style>
 	</UserControl.Styles>
 
-	<Grid RowDefinitions="*, Auto">
+	<Grid>
 		<StackPanel Grid.Row="0">
 			<StackPanel>
 				<TextBlock Text="{DynamicResource ConfigureViewVersionSelectionGroupTitle}" Classes="FrameHeading"/>
@@ -32,50 +32,55 @@
 							</TextBlock.IsVisible>
 						</TextBlock>
 						
-						<StackPanel Orientation="Horizontal">
-							<StackPanel.IsVisible>
+						<Grid ColumnDefinitions="auto,*">
+							<Grid.IsVisible>
 								<MultiBinding Converter="{x:Static BoolConverters.And}">
 									<Binding Path="!IsLoading"/>
 									<Binding Path="HasVersionsAvailable"/>
 								</MultiBinding>
-							</StackPanel.IsVisible>
-							
+							</Grid.IsVisible>
 							<TextBlock Text="{DynamicResource ConfigureServerViewVersionSelectionTitle}"
+									   Grid.Column="0"
 									   VerticalAlignment="Center"
 									   Margin="0,0,8,0"/>
 							<ComboBox Name="VersionSelectionBox"
 									  VerticalAlignment="Center"
+									  Grid.Column="1"
 									  Margin="0,0,8,0"
 									  SelectedItem="{Binding SelectedVersion}"
 									  ItemsSource="{Binding AvailableVersions}">
 								<ComboBox.ItemTemplate>
 									<DataTemplate>
-										<TextBlock Text="{Binding TagName}"/>
+										<TextBlock Text="{Binding TagName}" TextTrimming="CharacterEllipsis" TextWrapping="WrapWithOverflow"/>
 									</DataTemplate>
 								</ComboBox.ItemTemplate>
 							</ComboBox>
-						</StackPanel>
+						</Grid>
 
-						<StackPanel Margin="0,4,0,0"
+						<Grid RowDefinitions="*,*" Margin="0,4,0,0"
 									IsVisible="{Binding !IsLoading}">
 							<TextBlock Text="{DynamicResource ConfigureServerViewSPTAKIPathWarningNoPath}"
+									   Grid.Row="0"
 									   IsVisible="{Binding CurrentInstallProcessState.SptAkiInstallPath, Converter={x:Static StringConverters.IsNullOrEmpty}}"
 									   Classes="WarningMessage"/>
-							<StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-								<StackPanel Orientation="Horizontal" >
-									<TextBlock Text="{DynamicResource ConfigureServerViewSPTAKIPathTitle}"
-											   VerticalAlignment="Center"/>
-									<TextBox Watermark="{DynamicResource ConfigureServerViewSPTAKIInstallPathPlaceholder}"
-											 Margin="5"
-											 IsReadOnly="True"
-											 Text="{Binding CurrentInstallProcessState.SptAkiInstallPath, Mode=TwoWay}"/>
-									<Button Name="ChangeInstallButton"
-											Content="{DynamicResource ConfigureServerViewSPTAKIInstallPathTitle}"
-											ToolTip.Tip="{DynamicResource ConfigureServerViewSPTAKIInstallPathToolTip}"
-											Command="{Binding ChangeServerInstallLocationCommand}"/>
-								</StackPanel>
-							</StackPanel>
-						</StackPanel>
+							<Grid Grid.Row="1" ColumnDefinitions="auto, *, auto">
+								<TextBlock Text="{DynamicResource ConfigureServerViewSPTAKIPathTitle}"
+										   Grid.Column="0"
+										   VerticalAlignment="Center"/>
+								<TextBox Watermark="{DynamicResource ConfigureServerViewSPTAKIInstallPathPlaceholder}"
+										 Margin="5"
+										 Grid.Column="1"
+										 IsReadOnly="True"
+										 Text="{Binding CurrentInstallProcessState.SptAkiInstallPath, Mode=TwoWay}"/>
+								<Button Name="ChangeInstallButton"
+										Grid.Column="2"
+										HorizontalAlignment="Stretch"
+										ToolTip.Tip="{DynamicResource ConfigureServerViewSPTAKIInstallPathToolTip}"
+										Command="{Binding ChangeServerInstallLocationCommand}">
+									<TextBlock Text="{DynamicResource ConfigureServerViewSPTAKIInstallPathTitle}" TextTrimming="CharacterEllipsis"/>
+								</Button>
+							</Grid>
+						</Grid>
 
 						<controls:LoadingSpinner Width="64"
 												 Height="{Binding $self.Width}"
@@ -88,33 +93,35 @@
 					</StackPanel>
 				</Border>
 			</StackPanel>
+			<Grid Grid.Row="1"
+				  ColumnDefinitions="*, *"
+				  Margin="4,4,4,8">
+				<Button Grid.Column="0"
+						Background="Black"
+						Height="50"
+						Margin="0,0,5,0"
+						HorizontalAlignment="Stretch"
+						HorizontalContentAlignment="Center"
+						Command="{Binding BackCommand}">
+					<StackPanel Orientation="Horizontal">
+						<ui:SymbolIcon Symbol="Back"/>
+						<TextBlock Text="{DynamicResource ConfigureViewBackButtonTitle}" TextTrimming="CharacterEllipsis"/>
+					</StackPanel>
+				</Button>
+
+				<Button Grid.Column="1"
+						Background="Black"
+						Height="50"
+						HorizontalAlignment="Stretch"
+						HorizontalContentAlignment="Center"
+						IsEnabled="{Binding IsConfigurationValid}"
+						Command="{Binding StartCommand}">
+					<StackPanel Orientation="Horizontal">
+						<ui:SymbolIcon Symbol="PlayFilled"/>
+						<TextBlock Text="{DynamicResource ConfigureViewStartInstallButtonTitle}" TextTrimming="CharacterEllipsis"/>
+					</StackPanel>
+				</Button>
+			</Grid>
 		</StackPanel>
-
-		<Grid Grid.Row="1"
-			  ColumnDefinitions="*, *"
-			  Margin="4,4,4,8">
-			<Button Grid.Column="0"
-					Height="50"
-					HorizontalAlignment="Center"
-					HorizontalContentAlignment="Stretch"
-					Command="{Binding BackCommand}">
-				<StackPanel Orientation="Horizontal">
-					<ui:SymbolIcon Symbol="Back"/>
-					<TextBlock Text="{DynamicResource ConfigureViewBackButtonTitle}"/>
-				</StackPanel>
-			</Button>
-
-			<Button Grid.Column="1"
-					Height="50"
-					HorizontalAlignment="Center"
-					HorizontalContentAlignment="Stretch"
-					IsEnabled="{Binding IsConfigurationValid}"
-					Command="{Binding StartCommand}">
-				<StackPanel Orientation="Horizontal">
-					<ui:SymbolIcon Symbol="PlayFilled"/>
-					<TextBlock Text="{DynamicResource ConfigureViewStartInstallButtonTitle}"/>
-				</StackPanel>
-			</Button>
-		</Grid>
 	</Grid>
 </UserControl>

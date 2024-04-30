@@ -39,7 +39,7 @@
 		<StackPanel Grid.Row="1"
 					Margin="5">
 			<TextBlock Text="{DynamicResource LocationEditorLocationTitle}"
-					   FontFamily="{StaticResource BenderFont}"
+					   
 					   Margin="0,5"/>
 			<TextBox Name="LocationTextBox"
 					 Watermark="{DynamicResource LocationEditorLocationTextBoxPlaceholder}"
@@ -129,7 +129,7 @@
 						<StackPanel Orientation="Horizontal">
 							<StackPanel>
 								<TextBlock Text="{DynamicResource LocationEditorSpawnWavesText}"
-										   FontFamily="{StaticResource BenderFont}"
+										   
 										   Margin="5"/>
 								<ListBox Name="WaveList"
 										 Margin="5,0,5,5"
@@ -159,7 +159,7 @@
 								</StackPanel.Styles>
 
 							<TextBlock Text="{DynamicResource LocationEditorBotPresetText}"
-	   FontFamily="{StaticResource BenderFont}"
+	   
 	   Margin="5"/>
 							<ComboBox Margin="0,0,0,5"
 									  Name="BotPresetCombo"
@@ -169,7 +169,7 @@
 									  ToolTip.Tip="{DynamicResource LocationEditorBotPresetToolTip}"/>
 
 							<TextBlock Text="{DynamicResource LocationEditorBotSideText}"
-									   FontFamily="{StaticResource BenderFont}"
+									   
 									   Margin="5"/>
 							<ComboBox Margin="0,0,0,5"
 									  Width="160"
@@ -178,7 +178,7 @@
 									  ToolTip.Tip="{DynamicResource LocationEditorBotSideToolTip}"/>
 
 							<TextBlock Text="{DynamicResource LocationEditorSpawnPointsText}"
-									   FontFamily="{StaticResource BenderFont}"
+									   
 									   Margin="5"/>
 							<ComboBox Margin="0,0,0,5"
 									  Width="160"
@@ -188,7 +188,7 @@
 							</ComboBox>
 
 							<TextBlock Text="{DynamicResource LocationEditorWildSpawnTypeText}"
-									   FontFamily="{StaticResource BenderFont}"
+									   
 									   Margin="5"/>
 							<ComboBox Margin="0,0,0,5"
 									  Width="160"
@@ -235,7 +235,7 @@
 						<StackPanel Orientation="Horizontal">
 							<StackPanel>
 								<TextBlock Text="{DynamicResource LocationEditorBossListText}"
-										   FontFamily="{StaticResource BenderFont}"
+										   
 										   Margin="5"/>
 								<ListBox Name="BossList"
 										 Margin="5,0,5,5"
@@ -263,14 +263,14 @@
               Value="{Binding SelectedBossLocationSpawn.BossChance, Mode=TwoWay}"/>
 
 								<TextBlock Text="{DynamicResource LocationEditorBossEscortAmountText}"
-										   FontFamily="{StaticResource BenderFont}"
+										   
 										   Margin="5"/>
 								<TextBox Margin="0,0,0,5"
 										 Width="160"
 										 Text="{Binding SelectedBossLocationSpawn.BossEscortAmount, Mode=TwoWay}"/>
 
 								<TextBlock Text="{DynamicResource LocationEditorBossEscortTypeText}"
-										   FontFamily="{StaticResource BenderFont}"
+										   
 										   Margin="5"/>
 								<ComboBox Margin="0,0,0,5"
 										  Width="160"
@@ -278,7 +278,7 @@
 										  SelectedValue="{Binding SelectedBossLocationSpawn.BossEscortType, Mode=TwoWay}"/>
 
 								<TextBlock Text="{DynamicResource LocationEditorBossNameText}"
-										   FontFamily="{StaticResource BenderFont}"
+										   
 										   Margin="5"/>
 								<ComboBox Margin="0,0,0,5"
 										  Width="160"

@@ -23,7 +23,8 @@
 				<TextBlock Grid.Row="1"
 						   Grid.Column="0"
 						   VerticalAlignment="Center"
-						   HorizontalAlignment="Center"
+						   HorizontalAlignment="Right"
+						   TextTrimming="CharacterEllipsis"
 						   IsVisible="{Binding CurrentInstallProcessState.UsingBsgInstallPath}"
 						   Text="{DynamicResource PatchViewCopyingTitle}"/>
 				<ProgressBar Grid.Row="1"
@@ -39,6 +40,7 @@
 						   Grid.Column="2"
 						   Margin="16 0 0 0"
 						   HorizontalAlignment="Left"
+						   TextTrimming="CharacterEllipsis"
 						   IsVisible="{Binding CurrentInstallProcessState.UsingBsgInstallPath}"
 						   Text="{Binding CopyProgressPercentage, StringFormat={}{0:N2}%}"
 						   VerticalAlignment="Center"/>
@@ -47,7 +49,8 @@
 				<TextBlock Grid.Row="2"
 						   Grid.Column="0"
 						   VerticalAlignment="Center"
-						   HorizontalAlignment="Center"
+						   HorizontalAlignment="Right"
+						   TextTrimming="CharacterEllipsis"
 						   IsVisible="{Binding RequiresPatching}"
 						   Text="{DynamicResource PatchViewDownloadingTitle}"/>
 				<ProgressBar Grid.Row="2"
@@ -63,6 +66,7 @@
 						   Grid.Column="2"
 						   Margin="16 0 0 0"
 						   HorizontalAlignment="Left"
+						   TextTrimming="CharacterEllipsis"
 						   IsVisible="{Binding RequiresPatching}"
 						   Text="{Binding DownloadProgressPercentage, StringFormat={}{0:N2}%}"
 						   VerticalAlignment="Center"/>
@@ -70,8 +74,9 @@
 				<!-- Extraction Row -->
 				<TextBlock Grid.Row="3"
 						   Grid.Column="0"
-						   HorizontalAlignment="Center"
+						   HorizontalAlignment="Right"
 						   VerticalAlignment="Center"
+						   TextTrimming="CharacterEllipsis"
 						   IsVisible="{Binding RequiresPatching}"
 						   Text="{DynamicResource PatchViewExtractingTitle}"/>
 				<ProgressBar Grid.Row="3"
@@ -86,6 +91,7 @@
 				<TextBlock Grid.Row="3"
 						   Grid.Column="2"
 						   Margin="15 0 0 0"
+						   TextTrimming="CharacterEllipsis"
 						   HorizontalAlignment="Left"
 						   IsVisible="{Binding RequiresPatching}"
 						   Text="{Binding ExtractionProgressPercentage, StringFormat={}{0:N2}%}"

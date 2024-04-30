@@ -12,19 +12,17 @@
 		<Style Selector="ui|SymbolIcon">
 			<Setter Property="Margin" Value="0,0,8,0"/>
 		</Style>
-
 		<Style Selector="Button">
-			<Setter Property="Height" Value="50"/>
-			<Setter Property="HorizontalAlignment" Value="Center"/>
-			<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-			<Setter Property="Margin" Value="4"/>
+			<Setter Property="Height" Value="40"/>
+			<Setter Property="Margin" Value="0, 15, 5, 0"/>
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
 		</Style>
 	</UserControl.Styles>
 
 	<ScrollViewer>
-		<Grid RowDefinitions="*,*">
+		<StackPanel>
 			<!-- EFT Game -->
-			<StackPanel Grid.Row="0" VerticalAlignment="Center">
+			<StackPanel VerticalAlignment="Center">
 				<TextBlock Text="{DynamicResource SelectViewEFTSectionHeading}" TextTrimming="CharacterEllipsis" Classes="FrameHeading"/>
 				<Border Classes="StandardFrame">
 					<StackPanel>
@@ -42,8 +40,8 @@
 								</MultiBinding>
 							</TextBlock.IsVisible>
 						</TextBlock>
-						
-						<TextBlock>
+
+						<TextBlock Margin="0,10,0,0">
 							<Run Text="{DynamicResource SelectViewEFTPathTitle}"/>
 							<Run Text=" "/>
 							<Run Text="{Binding CurrentInstallProcessState.EftInstallPath}"/>
@@ -56,7 +54,7 @@
 						</TextBlock>
 
 						<StackPanel Orientation="Horizontal">
-							<TextBlock Margin="0,0,4,0" 
+							<TextBlock Margin="0,0,4,0"
 									   Text="{DynamicResource SelectViewSITVersionTitle}"/>
 
 							<TextBlock IsVisible="{Binding CurrentInstallProcessState.SitVersion, Converter={x:Static StringConverters.IsNullOrEmpty}}"
@@ -64,10 +62,9 @@
 							<SelectableTextBlock IsVisible="{Binding CurrentInstallProcessState.SitVersion, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
 												 Text="{Binding CurrentInstallProcessState.SitVersion}"/>
 						</StackPanel>
-						
+
 						<Grid ColumnDefinitions="*,*">
 							<Button Grid.Column="0"
-									HorizontalAlignment="Left"
 									ToolTip.Tip="{DynamicResource SelectViewInstallSITButtonToolTip}"
 									Command="{Binding ProgressInstallCommand}"
 									CommandParameter="{x:Static im:RequestedInstallOperation.InstallSit}">
@@ -84,7 +81,6 @@
 							</Button>
 
 							<Button Grid.Column="1"
-									HorizontalAlignment="Left"
 									ToolTip.Tip="{DynamicResource SelectViewUpdateSITButtonToolTip}"
 									Command="{Binding ProgressInstallCommand}"
 									CommandParameter="{x:Static im:RequestedInstallOperation.UpdateSit}">
@@ -106,7 +102,7 @@
 			</StackPanel>
 
 			<!-- Server -->
-			<StackPanel Grid.Row="1" VerticalAlignment="Center">
+			<StackPanel VerticalAlignment="Center">
 				<TextBlock Text="{DynamicResource SelectViewServerSectionHeading}" TextTrimming="CharacterEllipsis" Classes="FrameHeading"/>
 				<Border Classes="StandardFrame">
 					<StackPanel>
@@ -114,8 +110,8 @@
 								   TextTrimming="CharacterEllipsis"
 								   IsVisible="{Binding NoAkiInstallPathSet}"
 								   Classes="WarningMessage"/>
-						
-						<StackPanel Orientation="Horizontal">
+
+						<StackPanel Orientation="Horizontal" Margin="0,10,0,0">
 							<TextBlock Margin="0,0,4,0"
 									   Text="{DynamicResource SelectViewSPTAKIPathTitle}"/>
 
@@ -134,7 +130,7 @@
 							<SelectableTextBlock IsVisible="{Binding CurrentInstallProcessState.SptAkiVersion, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
 												 Text="{Binding CurrentInstallProcessState.SptAkiVersion}"/>
 						</StackPanel>
-						
+
 						<StackPanel Orientation="Horizontal">
 							<TextBlock Margin="0,0,4,0"
 									   Text="{DynamicResource SelectViewServerModVersionTitle}"/>
@@ -146,7 +142,6 @@
 						</StackPanel>
 
 						<Button
-								HorizontalAlignment="Left"
 								ToolTip.Tip="{DynamicResource SelectViewInstallServerButtonToolTip}"
 								Command="{Binding ProgressInstallCommand}"
 								CommandParameter="{x:Static im:RequestedInstallOperation.InstallServer}">
@@ -158,6 +153,6 @@
 					</StackPanel>
 				</Border>
 			</StackPanel>
-		</Grid>
+		</StackPanel>
 	</ScrollViewer>
 </UserControl>

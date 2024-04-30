@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:controls="clr-namespace:SIT.Manager.Controls"
-			 xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Installation"	
+			 xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Installation"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SIT.Manager.Views.Installation.ConfigureSitView"
 			 x:DataType="vm:ConfigureSitViewModel">
@@ -31,19 +31,21 @@
 								</MultiBinding>
 							</TextBlock.IsVisible>
 						</TextBlock>
-						
-						<StackPanel Orientation="Horizontal">
-							<StackPanel.IsVisible>
+
+						<Grid ColumnDefinitions="auto, *">
+							<Grid.IsVisible>
 								<MultiBinding Converter="{x:Static BoolConverters.And}">
 									<Binding Path="!IsVersionSelectionLoading"/>
 									<Binding Path="HasVersionsAvailable"/>
 								</MultiBinding>
-							</StackPanel.IsVisible>
+							</Grid.IsVisible>
 
 							<TextBlock Text="{DynamicResource ConfigureSitViewVersionSelectionTitle}"
+									   Grid.Column="0"
 									   VerticalAlignment="Center"
 									   Margin="0,0,8,0"/>
 							<ComboBox Name="VersionSelectionBox"
+									  Grid.Column="1"
 									  VerticalAlignment="Center"
 									  Margin="0,0,8,0"
 									  SelectedItem="{Binding SelectedVersion}"
@@ -67,7 +69,8 @@
 									</DataTemplate>
 								</ComboBox.ItemTemplate>
 							</ComboBox>
-						</StackPanel>
+
+						</Grid>
 
 						<StackPanel Orientation="Horizontal"
 									Margin="0,4,0,0"
@@ -106,20 +109,20 @@
 									</MultiBinding>
 								</StackPanel.IsVisible>
 							</TextBlock>
-							
-							<StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-								<StackPanel Orientation="Horizontal" >
-									<TextBlock Text="{DynamicResource ConfigureSitViewEFTInstallPathTitle}" Margin="0,0,8,0" VerticalAlignment="Center"/>
-									<TextBox Watermark="{DynamicResource ConfigureSitViewEFTInstallPathPlaceholder}"
-											 Margin="0,0,8,0"
-											 Text="{Binding CurrentInstallProcessState.EftInstallPath}"
-											 IsReadOnly="True"/>
-									<Button Name="ChangeInstallButton"
-											Content="{DynamicResource ConfigureSitViewEFTSettingsButtonChangeTitle}"
-											ToolTip.Tip="{DynamicResource ConfigureSitViewEFTChangeInstallPathToolTip}"
-											Command="{Binding ChangeEftInstallLocationCommand}"/>
-								</StackPanel>
-							</StackPanel>
+
+							<Grid ColumnDefinitions="auto, *, auto" Margin="0,8,0,0">
+								<TextBlock Grid.Column="0" Text="{DynamicResource ConfigureSitViewEFTInstallPathTitle}" Margin="0,0,8,0" VerticalAlignment="Center"/>
+								<TextBox Watermark="{DynamicResource ConfigureSitViewEFTInstallPathPlaceholder}"
+											Grid.Column="1"
+											Margin="0,0,8,0"
+											Text="{Binding CurrentInstallProcessState.EftInstallPath}"
+											IsReadOnly="True"/>
+								<Button Name="ChangeInstallButton"
+										Grid.Column="2"
+										Content="{DynamicResource ConfigureSitViewEFTSettingsButtonChangeTitle}"
+										ToolTip.Tip="{DynamicResource ConfigureSitViewEFTChangeInstallPathToolTip}"
+										Command="{Binding ChangeEftInstallLocationCommand}"/>
+							</Grid>
 						</StackPanel>
 
 						<StackPanel IsVisible="{Binding IsVersionSelectionLoading}">
@@ -194,9 +197,11 @@
 			<Grid ColumnDefinitions="*, *"
 				  Margin="4,8">
 				<Button Grid.Column="0"
+						Background="Black"
 						Height="50"
-						HorizontalAlignment="Center"
-						HorizontalContentAlignment="Stretch"
+						Margin="0,0,5,0"
+						HorizontalAlignment="Stretch"
+						HorizontalContentAlignment="Center"
 						Command="{Binding BackCommand}">
 					<StackPanel Orientation="Horizontal">
 						<ui:SymbolIcon Symbol="Back"/>
@@ -205,9 +210,10 @@
 				</Button>
 
 				<Button Grid.Column="1"
+						Background="Black"
 						Height="50"
-						HorizontalAlignment="Center"
-						HorizontalContentAlignment="Stretch"
+						HorizontalAlignment="Stretch"
+						HorizontalContentAlignment="Center"
 						IsEnabled="{Binding IsConfigurationValid}"
 						Command="{Binding StartCommand}">
 					<StackPanel Orientation="Horizontal">
