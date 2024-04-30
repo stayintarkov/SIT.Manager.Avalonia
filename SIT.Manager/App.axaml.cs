@@ -19,9 +19,11 @@ using SIT.Manager.ViewModels.Play;
 using SIT.Manager.ViewModels.Settings;
 using SIT.Manager.Views;
 using System;
+using System.CommandLine;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace SIT.Manager;
 
@@ -37,9 +39,15 @@ public sealed partial class App : Application
     /// </summary>
     public IServiceProvider Services { get; }
 
-    public App()
+
+    public App(string[] args)
     {
         Services = ConfigureServices;
+
+        if (args.Length > 0)
+        {
+            Task.Run(() => ParseArguments(args));
+        }
     }
 
     /// <summary>
@@ -212,5 +220,42 @@ public sealed partial class App : Application
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private Task<int> ParseArguments(string[] args)
+    {
+        var addressOption = new Option<string>
+            ("--address", "AKI server to connect to. If omitted this will start a local server.");
+
+        var usernameOption = new Option<string>
+            ("--username", "Username of the account to connect with");
+
+        var passwordOption = new Option<string>
+            ("--password", "Password of the account to connect with");
+
+        addressOption.AddAlias("-a");
+        usernameOption.AddAlias("-u");
+        passwordOption.AddAlias("-p");
+
+        var rootCommand = new RootCommand
+        {
+            addressOption,
+            usernameOption,
+            passwordOption,
+        };
+
+        rootCommand.SetHandler(async (addressValue, usernameValue, passwordValue) =>
+        {
+
+            if (usernameValue != null && passwordValue != null)
+            {
+                var dcvm = Services.GetService<DirectConnectViewModel>();
+
+                await dcvm.ConnectToServer(addressValue, usernameValue, passwordValue);
+            }
+
+        }, addressOption, usernameOption, passwordOption);
+
+        return rootCommand.InvokeAsync(args);
     }
 }
