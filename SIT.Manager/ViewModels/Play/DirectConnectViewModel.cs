@@ -81,6 +81,10 @@ public partial class DirectConnectViewModel : ObservableRecipient
         {
             LastServer = address;
         }
+        else
+        {
+            LastServer = "127.0.0.1";
+        }
 
         if(!string.IsNullOrEmpty(username))
         {
