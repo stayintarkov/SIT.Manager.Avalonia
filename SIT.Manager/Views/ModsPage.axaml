@@ -35,6 +35,7 @@
 				<TextBlock HorizontalAlignment="Center" Text="{DynamicResource ModsPageTitle}" FontSize="32" FontWeight="Bold" TextDecorations="Underline"/>
 				<ListBox Name="ModsList"
 						 BorderThickness="1"
+						 Background="Black"
 						 BorderBrush="Gray"
 						 Height="275"
 						 CornerRadius="4"
@@ -51,6 +52,7 @@
 				</ListBox>
 
 				<Button Name="DownloadModPackageButton"
+						Background="Black"
 						HorizontalAlignment="Stretch"
 						ToolTip.Tip="{DynamicResource ModsDownloadCollectionButtonToolTip}"
 						Command="{Binding DownloadModPackageCommand}">
@@ -61,6 +63,7 @@
 				</Button>
 			</StackPanel>
 
+			
 			<Grid Name="InfoGrid"
 				  Grid.Column="1"
 				  RowDefinitions="Auto,*"
@@ -69,51 +72,53 @@
 							DataContext="{Binding SelectedMod}"
 							HorizontalAlignment="Left"
 							Grid.Row="0">
+					<TextBlock Text="{DynamicResource ModInfoTitle}" TextAlignment="Center" Grid.Column="1" FontSize="32" FontWeight="Bold" TextDecorations="Underline"/>
+					<Border Classes="StandardFrame" Background="Black">
+						<StackPanel>
+							<Grid ColumnDefinitions="auto, *">
+								<TextBlock Grid.Column="0" Text="{DynamicResource ModInfoNameTitle}" Margin="5" FontWeight="Bold"/>
+								<TextBlock Grid.Column="1" Text="{Binding Name}" Margin="5"/>
+							</Grid>
 
-					<TextBlock Text="{DynamicResource ModInfoTitle}" FontSize="32" FontWeight="Bold" TextDecorations="Underline"/>
+							<Grid ColumnDefinitions="auto, *">
+								<TextBlock Grid.Column="0" Text="{DynamicResource ModInfoAuthorTitle}" Margin="5" FontWeight="Bold"/>
+								<TextBlock Grid.Column="1" Text="{Binding Author}" Margin="5"/>
+							</Grid>
 
-					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="{DynamicResource ModInfoNameTitle}" Margin="5" FontWeight="Bold"/>
-						<TextBlock Text="{Binding Name}" Margin="5"/>
-					</StackPanel>
+							<Grid ColumnDefinitions="auto, *">
+								<TextBlock Grid.Column="0" Text="{DynamicResource ModInfoSupportedVersionTitle}" Margin="5" FontWeight="Bold"/>
+								<TextBlock Grid.Column="1" Text="{Binding SupportedVersion}" Margin="5"/>
+							</Grid>
 
-					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="{DynamicResource ModInfoAuthorTitle}" Margin="5" FontWeight="Bold"/>
-						<TextBlock Text="{Binding Author}" Margin="5"/>
-					</StackPanel>
+							<Grid ColumnDefinitions="auto, *">
+								<TextBlock Grid.Column="0" Text="{DynamicResource ModInfoModVersionTitle}" Margin="5" FontWeight="Bold"/>
+								<TextBlock Grid.Column="1" Text="{Binding ModVersion}" Margin="5"/>
+							</Grid>
 
-					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="{DynamicResource ModInfoSupportedVersionTitle}" Margin="5" FontWeight="Bold"/>
-						<TextBlock Text="{Binding SupportedVersion}" Margin="5"/>
-					</StackPanel>
+							<Grid ColumnDefinitions="auto, *">
+								<TextBlock Grid.Column="0" Text="{DynamicResource ModInfoModPageTitle}" Margin="5" FontWeight="Bold"/>
+								<ui:HyperlinkButton Grid.Column="1" Content="Link" NavigateUri="{Binding ModUrl}"/>
+							</Grid>
 
-					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="{DynamicResource ModInfoModVersionTitle}" Margin="5" FontWeight="Bold"/>
-						<TextBlock Text="{Binding ModVersion}" Margin="5"/>
-					</StackPanel>
+							<Grid ToolTip.Tip="{DynamicResource ModInfoExtraFilesToolTip}"
+								  Background="Transparent">
+								<CheckBox Content="{DynamicResource ModInfoRequiresExtraFilesTitle}"
+										  IsChecked="{Binding RequiresFiles}"
+										  Margin="5"
+										  IsHitTestVisible="False"/>
+							</Grid>
 
-					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="{DynamicResource ModInfoModPageTitle}" Margin="5" FontWeight="Bold"/>
-						<ui:HyperlinkButton Content="Link" NavigateUri="{Binding ModUrl}"/>
-					</StackPanel>
-
-					<Grid ToolTip.Tip="{DynamicResource ModInfoExtraFilesToolTip}"
-						  Background="Transparent">
-						<CheckBox Content="{DynamicResource ModInfoRequiresExtraFilesTitle}"
-								  IsChecked="{Binding RequiresFiles}"
-								  Margin="5"
-								  IsHitTestVisible="False"/>
-					</Grid>
-
-					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="{DynamicResource ModInfoDescription}" Margin="5" FontWeight="Bold"/>
-						<ScrollViewer MaxHeight="100">
-							<TextBlock Text="{Binding Description}"
-									   Margin="5"
-									   TextWrapping="WrapWithOverflow"
-									   MaxWidth="250"/>
-						</ScrollViewer>
-					</StackPanel>
+							<Grid ColumnDefinitions="auto, *">
+								<TextBlock Grid.Column="0" Text="{DynamicResource ModInfoDescription}" Margin="5" FontWeight="Bold"/>
+								<ScrollViewer Grid.Column="1" MaxHeight="100">
+									<TextBlock Text="{Binding Description}"
+											   Margin="5"
+											   TextWrapping="WrapWithOverflow"
+											   MaxWidth="250"/>
+								</ScrollViewer>
+							</Grid>
+						</StackPanel>
+					</Border>
 				</StackPanel>
 
 				<StackPanel
@@ -124,6 +129,7 @@
 					<Button Name="InstallButton"
 							Grid.Column="0"
 							Margin="0,0,5,0"
+							Background="Black"
 							HorizontalAlignment="Stretch"
 							ToolTip.Tip="{DynamicResource ModInfoInstallToolTip}"
 							MinHeight="32"
@@ -138,6 +144,7 @@
 							HorizontalAlignment="Stretch"
 							ToolTip.Tip="{DynamicResource ModInfoUninstallToolTip}"
 							MinHeight="32"
+							Background="Black"
 							Command="{Binding UninstallModCommand}"
 							IsEnabled="{Binding !EnableInstall}">
 						<StackPanel Orientation="Horizontal">
