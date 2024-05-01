@@ -2,7 +2,6 @@
 
 namespace SIT.Manager.Models.Messages;
 
-public class PageNavigationMessage : ValueChangedMessage<PageNavigation>
+public class PageNavigationMessage(PageNavigation pageNavigation) : ValueChangedMessage<PageNavigation>(pageNavigation)
 {
-    public PageNavigationMessage(PageNavigation pageNavigation) : base(pageNavigation) { }
 }

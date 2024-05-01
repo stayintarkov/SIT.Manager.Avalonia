@@ -29,7 +29,7 @@
 		</Style>
 
 		<Style Selector="ListBox.NavigationMenu > ListBoxItem">
-			<Setter Property="Height" Value="48" />
+			<Setter Property="Height" Value="32" />
 			<Setter Property="Padding" Value="16,0" />
 			<Setter Property="VerticalContentAlignment" Value="Center" />
 		</Style>
@@ -78,9 +78,10 @@
 					<ListBox Grid.Row="0"
 							 IsEnabled="{Binding !IsInstallRunning}"
 							 ItemsSource="{Binding MainNavigationItems}"
-							 SelectedItem="{Binding SelectedNavigationItem}"
+							 SelectedItem="{Binding SelectedMainNavigationItem}"
+							 SelectionMode="Single"
 							 Classes="NavigationMenu"/>
-					
+
 					<Image Grid.Row="1"
 						   RenderOptions.BitmapInterpolationMode="HighQuality"
 						   Source="avares://SIT.Manager.ASM/Assets/sit-logo-5.png"/>
@@ -88,50 +89,47 @@
 					<ListBox Grid.Row="2"
 							 IsEnabled="{Binding !IsInstallRunning}"
 							 ItemsSource="{Binding FooterNavigationItems}"
-							 SelectedItem="{Binding SelectedNavigationItem}"
+							 SelectedItem="{Binding SelectedFooterNavigationItem}"
 							 Classes="NavigationMenu"
 							 Margin="0,0,0,16"/>
 				</Grid>
 			</SplitView.Pane>
 
-			<Border CornerRadius="8"
-					BorderBrush="Green"
-					BorderThickness="2">
-				<Grid RowDefinitions="*,Auto">
-					<ui:Frame Name="ContentFrame"
-							  CornerRadius="8">
-						<ui:Frame.Background>
-							<ImageBrush Source="/Assets/bg3.png" Stretch="UniformToFill"/>
-						</ui:Frame.Background>
-					</ui:Frame>
-					<StackPanel Name="ActionPanel"
-								Orientation="Horizontal"
-								HorizontalAlignment="Center"
-								DataContext="{Binding ActionPanelNotification}"
-								IsVisible="{Binding ShowActionPanel}"
-								Grid.Row="1"
-								MinHeight="24">
-						<TextBlock Name="ActionPanelText"
-								   Text="{Binding ActionText}"
-								   Foreground="White"
-								   VerticalAlignment="Center"
-								   FontSize="12"/>
-						<ProgressBar Name="ActionPanelBar"
-									 Margin="15 0 0 0"
-									 VerticalAlignment="Center"
-									 Width="150"
-									 MinWidth="100"
-									 MaxWidth="150"
-									 Minimum="0"
-									 Maximum="100"
-									 Value="{Binding ProgressPercentage}"/>
-						<TextBlock Name="ActionPanelPercentageText"
-								   Margin="15 0 0 0"
-								   VerticalAlignment="Center"
-								   Text="{Binding ProgressPercentage, StringFormat={}{0:N2}%}"/>
-					</StackPanel>
-				</Grid>
-			</Border>
+			<Grid RowDefinitions="*,Auto">
+				<ContentControl CornerRadius="8,0,0,0"
+								Content="{Binding CurrentView}">
+					<ContentControl.Background>
+						<ImageBrush Source="/Assets/bg3.png" Stretch="UniformToFill"/>
+					</ContentControl.Background>
+				</ContentControl>
+
+				<StackPanel Name="ActionPanel"
+							Orientation="Horizontal"
+							HorizontalAlignment="Center"
+							DataContext="{Binding ActionPanelNotification}"
+							IsVisible="{Binding ShowActionPanel}"
+							Grid.Row="1"
+							MinHeight="24">
+					<TextBlock Name="ActionPanelText"
+							   Text="{Binding ActionText}"
+							   Foreground="White"
+							   VerticalAlignment="Center"
+							   FontSize="12"/>
+					<ProgressBar Name="ActionPanelBar"
+								 Margin="15 0 0 0"
+								 VerticalAlignment="Center"
+								 Width="150"
+								 MinWidth="100"
+								 MaxWidth="150"
+								 Minimum="0"
+								 Maximum="100"
+								 Value="{Binding ProgressPercentage}"/>
+					<TextBlock Name="ActionPanelPercentageText"
+							   Margin="15 0 0 0"
+							   VerticalAlignment="Center"
+							   Text="{Binding ProgressPercentage, StringFormat={}{0:N2}%}"/>
+				</StackPanel>
+			</Grid>
 		</SplitView>
 	</Grid>
 </UserControl>
