@@ -33,4 +33,6 @@ class Program
             .UsePlatformDetect()
             .WithInterFont()
             .LogToTrace();
+
+    public static AppBuilder BuildAvaloniaApp() => BuildAvaloniaApp([]);
 }
