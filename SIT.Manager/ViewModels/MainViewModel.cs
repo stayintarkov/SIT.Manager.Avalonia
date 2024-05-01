@@ -50,6 +50,8 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
 
     public ObservableCollection<BarNotification> BarNotifications { get; } = [];
 
+    public ReadOnlyCollection<NavigationItem> MainNavigationItems { get; }
+
     public IRelayCommand CloseButtonCommand { get; }
 
     public MainViewModel(IActionNotificationService actionNotificationService,
@@ -71,6 +73,46 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
         _versionService = versionService;
 
         _localizationService.Translate(new CultureInfo(_managerConfigService.Config.CurrentLanguageSelected));
+
+        MainNavigationItems = new ReadOnlyCollection<NavigationItem>([
+            new NavigationItem(_localizationService.TranslateSource("PlayTitle"), _localizationService.TranslateSource("PlayTitle"), Symbol.Play, typeof(PlayPage))
+        ]);
+        /* TODO
+						<ListBoxItem>
+							<ui:NavigationViewItem IconSource="Sync"
+											   Content="{DynamicResource InstallTitle}"
+											   IsEnabled="{Binding !IsInstallRunning}"
+											   Tag="SIT.Manager.Views.InstallPage"
+											   ToolTip.Tip="{DynamicResource InstallTitleToolTip}">
+								<ui:NavigationViewItem.InfoBadge>
+									<ui:InfoBadge IconSource="ChevronUp"
+												  IsVisible="{Binding SitUpdateAvailable}"/>
+								</ui:NavigationViewItem.InfoBadge>
+							</ui:NavigationViewItem>
+						</ListBoxItem>
+						<ListBoxItem>
+							<ui:NavigationViewItem IconSource="AllApps"
+											   Content="{DynamicResource ToolsTitle}"
+											   IsEnabled="{Binding !IsInstallRunning}"
+											   Tag="SIT.Manager.Views.ToolsPage"
+											   ToolTip.Tip="{DynamicResource ToolsTitleToolTip}"/>
+						</ListBoxItem>
+						<ListBoxItem>
+							<ui:NavigationViewItem IconSource="MapDrive"
+											   Content="{DynamicResource ServerTitle}"
+											   IsEnabled="{Binding !IsInstallRunning}"
+											   Tag="SIT.Manager.Views.ServerPage"
+											   ToolTip.Tip="{DynamicResource ServerTitleToolTip}"/>
+						</ListBoxItem>
+						<ListBoxItem>
+							<ui:NavigationViewItem IconSource="Library"
+											   IsVisible="{Binding !IsDevloperModeEnabled}"
+											   IsEnabled="{Binding !IsInstallRunning}"
+											   Content="{DynamicResource ModsTitle}"
+											   Tag="SIT.Manager.Views.ModsPage"
+											   ToolTip.Tip="{DynamicResource ModsTitleToolTip}"/>
+						</ListBoxItem>
+         */
 
         FluentAvaloniaTheme? faTheme = Application.Current?.Styles.OfType<FluentAvaloniaTheme>().FirstOrDefault();
         if (faTheme != null) faTheme.CustomAccentColor = _managerConfigService.Config.AccentColor;
@@ -166,11 +208,6 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
         CheckInstallVersion();
 
         await CheckForUpdate();
-    }
-
-    public void RegisterContentFrame(Frame frame)
-    {
-        contentFrame = frame;
     }
 
     public void Receive(PageNavigationMessage message)

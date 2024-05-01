@@ -7,10 +7,8 @@ using SIT.Manager.Controls;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Models;
 using SIT.Manager.Models.Messages;
-using SIT.Manager.ViewModels;
 using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Views;
@@ -18,25 +16,28 @@ namespace SIT.Manager.Views;
 public partial class MainView : ActivatableUserControl
 {
     private readonly ILocalizationService _localizationService;
+
     public MainView()
     {
         InitializeComponent();
         _localizationService = App.Current.Services.GetRequiredService<ILocalizationService>();
         // Set the initially loaded page to be the play page and highlight this
         // in the nav view.
-        ContentFrame.Navigated += ContentFrame_Navigated;
-        ContentFrame.Navigate(typeof(PlayPage));
-        NavView.SelectedItem = NavView.MenuItems.First();
+        // TODO ContentFrame.Navigated += ContentFrame_Navigated;
+        // TODO ContentFrame.Navigate(typeof(PlayPage));
+        // TODO NavView.SelectedItem = NavView.MenuItems.First();
     }
 
     private void ContentFrame_Navigated(object sender, NavigationEventArgs e)
     {
+        /* TODO
         // Make sure that the selection indicator is always right for whatever is currently displayed.
         object? selectedItem = NavView.MenuItems.FirstOrDefault(x => Type.GetType(((NavigationViewItem) x).Tag?.ToString() ?? string.Empty) == e.Content.GetType());
         if (selectedItem != null)
         {
             NavView.SelectedItem = selectedItem;
         }
+        */
     }
 
     // I hate this so much, Please if someone knows of a better way to do this make a pull request. Even microsoft docs recommend this heathenry
@@ -97,15 +98,6 @@ public partial class MainView : ActivatableUserControl
         {
             ILogger? logger = App.Current.Services.GetService<ILogger<MainView>>();
             logger?.LogError(ex, $"Error lauching url (${url}).");
-        }
-    }
-
-    protected override void OnActivated()
-    {
-        if (DataContext is MainViewModel dataContext)
-        {
-            // Register the content frame so that we can update it from the view model
-            dataContext.RegisterContentFrame(ContentFrame);
         }
     }
 }
