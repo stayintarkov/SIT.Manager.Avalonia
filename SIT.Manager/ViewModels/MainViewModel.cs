@@ -31,8 +31,6 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
     private readonly ILogger<MainViewModel> _logger;
     private readonly IVersionService _versionService;
 
-    private Frame? contentFrame;
-
     [ObservableProperty]
     private ActionNotification? _actionPanelNotification = new(string.Empty, 0, false);
 
@@ -48,7 +46,12 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
     [ObservableProperty]
     private bool _isInstallRunning = false;
 
+    [ObservableProperty]
+    private NavigationItem _selectedNavigationItem;
+
     public ObservableCollection<BarNotification> BarNotifications { get; } = [];
+
+    public ReadOnlyCollection<NavigationItem> FooterNavigationItems { get; }
 
     public ReadOnlyCollection<NavigationItem> MainNavigationItems { get; }
 
@@ -74,10 +77,18 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
 
         _localizationService.Translate(new CultureInfo(_managerConfigService.Config.CurrentLanguageSelected));
 
-        MainNavigationItems = new ReadOnlyCollection<NavigationItem>([
-            new NavigationItem(_localizationService.TranslateSource("PlayTitle"), _localizationService.TranslateSource("PlayTitle"), Symbol.Play, typeof(PlayPage))
+        FooterNavigationItems = new ReadOnlyCollection<NavigationItem>([
+            new NavigationItem(_localizationService.TranslateSource("HelpTitle"), string.Empty, Symbol.Help, typeof(SettingsPage), Tag: "Help"),
+            new NavigationItem(_localizationService.TranslateSource("SettingsTitle"), string.Empty, Symbol.Settings, typeof(SettingsPage))
         ]);
-        /* TODO
+        MainNavigationItems = new ReadOnlyCollection<NavigationItem>([
+            new NavigationItem(_localizationService.TranslateSource("PlayTitle"), _localizationService.TranslateSource("PlayTitle"), Symbol.Play, typeof(PlayPage)),
+            new NavigationItem(_localizationService.TranslateSource("InstallTitle"), _localizationService.TranslateSource("InstallTitleToolTip"), Symbol.Sync, typeof(InstallPage)),
+            new NavigationItem(_localizationService.TranslateSource("ToolsTitle"), _localizationService.TranslateSource("ToolsTitleToolTip"), Symbol.AllApps, typeof(ToolsPage)),
+            new NavigationItem(_localizationService.TranslateSource("ServerTitle"), _localizationService.TranslateSource("ServerTitleToolTip"), Symbol.MapDrive, typeof(ServerPage)),
+            new NavigationItem(_localizationService.TranslateSource("ModsTitle"), _localizationService.TranslateSource("ModsTitleToolTip"), Symbol.Library, typeof(ModsPage))
+        ]);
+        /* TODO make a new notification for updating.
 						<ListBoxItem>
 							<ui:NavigationViewItem IconSource="Sync"
 											   Content="{DynamicResource InstallTitle}"
@@ -90,32 +101,16 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
 								</ui:NavigationViewItem.InfoBadge>
 							</ui:NavigationViewItem>
 						</ListBoxItem>
-						<ListBoxItem>
-							<ui:NavigationViewItem IconSource="AllApps"
-											   Content="{DynamicResource ToolsTitle}"
-											   IsEnabled="{Binding !IsInstallRunning}"
-											   Tag="SIT.Manager.Views.ToolsPage"
-											   ToolTip.Tip="{DynamicResource ToolsTitleToolTip}"/>
-						</ListBoxItem>
-						<ListBoxItem>
-							<ui:NavigationViewItem IconSource="MapDrive"
-											   Content="{DynamicResource ServerTitle}"
-											   IsEnabled="{Binding !IsInstallRunning}"
-											   Tag="SIT.Manager.Views.ServerPage"
-											   ToolTip.Tip="{DynamicResource ServerTitleToolTip}"/>
-						</ListBoxItem>
-						<ListBoxItem>
-							<ui:NavigationViewItem IconSource="Library"
-											   IsVisible="{Binding !IsDevloperModeEnabled}"
-											   IsEnabled="{Binding !IsInstallRunning}"
-											   Content="{DynamicResource ModsTitle}"
-											   Tag="SIT.Manager.Views.ModsPage"
-											   ToolTip.Tip="{DynamicResource ModsTitleToolTip}"/>
-						</ListBoxItem>
          */
+        SelectedNavigationItem = MainNavigationItems.First();
+
+
 
         FluentAvaloniaTheme? faTheme = Application.Current?.Styles.OfType<FluentAvaloniaTheme>().FirstOrDefault();
-        if (faTheme != null) faTheme.CustomAccentColor = _managerConfigService.Config.AccentColor;
+        if (faTheme != null)
+        {
+            faTheme.CustomAccentColor = _managerConfigService.Config.AccentColor;
+        }
 
         _actionNotificationService.ActionNotificationReceived += ActionNotificationService_ActionNotificationReceived;
         _barNotificationService.BarNotificationReceived += BarNotificationService_BarNotificationReceived;

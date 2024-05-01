@@ -78,22 +78,19 @@
 					<ListBox Grid.Row="0"
 							 IsEnabled="{Binding !IsInstallRunning}"
 							 ItemsSource="{Binding MainNavigationItems}"
+							 SelectedItem="{Binding SelectedNavigationItem}"
 							 Classes="NavigationMenu"/>
 					
 					<Image Grid.Row="1"
 						   RenderOptions.BitmapInterpolationMode="HighQuality"
 						   Source="avares://SIT.Manager.ASM/Assets/sit-logo-5.png"/>
 
-					<StackPanel Grid.Row="2"
-								Margin="0,0,0,16">
-						<ui:NavigationViewItem IconSource="Help"
-											   Content="{DynamicResource HelpTitle}"
-											   Tag="Help"/>
-						<ui:NavigationViewItem IconSource="Settings"
-											   IsEnabled="{Binding !IsInstallRunning}"
-											   Content="{DynamicResource SettingsTitle}"
-											   Tag="SIT.Manager.Views.SettingsPage"/>
-					</StackPanel>
+					<ListBox Grid.Row="2"
+							 IsEnabled="{Binding !IsInstallRunning}"
+							 ItemsSource="{Binding FooterNavigationItems}"
+							 SelectedItem="{Binding SelectedNavigationItem}"
+							 Classes="NavigationMenu"
+							 Margin="0,0,0,16"/>
 				</Grid>
 			</SplitView.Pane>
 

@@ -21,6 +21,7 @@ public partial class MainView : ActivatableUserControl
     {
         InitializeComponent();
         _localizationService = App.Current.Services.GetRequiredService<ILocalizationService>();
+
         // Set the initially loaded page to be the play page and highlight this
         // in the nav view.
         // TODO ContentFrame.Navigated += ContentFrame_Navigated;
