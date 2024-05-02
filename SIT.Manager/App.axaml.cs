@@ -17,6 +17,7 @@ using SIT.Manager.ViewModels;
 using SIT.Manager.ViewModels.Installation;
 using SIT.Manager.ViewModels.Play;
 using SIT.Manager.ViewModels.Settings;
+using SIT.Manager.ViewModels.Tools;
 using SIT.Manager.Views;
 using System;
 using System.CommandLine;
@@ -144,6 +145,10 @@ public sealed partial class App : Application
                 .AddTransient<LauncherViewModel>()
                 .AddTransient<LinuxViewModel>()
                 .AddTransient<SptAkiViewModel>();
+
+            // Tools view Models
+            services.AddTransient<GeneralToolsViewModel>()
+                .AddTransient<NetworkToolsViewModel>();
 
             #endregion ViewModels
 

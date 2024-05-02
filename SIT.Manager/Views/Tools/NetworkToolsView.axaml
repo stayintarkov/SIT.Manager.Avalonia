@@ -1,0 +1,16 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Tools"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SIT.Manager.Views.Tools.NetworkToolsView"
+			 x:DataType="vm:NetworkToolsViewModel">
+	<StackPanel HorizontalAlignment="Center">
+		<Label Content="Title LocalizeMe"
+			   FontSize="20"
+			   FontWeight="DemiBold"/>
+		
+		
+	</StackPanel>
+</UserControl>
