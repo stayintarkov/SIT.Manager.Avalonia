@@ -266,8 +266,8 @@
 	<system:String x:Key="SettingsPageViewModelConfigInformationEFTDescription">EFT 安裝路徑已設置為 '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">SPT-AKI 伺服器安裝路徑已設置為 '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigErrorSPTAKI">所選文件夾無效，請確保它是正確的 SPT-AKI 伺服器文件夾！</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">啟用開發者模式錯誤</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">無法啟用開發者模式，因為您仍然有 %1 不相容的模式處於啟用狀態</system:String>
+	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">Enable Test Mode Failure</system:String>
+	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">Can't enable test mode as you have %1 incompatible mods still enabled</system:String>	
 	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorButtonOk">確定</system:String>
 
 	<!-- Server Page ViewModel -->
