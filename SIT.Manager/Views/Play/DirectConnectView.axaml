@@ -37,6 +37,7 @@
 								ToolTip.Tip="{DynamicResource DirectConnectViewConnectButtonTitleToolTip}"
 								Margin="0,0,4,0"></Button>
 						<Button Name="QuickPlayButton"
+								IsVisible="{Binding ManagerConfig.AkiServerPath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
 								HorizontalAlignment="Stretch"
 								Grid.Column="1"
 								Command="{Binding QuickPlayCommand}"
