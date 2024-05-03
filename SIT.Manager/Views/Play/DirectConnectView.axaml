@@ -37,12 +37,18 @@
 								ToolTip.Tip="{DynamicResource DirectConnectViewConnectButtonTitleToolTip}"
 								Margin="0,0,4,0"></Button>
 						<Button Name="QuickPlayButton"
-								IsVisible="{Binding ManagerConfig.AkiServerPath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
 								HorizontalAlignment="Stretch"
 								Grid.Column="1"
 								Command="{Binding QuickPlayCommand}"
 								ToolTip.Tip="{DynamicResource DirectConnectViewStartServerAndConnectButtonTitleToolTip}"
 								Margin="4,0,0,0">
+							<Button.IsVisible>
+								<MultiBinding Converter="{x:Static BoolConverters.And}">
+									<Binding Path="ManagerConfig.AkiServerPath" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
+									<Binding Path="!IsLocalServerRunning"/>
+								</MultiBinding>
+							</Button.IsVisible>
+							
 							<StackPanel Orientation="Horizontal">
 								<TextBlock Text="{Binding QuickPlayText}"/>
 								<controls:LoadingSpinner Width="12"
