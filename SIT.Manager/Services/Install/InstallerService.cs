@@ -265,11 +265,11 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                         SitVersion = release.Name,
                     };
 
-                    if (release.Prerelease && _configService.Config.EnableDeveloperMode)
+                    if (release.Prerelease && _configService.Config.EnableTestMode)
                     {
                         result.Add(sitVersion);
                     }
-                    else if (!release.Prerelease && !_configService.Config.EnableDeveloperMode)
+                    else if (!release.Prerelease && !_configService.Config.EnableTestMode)
                     {
                         result.Add(sitVersion);
                     }
@@ -415,11 +415,11 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                         release.TagName = $"{release.Name} - Tarkov Version: {releasePatch}";
                         release.Body = releasePatch;
 
-                        if (release.Prerelease && _configService.Config.EnableDeveloperMode)
+                        if (release.Prerelease && _configService.Config.EnableTestMode)
                         {
                             result.Add(release);
                         }
-                        else if (!release.Prerelease && !_configService.Config.EnableDeveloperMode)
+                        else if (!release.Prerelease && !_configService.Config.EnableTestMode)
                         {
                             result.Add(release);
                         }

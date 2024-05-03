@@ -37,7 +37,7 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
     private ActionNotification? _actionPanelNotification = new(string.Empty, 0, false);
 
     [ObservableProperty]
-    private bool _isDevloperModeEnabled = false;
+    private bool _isTestModeEnabled = false;
 
     [ObservableProperty]
     private bool _updateAvailable = false;
@@ -110,7 +110,7 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
 
     private void ManagerConfigService_ConfigChanged(object? sender, ManagerConfig e)
     {
-        IsDevloperModeEnabled = e.EnableDeveloperMode;
+        IsTestModeEnabled = e.EnableTestMode;
     }
 
     private async Task CheckForUpdate()

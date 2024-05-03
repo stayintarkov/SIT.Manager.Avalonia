@@ -21,7 +21,7 @@ public partial class LauncherViewModel(IManagerConfigService configService,
     private readonly FluentAvaloniaTheme? faTheme = Application.Current?.Styles.OfType<FluentAvaloniaTheme>().FirstOrDefault();
 
     [ObservableProperty]
-    private bool _isDeveloperModeEnabled = false;
+    private bool _isTestModeEnabled = false;
 
     [ObservableProperty]
     private List<CultureInfo> _availableLocalizations = localizationService.GetAvailableLocalizations();
@@ -45,7 +45,7 @@ public partial class LauncherViewModel(IManagerConfigService configService,
         base.OnActivated();
 
         CurrentLocalization = AvailableLocalizations.FirstOrDefault(x => x.Name == Config.CurrentLanguageSelected, _localizationService.DefaultLocale);
-        IsDeveloperModeEnabled = Config.EnableDeveloperMode;
+        IsTestModeEnabled = Config.EnableTestMode;
 
         Config.PropertyChanged += Config_PropertyChanged;
     }
@@ -65,9 +65,9 @@ public partial class LauncherViewModel(IManagerConfigService configService,
         }
     }
 
-    async partial void OnIsDeveloperModeEnabledChanged(bool value)
+    async partial void OnIsTestModeEnabledChanged(bool value)
     {
-        // If developer mode is enabled then we want to check that there's no mods we don't approve of currently installed.
+        // If test mode is enabled then we want to check that there's no mods we don't approve of currently installed.
         if (value)
         {
             List<string> installedMods = _configsService.Config.InstalledMods.Keys.ToList();
@@ -84,12 +84,12 @@ public partial class LauncherViewModel(IManagerConfigService configService,
             }
             else
             {
-                Config.EnableDeveloperMode = value;
+                Config.EnableTestMode = value;
             }
         }
         else
         {
-            Config.EnableDeveloperMode = value;
+            Config.EnableTestMode = value;
         }
     }
 }

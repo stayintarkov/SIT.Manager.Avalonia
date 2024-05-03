@@ -17,7 +17,7 @@ public partial class ManagerConfig : ObservableObject
     [ObservableProperty]
     public string _currentLanguageSelected = CultureInfo.CurrentCulture.Name;
     [ObservableProperty]
-    public bool _enableDeveloperMode = false;
+    public bool _enableTestMode = false;
     [ObservableProperty]
     public bool _hideIpAddress = true;
     [ObservableProperty]
