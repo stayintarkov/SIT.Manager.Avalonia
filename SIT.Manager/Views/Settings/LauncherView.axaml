@@ -18,7 +18,7 @@
 			<CheckBox Content="{DynamicResource SettingsHideIpAddressTitle}"
 					  ToolTip.Tip="{DynamicResource SettingsHideIpAddressToolTip}"
 					  IsChecked="{Binding Config.HideIpAddress, Mode=TwoWay}"/>
-			<CheckBox Content="{DynamicResource SettingsEnableDeveloperMode}"
+			<CheckBox Content="Show SIT Test Versions Only"
 					  ToolTip.Tip="{DynamicResource SettingsEnableDeveloperModeToolTip}"
 					  IsChecked="{Binding IsDeveloperModeEnabled, Mode=TwoWay}"/>
 			<Grid ColumnDefinitions="auto, *">

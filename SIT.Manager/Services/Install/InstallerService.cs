@@ -251,12 +251,6 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         {
             foreach (GithubRelease release in githubReleases)
             {
-                // If this is a prerelease build and the user hasn't eneabled developer mode then we want to skip adding this to the list.
-                if (release.Prerelease && !_configService.Config.EnableDeveloperMode)
-                {
-                    continue;
-                }
-
                 Match match = SITReleaseVersionRegex().Match(release.Body);
                 if (match.Success)
                 {
@@ -271,7 +265,14 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                         SitVersion = release.Name,
                     };
 
-                    result.Add(sitVersion);
+                    if (release.Prerelease && _configService.Config.EnableDeveloperMode)
+                    {
+                        result.Add(sitVersion);
+                    }
+                    else if (!release.Prerelease && !_configService.Config.EnableDeveloperMode)
+                    {
+                        result.Add(sitVersion);
+                    }
                 }
                 else
                 {
@@ -397,12 +398,6 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         {
             foreach (GithubRelease release in githubReleases)
             {
-                // If this is a prerelease build and the user hasn't eneabled developer mode then we want to skip adding this to the list.
-                if (release.Prerelease && !_configService.Config.EnableDeveloperMode)
-                {
-                    continue;
-                }
-
                 // Check there is an asset available for this OS
                 string fileExtention = ".zip";
                 if (OperatingSystem.IsLinux())
@@ -419,7 +414,15 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                         string releasePatch = match.Value.Replace("This server version works with version ", "");
                         release.TagName = $"{release.Name} - Tarkov Version: {releasePatch}";
                         release.Body = releasePatch;
-                        result.Add(release);
+
+                        if (release.Prerelease && _configService.Config.EnableDeveloperMode)
+                        {
+                            result.Add(release);
+                        }
+                        else if (!release.Prerelease && !_configService.Config.EnableDeveloperMode)
+                        {
+                            result.Add(release);
+                        }
                     }
                     else
                     {
@@ -496,11 +499,9 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                 availableVersions[i].IsAvailable = true;
             }
 
-            // If user is a developer just enable the version anyway
-            if (_configService.Config.EnableDeveloperMode)
-            {
-                availableVersions[i].IsAvailable = true;
-            }
+#if DEBUG
+            availableVersions[i].IsAvailable = true;
+#endif
         }
         return availableVersions;
     }
