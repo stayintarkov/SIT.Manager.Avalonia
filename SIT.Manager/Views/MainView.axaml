@@ -29,8 +29,8 @@
 		</Style>
 
 		<Style Selector="ListBox.NavigationMenu > ListBoxItem">
-			<Setter Property="Height" Value="32" />
-			<Setter Property="Padding" Value="16,0" />
+			<Setter Property="Height" Value="24" />
+			<Setter Property="Padding" Value="8,0" />
 			<Setter Property="VerticalContentAlignment" Value="Center" />
 		</Style>
 	</UserControl.Styles>
