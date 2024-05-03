@@ -91,8 +91,8 @@
 	<system:String x:Key="SettingsLookForUpdatesTitleToolTip">Автоматично перевіряє оновлення при відкритті лаунчера.</system:String>
 	<system:String x:Key="SettingsHideIpAddressTitle">Сховати IP-адресу</system:String>
 	<system:String x:Key="SettingsHideIpAddressToolTip">Приховує IP-адресу зірочками в полі IP-адреси.</system:String>
-	<system:String x:Key="SettingsEnableDeveloperMode">Увімкнути режим розробника</system:String>
-	<system:String x:Key="SettingsEnableDeveloperModeToolTip">Увімкнення режиму розробника/тестових випусків SIT та сервера SIT для тестування</system:String>
+	<system:String x:Key="SettingsEnableTestMode">Show SIT Test Versions Only</system:String>
+	<system:String x:Key="SettingsEnableTestModeToolTip">Will show only test releases of SIT and AKI server for installation</system:String>
 	<system:String x:Key="SettingsLanguageTitle">Мова:</system:String>
 	<system:String x:Key="SettingsLanguageTitleToolTip">Перекладає весь лаунчер на вашу мову, оберіть свою мову!</system:String>
 	<system:String x:Key="SettingsAccentColorTitle">Колір акценту:</system:String>

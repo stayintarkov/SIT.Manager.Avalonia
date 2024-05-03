@@ -498,10 +498,6 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                 availableVersions[i].DowngradeRequired = true;
                 availableVersions[i].IsAvailable = true;
             }
-
-#if DEBUG
-            availableVersions[i].IsAvailable = true;
-#endif
         }
         return availableVersions;
     }

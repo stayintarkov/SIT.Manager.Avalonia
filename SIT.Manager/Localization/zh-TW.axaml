@@ -87,8 +87,8 @@
 	<system:String x:Key="SettingsLookForUpdatesTitleToolTip">開啟啟動器時自動檢查更新</system:String>
 	<system:String x:Key="SettingsHideIpAddressTitle">隱藏 IP 位址</system:String>
 	<system:String x:Key="SettingsHideIpAddressToolTip">在 IP 位址框中使用星號隱藏 IP 位址。</system:String>
-	<system:String x:Key="SettingsEnableDeveloperMode">啟用開發者模式</system:String>
-	<system:String x:Key="SettingsEnableDeveloperModeToolTip">啟用開發者/測試版本的 SIT 和 SIT 伺服器，以進行測試用途</system:String>
+	<system:String x:Key="SettingsEnableTestMode">Show SIT Test Versions Only</system:String>
+	<system:String x:Key="SettingsEnableTestModeToolTip">Will show only test releases of SIT and AKI server for installation</system:String>
 	<system:String x:Key="SettingsLanguageTitle">語言:</system:String>
 	<system:String x:Key="SettingsLanguageTitleToolTip">將整個啟動器翻譯為您的語言，選擇其中一種!</system:String>
 	<system:String x:Key="SettingsAccentColorTitle">強調顏色:</system:String>
