@@ -674,6 +674,9 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             string pluginsPath = Path.Combine(targetInstallDir, "BepInEx", "plugins");
             Directory.CreateDirectory(pluginsPath);
 
+            string patchersPath = Path.Combine(targetInstallDir, "BepInEx", "patchers");
+            Directory.CreateDirectory(patchersPath);
+
             string bepinexPath = Path.Combine(targetInstallDir, "SITLauncher");
             await _fileService.DownloadFile("BepInEx5.zip", bepinexPath, "https://github.com/BepInEx/BepInEx/releases/download/v5.4.22/BepInEx_x64_5.4.22.0.zip", internalDownloadProgress);
             await _fileService.ExtractArchive(Path.Combine(bepinexPath, "BepInEx5.zip"), targetInstallDir, internalExtractionProgress);
@@ -706,6 +709,10 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             }
             File.Copy(Path.Combine(coreFilesPath, "StayInTarkov-Release", "Assembly-CSharp.dll"), Path.Combine(eftDataManagedPath, "Assembly-CSharp.dll"), true);
             File.Copy(Path.Combine(coreFilesPath, "StayInTarkov-Release", "StayInTarkov.dll"), Path.Combine(pluginsPath, "StayInTarkov.dll"), true);
+
+            var downloadedPrePatcherPath = Path.Combine(coreFilesPath, "StayInTarkov-Release", "SIT.WildSpawnType.PrePatcher.dll");
+            if (File.Exists(downloadedPrePatcherPath))
+                File.Copy(downloadedPrePatcherPath, Path.Combine(patchersPath, "SIT.WildSpawnType.PrePatcher.dll"), true);
 
             using (Stream? resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("SIT.Manager.Resources.Aki.Common.dll"))
             {
