@@ -28,7 +28,7 @@
 					<Label Content="{DynamicResource DirectConnectViewPasswordBoxTitle}" Margin="10 10 10 0" FontWeight="Bold" FontSize="14"/>
 					<TextBox Name="PasswordBox" Text="{Binding Password, Mode=TwoWay}" MinWidth="300" Margin="8 4 8 8" HorizontalAlignment="Left" PasswordChar="●" Watermark="{DynamicResource DirectConnectViewEnterPasswordPlaceholder}"/>
 					<CheckBox Name="RememberMeCheck" Content="{DynamicResource DirectConnectViewRememberMeCheckBoxTitle}" Margin="8" IsChecked="{Binding RememberMe}"/>
-					<Grid ColumnDefinitions="*, *" Margin="8">
+					<Grid ColumnDefinitions="*, auto" Margin="8">
 						<Button Name="ConnectButton"
 								Grid.Column="0"
 								HorizontalAlignment="Stretch"
