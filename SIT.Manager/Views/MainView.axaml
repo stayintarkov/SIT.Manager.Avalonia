@@ -92,7 +92,7 @@
 									   Tag="SIT.Manager.Views.ServerPage" 
 									   ToolTip.Tip="{DynamicResource ServerTitleToolTip}"/>
 				<ui:NavigationViewItem IconSource="Library" 
-									   IsVisible="{Binding !IsDevloperModeEnabled}"
+									   IsVisible="{Binding !IsTestModeEnabled}"
 									   IsEnabled="{Binding !IsInstallRunning}"
 									   Content="{DynamicResource ModsTitle}" 
 									   Tag="SIT.Manager.Views.ModsPage" 

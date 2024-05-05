@@ -137,7 +137,7 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
             if (!string.IsNullOrEmpty(_configService.Config.SitVersion))
             {
                 // Don't filter down the available versions if user has enabled developer mode.
-                if (!_configService.Config.EnableDeveloperMode)
+                if (!_configService.Config.EnableTestMode)
                 {
                     availableVersions = availableVersions.Where(x =>
                     {

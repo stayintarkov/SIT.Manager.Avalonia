@@ -87,8 +87,8 @@
 	<system:String x:Key="SettingsLookForUpdatesTitleToolTip">打开启动器时自动检查更新</system:String>
 	<system:String x:Key="SettingsHideIpAddressTitle">隐藏 IP 地址</system:String>
 	<system:String x:Key="SettingsHideIpAddressToolTip">在 IP 地址框中用星号隐藏 IP 地址。</system:String>
-	<system:String x:Key="SettingsEnableDeveloperMode">启用开发者模式</system:String>
-	<system:String x:Key="SettingsEnableDeveloperModeToolTip">启用开发者/测试版 SIT 和 SIT 服务器以进行测试目的</system:String>
+	<system:String x:Key="SettingsEnableTestMode">Show SIT Test Versions Only</system:String>
+	<system:String x:Key="SettingsEnableTestModeToolTip">Will show only test releases of SIT and AKI server for installation</system:String>
 	<system:String x:Key="SettingsLanguageTitle">语言:</system:String>
 	<system:String x:Key="SettingsLanguageTitleToolTip">将整个启动器翻译为您的语言，选择其中一种!</system:String>
 	<system:String x:Key="SettingsAccentColorTitle">强调颜色:</system:String>
@@ -266,8 +266,8 @@
 	<system:String x:Key="SettingsPageViewModelConfigInformationEFTDescription">EFT 安装路径已设置为 '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">SPT-AKI 服务器安装路径已设置为 '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigErrorSPTAKI">所选文件夹无效，请确保它是正确的 SPT-AKI 服务器文件夹！</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">启用开发者模式错误</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">无法启用开发者模式，因为您仍然有 %1 不兼容的模式处于启用状态</system:String>
+	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">Enable Test Mode Failure</system:String>
+	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">Can't enable test mode as you have %1 incompatible mods still enabled</system:String>
 	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorButtonOk">确定</system:String>
 
 	<!-- Server Page ViewModel -->
