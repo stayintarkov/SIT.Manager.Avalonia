@@ -67,14 +67,14 @@
 			</ItemsControl>
 		</StackPanel>
 
-		<SplitView Background="Black"
+		<SplitView Background="#080808"
 				   IsPaneOpen="True"
 				   DisplayMode="Inline"
 				   OpenPaneLength="166"
 				   Grid.Row="1">
 			<SplitView.Pane>
 				<Grid RowDefinitions="Auto, *, Auto"
-					  Background="Black">
+					  Background="#080808">
 					<ListBox Grid.Row="0"
 							 IsEnabled="{Binding !IsInstallRunning}"
 							 ItemsSource="{Binding MainNavigationItems}"
