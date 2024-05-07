@@ -19,6 +19,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.ViewModels;
@@ -66,6 +67,9 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
 
     [ObservableProperty]
     public ReadOnlyCollection<NavigationItem> _mainNavigationItems;
+
+    [ObservableProperty]
+    private string _managerVersionString = $"v{Assembly.GetEntryAssembly()?.GetName().Version?.ToString()}";
 
     public ObservableCollection<BarNotification> BarNotifications { get; } = [];
 

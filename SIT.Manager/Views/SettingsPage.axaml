@@ -28,10 +28,5 @@
 				<sv:LinuxView/>
 			</TabItem>
 		</TabControl>
-
-		<StackPanel Margin="0,5" Orientation="Horizontal" Grid.Row="1">
-			<TextBlock Margin="10" Text="{DynamicResource SettingsManagerVersionTitle}"/>
-			<SelectableTextBlock Text="{Binding ManagerVersionString}" VerticalAlignment="Center" Padding="5"/>
-		</StackPanel>
 	</Grid>
 </UserControl>

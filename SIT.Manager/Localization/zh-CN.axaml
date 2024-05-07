@@ -113,7 +113,6 @@
 	<system:String x:Key="SettingsServerConsoleTitle">服务器控制台</system:String>
 	<system:String x:Key="SettingsServerConsoleFontFamilyTitle">字体:</system:String>
 	<system:String x:Key="SettingsServerConsoleFontColorTitle">字体颜色:</system:String>
-	<system:String x:Key="SettingsManagerVersionTitle">当前 SIT Manager 版本:</system:String>
 
 	<!-- EftView -->
 	<system:String x:Key="EftViewBsgEftInstallPath">BSG EFT 安装路径:</system:String>
