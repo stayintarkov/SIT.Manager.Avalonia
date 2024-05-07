@@ -38,7 +38,15 @@
 					   VerticalAlignment="Center"
 					   TextTrimming="CharacterEllipsis"
 					   TextWrapping="WrapWithOverflow"
-					   Text="{Binding SitEftInstallPath}"/>
+					   Text="{Binding SitEftInstallPath}"
+					   IsVisible="{Binding !ShowEftInstallPathMissing}"/>
+			<TextBlock Grid.Column="1"
+					   Grid.Row="1"
+					   VerticalAlignment="Center"
+					   TextTrimming="CharacterEllipsis"
+					   TextWrapping="WrapWithOverflow"
+					   Text="{DynamicResource EftViewModelSitEftInstallPathMissing}"
+					   IsVisible="{Binding ShowEftInstallPathMissing}"/>
 			<Button Grid.Column="2"
 					Grid.Row="1"
 					VerticalAlignment="Center"

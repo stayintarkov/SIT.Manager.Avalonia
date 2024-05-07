@@ -20,6 +20,9 @@ public partial class EftViewModel : SettingsViewModelBase
     [ObservableProperty]
     private string _sitEftInstallPath;
 
+    [ObservableProperty]
+    private bool _showEftInstallPathMissing;
+
     public IAsyncRelayCommand ChangeInstallLocationCommand { get; }
 
     public EftViewModel(IBarNotificationService barNotificationService,
@@ -36,10 +39,6 @@ public partial class EftViewModel : SettingsViewModelBase
 
         BsgEftInstallPath = Path.GetDirectoryName(_installerService.GetEFTInstallPath()) ?? _localizationService.TranslateSource("EftViewModelBsgEftInstallPathMissing");
         SitEftInstallPath = _configsService.Config.SitEftInstallPath;
-        if (string.IsNullOrEmpty(SitEftInstallPath))
-        {
-            SitEftInstallPath = _localizationService.TranslateSource("EftViewModelSitEftInstallPathMissing");
-        }
 
         ChangeInstallLocationCommand = new AsyncRelayCommand(ChangeInstallLocation);
     }
@@ -73,5 +72,11 @@ public partial class EftViewModel : SettingsViewModelBase
         {
             _barNotificationService.ShowError(_localizationService.TranslateSource("SettingsPageViewModelErrorTitle"), _localizationService.TranslateSource("SettingsPageViewModelConfigErrorEFTDescription"));
         }
+    }
+
+    protected override void OnActivated()
+    {
+        base.OnActivated();
+        ShowEftInstallPathMissing = string.IsNullOrEmpty(SitEftInstallPath);
     }
 }
