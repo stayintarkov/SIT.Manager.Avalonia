@@ -26,7 +26,7 @@
 			</ui:TeachingTip.IconSource>
 		</ui:TeachingTip>
 
-		<StackPanel Name="InfoBarStackPanel" Grid.Row="0" x:FieldModifier="Public">
+		<StackPanel Name="InfoBarStackPanel" Grid.Row="0" x:FieldModifier="public">
 			<Grid ColumnDefinitions="auto, auto, auto, *, auto" IsVisible="{Binding UpdateAvailable}">
 				<Panel Margin="14 0" VerticalAlignment="Center" Grid.Column="0">
 					<Ellipse Fill="#1e4f8a" Width="18" Height="18"/>
