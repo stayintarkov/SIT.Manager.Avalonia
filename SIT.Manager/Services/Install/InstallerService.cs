@@ -1,4 +1,5 @@
 ﻿using FluentAvalonia.UI.Controls;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Logging;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Models;
@@ -653,23 +654,17 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                 CleanUpEFTDirectory();
             }
 
-            string sitReleaseZipPath = Path.Combine(targetInstallDir, "SITLauncher", "CoreFiles", "StayInTarkov-Release.zip");
-            if (File.Exists(sitReleaseZipPath))
-            {
-                File.Delete(sitReleaseZipPath);
-            }
+            var coreFilesPath = Path.Combine(targetInstallDir, "SITLauncher", "CoreFiles");
 
-            string coreFilesPath = Path.Combine(targetInstallDir, "SITLauncher", "CoreFiles");
-            if (!Directory.Exists(coreFilesPath))
-            {
-                Directory.CreateDirectory(coreFilesPath);
-            }
+            // Recursively delete all downloaded files / folders
+            Directory.Delete(coreFilesPath, true);
+            // Recreate directory for downloaded files / folders
+            Directory.CreateDirectory(coreFilesPath);
+
 
             string backupCoreFilesPath = Path.Combine(targetInstallDir, "SITLauncher", "Backup", "CoreFiles");
             if (!Directory.Exists(backupCoreFilesPath))
-            {
                 Directory.CreateDirectory(backupCoreFilesPath);
-            }
 
             string pluginsPath = Path.Combine(targetInstallDir, "BepInEx", "plugins");
             Directory.CreateDirectory(pluginsPath);
@@ -702,17 +697,40 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                 await _fileService.ExtractArchive(Path.Combine(coreFilesPath, "StayInTarkov-Release.zip"), coreFilesPath, internalExtractionProgress);
             }
 
+            // Find Assembly-CSharp file
+            var assemblyCSharpFiles = Directory.GetFiles(coreFilesPath, "*Assembly-CSharp.dll");
+            if (assemblyCSharpFiles.Length == 0)
+                throw new IndexOutOfRangeException("No Assembly-CSharp found in download!");
+            if (assemblyCSharpFiles.Length > 1)
+                throw new IndexOutOfRangeException("There are more than one Assembly-CSharp files found!");
+
+            // Find StayInTarkov.dll
+            var sitFiles = Directory.GetFiles(coreFilesPath, "*StayInTarkov.dll");
+            if (sitFiles.Length == 0)
+                throw new IndexOutOfRangeException("No StayInTarkov.dll found in download!");
+            if (sitFiles.Length > 1)
+                throw new IndexOutOfRangeException("There are more than one StayInTarkov.dll files found!");
+
+            // Find SIT.WildSpawnType.PrePatcher.dll
+            var prePatcherFiles = Directory.GetFiles(coreFilesPath, "*PrePatch*");
+
             string eftDataManagedPath = Path.Combine(targetInstallDir, "EscapeFromTarkov_Data", "Managed");
             if (File.Exists(Path.Combine(eftDataManagedPath, "Assembly-CSharp.dll")))
             {
                 File.Copy(Path.Combine(eftDataManagedPath, "Assembly-CSharp.dll"), Path.Combine(backupCoreFilesPath, "Assembly-CSharp.dll"), true);
             }
-            File.Copy(Path.Combine(coreFilesPath, "StayInTarkov-Release", "Assembly-CSharp.dll"), Path.Combine(eftDataManagedPath, "Assembly-CSharp.dll"), true);
-            File.Copy(Path.Combine(coreFilesPath, "StayInTarkov-Release", "StayInTarkov.dll"), Path.Combine(pluginsPath, "StayInTarkov.dll"), true);
 
-            var downloadedPrePatcherPath = Path.Combine(coreFilesPath, "StayInTarkov-Release", "SIT.WildSpawnType.PrePatcher.dll");
-            if (File.Exists(downloadedPrePatcherPath))
-                File.Copy(downloadedPrePatcherPath, Path.Combine(patchersPath, "SIT.WildSpawnType.PrePatcher.dll"), true);
+            if(Directory.Exists(eftDataManagedPath))
+                File.Copy(assemblyCSharpFiles[0], Path.Combine(eftDataManagedPath, "Assembly-CSharp.dll"), true);
+
+            if(Directory.Exists(pluginsPath))
+                File.Copy(sitFiles[0], Path.Combine(pluginsPath, "StayInTarkov.dll"), true);
+
+            foreach (var ppFI in prePatcherFiles.Select(x => new FileInfo(x)))
+            {
+                var ppFilePath = ppFI.Name;
+                File.Copy(ppFI.FullName, Path.Combine(patchersPath, ppFilePath), true);
+            }
 
             using (Stream? resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("SIT.Manager.Resources.Aki.Common.dll"))
             {
