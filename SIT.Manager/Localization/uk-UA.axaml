@@ -427,6 +427,7 @@
 
 	<!-- CharacterSelectionView -->
 	<system:String x:Key="CharacterSelectionViewBackButtonText">Назад</system:String>
+	<system:String x:Key="CharacterSelectionViewShowSavedProfilesCheckbox">Show only saved profiles</system:String>
 	<system:String x:Key="CharacterSelectionViewAddCharacterButtonText">Додати персонажа</system:String>
 
 	<!-- CharacterSummaryView -->
