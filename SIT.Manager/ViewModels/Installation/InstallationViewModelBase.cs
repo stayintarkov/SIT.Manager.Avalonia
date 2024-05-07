@@ -16,7 +16,7 @@ public partial class InstallationViewModelBase : ObservableRecipient
     {
         try
         {
-            CurrentInstallProcessState = WeakReferenceMessenger.Default.Send<InstallProcessStateRequestMessage>();
+            CurrentInstallProcessState = Messenger.Send<InstallProcessStateRequestMessage>();
         }
         catch
         {
