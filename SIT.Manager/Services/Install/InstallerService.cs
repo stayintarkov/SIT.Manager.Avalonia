@@ -86,7 +86,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             string logsDirPath = Path.Combine(_configService.Config.SitEftInstallPath, "Logs");
             if (Directory.Exists(logsDirPath))
             {
-                Directory.Delete(logsDirPath);
+                Directory.Delete(logsDirPath, true);
             }
         }
         catch (Exception ex)
@@ -657,7 +657,9 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             var coreFilesPath = Path.Combine(targetInstallDir, "SITLauncher", "CoreFiles");
 
             // Recursively delete all downloaded files / folders
-            Directory.Delete(coreFilesPath, true);
+            if(Directory.Exists(coreFilesPath))
+                Directory.Delete(coreFilesPath, true);
+
             // Recreate directory for downloaded files / folders
             Directory.CreateDirectory(coreFilesPath);
 
