@@ -2,29 +2,44 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:SIT.Manager.ViewModels"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
-			 xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
+			 xmlns:models="clr-namespace:SIT.Manager.Models"
+             xmlns:vm="clr-namespace:SIT.Manager.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SIT.Manager.Views.MainView"
              x:DataType="vm:MainViewModel"
 			 x:CompileBindings="True"
 			 Background="Black">
+	<UserControl.DataTemplates>
+		<DataTemplate DataType="{x:Type models:NavigationItem}">
+			<StackPanel Orientation="Horizontal"
+											ToolTip.Tip="{Binding ToolTip}">
+				<ui:SymbolIcon Symbol="{Binding Icon}"
+							   VerticalAlignment="Center"/>
+				<TextBlock VerticalAlignment="Center"
+						   Margin="8,0,0,0"
+						   Text="{Binding Name}"/>
+			</StackPanel>
+		</DataTemplate>
+	</UserControl.DataTemplates>
+	
+	<UserControl.Styles>
+		<Style Selector="ListBox.NavigationMenu">
+			<Setter Property="Margin" Value="0,0,4,0"/>
+		</Style>
+
+		<Style Selector="ListBox.NavigationMenu > ListBoxItem">
+			<Setter Property="Height" Value="24" />
+			<Setter Property="Padding" Value="8,0" />
+			<Setter Property="VerticalContentAlignment" Value="Center" />
+		</Style>
+	</UserControl.Styles>
+	
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
-
-		<ui:TeachingTip Name="InstallPathTip"
-						Title="Setup"
-						Subtitle="{DynamicResource InstallPathErrorNotification}"
-						PreferredPlacement="Bottom"
-						IsVisible="False">
-			<ui:TeachingTip.IconSource>
-				<ui:SymbolIconSource Symbol="Setting"/>
-			</ui:TeachingTip.IconSource>
-		</ui:TeachingTip>
 
 		<StackPanel Name="InfoBarStackPanel" Grid.Row="0" x:FieldModifier="Public">
 			<Grid ColumnDefinitions="auto, auto, auto, *, auto" IsVisible="{Binding UpdateAvailable}">
@@ -51,91 +66,63 @@
 				</ItemsControl.ItemTemplate>
 			</ItemsControl>
 		</StackPanel>
-		
-		
 
-		<ui:NavigationView PaneDisplayMode="Left"
-						   IsBackButtonVisible="False"
-						   IsBackEnabled="False"
-						   IsSettingsVisible="False"
-						   IsPaneToggleButtonVisible="False"
-						   OpenPaneLength="166"
-						   Grid.Row="1"
-						   Name="NavView"
-						   ItemInvoked="NavView_ItemInvoked">
-			<ui:NavigationView.MenuItems>
-				<ui:NavigationViewItem IconSource="Play" 
-									   Content="{DynamicResource PlayTitle}" 
-									   IsEnabled="{Binding !IsInstallRunning}"
-									   Tag="SIT.Manager.Views.PlayPage" 
-									   ToolTip.Tip="{DynamicResource PlayTitleToolTip}"/>
+		<SplitView Background="#080808"
+				   IsPaneOpen="True"
+				   DisplayMode="Inline"
+				   OpenPaneLength="166"
+				   Grid.Row="1">
+			<SplitView.Pane>
+				<Grid RowDefinitions="Auto, *, Auto"
+					  Background="#080808">
+					<ListBox Grid.Row="0"
+							 IsEnabled="{Binding !IsInstallRunning}"
+							 ItemsSource="{Binding MainNavigationItems}"
+							 SelectedItem="{Binding SelectedMainNavigationItem}"
+							 SelectionMode="Single"
+							 Classes="NavigationMenu"/>
 
-				<ui:NavigationViewItem IconSource="Sync" 
-									   Content="{DynamicResource InstallTitle}" 
-									   IsEnabled="{Binding !IsInstallRunning}"
-									   Tag="SIT.Manager.Views.InstallPage" 
-									   ToolTip.Tip="{DynamicResource InstallTitleToolTip}">
-					<ui:NavigationViewItem.InfoBadge>
-						<ui:InfoBadge IconSource="ChevronUp"
-									  IsVisible="{Binding SitUpdateAvailable}"/>
-					</ui:NavigationViewItem.InfoBadge>
-				</ui:NavigationViewItem>
+					<Image Grid.Row="1"
+						   RenderOptions.BitmapInterpolationMode="HighQuality"
+						   Source="avares://SIT.Manager.ASM/Assets/sit-logo-5.png"/>
 
-				<ui:NavigationViewItem IconSource="AllApps" 
-									   Content="{DynamicResource ToolsTitle}"
-									   IsEnabled="{Binding !IsInstallRunning}"
-									   Tag="SIT.Manager.Views.ToolsPage"
-									   ToolTip.Tip="{DynamicResource ToolsTitleToolTip}"/>
-				<ui:NavigationViewItem IconSource="MapDrive" 
-									   Content="{DynamicResource ServerTitle}" 
-									   IsEnabled="{Binding !IsInstallRunning}"
-									   Tag="SIT.Manager.Views.ServerPage" 
-									   ToolTip.Tip="{DynamicResource ServerTitleToolTip}"/>
-				<ui:NavigationViewItem IconSource="Library" 
-									   IsVisible="{Binding !IsTestModeEnabled}"
-									   IsEnabled="{Binding !IsInstallRunning}"
-									   Content="{DynamicResource ModsTitle}" 
-									   Tag="SIT.Manager.Views.ModsPage" 
-									   ToolTip.Tip="{DynamicResource ModsTitleToolTip}"/>
-			</ui:NavigationView.MenuItems>
-
-			<ui:NavigationView.FooterMenuItems>
-				<ui:NavigationViewItem IconSource="Help" 
-									   Content="{DynamicResource HelpTitle}" 
-									   Tag="Help"/>
-				<ui:NavigationViewItem IconSource="Settings" 
-									   IsEnabled="{Binding !IsInstallRunning}"
-									   Content="{DynamicResource SettingsTitle}" 
-									   Tag="SIT.Manager.Views.SettingsPage"/>			
-			</ui:NavigationView.FooterMenuItems>		
+					<ListBox Grid.Row="2"
+							 IsEnabled="{Binding !IsInstallRunning}"
+							 ItemsSource="{Binding FooterNavigationItems}"
+							 SelectedItem="{Binding SelectedFooterNavigationItem}"
+							 Classes="NavigationMenu"
+							 Margin="0,0,0,16"/>
+				</Grid>
+			</SplitView.Pane>
 
 			<Grid RowDefinitions="*,Auto">
-				<ui:Frame Name="ContentFrame"
-						  CornerRadius="8">
-					<ui:Frame.Background>
+				<ContentControl CornerRadius="8,0,0,0"
+								Content="{Binding CurrentView}">
+					<ContentControl.Background>
 						<ImageBrush Source="/Assets/bg3.png" Stretch="UniformToFill"/>
-					</ui:Frame.Background>
-				</ui:Frame>
-				<StackPanel Name="ActionPanel" 
-							Orientation="Horizontal" 
-							HorizontalAlignment="Center" 
+					</ContentControl.Background>
+				</ContentControl>
+
+				<StackPanel Name="ActionPanel"
+							Orientation="Horizontal"
+							HorizontalAlignment="Center"
 							DataContext="{Binding ActionPanelNotification}"
 							IsVisible="{Binding ShowActionPanel}"
-							Grid.Row="1" 
+							Grid.Row="1"
 							MinHeight="24">
-					<TextBlock Name="ActionPanelText" 
-							   Text="{Binding ActionText}" 
-							   Foreground="White" 
-							   VerticalAlignment="Center" 
+					<TextBlock Name="ActionPanelText"
+							   Text="{Binding ActionText}"
+							   Foreground="White"
+							   VerticalAlignment="Center"
 							   FontSize="12"/>
-					<ProgressBar Name="ActionPanelBar" 
-								 Margin="15 0 0 0" 
+					<ProgressBar Name="ActionPanelBar"
+								 Margin="15 0 0 0"
 								 VerticalAlignment="Center"
 								 Width="150"
-								 MinWidth="100" 
-								 MaxWidth="150" 
-								 Minimum="0" 
-								 Maximum="100" 
+								 MinWidth="100"
+								 MaxWidth="150"
+								 Minimum="0"
+								 Maximum="100"
 								 Value="{Binding ProgressPercentage}"/>
 					<TextBlock Name="ActionPanelPercentageText"
 							   Margin="15 0 0 0"
@@ -143,6 +130,6 @@
 							   Text="{Binding ProgressPercentage, StringFormat={}{0:N2}%}"/>
 				</StackPanel>
 			</Grid>
-		</ui:NavigationView> 
+		</SplitView>
 	</Grid>
 </UserControl>
