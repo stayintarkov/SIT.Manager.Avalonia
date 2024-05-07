@@ -70,8 +70,7 @@
 						</StackPanel>
 
 						<StackPanel Orientation="Horizontal"
-									Margin="0,4,0,0"
-									IsVisible="{Binding !IsVersionSelectionLoading}">
+									Margin="0,4,0,0">
 							<StackPanel.IsVisible>
 								<MultiBinding Converter="{x:Static BoolConverters.And}">
 									<Binding Path="!IsVersionSelectionLoading"/>
