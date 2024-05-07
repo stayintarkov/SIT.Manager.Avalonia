@@ -177,6 +177,7 @@ public partial class ModsPageViewModel : ObservableRecipient
         // force them to a different page
         if (_managerConfigService.Config.EnableTestMode)
         {
+            // TODO show dialog here :)
             PageNavigation pageNavigation = new(typeof(PlayPage), false);
             WeakReferenceMessenger.Default.Send(new PageNavigationMessage(pageNavigation));
         }

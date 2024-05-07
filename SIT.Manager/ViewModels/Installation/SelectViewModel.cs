@@ -7,29 +7,21 @@ using System.IO;
 
 namespace SIT.Manager.ViewModels.Installation;
 
-public partial class SelectViewModel : InstallationViewModelBase
+public partial class SelectViewModel(IManagerConfigService configsService,
+                       IInstallerService installerService,
+                       ILogger<SelectViewModel> logger,
+                       IVersionService versionService) : InstallationViewModelBase()
 {
-    private readonly IManagerConfigService _configService;
-    private readonly IInstallerService _installerService;
-    private readonly ILogger<SelectViewModel> _logger;
-    private readonly IVersionService _versionService;
+    private readonly IManagerConfigService _configService = configsService;
+    private readonly IInstallerService _installerService = installerService;
+    private readonly ILogger<SelectViewModel> _logger = logger;
+    private readonly IVersionService _versionService = versionService;
 
     [ObservableProperty]
     private bool _noAkiInstallPathSet = true;
 
     [ObservableProperty]
     private bool _hasSitUpdateAvailable = false;
-
-    public SelectViewModel(IManagerConfigService configsService,
-                           IInstallerService installerService,
-                           ILogger<SelectViewModel> logger,
-                           IVersionService versionService) : base()
-    {
-        _configService = configsService;
-        _installerService = installerService;
-        _logger = logger;
-        _versionService = versionService;
-    }
 
     private void EstablishEFTInstallStatus()
     {

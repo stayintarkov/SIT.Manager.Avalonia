@@ -10,18 +10,28 @@ using System.Collections.ObjectModel;
 
 namespace SIT.Manager.ViewModels;
 
-public partial class InstallPageViewModel : ObservableRecipient,
+public partial class InstallPageViewModel(ILocalizationService localizationService) : ObservableRecipient,
                                             IRecipient<ProgressInstallMessage>,
                                             IRecipient<InstallProcessStateChangedMessage>,
                                             IRecipient<InstallProcessStateRequestMessage>
 {
-    private List<InstallStep> _sitInstallSteps;
-    private List<InstallStep> _linuxSitInstallSteps;
-    private List<InstallStep> _serverInstallSteps;
-    private readonly ILocalizationService _localizationService;
+    private readonly ILocalizationService _localizationService = localizationService;
 
     private InstallProcessState _installProcessState = new();
 
+    private List<InstallStep> _sitInstallSteps = [
+        new(typeof(SelectView), localizationService.TranslateSource("InstallPageViewModelSelectText")),
+        new(typeof(ConfigureSitView), localizationService.TranslateSource("InstallPageViewModelConfigureText")),
+        new(typeof(PatchView), localizationService.TranslateSource("InstallPageViewModelPatchText")),
+        new(typeof(InstallView), localizationService.TranslateSource("InstallPageViewModelInstallText")),
+        new(typeof(CompleteView), localizationService.TranslateSource("InstallPageViewModelCompleteText"))
+    ];
+    private List<InstallStep> _serverInstallSteps = [
+        new(typeof(SelectView), localizationService.TranslateSource("InstallPageViewModelSelectText")),
+        new(typeof(ConfigureServerView), localizationService.TranslateSource("InstallPageViewModelConfigureText")),
+        new(typeof(InstallView), localizationService.TranslateSource("InstallPageViewModelInstallText")),
+        new(typeof(CompleteView), localizationService.TranslateSource("InstallPageViewModelCompleteText"))
+    ];
     private bool _usingSitInstallSteps = true;
 
     [ObservableProperty]
@@ -31,70 +41,13 @@ public partial class InstallPageViewModel : ObservableRecipient,
     private Control? _installStepControl;
 
     [ObservableProperty]
-    private ReadOnlyCollection<InstallStep> _installationSteps;
-
-    public InstallPageViewModel(ILocalizationService localizationService)
-    {
-        _localizationService = localizationService;
-        _localizationService.LocalizationChanged += (o, e) =>
-        {
-
-            _sitInstallSteps =
-            [
-                new(typeof(SelectView), _localizationService.TranslateSource("InstallPageViewModelSelectText")),
-                new(typeof(ConfigureSitView), _localizationService.TranslateSource("InstallPageViewModelConfigureText")),
-                new(typeof(PatchView), _localizationService.TranslateSource("InstallPageViewModelPatchText")),
-                new(typeof(InstallView), _localizationService.TranslateSource("InstallPageViewModelInstallText")),
-                new(typeof(CompleteView), _localizationService.TranslateSource("InstallPageViewModelCompleteText"))
-            ];
-            _linuxSitInstallSteps =
-            [
-                new(typeof(SelectView), _localizationService.TranslateSource("InstallPageViewModelSelectText")),
-                //new(typeof(EftView), _localizationService.TranslateSource("InstallPageViewModelEftText")),
-                new(typeof(ConfigureSitView), _localizationService.TranslateSource("InstallPageViewModelConfigureText")),
-                new(typeof(PatchView), _localizationService.TranslateSource("InstallPageViewModelPatchText")),
-                new(typeof(InstallView), _localizationService.TranslateSource("InstallPageViewModelInstallText")),
-                new(typeof(CompleteView), _localizationService.TranslateSource("InstallPageViewModelCompleteText"))
-            ];
-            _serverInstallSteps =
-            [
-                new(typeof(SelectView), _localizationService.TranslateSource("InstallPageViewModelSelectText")),
-                new(typeof(ConfigureServerView), _localizationService.TranslateSource("InstallPageViewModelConfigureText")),
-                new(typeof(InstallView), _localizationService.TranslateSource("InstallPageViewModelInstallText")),
-                new(typeof(CompleteView), _localizationService.TranslateSource("InstallPageViewModelCompleteText"))
-            ];
-            InstallationSteps = _sitInstallSteps.AsReadOnly();
-        };
-        WeakReferenceMessenger.Default.RegisterAll(this);
-        _sitInstallSteps =
-        [
-            new(typeof(SelectView), _localizationService.TranslateSource("InstallPageViewModelSelectText")),
-            new(typeof(ConfigureSitView), _localizationService.TranslateSource("InstallPageViewModelConfigureText")),
-            new(typeof(PatchView), _localizationService.TranslateSource("InstallPageViewModelPatchText")),
-            new(typeof(InstallView), _localizationService.TranslateSource("InstallPageViewModelInstallText")),
-            new(typeof(CompleteView), _localizationService.TranslateSource("InstallPageViewModelCompleteText"))
-        ];
-        _linuxSitInstallSteps =
-        [
-            new(typeof(SelectView), _localizationService.TranslateSource("InstallPageViewModelSelectText")),
-            //new(typeof(EftView), _localizationService.TranslateSource("InstallPageViewModelEftText")),
-            new(typeof(ConfigureSitView), _localizationService.TranslateSource("InstallPageViewModelConfigureText")),
-            new(typeof(PatchView), _localizationService.TranslateSource("InstallPageViewModelPatchText")),
-            new(typeof(InstallView), _localizationService.TranslateSource("InstallPageViewModelInstallText")),
-            new(typeof(CompleteView), _localizationService.TranslateSource("InstallPageViewModelCompleteText"))
-        ];
-        _serverInstallSteps =
-        [
-            new(typeof(SelectView), _localizationService.TranslateSource("InstallPageViewModelSelectText")),
-            new(typeof(ConfigureServerView), _localizationService.TranslateSource("InstallPageViewModelConfigureText")),
-            new(typeof(InstallView), _localizationService.TranslateSource("InstallPageViewModelInstallText")),
-            new(typeof(CompleteView), _localizationService.TranslateSource("InstallPageViewModelCompleteText"))
-        ];
-        
-        InstallationSteps = OperatingSystem.IsLinux() ? _linuxSitInstallSteps.AsReadOnly() : _sitInstallSteps.AsReadOnly();
-        
-        ResetInstallState();
-    }
+    private ReadOnlyCollection<InstallStep> _installationSteps = new([
+        new(typeof(SelectView), localizationService.TranslateSource("InstallPageViewModelSelectText")),
+        new(typeof(ConfigureSitView), localizationService.TranslateSource("InstallPageViewModelConfigureText")),
+        new(typeof(PatchView), localizationService.TranslateSource("InstallPageViewModelPatchText")),
+        new(typeof(InstallView), localizationService.TranslateSource("InstallPageViewModelInstallText")),
+        new(typeof(CompleteView), localizationService.TranslateSource("InstallPageViewModelCompleteText"))
+    ]);
 
     private void AdjustInstallSteps()
     {
@@ -136,11 +89,46 @@ public partial class InstallPageViewModel : ObservableRecipient,
         }
     }
 
+    private void LocalizationService_LocalizationChanged(object? sender, EventArgs e)
+    {
+        _sitInstallSteps = [
+            new(typeof(SelectView), _localizationService.TranslateSource("InstallPageViewModelSelectText")),
+            new(typeof(ConfigureSitView), _localizationService.TranslateSource("InstallPageViewModelConfigureText")),
+            new(typeof(PatchView), _localizationService.TranslateSource("InstallPageViewModelPatchText")),
+            new(typeof(InstallView), _localizationService.TranslateSource("InstallPageViewModelInstallText")),
+            new(typeof(CompleteView), _localizationService.TranslateSource("InstallPageViewModelCompleteText"))
+        ];
+        _serverInstallSteps = [
+            new(typeof(SelectView), _localizationService.TranslateSource("InstallPageViewModelSelectText")),
+            new(typeof(ConfigureServerView), _localizationService.TranslateSource("InstallPageViewModelConfigureText")),
+            new(typeof(InstallView), _localizationService.TranslateSource("InstallPageViewModelInstallText")),
+            new(typeof(CompleteView), _localizationService.TranslateSource("InstallPageViewModelCompleteText"))
+        ];
+
+        InstallationSteps = _sitInstallSteps.AsReadOnly();
+    }
+
     private void ResetInstallState()
     {
         CurrentInstallStep = 0;
         InstallStepControl = new SelectView();
         _installProcessState = new InstallProcessState();
+    }
+
+    protected override void OnActivated()
+    {
+        base.OnActivated();
+
+        _localizationService.LocalizationChanged += LocalizationService_LocalizationChanged;
+
+        ResetInstallState();
+    }
+
+    protected override void OnDeactivated()
+    {
+        base.OnDeactivated();
+
+        _localizationService.LocalizationChanged -= LocalizationService_LocalizationChanged;
     }
 
     public void Receive(ProgressInstallMessage message)
@@ -161,7 +149,7 @@ public partial class InstallPageViewModel : ObservableRecipient,
         if (InstallationSteps.Count >= CurrentInstallStep && CurrentInstallStep >= 0)
         {
             Type value = InstallationSteps[CurrentInstallStep].InstallationView;
-            InstallStepControl = (Control) (System.Activator.CreateInstance(value) ?? new TextBlock() { Text = "No Control Selected" });
+            InstallStepControl = (Control) (Activator.CreateInstance(value) ?? new TextBlock() { Text = "No Control Selected" });
         }
         else
         {

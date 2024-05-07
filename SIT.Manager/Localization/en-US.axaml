@@ -50,7 +50,7 @@
 	<system:String x:Key="ToolsOpenEFTFolderButtonTitle">Open EFT Folder</system:String>
 	<system:String x:Key="ToolsOpenBepInExFolderButtonToolTip">Open the BepInEx Plugins folder.</system:String>
 	<system:String x:Key="ToolsOpenBepInExFolderButtonTitle">Open Plugins Folder</system:String>
-	<system:String x:Key="ToolsOpenServerFolderButtonToolTip">Open the SPT-AKI Server Folder.</system:String>
+	<system:String x:Key="ToolsOpenServerFolderButtonToolTip">Open the AKI Server Folder.</system:String>
 	<system:String x:Key="ToolsOpenServerFolderButtonTitle">Open Server Folder</system:String>
 	<system:String x:Key="ToolsOpenSITConfigButtonToolTip">Open the SIT Config with the default text editor.</system:String>
 	<system:String x:Key="ToolsOpenSITConfigButtonTitle">Open SIT Config</system:String>
@@ -99,12 +99,12 @@
 	<system:String x:Key="SettingsEFTChangeInstallPathToolTip">Change the SIT EFT Install Path.</system:String>
 	<system:String x:Key="SettingsEFTVersionTitle">EFT Version:</system:String>
 	<system:String x:Key="SettingsSITVersionTitle">SIT Version:</system:String>
-	<system:String x:Key="SettingsSPTAKITitle">SPT-AKI</system:String>
-	<system:String x:Key="SettingsSPTAKIPathTitle">SPT-AKI Path:</system:String>
-	<system:String x:Key="SettingsSPTAKIVersionTitle">SPT-AKI Version:</system:String>
+	<system:String x:Key="SettingsSPTAKITitle">AKI Server</system:String>
+	<system:String x:Key="SettingsSPTAKIPathTitle">AKI Server Path:</system:String>
+	<system:String x:Key="SettingsSPTAKIVersionTitle">AKI Server Version:</system:String>
 	<system:String x:Key="SettingsSITModVersionTitle">SIT Mod Version:</system:String>
-	<system:String x:Key="SettingsSPTAKIInstallPathPlaceholder">SPT-AKI Install Path...</system:String>
-	<system:String x:Key="SettingsSPTAKIInstallPathToolTip">Change the SPT-AKI Install Path.</system:String>
+	<system:String x:Key="SettingsSPTAKIInstallPathPlaceholder">AKI Server Install Path...</system:String>
+	<system:String x:Key="SettingsSPTAKIInstallPathToolTip">Change the AKI Server Install Path.</system:String>
 	<system:String x:Key="SettingsServerConsoleTitle">Server Console</system:String>
 	<system:String x:Key="SettingsServerConsoleFontFamilyTitle">Font Family:</system:String>
 	<system:String x:Key="SettingsServerConsoleFontColorTitle">Font Color:</system:String>
@@ -259,8 +259,8 @@
 	<system:String x:Key="SettingsPageViewModelConfigTitle">Config</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigErrorEFTDescription">The selected folder was invalid. Make sure it's a proper EFT game folder.</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigInformationEFTDescription">EFT installation path set to '%1'</system:String>
-	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">SPT-AKI installation path set to '%1'</system:String>
-	<system:String x:Key="SettingsPageViewModelConfigErrorSPTAKI">The selected folder was invalid. Make sure it's a proper SPT-AKI server folder.</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">AKI server installation path set to '%1'</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigErrorSPTAKI">The selected folder was invalid. Make sure it's a proper AKI server folder.</system:String>
 	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">Enable Test Mode Failure</system:String>
 	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">Can't enable test mode as you have %1 incompatible mods still enabled</system:String>
 	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorButtonOk">Ok</system:String>
@@ -272,8 +272,8 @@
 	<system:String x:Key="ServerPageViewModelStopServer">Stop Server</system:String>
 	<system:String x:Key="ServerPageViewModelStartServer">Start Server</system:String>
 	<system:String x:Key="ServerPageViewModelServerError">Server stopped unexpectedly! Check console for errors.</system:String>
-	<system:String x:Key="ServerPageViewModelSPTAkiRunning">SPT-AKI is currently running. Please close any running instance of SPT-AKI.</system:String>
-	<system:String x:Key="ServerPageViewModelSPTAkiNotFound">SPT-AKI not found. Please configure the SPT-AKI path in Settings tab before starting the server.</system:String>
+	<system:String x:Key="ServerPageViewModelSPTAkiRunning">AKI server is currently running. Please close any running instance of AKI server.</system:String>
+	<system:String x:Key="ServerPageViewModelSPTAkiNotFound">AKI server not found. Please configure the AKI server path in Settings tab before starting the server.</system:String>
 	<system:String x:Key="ServerPageViewModelStartingServerLog">Starting server...</system:String>
 	<system:String x:Key="ServerPageViewModelStoppingServerLog">Stopping server...</system:String>
 	<system:String x:Key="ServerPageViewModelClearServerOutputTitle">Clear Server Output</system:String>
@@ -351,11 +351,11 @@
 
 	<!-- Install - Configure Server View -->
 	<system:String x:Key="ConfigureServerViewVersionSelectionErrorMessage">Unable to determine available SIT Server versions...</system:String>
-	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathToolTip">Change the SPT-AKI Install Path.</system:String>
+	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathToolTip">Change the AKI server Install Path.</system:String>
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathTitle">Change</system:String>
-	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathPlaceholder">SPT-AKI Install Path...</system:String>
-	<system:String x:Key="ConfigureServerViewSPTAKIPathTitle">SPT-AKI Path:</system:String>
-	<system:String x:Key="ConfigureServerViewSPTAKIPathWarningNoPath">No SPT-AKI install path specified</system:String>
+	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathPlaceholder">AKI Server Install Path...</system:String>
+	<system:String x:Key="ConfigureServerViewSPTAKIPathTitle">AKI Server Path:</system:String>
+	<system:String x:Key="ConfigureServerViewSPTAKIPathWarningNoPath">No AKI server install path specified</system:String>
 	<system:String x:Key="ConfigureServerViewVersionSelectionTitle">Version to install:</system:String>
 
 	<!-- Install - Configure Sit View -->
@@ -397,10 +397,10 @@
 	<system:String x:Key="SelectViewInstallServerButtonTitle">Install Server + SIT Mod</system:String>
 	<system:String x:Key="SelectViewInstallServerButtonToolTip">Download SPT Server + SIT Server Mod.</system:String>
 	<system:String x:Key="SelectViewServerModVersionTitle">SIT Mod Version:</system:String>
-	<system:String x:Key="SelectViewServerVersionTitle">SPT-AKI Version:</system:String>
-	<system:String x:Key="SelectViewSPTAKIPathTitle">SPT-AKI Path:</system:String>
-	<system:String x:Key="SelectViewSPTAKINoPathWarningMessage">If you already have SPT-AKI installed please set the SPT-AKI Path in settings to the path where it is installed. If you have not already installed SPT-AKI, press Install Server + SIT Mod below and you will be prompted to provide an empty folder to install SPT-AKI to.</system:String>
-	<system:String x:Key="SelectViewServerSectionHeading">SPT-AKI - Server</system:String>
+	<system:String x:Key="SelectViewServerVersionTitle">AKI Server Version:</system:String>
+	<system:String x:Key="SelectViewSPTAKIPathTitle">AKI Server Path:</system:String>
+	<system:String x:Key="SelectViewSPTAKINoPathWarningMessage">If you already have AKI server installed please set the AKI Path in settings to the path where it is installed. If you have not already installed AKI server, press Install Server + SIT Mod below and you will be prompted to provide an empty folder to install AKI server to.</system:String>
+	<system:String x:Key="SelectViewServerSectionHeading">AKI - Server</system:String>
 	<system:String x:Key="SelectViewInstallSITButtonTitle">Install SIT</system:String>
 	<system:String x:Key="SelectViewInstallSITButtonToolTip">Downgrade EFT if needed, install SIT and mod support.</system:String>
 	<system:String x:Key="SelectViewUpdateSITButtonTitle">Update SIT</system:String>
@@ -505,9 +505,9 @@
 	<system:String x:Key="DirectConnectViewModelInputValidationTitle">Input Validation</system:String>
 	<system:String x:Key="DirectConnectViewModelInputValidationDescription">Missing input field.</system:String>
 	<system:String x:Key="DirectConnectViewModelUnhandledAkiInstanceTitle">Unhandled Aki Instance</system:String>
-	<system:String x:Key="DirectConnectViewModelUnhandledAkiInstanceDescription">SPT-AKI is currently running. Please close any running instance of SPT-AKI.</system:String>
+	<system:String x:Key="DirectConnectViewModelUnhandledAkiInstanceDescription">AKI server is currently running. Please close any running instance of AKI server.</system:String>
 	<system:String x:Key="DirectConnectViewModelMissingAKIInstallationTitle">Missing AKI Installation</system:String>
-	<system:String x:Key="DirectConnectViewModelMissingAKIInstallationDescription">SPT-AKI server executable is missing.</system:String>
+	<system:String x:Key="DirectConnectViewModelMissingAKIInstallationDescription">AKI server executable is missing.</system:String>
 	<system:String x:Key="DirectConnectViewModelLoginIncorrectPassword">Incorrect password</system:String>
 	<system:String x:Key="DirectConnectViewModelLoginErrorTitle">Login Error</system:String>
 	<system:String x:Key="DirectConnectViewModelLoginErrorDescription">Unable to communicate with the server %1</system:String>
