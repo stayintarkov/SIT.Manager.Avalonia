@@ -18,9 +18,9 @@
 			<CheckBox Content="{DynamicResource SettingsHideIpAddressTitle}"
 					  ToolTip.Tip="{DynamicResource SettingsHideIpAddressToolTip}"
 					  IsChecked="{Binding Config.HideIpAddress, Mode=TwoWay}"/>
-			<CheckBox Content="{DynamicResource SettingsEnableDeveloperMode}"
-					  ToolTip.Tip="{DynamicResource SettingsEnableDeveloperModeToolTip}"
-					  IsChecked="{Binding IsDeveloperModeEnabled, Mode=TwoWay}"/>
+			<CheckBox Content="{DynamicResource SettingsEnableTestMode}"
+					  ToolTip.Tip="{DynamicResource SettingsEnableTestModeToolTip}"
+					  IsChecked="{Binding IsTestModeEnabled, Mode=TwoWay}"/>
 			<Grid ColumnDefinitions="auto, *">
 				<TextBlock Text="{DynamicResource SettingsLanguageTitle}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
 				<ComboBox Margin="5,0,0,0" 

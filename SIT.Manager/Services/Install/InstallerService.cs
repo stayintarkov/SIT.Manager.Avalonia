@@ -1,4 +1,5 @@
 ﻿using FluentAvalonia.UI.Controls;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Logging;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Models;
@@ -251,12 +252,6 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         {
             foreach (GithubRelease release in githubReleases)
             {
-                // If this is a prerelease build and the user hasn't eneabled developer mode then we want to skip adding this to the list.
-                if (release.Prerelease && !_configService.Config.EnableDeveloperMode)
-                {
-                    continue;
-                }
-
                 Match match = SITReleaseVersionRegex().Match(release.Body);
                 if (match.Success)
                 {
@@ -271,7 +266,14 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                         SitVersion = release.Name,
                     };
 
-                    result.Add(sitVersion);
+                    if (release.Prerelease && _configService.Config.EnableTestMode)
+                    {
+                        result.Add(sitVersion);
+                    }
+                    else if (!release.Prerelease && !_configService.Config.EnableTestMode)
+                    {
+                        result.Add(sitVersion);
+                    }
                 }
                 else
                 {
@@ -397,12 +399,6 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         {
             foreach (GithubRelease release in githubReleases)
             {
-                // If this is a prerelease build and the user hasn't eneabled developer mode then we want to skip adding this to the list.
-                if (release.Prerelease && !_configService.Config.EnableDeveloperMode)
-                {
-                    continue;
-                }
-
                 // Check there is an asset available for this OS
                 string fileExtention = ".zip";
                 if (OperatingSystem.IsLinux())
@@ -419,7 +415,15 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                         string releasePatch = match.Value.Replace("This server version works with version ", "");
                         release.TagName = $"{release.Name} - Tarkov Version: {releasePatch}";
                         release.Body = releasePatch;
-                        result.Add(release);
+
+                        if (release.Prerelease && _configService.Config.EnableTestMode)
+                        {
+                            result.Add(release);
+                        }
+                        else if (!release.Prerelease && !_configService.Config.EnableTestMode)
+                        {
+                            result.Add(release);
+                        }
                     }
                     else
                     {
@@ -493,12 +497,6 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             else if (availableVersions[i].DownloadMirrors.Count != 0)
             {
                 availableVersions[i].DowngradeRequired = true;
-                availableVersions[i].IsAvailable = true;
-            }
-
-            // If user is a developer just enable the version anyway
-            if (_configService.Config.EnableDeveloperMode)
-            {
                 availableVersions[i].IsAvailable = true;
             }
         }
@@ -656,26 +654,23 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                 CleanUpEFTDirectory();
             }
 
-            string sitReleaseZipPath = Path.Combine(targetInstallDir, "SITLauncher", "CoreFiles", "StayInTarkov-Release.zip");
-            if (File.Exists(sitReleaseZipPath))
-            {
-                File.Delete(sitReleaseZipPath);
-            }
+            var coreFilesPath = Path.Combine(targetInstallDir, "SITLauncher", "CoreFiles");
 
-            string coreFilesPath = Path.Combine(targetInstallDir, "SITLauncher", "CoreFiles");
-            if (!Directory.Exists(coreFilesPath))
-            {
-                Directory.CreateDirectory(coreFilesPath);
-            }
+            // Recursively delete all downloaded files / folders
+            Directory.Delete(coreFilesPath, true);
+            // Recreate directory for downloaded files / folders
+            Directory.CreateDirectory(coreFilesPath);
+
 
             string backupCoreFilesPath = Path.Combine(targetInstallDir, "SITLauncher", "Backup", "CoreFiles");
             if (!Directory.Exists(backupCoreFilesPath))
-            {
                 Directory.CreateDirectory(backupCoreFilesPath);
-            }
 
             string pluginsPath = Path.Combine(targetInstallDir, "BepInEx", "plugins");
             Directory.CreateDirectory(pluginsPath);
+
+            string patchersPath = Path.Combine(targetInstallDir, "BepInEx", "patchers");
+            Directory.CreateDirectory(patchersPath);
 
             string bepinexPath = Path.Combine(targetInstallDir, "SITLauncher");
             await _fileService.DownloadFile("BepInEx5.zip", bepinexPath, "https://github.com/BepInEx/BepInEx/releases/download/v5.4.22/BepInEx_x64_5.4.22.0.zip", internalDownloadProgress);
@@ -702,13 +697,40 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                 await _fileService.ExtractArchive(Path.Combine(coreFilesPath, "StayInTarkov-Release.zip"), coreFilesPath, internalExtractionProgress);
             }
 
+            // Find Assembly-CSharp file
+            var assemblyCSharpFiles = Directory.GetFiles(coreFilesPath, "*Assembly-CSharp.dll");
+            if (assemblyCSharpFiles.Length == 0)
+                throw new IndexOutOfRangeException("No Assembly-CSharp found in download!");
+            if (assemblyCSharpFiles.Length > 1)
+                throw new IndexOutOfRangeException("There are more than one Assembly-CSharp files found!");
+
+            // Find StayInTarkov.dll
+            var sitFiles = Directory.GetFiles(coreFilesPath, "*StayInTarkov.dll");
+            if (sitFiles.Length == 0)
+                throw new IndexOutOfRangeException("No StayInTarkov.dll found in download!");
+            if (sitFiles.Length > 1)
+                throw new IndexOutOfRangeException("There are more than one StayInTarkov.dll files found!");
+
+            // Find SIT.WildSpawnType.PrePatcher.dll
+            var prePatcherFiles = Directory.GetFiles(coreFilesPath, "*PrePatch*");
+
             string eftDataManagedPath = Path.Combine(targetInstallDir, "EscapeFromTarkov_Data", "Managed");
             if (File.Exists(Path.Combine(eftDataManagedPath, "Assembly-CSharp.dll")))
             {
                 File.Copy(Path.Combine(eftDataManagedPath, "Assembly-CSharp.dll"), Path.Combine(backupCoreFilesPath, "Assembly-CSharp.dll"), true);
             }
-            File.Copy(Path.Combine(coreFilesPath, "StayInTarkov-Release", "Assembly-CSharp.dll"), Path.Combine(eftDataManagedPath, "Assembly-CSharp.dll"), true);
-            File.Copy(Path.Combine(coreFilesPath, "StayInTarkov-Release", "StayInTarkov.dll"), Path.Combine(pluginsPath, "StayInTarkov.dll"), true);
+
+            if(Directory.Exists(eftDataManagedPath))
+                File.Copy(assemblyCSharpFiles[0], Path.Combine(eftDataManagedPath, "Assembly-CSharp.dll"), true);
+
+            if(Directory.Exists(pluginsPath))
+                File.Copy(sitFiles[0], Path.Combine(pluginsPath, "StayInTarkov.dll"), true);
+
+            foreach (var ppFI in prePatcherFiles.Select(x => new FileInfo(x)))
+            {
+                var ppFilePath = ppFI.Name;
+                File.Copy(ppFI.FullName, Path.Combine(patchersPath, ppFilePath), true);
+            }
 
             using (Stream? resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("SIT.Manager.Resources.Aki.Common.dll"))
             {

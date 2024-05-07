@@ -47,6 +47,9 @@ public partial class DirectConnectViewModel : ObservableRecipient
     [ObservableProperty]
     private string _quickPlayText = string.Empty;
 
+    [ObservableProperty]
+    private bool _isLocalServerRunning = false;
+
     public IAsyncRelayCommand ConnectToServerCommand { get; }
     public IAsyncRelayCommand QuickPlayCommand { get; }
 
@@ -76,9 +79,9 @@ public partial class DirectConnectViewModel : ObservableRecipient
         QuickPlayCommand = new AsyncRelayCommand(async () => await ConnectToServer(true));
     }
 
-    public Task ConnectToServer(string address, string username, string password) 
+    public Task ConnectToServer(string address, string username, string password)
     {
-        if(!string.IsNullOrEmpty(address))
+        if (!string.IsNullOrEmpty(address))
         {
             LastServer = address;
         }
@@ -87,12 +90,12 @@ public partial class DirectConnectViewModel : ObservableRecipient
             LastServer = "127.0.0.1";
         }
 
-        if(!string.IsNullOrEmpty(username))
+        if (!string.IsNullOrEmpty(username))
         {
             Username = username;
         }
 
-        if(!string.IsNullOrEmpty(password))
+        if (!string.IsNullOrEmpty(password))
         {
             Password = password;
         }
@@ -308,6 +311,7 @@ public partial class DirectConnectViewModel : ObservableRecipient
         }
 
         QuickPlayText = _localizationService.TranslateSource("DirectConnectViewModelQuickPlayText");
+        IsLocalServerRunning = _akiServerService.State == RunningState.Running || _akiServerService.State == RunningState.Starting;
         return aborted;
     }
 
@@ -316,5 +320,6 @@ public partial class DirectConnectViewModel : ObservableRecipient
         base.OnActivated();
 
         QuickPlayText = _localizationService.TranslateSource("DirectConnectViewModelQuickPlayText");
+        IsLocalServerRunning = _akiServerService.State == RunningState.Running || _akiServerService.State == RunningState.Starting;
     }
 }

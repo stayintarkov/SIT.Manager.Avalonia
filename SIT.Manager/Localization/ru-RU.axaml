@@ -87,8 +87,8 @@
 	<system:String x:Key="SettingsLookForUpdatesTitleToolTip">Автоматически проверяет обновления при открытии лаунчера.</system:String>
 	<system:String x:Key="SettingsHideIpAddressTitle">Скрыть IP-адрес</system:String>
 	<system:String x:Key="SettingsHideIpAddressToolTip">Скрывает IP-адрес звездочками в поле IP-адреcа.</system:String>
-	<system:String x:Key="SettingsEnableDeveloperMode">Включить режим разработчика</system:String>
-	<system:String x:Key="SettingsEnableDeveloperModeToolTip">Позволяет разработчикам/тестерам выпускать SIT и SIT-сервер для целей тестирования</system:String>
+	<system:String x:Key="SettingsEnableTestMode">Show SIT Test Versions Only</system:String>
+	<system:String x:Key="SettingsEnableTestModeToolTip">Will show only test releases of SIT and AKI server for installation</system:String>
 	<system:String x:Key="SettingsLanguageTitle">Язык:</system:String>
 	<system:String x:Key="SettingsLanguageTitleToolTip">Переводит весь лаунчер на ваш язык, выберите свой язык!</system:String>
 	<system:String x:Key="SettingsAccentColorTitle">Цвет акцента:</system:String>
@@ -265,8 +265,8 @@
 	<system:String x:Key="SettingsPageViewModelConfigInformationEFTDescription">Путь установки EFT установлен на '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">Путь установки SPT-AKI установлен на '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigErrorSPTAKI">Выбранная папка недействительна. Убедитесь, что это правильная папка сервера SPT-AKI.</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">Ошибка включения режима разработчика</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">Невозможно включить режим разработчика, так-как у вас %1 несовместимые моды все еще включены</system:String>
+	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">Enable Test Mode Failure</system:String>
+	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">Can't enable test mode as you have %1 incompatible mods still enabled</system:String>
 	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorButtonOk">Ок</system:String>
 
 	<!-- Server Page ViewModel -->
