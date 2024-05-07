@@ -698,14 +698,14 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             }
 
             // Find Assembly-CSharp file
-            var assemblyCSharpFiles = Directory.GetFiles(coreFilesPath, "Assembly-CSharp.dll");
+            var assemblyCSharpFiles = Directory.GetFiles(coreFilesPath, "*Assembly-CSharp.dll");
             if (assemblyCSharpFiles.Length == 0)
                 throw new IndexOutOfRangeException("No Assembly-CSharp found in download!");
             if (assemblyCSharpFiles.Length > 1)
                 throw new IndexOutOfRangeException("There are more than one Assembly-CSharp files found!");
 
             // Find StayInTarkov.dll
-            var sitFiles = Directory.GetFiles(coreFilesPath, "StayInTarkov.dll");
+            var sitFiles = Directory.GetFiles(coreFilesPath, "*StayInTarkov.dll");
             if (sitFiles.Length == 0)
                 throw new IndexOutOfRangeException("No StayInTarkov.dll found in download!");
             if (sitFiles.Length > 1)
