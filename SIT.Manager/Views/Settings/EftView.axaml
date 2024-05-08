@@ -39,14 +39,14 @@
 					   TextTrimming="CharacterEllipsis"
 					   TextWrapping="WrapWithOverflow"
 					   Text="{Binding SitEftInstallPath}"
-					   IsVisible="{Binding !ShowEftInstallPathMissing}"/>
+					   IsVisible="{Binding SitEftInstallPath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
 			<TextBlock Grid.Column="1"
 					   Grid.Row="1"
 					   VerticalAlignment="Center"
 					   TextTrimming="CharacterEllipsis"
 					   TextWrapping="WrapWithOverflow"
 					   Text="{DynamicResource EftViewModelSitEftInstallPathMissing}"
-					   IsVisible="{Binding ShowEftInstallPathMissing}"/>
+					   IsVisible="{Binding SitEftInstallPath}, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
 			<Button Grid.Column="2"
 					Grid.Row="1"
 					VerticalAlignment="Center"

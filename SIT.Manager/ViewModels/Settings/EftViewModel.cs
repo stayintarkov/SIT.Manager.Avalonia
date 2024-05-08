@@ -20,9 +20,6 @@ public partial class EftViewModel : SettingsViewModelBase
     [ObservableProperty]
     private string _sitEftInstallPath;
 
-    [ObservableProperty]
-    private bool _showEftInstallPathMissing;
-
     public IAsyncRelayCommand ChangeInstallLocationCommand { get; }
 
     public EftViewModel(IBarNotificationService barNotificationService,
@@ -77,6 +74,5 @@ public partial class EftViewModel : SettingsViewModelBase
     protected override void OnActivated()
     {
         base.OnActivated();
-        ShowEftInstallPathMissing = string.IsNullOrEmpty(SitEftInstallPath);
     }
 }
