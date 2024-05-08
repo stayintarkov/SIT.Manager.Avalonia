@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SIT.Manager.Interfaces;
-using SIT.Manager.Models;
+using SIT.Manager.Models.Location;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
@@ -16,7 +16,12 @@ public partial class LocationEditorViewModel : ObservableObject
     private readonly IPickerDialogService _pickerDialogService;
     private readonly ILocalizationService _localizationService;
 
-    private static Dictionary<string, string> _mapLocationMapping = new Dictionary<string, string>() {
+    private static readonly JsonSerializerOptions _jsonSerializerOptions = new()
+    {
+        WriteIndented = true
+    };
+
+    private static readonly Dictionary<string, string> _mapLocationMapping = new() {
         { "maps/factory_day_preset.bundle","Factory (Day)" },
         { "maps/factory_night_preset.bundle",  "Factory (Night)" },
         { "maps/woods_preset.bundle",  "Woods" },
@@ -44,24 +49,24 @@ public partial class LocationEditorViewModel : ObservableObject
     [ObservableProperty]
     private string _loadedLocation = string.Empty;
 
-    public List<string> BotDifficulty => [
+    public static List<string> BotDifficulty => [
         "easy",
         "normal",
         "hard"
     ];
 
-    public List<string> BotSide => [
+    public static List<string> BotSide => [
         "Savage",
         "Bear",
         "Usec"
     ];
 
-    public List<string> WildSpawnType => [
+    public static List<string> WildSpawnType => [
         "assault",
         "marksman"
     ];
 
-    public List<string> BossEscortType => [
+    public static List<string> BossEscortType => [
         "followerBully",
         "followerTagilla",
         "followerZryachiy",
@@ -77,7 +82,7 @@ public partial class LocationEditorViewModel : ObservableObject
         "arenaFighterEvent"
     ];
 
-    public List<string> BossName => [
+    public static List<string> BossName => [
         "bossKnight",
         "bossBully",
         "bossTagilla",
@@ -119,34 +124,34 @@ public partial class LocationEditorViewModel : ObservableObject
         if (File.Exists(file.Path.LocalPath))
         {
             string jsonString = await File.ReadAllTextAsync(file.Path.LocalPath);
-            BaseLocation? location = JsonSerializer.Deserialize<BaseLocation>(jsonString);
+            BaseLocation? location = JsonSerializer.Deserialize<BaseLocation>(jsonString, _jsonSerializerOptions);
             if (location == null)
             {
                 _barNotificationService.ShowError(_localizationService.TranslateSource("LocationEditorViewModelLoadErrorTitle"), _localizationService.TranslateSource("LocationEditorViewModelLoadErrorDescription"));
                 return;
             }
 
-            for (int i = 0; i < location.waves.Count; i++)
+            for (int i = 0; i < location.Waves?.Count; i++)
             {
-                location.waves[i].Name = i + 1;
+                location.Waves[i].Name = i + 1;
             }
 
-            for (int i = 0; i < location.BossLocationSpawn.Count; i++)
+            for (int i = 0; i < location.BossLocationSpawn?.Count; i++)
             {
                 location.BossLocationSpawn[i].Name = i + 1;
             }
 
-            _mapLocationMapping.TryGetValue(location.Scene.path, out string? map);
+            _mapLocationMapping.TryGetValue(location.Scene?.Path ?? string.Empty, out string? map);
             LoadedLocation = map ?? "Unknown Location";
 
             Location = location;
 
-            if (location.waves.Count > 0)
+            if (location.Waves?.Count > 0)
             {
-                SelectedWave = location.waves[0];
+                SelectedWave = location.Waves[0];
             }
 
-            if (location.BossLocationSpawn.Count > 0)
+            if (location.BossLocationSpawn?.Count > 0)
             {
                 SelectedBossLocationSpawn = location.BossLocationSpawn[0];
             }
@@ -174,7 +179,7 @@ public partial class LocationEditorViewModel : ObservableObject
             _barNotificationService.ShowError(_localizationService.TranslateSource("LocationEditorViewModelSaveErrorTitle"), _localizationService.TranslateSource("LocationEditorViewModelSaveErrorDescription"));
             return;
         }
-        string json = JsonSerializer.Serialize(Location, new JsonSerializerOptions() { WriteIndented = true });
+        string json = JsonSerializer.Serialize(Location, _jsonSerializerOptions);
         await File.WriteAllTextAsync(file.Path.LocalPath, json);
 
         _barNotificationService.ShowSuccess(_localizationService.TranslateSource("LocationEditorViewModelSaveSuccessTitle"), _localizationService.TranslateSource("LocationEditorViewModelSaveSuccessDescription", file.Path.ToString()));

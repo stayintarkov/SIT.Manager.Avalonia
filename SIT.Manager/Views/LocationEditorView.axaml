@@ -134,7 +134,7 @@
 								<ListBox Name="WaveList"
 										 Margin="5,0,5,5"
 										 Width="150"
-										 ItemsSource="{Binding Location.waves, Mode=TwoWay}"
+										 ItemsSource="{Binding Location.Waves, Mode=TwoWay}"
 										 SelectedItem="{Binding SelectedWave}"
 										 VerticalAlignment="Top">
 									<ListBox.ItemTemplate>
@@ -197,28 +197,28 @@
 
 							<CheckBox Margin="0,5"
 									  Content="{DynamicResource LocationEditorIsPlayersContent}"
-									  IsChecked="{Binding SelectedWave.isPlayers}"
+									  IsChecked="{Binding SelectedWave.IsPlayers}"
 									  ToolTip.Tip="{DynamicResource LocationEditorIsPlayersToolTip}"/>
 
 							<ui:NumberBox Header="{DynamicResource LocationEditorNumberHeader}"
 										  HeaderTemplate="{StaticResource BoxHeaderTemplate}"
-										  Value="{Binding SelectedWave.number, Mode=TwoWay}"
+										  Value="{Binding SelectedWave.Number, Mode=TwoWay}"
 										  ToolTip.Tip="{DynamicResource LocationEditorNumberToolTip}"/>
 							<ui:NumberBox Header="{DynamicResource LocationEditorSlotsMaxHeader}"
 										  HeaderTemplate="{StaticResource BoxHeaderTemplate}"
-										  Value="{Binding SelectedWave.slots_max, Mode=TwoWay}"
+										  Value="{Binding SelectedWave.SlotsMax, Mode=TwoWay}"
 										  ToolTip.Tip="{DynamicResource LocationEditorSlotsMaxToolTip}"/>
 							<ui:NumberBox Header="{DynamicResource LocationEditorSlotsMinHeader}"
 										  HeaderTemplate="{StaticResource BoxHeaderTemplate}"
-										  Value="{Binding SelectedWave.slots_min, Mode=TwoWay}"
+										  Value="{Binding SelectedWave.SlotsMin, Mode=TwoWay}"
 										  ToolTip.Tip="{DynamicResource LocationEditorSlotsMinToolTip}"/>
 							<ui:NumberBox Header="{DynamicResource LocationEditorTimeMaxHeader}"
 										  HeaderTemplate="{StaticResource BoxHeaderTemplate}"
-										  Value="{Binding SelectedWave.time_max, Mode=TwoWay}"
+										  Value="{Binding SelectedWave.TimeMax, Mode=TwoWay}"
 										  ToolTip.Tip="{DynamicResource LocationEditorTimeMaxToolTip}"/>
 							<ui:NumberBox Header="{DynamicResource LocationEditorTimeMinHeader}"
 										  HeaderTemplate="{StaticResource BoxHeaderTemplate}"
-										  Value="{Binding SelectedWave.time_min, Mode=TwoWay}"
+										  Value="{Binding SelectedWave.TimeMin, Mode=TwoWay}"
 										  ToolTip.Tip="{DynamicResource LocationEditorTimeMinToolTip}"/>
 							</StackPanel>
 						</StackPanel>
