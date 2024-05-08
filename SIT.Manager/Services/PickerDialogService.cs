@@ -7,14 +7,9 @@ using System.Threading.Tasks;
 
 namespace SIT.Manager.Services;
 
-public class PickerDialogService : IPickerDialogService
+public class PickerDialogService(Window target) : IPickerDialogService
 {
-    private readonly Window _target;
-
-    public PickerDialogService(Window target)
-    {
-        _target = target;
-    }
+    private readonly Window _target = target;
 
     public async Task<IStorageFolder?> GetDirectoryFromPickerAsync()
     {
