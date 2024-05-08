@@ -113,7 +113,6 @@
 	<system:String x:Key="SettingsServerConsoleTitle">Консоль Сервера</system:String>
 	<system:String x:Key="SettingsServerConsoleFontFamilyTitle">Шрифт:</system:String>
 	<system:String x:Key="SettingsServerConsoleFontColorTitle">Цвет Шрифта:</system:String>
-	<system:String x:Key="SettingsManagerVersionTitle">Версия Менеджера (Лаунчера):</system:String>
 
 	<!-- EftView -->
 	<system:String x:Key="EftViewBsgEftInstallPath">Путь установки BSG EFT:</system:String>

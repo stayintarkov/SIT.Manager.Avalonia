@@ -108,7 +108,6 @@
 	<system:String x:Key="SettingsServerConsoleTitle">Server Console</system:String>
 	<system:String x:Key="SettingsServerConsoleFontFamilyTitle">Font Family:</system:String>
 	<system:String x:Key="SettingsServerConsoleFontColorTitle">Font Color:</system:String>
-	<system:String x:Key="SettingsManagerVersionTitle">Manager Version:</system:String>
 
 	<!-- EftView -->
 	<system:String x:Key="EftViewBsgEftInstallPath">BSG EFT Install Path:</system:String>
