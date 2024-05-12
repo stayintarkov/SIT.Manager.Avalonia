@@ -1,13 +1,31 @@
 using Avalonia.Controls;
 using Microsoft.Extensions.DependencyInjection;
+using SIT.Manager.Controls;
 using SIT.Manager.ViewModels.Tools;
+using System;
+using System.Threading;
 
 namespace SIT.Manager.Views.Tools;
-public partial class NetworkToolsView : UserControl
+public partial class NetworkToolsView : ActivatableUserControl
 {
+    private readonly NetworkToolsViewModel _dc;
     public NetworkToolsView()
     {
         InitializeComponent();
-        this.DataContext = App.Current.Services.GetService<NetworkToolsViewModel>();
+        _dc = App.Current.Services.GetService<NetworkToolsViewModel>() ?? throw new Exception("meow");
+        this.DataContext = _dc;
+    }
+
+    protected override void OnActivated()
+    {
+        base.OnActivated();
+        _dc.RequestCancellationSource = new CancellationTokenSource();
+    }
+
+    protected override void OnDeactivated()
+    {
+        base.OnDeactivated();
+        _dc.RequestCancellationSource.Cancel();
+        _dc.RequestCancellationSource.Dispose();
     }
 }

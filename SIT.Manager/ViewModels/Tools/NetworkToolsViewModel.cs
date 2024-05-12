@@ -2,46 +2,41 @@
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Polly;
 using Polly.Registry;
-using SIT.Manager.Controls;
 using SIT.Manager.Models.Tools;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
+using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace SIT.Manager.ViewModels.Tools;
+
 public partial class NetworkToolsViewModel(
     HttpClient httpClient,
     ResiliencePipelineProvider<string> pipelineProvider,
-    ILogger<NetworkToolsViewModel> logger) : ObservableObject
+    ILogger<NetworkToolsViewModel> logger)
+    : ObservableObject
 {
-    private readonly HttpClient _httpClient = httpClient;
     private readonly ILogger<NetworkToolsViewModel> _logger = logger;
-    private CancellationTokenSource _cancellationTokenSource = new();
+    private Symbol SuccessSymbol = Symbol.Accept;
+    private Symbol FailSymbol = Symbol.Clear;
 
-    [ObservableProperty]
-    private Symbol _akiSymbol = Symbol.Help;
-    [ObservableProperty]
-    private Symbol _natSymbol = Symbol.Help;
-    [ObservableProperty]
-    private Symbol _relaySymbol = Symbol.Help;
+    [ObservableProperty] private PortCheckerResponse _portResponse = new();
+    public CancellationTokenSource RequestCancellationSource = new();
 
-    [ObservableProperty] private PortCheckerResponse _portResponse;
+    //There has got to be a better way to do this
+    //Maybe this heat is fucking with my head?
+    public Symbol AkiSymbol => PortResponse.AkiSuccess ? SuccessSymbol : FailSymbol;
+    public Symbol NatSymbol => PortResponse.NatSuccess ? SuccessSymbol : FailSymbol;
+    public Symbol RelaySymbol => PortResponse.RelaySuccess ? SuccessSymbol : FailSymbol;
 
     [RelayCommand]
     private async Task CheckPorts()
     {
-        AkiSymbol = Symbol.Help;
-        NatSymbol = Symbol.Help;
-        RelaySymbol = Symbol.Help;
-        CancellationToken token = _cancellationTokenSource.Token;
+        CancellationToken token = RequestCancellationSource.Token;
         ResiliencePipeline<HttpResponseMessage> pipeline =
             pipelineProvider.GetPipeline<HttpResponseMessage>("port-checker-pipeline");
 
@@ -50,15 +45,15 @@ public partial class NetworkToolsViewModel(
         try
         {
             //TODO: Have this load the ports from the configuration files so that custom ports work
-            HttpResponseMessage reqResp = await pipeline.ExecuteAsync(async (CancellationToken ct) =>
+            HttpResponseMessage reqResp = await pipeline.ExecuteAsync(async ct =>
             {
                 HttpRequestMessage req = new(HttpMethod.Post, "/checkports");
-                return await _httpClient.SendAsync(req, ct);
+                return await httpClient.SendAsync(req, ct);
             }, token);
 
             switch (reqResp.StatusCode)
             {
-                case System.Net.HttpStatusCode.OK:
+                case HttpStatusCode.OK:
                     {
                         string response = await reqResp.Content.ReadAsStringAsync(token);
                         PortCheckerResponse? respModel = JsonSerializer.Deserialize<PortCheckerResponse>(response);
@@ -67,41 +62,25 @@ public partial class NetworkToolsViewModel(
                             //TODO: Logging here
                             return;
                         }
+
                         ProcessPortResponse(respModel);
                         break;
                     }
-                case System.Net.HttpStatusCode.ServiceUnavailable:
+                case HttpStatusCode.ServiceUnavailable:
                     {
                         //TODO: Handle this. We've hit the rate limit
                         break;
                     }
-                default:
-                    break;
             }
         }
-        catch (TaskCanceledException) { };
+        catch (TaskCanceledException) { }
     }
 
     private void ProcessPortResponse(PortCheckerResponse response)
     {
-        //TODO: set appropriate fields
-        _portResponse = response;
-
-        AkiSymbol = response.AkiSuccess ? Symbol.Accept : Symbol.Clear;
-        NatSymbol = response.NatSuccess ? Symbol.Accept : Symbol.Clear;
-        RelaySymbol = response.RelaySuccess ? Symbol.Accept : Symbol.Clear;
+        PortResponse = response;
+        OnPropertyChanged(nameof(AkiSymbol));
+        OnPropertyChanged(nameof(NatSymbol));
+        OnPropertyChanged(nameof(RelaySymbol));
     }
-
-    /*protected override async void OnDeactivated()
-    {
-        base.OnDeactivated();
-        await _cancellationTokenSource.CancelAsync();
-    }
-
-    protected override void OnActivated()
-    {
-        base.OnActivated();
-        _cancellationTokenSource.Dispose();
-        _cancellationTokenSource = new CancellationTokenSource();
-    }*/
 }

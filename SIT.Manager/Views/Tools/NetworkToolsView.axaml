@@ -12,7 +12,7 @@
 			<Label Content="IP Address: "
 				   FontSize="16"
 				   FontWeight="DemiBold"/>
-			<SelectableTextBlock Text="123.456.789.0"
+			<SelectableTextBlock Text="{Binding PortResponse.IpAddress}"
 			                     FontSize="16"
 			                     VerticalAlignment="Center"/>
 			
@@ -63,9 +63,9 @@
 			               Grid.Column="2"
 			               Grid.Row="2"/>
 		</Grid>
-		<StackPanel Orientation="Horizontal" Margin="20 15 0 0">
-			<Button Content="Run Port Test" Margin="0 0 10 0" Command="{Binding CheckPortsCommand}"/>
-			<Button Content="Fill From Configs" Margin="10 0 0 0"/>
-		</StackPanel>
+		<Button Content="Run Port Check"
+		        Margin="0 15 0 0"
+		        HorizontalAlignment="Center"
+		        Command="{Binding CheckPortsCommand}"/>
 	</StackPanel>
 </UserControl>
