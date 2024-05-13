@@ -5,9 +5,11 @@ using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Registry;
 using SIT.Manager.Models.Tools;
+using System;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using JsonSerializer = System.Text.Json.JsonSerializer;
@@ -44,13 +46,13 @@ public partial class NetworkToolsViewModel(
         //TODO: Do further reading on polly to see if I can improve this
         try
         {
-            //TODO: Have this load the ports from the configuration files so that custom ports work
             HttpResponseMessage reqResp = await pipeline.ExecuteAsync(async ct =>
             {
                 HttpRequestMessage req = new(HttpMethod.Post, "/checkports");
+                req.Content = JsonContent.Create(PortResponse.PortsUsed);
                 return await httpClient.SendAsync(req, ct);
             }, token);
-
+            
             switch (reqResp.StatusCode)
             {
                 case HttpStatusCode.OK:
@@ -71,6 +73,11 @@ public partial class NetworkToolsViewModel(
                         //TODO: Handle this. We've hit the rate limit
                         break;
                     }
+                default:
+                    {
+                        //TODO: Logging here
+                        return;
+                    }
             }
         }
         catch (TaskCanceledException) { }
@@ -79,6 +86,7 @@ public partial class NetworkToolsViewModel(
     private void ProcessPortResponse(PortCheckerResponse response)
     {
         PortResponse = response;
+        
         OnPropertyChanged(nameof(AkiSymbol));
         OnPropertyChanged(nameof(NatSymbol));
         OnPropertyChanged(nameof(RelaySymbol));

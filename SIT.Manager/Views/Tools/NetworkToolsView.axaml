@@ -26,6 +26,7 @@
 			       Grid.Column="0"
 			       Grid.Row="0"/>
 			<TextBox MinWidth="55" FontSize="16"
+			         Text="{Binding PortResponse.PortsUsed.AkiPort, Mode=TwoWay}"
 			         Grid.Column="1"
 			         Grid.Row="0"/>
 			<ui:SymbolIcon Symbol="{Binding AkiSymbol}"
@@ -40,6 +41,7 @@
 			       Grid.Column="0"
 			       Grid.Row="1"/>
 			<TextBox MinWidth="55" FontSize="16"
+			         Text="{Binding PortResponse.PortsUsed.RelayPort}"
 			         Margin="0 10 0 0"
 			         Grid.Column="1"
 			         Grid.Row="1"/>
@@ -55,6 +57,7 @@
 			       Grid.Column="0"
 			       Grid.Row="2"/>
 			<TextBox MinWidth="55" FontSize="16"
+			         Text="{Binding PortResponse.PortsUsed.NatPort}"
 			         Margin="0 10 0 0"
 			         Grid.Column="1"
 			         Grid.Row="2"/>
