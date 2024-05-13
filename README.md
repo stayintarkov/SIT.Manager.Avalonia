@@ -111,14 +111,13 @@ _For questions about usage and support please refer to the [SIT Discord](https:/
 <!-- ROADMAP -->
 ## Roadmap
 
-- [x] Revamped installation system
-    - [ ] Overhauled mod installation
+- [ ] Rework the mod page
+- [ ] Network port checking utility
 - [ ] New play page
-    - [ ] Server bookmarking/saving
+    - [x] Server bookmarking/saving
     - [ ] Character manager
     - [ ] Character editor
 - [ ] Character backups
-- [x] Log package generator
 
 See the [open issues](https://github.com/stayintarkov/SIT.Manager.Avalonia/issues) for a full list of proposed features (and known issues).
 
@@ -152,9 +151,6 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 Support is best found in the [SIT Discord](https://discord.gg/f4CN4n3nP2)
 
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 <!-- Credits -->
 ## Project Credits
 * [Avalonia](https://avaloniaui.net/) for our UI framework
@@ -163,6 +159,9 @@ Support is best found in the [SIT Discord](https://discord.gg/f4CN4n3nP2)
 * [MegaApiClient](https://github.com/gpailler/MegaApiClient) for downloading mega files
 * [PeNet](https://github.com/secana/PeNet) for reading executable data
 * [SharpCompress](https://github.com/adamhathcock/sharpcompress) for better compression methods
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
