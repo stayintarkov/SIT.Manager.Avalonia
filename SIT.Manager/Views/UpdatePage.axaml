@@ -13,19 +13,6 @@
 				HorizontalAlignment="Center">
 		<controls:Card>
 			<StackPanel>
-				<TextBlock Text="Hello World!" />
-				<TextBlock Text="Hello World!" />
-				<TextBlock Text="Hello World!" />
-			</StackPanel>
-		</controls:Card>
-		
-		<Border CornerRadius="8"
-				BorderBrush="Gray"
-				BorderThickness="1"
-				Margin="4"
-				Padding="10"
-				Background="Black">
-			<StackPanel>
 				<TextBlock Text="{DynamicResource UpdatePageUpdateInfoTextPt1}"
 						   HorizontalAlignment="Center"/>
 				<TextBlock Text="{DynamicResource UpdatePageUpdateInfoTextPt2}"
@@ -58,6 +45,6 @@
 						   IsVisible="{Binding HasError}"
 						   HorizontalAlignment="Center"/>
 			</StackPanel>
-		</Border>
+		</controls:Card>
 	</StackPanel>
 </UserControl>

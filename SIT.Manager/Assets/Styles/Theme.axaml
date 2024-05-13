@@ -22,13 +22,6 @@
 
 	<Styles.Resources>
 		<ResourceDictionary>
-			<Color x:Key="AppAccent">#788585</Color>
-			<Color x:Key="AppError">#DB162F</Color>
-			<Color x:Key="AppPrimary">#080808</Color>
-			<Color x:Key="AppSecondary">#FFFCFF</Color>
-			<Color x:Key="AppSuccess">#4D8B31</Color>
-			<Color x:Key="AppWarning">#E98A15</Color>
-
 			<StaticResource x:Key="TextControlForeground" ResourceKey="AppSecondary"/>
 			<StaticResource x:Key="TextControlSelection" ResourceKey="AppAccent"/>
 		</ResourceDictionary>

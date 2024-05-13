@@ -3,6 +3,9 @@
 	<Styles.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
+				<!-- Colors -->
+				<ResourceInclude Source="avares://SIT.Manager.ASM/Theme/Palette.axaml" />
+				
 				<!-- Controls -->
 				<ResourceInclude Source="avares://SIT.Manager.ASM/Theme/Controls/Card.axaml" />
 			</ResourceDictionary.MergedDictionaries>

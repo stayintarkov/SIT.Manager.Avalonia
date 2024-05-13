@@ -10,7 +10,8 @@ public static class BoxShadowAssist
     public static readonly AvaloniaProperty<double> BlurProperty = AvaloniaProperty.RegisterAttached<AvaloniaObject, double>("Blur", typeof(BoxShadowAssist), 8);
     public static readonly AvaloniaProperty<double> OffsetXProperty = AvaloniaProperty.RegisterAttached<AvaloniaObject, double>("OffsetX", typeof(BoxShadowAssist), 1.5);
     public static readonly AvaloniaProperty<double> OffsetYProperty = AvaloniaProperty.RegisterAttached<AvaloniaObject, double>("OffsetY", typeof(BoxShadowAssist), 1.5);
-    public static readonly AvaloniaProperty<Color> ColorProperty = AvaloniaProperty.RegisterAttached<AvaloniaObject, Color>("Color", typeof(BoxShadowAssist), new Color(76, 0, 0, 0));
+    public static readonly AvaloniaProperty<Color> ColorProperty = AvaloniaProperty.RegisterAttached<AvaloniaObject, Color>("Color", typeof(BoxShadowAssist), new Color(0xF0, 0x00, 0x00, 0x00));
+    public static readonly AvaloniaProperty<double> SpreadProperty = AvaloniaProperty.RegisterAttached<AvaloniaObject, double>("Spread", typeof(BoxShadowAssist), 4);
 
     static BoxShadowAssist()
     {
@@ -19,11 +20,11 @@ public static class BoxShadowAssist
         OffsetXProperty.Changed.Subscribe(OffsetXPropertyCallback);
         OffsetYProperty.Changed.Subscribe(OffsetYPropertyCallback);
         ColorProperty.Changed.Subscribe(ColorPropertyCallback);
+        SpreadProperty.Changed.Subscribe(SpreadPropertyCallback);
     }
 
 
-
-    private static BoxShadows UpdateBoxShadow(bool inset, double blur, double offsetX, double offsetY, Color color)
+    private static BoxShadows UpdateBoxShadow(bool inset, double blur, double offsetX, double offsetY, Color color, double spread)
     {
         return new BoxShadows(new()
         {
@@ -31,7 +32,8 @@ public static class BoxShadowAssist
             Blur = blur,
             OffsetX = offsetX,
             OffsetY = offsetY,
-            Color = color
+            Color = color,
+            Spread = spread
         });
     }
 
@@ -39,7 +41,7 @@ public static class BoxShadowAssist
     {
         if (args.Sender is Border border)
         {
-            border.BoxShadow = UpdateBoxShadow(args.NewValue.Value, GetBlur(args.Sender), GetOffsetX(args.Sender), GetOffsetY(args.Sender), GetColor(args.Sender));
+            border.BoxShadow = UpdateBoxShadow(args.NewValue.Value, GetBlur(args.Sender), GetOffsetX(args.Sender), GetOffsetY(args.Sender), GetColor(args.Sender), GetSpread(args.Sender));
         }
     }
 
@@ -47,7 +49,7 @@ public static class BoxShadowAssist
     {
         if (args.Sender is Border border)
         {
-            border.BoxShadow = UpdateBoxShadow(GetInset(args.Sender), args.NewValue.Value, GetOffsetX(args.Sender), GetOffsetY(args.Sender), GetColor(args.Sender));
+            border.BoxShadow = UpdateBoxShadow(GetInset(args.Sender), args.NewValue.Value, GetOffsetX(args.Sender), GetOffsetY(args.Sender), GetColor(args.Sender), GetSpread(args.Sender));
         }
     }
 
@@ -55,7 +57,7 @@ public static class BoxShadowAssist
     {
         if (args.Sender is Border border)
         {
-            border.BoxShadow = UpdateBoxShadow(GetInset(args.Sender), GetBlur(args.Sender), args.NewValue.Value, GetOffsetY(args.Sender), GetColor(args.Sender));
+            border.BoxShadow = UpdateBoxShadow(GetInset(args.Sender), GetBlur(args.Sender), args.NewValue.Value, GetOffsetY(args.Sender), GetColor(args.Sender), GetSpread(args.Sender));
         }
     }
 
@@ -63,7 +65,7 @@ public static class BoxShadowAssist
     {
         if (args.Sender is Border border)
         {
-            border.BoxShadow = UpdateBoxShadow(GetInset(args.Sender), GetBlur(args.Sender), GetOffsetX(args.Sender), args.NewValue.Value, GetColor(args.Sender));
+            border.BoxShadow = UpdateBoxShadow(GetInset(args.Sender), GetBlur(args.Sender), GetOffsetX(args.Sender), args.NewValue.Value, GetColor(args.Sender), GetSpread(args.Sender));
         }
     }
 
@@ -71,7 +73,15 @@ public static class BoxShadowAssist
     {
         if (args.Sender is Border border)
         {
-            border.BoxShadow = UpdateBoxShadow(GetInset(args.Sender), GetBlur(args.Sender), GetOffsetX(args.Sender), GetOffsetY(args.Sender), args.NewValue.Value);
+            border.BoxShadow = UpdateBoxShadow(GetInset(args.Sender), GetBlur(args.Sender), GetOffsetX(args.Sender), GetOffsetY(args.Sender), args.NewValue.Value, GetSpread(args.Sender));
+        }
+    }
+
+    private static void SpreadPropertyCallback(AvaloniaPropertyChangedEventArgs<double> args)
+    {
+        if (args.Sender is Border border)
+        {
+            border.BoxShadow = UpdateBoxShadow(GetInset(args.Sender), args.NewValue.Value, GetOffsetX(args.Sender), GetOffsetY(args.Sender), GetColor(args.Sender), args.NewValue.Value);
         }
     }
 
@@ -89,4 +99,7 @@ public static class BoxShadowAssist
 
     public static void SetColor(AvaloniaObject element, Color value) => element.SetValue(ColorProperty, value);
     public static Color GetColor(AvaloniaObject element) => element.GetValue<Color>(ColorProperty);
+
+    public static void SetSpread(AvaloniaObject element, double value) => element.SetValue(SpreadProperty, value);
+    public static double GetSpread(AvaloniaObject element) => element.GetValue<double>(SpreadProperty);
 }
