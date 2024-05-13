@@ -44,12 +44,12 @@
 		<StackPanel Name="InfoBarStackPanel" 
 					Grid.Row="0">
 			<Grid ColumnDefinitions="auto, auto, auto, *, auto" 
-				  Margin="0,4"
+				  Margin="0,8"
 				  IsVisible="{Binding UpdateAvailable}">
-				<Panel Margin="14 0" 
+				<Panel Margin="16,0" 
 					   VerticalAlignment="Center" 
 					   Grid.Column="0">
-					<Ellipse Fill="#1e4f8a" Width="18" Height="18"/>
+					<Ellipse Fill="#1E4F8A" Width="18" Height="18"/>
 					<ui:SymbolIcon Symbol="Important" VerticalAlignment="Center" Margin="0 1 0 0"/>
 				</Panel>
 				
@@ -97,7 +97,7 @@
 				   Grid.Row="1">
 			<SplitView.Pane>
 				<Grid RowDefinitions="Auto, *, Auto, Auto"
-					  Background="#000000">
+					  Background="{DynamicResource AppPrimary}">
 					<ListBox Grid.Row="0"
 							 IsEnabled="{Binding !IsInstallRunning}"
 							 ItemsSource="{Binding MainNavigationItems}"
@@ -126,16 +126,13 @@
 
 			<Grid RowDefinitions="*,Auto">
 				<ContentControl CornerRadius="8,0,0,8"
+								Background="{DynamicResource AppAccent}"
 								Content="{Binding CurrentView}">
 					<ContentControl.Styles>
 						<Style Selector=":is(UserControl)">
 							<Setter Property="CornerRadius" Value="8,0,0,8"/>
 						</Style>
 					</ContentControl.Styles>
-					
-					<ContentControl.Background>
-						<ImageBrush Source="/Assets/bg3.png" Stretch="UniformToFill"/>
-					</ContentControl.Background>
 				</ContentControl>
 
 				<StackPanel Name="ActionPanel"

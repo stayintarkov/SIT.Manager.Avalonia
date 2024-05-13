@@ -16,7 +16,7 @@
 		<Setter Property="assists:BoxShadowAssist.Blur" Value="8" />
 		<Setter Property="assists:BoxShadowAssist.OffsetX" Value="1.5" />
 		<Setter Property="assists:BoxShadowAssist.OffsetY" Value="1.5" />
-		<Setter Property="assists:BoxShadowAssist.Color" Value="{DynamicResource AppPrimaryAlpha50}" />
+		<Setter Property="assists:BoxShadowAssist.Color" Value="{DynamicResource AppBlack}" />
 		<Setter Property="assists:BoxShadowAssist.Spread" Value="4" />
 		
 		<Setter Property="Background" Value="{DynamicResource AppPrimary}"/>
@@ -41,7 +41,6 @@
 							assists:BoxShadowAssist.Color="{TemplateBinding assists:BoxShadowAssist.Color}"
 							assists:BoxShadowAssist.Spread="{TemplateBinding assists:BoxShadowAssist.Spread}"/>
 					<Border Name="PART_InnerBorder"
-							BorderBrush="Green"
 							CornerRadius="{TemplateBinding CornerRadius}"
 							ClipToBounds="{TemplateBinding InsideClipping}">
 						<ContentPresenter Name="ContentPresenter"

@@ -12,14 +12,19 @@
 						   Foreground="{DynamicResource AppSuccess}"/>
 				<TextBlock Text="The Quick Brown Fox Jumped Over The Lazy Dog!"
 						   Foreground="{DynamicResource TextControlForeground}"/>
+
+				<StackPanel Margin="0,8,0,0">
+					<Rectangle Fill="{DynamicResource AppAccent}"
+							   Height="32"/>
+				</StackPanel>
 			</StackPanel>
 		</Border>
 	</Design.PreviewWith>
 	
-	<Color x:Key="AppAccent">#788585</Color>
+	<Color x:Key="AppAccent">#20AFAFAF</Color>
+	<Color x:Key="AppBlack">#000000</Color>
 	<Color x:Key="AppError">#DB162F</Color>
-	<Color x:Key="AppPrimary">#080808</Color>
-	<Color x:Key="AppPrimaryAlpha50">#F0080808</Color>
+	<Color x:Key="AppPrimary">#060606</Color>
 	<Color x:Key="AppSecondary">#FFFCFF</Color>
 	<Color x:Key="AppSuccess">#4D8B31</Color>
 	<Color x:Key="AppWarning">#E98A15</Color>

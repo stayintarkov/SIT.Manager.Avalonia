@@ -7,44 +7,51 @@
 			 xmlns:vm="clr-namespace:SIT.Manager.ViewModels"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SIT.Manager.Views.UpdatePage"
-			 x:DataType="vm:UpdatePageViewModel"
-			 Background="{DynamicResource AppAccent}">
-	<StackPanel VerticalAlignment="Center"
-				HorizontalAlignment="Center">
-		<controls:Card>
-			<StackPanel>
+			 x:DataType="vm:UpdatePageViewModel">
+	<controls:Card VerticalAlignment="Center"
+				   HorizontalAlignment="Center"
+				   Width="400">
+		<Grid ColumnDefinitions="*, 3*, *"
+			  RowDefinitions="Auto, *, *"
+			  HorizontalAlignment="Center"
+			  VerticalAlignment="Center">
+			<StackPanel Grid.ColumnSpan="3"
+						Grid.Row="0">
 				<TextBlock Text="{DynamicResource UpdatePageUpdateInfoTextPt1}"
 						   HorizontalAlignment="Center"/>
 				<TextBlock Text="{DynamicResource UpdatePageUpdateInfoTextPt2}"
 						   HorizontalAlignment="Center"/>
-
-				<Grid ColumnDefinitions="*, 2*, *"
-					  Margin="32"
-					  HorizontalAlignment="Center"
-					  VerticalAlignment="Center">
-					<TextBlock Grid.Column="0"
-							   HorizontalAlignment="Center"
-							   VerticalAlignment="Center"
-							   Text="{DynamicResource UpdatePageUpdatingTitle}"/>
-					<ProgressBar Grid.Column="1"
-								 Margin="16 0 0 0"
-								 VerticalAlignment="Center"
-								 HorizontalAlignment="Stretch"
-								 Minimum="0"
-								 Maximum="100"
-								 Value="{Binding UpdateProgressPercentage}"/>
-					<TextBlock Grid.Column="2"
-							   Margin="16 0 0 0"
-							   HorizontalAlignment="Left"
-							   Text="{Binding UpdateProgressPercentage, StringFormat={}{0:N2}%}"
-							   VerticalAlignment="Center"/>
-				</Grid>
-
-				<TextBlock Text="{DynamicResource UpdatePageErrorMessage}"
-						   Classes="ErrorMessage"
-						   IsVisible="{Binding HasError}"
-						   HorizontalAlignment="Center"/>
 			</StackPanel>
-		</controls:Card>
-	</StackPanel>
+			
+			<TextBlock Grid.Column="0"
+					   Grid.Row="1"
+					   Margin="0 16"
+					   HorizontalAlignment="Center"
+					   VerticalAlignment="Center"
+					   Text="{DynamicResource UpdatePageUpdatingTitle}"/>
+			<ProgressBar Grid.Column="1"
+						 Grid.Row="1"
+						 Margin="16"
+						 VerticalAlignment="Center"
+						 HorizontalAlignment="Stretch"
+						 Minimum="0"
+						 Maximum="100"
+						 Value="{Binding UpdateProgressPercentage}"/>
+			<TextBlock Grid.Column="2"
+					   Grid.Row="1"
+					   Margin="0 16"
+					   HorizontalAlignment="Left"
+					   Text="{Binding UpdateProgressPercentage, StringFormat={}{0:N2}%}"
+					   VerticalAlignment="Center"/>
+
+			<TextBlock Grid.ColumnSpan="3"
+					   Grid.Row="2"
+					   Text="{DynamicResource UpdatePageErrorMessage}"
+					   Classes="ErrorMessage"
+					   TextWrapping="WrapWithOverflow"
+					   IsVisible="{Binding HasError}"
+					   VerticalAlignment="Center"
+					   HorizontalAlignment="Center"/>
+		</Grid>
+	</controls:Card>
 </UserControl>
