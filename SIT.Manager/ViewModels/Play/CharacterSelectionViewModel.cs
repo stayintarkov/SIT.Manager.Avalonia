@@ -28,6 +28,9 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
 
     private AkiServer _connectedServer;
 
+    [ObservableProperty]
+    private bool _showOnlySavedProfiles = false;
+
     public ObservableCollection<CharacterSummaryViewModel> SavedCharacterList { get; } = [];
     public ObservableCollection<CharacterSummaryViewModel> CharacterList { get; } = [];
 
@@ -110,7 +113,7 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
 
             _logger.LogDebug("{profileCount} mini profiles retrieved from {name}", miniProfiles.Count, _connectedServer.Name);
         }
-        catch(HttpRequestException ex)
+        catch (HttpRequestException ex)
         {
             _logger.LogError(ex, "An error occured while fetching characters");
         }
@@ -127,5 +130,10 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
         }
 
         await ReloadCharacterList();
+
+        if (SavedCharacterList.Count > 0)
+        {
+            ShowOnlySavedProfiles = true;
+        }
     }
 }
