@@ -67,14 +67,13 @@
 			</ItemsControl>
 		</StackPanel>
 
-		<SplitView Background="#080808"
-				   IsPaneOpen="True"
+		<SplitView IsPaneOpen="True"
 				   DisplayMode="Inline"
 				   OpenPaneLength="166"
 				   Grid.Row="1">
 			<SplitView.Pane>
 				<Grid RowDefinitions="Auto, *, Auto, Auto"
-					  Background="#080808">
+					  Background="#000000">
 					<ListBox Grid.Row="0"
 							 IsEnabled="{Binding !IsInstallRunning}"
 							 ItemsSource="{Binding MainNavigationItems}"
@@ -102,7 +101,7 @@
 			</SplitView.Pane>
 
 			<Grid RowDefinitions="*,Auto">
-				<ContentControl CornerRadius="8,0,0,0"
+				<ContentControl CornerRadius="8,0,0,8"
 								Content="{Binding CurrentView}">
 					<ContentControl.Background>
 						<ImageBrush Source="/Assets/bg3.png" Stretch="UniformToFill"/>

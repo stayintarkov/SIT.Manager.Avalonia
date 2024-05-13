@@ -96,7 +96,6 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
         SavedCharacterList.Clear();
         try
         {
-            //TODO: This is currently listing *all* server characters. We should narrow this to saved only
             List<AkiMiniProfile> miniProfiles = await _serverService.GetMiniProfilesAsync(_connectedServer);
             foreach (AkiMiniProfile profile in miniProfiles)
             {
