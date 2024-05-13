@@ -1,7 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using FluentAvalonia.UI.Controls;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Models.Installation;
 using System;
@@ -9,10 +7,9 @@ using System.Threading.Tasks;
 
 namespace SIT.Manager.ViewModels;
 
-public partial class UpdatePageViewModel : ObservableObject
+public partial class UpdatePageViewModel : ObservableRecipient
 {
     private readonly IAppUpdaterService _appUpdaterService;
-    private readonly ILocalizationService _localizationService;
 
     private readonly Progress<double> _updateProgress;
 
@@ -22,42 +19,43 @@ public partial class UpdatePageViewModel : ObservableObject
     [ObservableProperty]
     private bool _hasError = false;
 
-    public IAsyncRelayCommand UpdateManagerCommand { get; }
-
-    public UpdatePageViewModel(IAppUpdaterService appUpdaterService, ILocalizationService localizationService)
+    public UpdatePageViewModel(IAppUpdaterService appUpdaterService)
     {
         _appUpdaterService = appUpdaterService;
-        _localizationService = localizationService;
 
         _updateProgress = new Progress<double>(prog => UpdateProgressPercentage = prog);
-
-        UpdateManagerCommand = new AsyncRelayCommand(UpdateManager);
     }
 
-    private async Task UpdateManager()
+    private async Task DoUpdateApp()
     {
-        ContentDialogResult updateRequestResult = await new ContentDialog()
-        {
-            Title = _localizationService.TranslateSource("UpdatePageViewModelUpdateConfirmationTitle"),
-            Content = _localizationService.TranslateSource("UpdatePageViewModelUpdateConfirmationDescription"),
-            PrimaryButtonText = _localizationService.TranslateSource("UpdatePageViewModelButtonYes"),
-            CloseButtonText = _localizationService.TranslateSource("UpdatePageViewModelButtonNo")
-        }.ShowAsync();
+        Messenger.Send(new InstallationRunningMessage(true));
+        await Task.Delay(500);
 
-        if (updateRequestResult == ContentDialogResult.Primary)
+#if DEBUG
+        // For debug builds don't actually allow the app to be updated and instead just mimic the action
+        for (int i = 0; i < 100; i++)
         {
-            WeakReferenceMessenger.Default.Send(new InstallationRunningMessage(true));
-
-            bool updateResult = await _appUpdaterService.Update(_updateProgress);
-            if (updateResult)
-            {
-                _appUpdaterService.RestartApp();
-            }
-            else
-            {
-                HasError = true;
-                WeakReferenceMessenger.Default.Send(new InstallationRunningMessage(false));
-            }
+            UpdateProgressPercentage = i;
+            await Task.Delay(Random.Shared.Next(1000));
         }
+        Messenger.Send(new InstallationRunningMessage(false));
+#else
+        bool updateResult = await _appUpdaterService.Update(_updateProgress);
+        if (updateResult)
+        {
+            _appUpdaterService.RestartApp();
+        }
+        else
+        {
+            HasError = true;
+            Messenger.Send(new InstallationRunningMessage(false));
+        }
+#endif
+    }
+
+    protected override async void OnActivated()
+    {
+        base.OnActivated();
+        await DoUpdateApp();
     }
 }

@@ -326,7 +326,6 @@
 	<system:String x:Key="FileServiceProgressExtracting">Extracting file %1 (%2)</system:String>
 
 	<!-- Update Page -->
-	<system:String x:Key="UpdatePageUpdateButtonTitle">Start Update</system:String>
 	<system:String x:Key="UpdatePageUpdateInfoTextPt1">SIT Manager is updating for you please wait...</system:String>
 	<system:String x:Key="UpdatePageUpdateInfoTextPt2">The app restart as soon as it has finished</system:String>
 	<system:String x:Key="UpdatePageUpdatingTitle">Updating</system:String>

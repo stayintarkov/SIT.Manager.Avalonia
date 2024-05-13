@@ -331,7 +331,6 @@
 	<system:String x:Key="FileServiceProgressExtracting">提取文件 %1 (%2)</system:String>
 
 	<!-- Update Page -->
-	<system:String x:Key="UpdatePageUpdateButtonTitle">开始更新</system:String>
 	<system:String x:Key="UpdatePageUpdateInfoTextPt1">SIT 管理器正在更新，请稍候...</system:String>
 	<system:String x:Key="UpdatePageUpdateInfoTextPt2">更新完成后应用程序将重新启动</system:String>
 	<system:String x:Key="UpdatePageUpdatingTitle">更新中</system:String>

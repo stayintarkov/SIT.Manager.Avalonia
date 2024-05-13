@@ -331,7 +331,6 @@
 	<system:String x:Key="FileServiceProgressExtracting">Видобування файлу %1 (%2)</system:String>
 
 	<!-- Update Page -->
-	<system:String x:Key="UpdatePageUpdateButtonTitle">Почати оновлення</system:String>
 	<system:String x:Key="UpdatePageUpdateInfoTextPt1">Менеджер SIT оновлюється, будь ласка, зачекайте...</system:String>
 	<system:String x:Key="UpdatePageUpdateInfoTextPt2">Застосунок перезапуститься, як тільки завершиться оновлення</system:String>
 	<system:String x:Key="UpdatePageUpdatingTitle">Оновлення</system:String>

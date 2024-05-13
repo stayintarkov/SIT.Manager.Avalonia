@@ -331,7 +331,6 @@
 	<system:String x:Key="FileServiceProgressExtracting">正在解壓縮檔案 %1 (%2)</system:String>
 
 	<!-- Update Page -->
-	<system:String x:Key="UpdatePageUpdateButtonTitle">開始更新</system:String>
 	<system:String x:Key="UpdatePageUpdateInfoTextPt1">SIT 管理員正在更新，請稍候...</system:String>
 	<system:String x:Key="UpdatePageUpdateInfoTextPt2">更新完成後應用程式將重新啟動</system:String>
 	<system:String x:Key="UpdatePageUpdatingTitle">更新中</system:String>

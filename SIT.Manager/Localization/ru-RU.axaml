@@ -330,7 +330,6 @@
 	<system:String x:Key="FileServiceProgressExtracting">Извлечение файла %1 (%2)</system:String>
 
 	<!-- Update Page -->
-	<system:String x:Key="UpdatePageUpdateButtonTitle">Начать обновление</system:String>
 	<system:String x:Key="UpdatePageUpdateInfoTextPt1">Менеджер SIT обновляется, пожалуйста, подождите...</system:String>
 	<system:String x:Key="UpdatePageUpdateInfoTextPt2">Приложение перезапустится сразу после завершения обновления</system:String>
 	<system:String x:Key="UpdatePageUpdatingTitle">Обновление</system:String>
