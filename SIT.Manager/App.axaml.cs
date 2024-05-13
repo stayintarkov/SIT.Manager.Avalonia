@@ -39,6 +39,7 @@ public sealed partial class App : Application
     /// </summary>
     public IServiceProvider Services { get; }
 
+    public App() : this([]) { }
 
     public App(string[] args)
     {
@@ -246,8 +247,7 @@ public sealed partial class App : Application
 
             if (usernameValue != null && passwordValue != null)
             {
-                var dcvm = Services.GetService<DirectConnectViewModel>();
-
+                DirectConnectViewModel dcvm = Services.GetRequiredService<DirectConnectViewModel>();
                 await dcvm.ConnectToServer(addressValue, usernameValue, passwordValue);
             }
 

@@ -1,18 +1,36 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<Design.PreviewWith>
-		<Border Padding="20">
+		<Border Padding="16"
+				CornerRadius="8"
+				BorderBrush="{DynamicResource AppAccent}"
+				BorderThickness="2"
+				Margin="16"
+				Background="{DynamicResource AppPrimary}">
+			<StackPanel>
+				<TextBlock Text="The Quick Brown Fox Jumped Over The Lazy Dog!"
+						   Foreground="{DynamicResource AppError}"/>
+				<TextBlock Text="The Quick Brown Fox Jumped Over The Lazy Dog!"
+						   Foreground="{DynamicResource AppWarning}"/>
+				<TextBlock Text="The Quick Brown Fox Jumped Over The Lazy Dog!"
+						   Foreground="{DynamicResource AppSuccess}"/>
+				<TextBlock Text="The Quick Brown Fox Jumped Over The Lazy Dog!"
+						   Foreground="{DynamicResource TextControlForeground}"/>
+			</StackPanel>
 		</Border>
 	</Design.PreviewWith>
 
 	<Styles.Resources>
 		<ResourceDictionary>
-			<Color x:Key="AppAccentColor">#FF7F7F7F</Color>
-			<Color x:Key="AppBlueColor">#3399FFFF</Color>
-			<Color x:Key="AppWhiteColor">#FFFFFFFF</Color>
+			<Color x:Key="AppAccent">#788585</Color>
+			<Color x:Key="AppError">#DB162F</Color>
+			<Color x:Key="AppPrimary">#080808</Color>
+			<Color x:Key="AppSecondary">#FFFCFF</Color>
+			<Color x:Key="AppSuccess">#4D8B31</Color>
+			<Color x:Key="AppWarning">#E98A15</Color>
 
-			<StaticResource x:Key="TextControlForeground" ResourceKey="AppWhiteColor"/>
-			<StaticResource x:Key="TextControlSelection" ResourceKey="AppBlueColor"/>
+			<StaticResource x:Key="TextControlForeground" ResourceKey="AppSecondary"/>
+			<StaticResource x:Key="TextControlSelection" ResourceKey="AppAccent"/>
 		</ResourceDictionary>
 	</Styles.Resources>
 

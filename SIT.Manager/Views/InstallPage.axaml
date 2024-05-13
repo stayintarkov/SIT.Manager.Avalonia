@@ -12,7 +12,7 @@
 	<UserControl.Styles>
 		<Style Selector="labs|StepBarItem:selected">
 			<Setter Property="Foreground" Value="{StaticResource TextControlForeground}"/>
-			<Setter Property="Background" Value="{StaticResource AppAccentColor}"/>
+			<Setter Property="Background" Value="{StaticResource AppAccent}"/>
 		</Style>
 	</UserControl.Styles>
 					
