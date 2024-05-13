@@ -29,14 +29,6 @@ internal sealed class ManagerConfigService : IManagerConfigService
 
     public event EventHandler<ManagerConfig>? ConfigChanged;
 
-    private static readonly JsonSerializerOptions Options = new()
-    {
-        Converters = {
-            new ColorJsonConverter()
-        },
-        WriteIndented = true
-    };
-
     public ManagerConfigService(ILogger<ManagerConfigService> logger)
     {
         _logger = logger;
