@@ -142,7 +142,7 @@ If you have a suggestion that would make this better, please fork the repo and c
 <!-- LICENSE -->
 ## License
 
-Distributed under the MIT License. See `LICENSE.txt` for more information.
+Distributed under the MIT License. See [LICENSE](https://github.com/stayintarkov/SIT.Manager.Avalonia/blob/master/LICENSE) for more information.
 
 
 <!-- CONTACT -->
