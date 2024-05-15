@@ -1,5 +1,4 @@
 ﻿using FluentAvalonia.UI.Controls;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Logging;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Models;
@@ -657,7 +656,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             var coreFilesPath = Path.Combine(targetInstallDir, "SITLauncher", "CoreFiles");
 
             // Recursively delete all downloaded files / folders
-            if(Directory.Exists(coreFilesPath))
+            if (Directory.Exists(coreFilesPath))
                 Directory.Delete(coreFilesPath, true);
 
             // Recreate directory for downloaded files / folders
@@ -699,22 +698,28 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                 await _fileService.ExtractArchive(Path.Combine(coreFilesPath, "StayInTarkov-Release.zip"), coreFilesPath, internalExtractionProgress);
             }
 
+            // Create enumeration options so we can find our files regardless of if they are hiding in folders or not.
+            EnumerationOptions enumerationOptions = new()
+            {
+                RecurseSubdirectories = true
+            };
+
             // Find Assembly-CSharp file
-            var assemblyCSharpFiles = Directory.GetFiles(coreFilesPath, "*Assembly-CSharp.dll");
+            var assemblyCSharpFiles = Directory.GetFiles(coreFilesPath, "*Assembly-CSharp.dll", enumerationOptions);
             if (assemblyCSharpFiles.Length == 0)
                 throw new IndexOutOfRangeException("No Assembly-CSharp found in download!");
             if (assemblyCSharpFiles.Length > 1)
                 throw new IndexOutOfRangeException("There are more than one Assembly-CSharp files found!");
 
             // Find StayInTarkov.dll
-            var sitFiles = Directory.GetFiles(coreFilesPath, "*StayInTarkov.dll");
+            var sitFiles = Directory.GetFiles(coreFilesPath, "*StayInTarkov.dll", enumerationOptions);
             if (sitFiles.Length == 0)
                 throw new IndexOutOfRangeException("No StayInTarkov.dll found in download!");
             if (sitFiles.Length > 1)
                 throw new IndexOutOfRangeException("There are more than one StayInTarkov.dll files found!");
 
             // Find SIT.WildSpawnType.PrePatcher.dll
-            var prePatcherFiles = Directory.GetFiles(coreFilesPath, "*PrePatch*");
+            var prePatcherFiles = Directory.GetFiles(coreFilesPath, "*PrePatch*", enumerationOptions);
 
             string eftDataManagedPath = Path.Combine(targetInstallDir, "EscapeFromTarkov_Data", "Managed");
             if (File.Exists(Path.Combine(eftDataManagedPath, "Assembly-CSharp.dll")))
@@ -722,10 +727,10 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                 File.Copy(Path.Combine(eftDataManagedPath, "Assembly-CSharp.dll"), Path.Combine(backupCoreFilesPath, "Assembly-CSharp.dll"), true);
             }
 
-            if(Directory.Exists(eftDataManagedPath))
+            if (Directory.Exists(eftDataManagedPath))
                 File.Copy(assemblyCSharpFiles[0], Path.Combine(eftDataManagedPath, "Assembly-CSharp.dll"), true);
 
-            if(Directory.Exists(pluginsPath))
+            if (Directory.Exists(pluginsPath))
                 File.Copy(sitFiles[0], Path.Combine(pluginsPath, "StayInTarkov.dll"), true);
 
             foreach (var ppFI in prePatcherFiles.Select(x => new FileInfo(x)))
