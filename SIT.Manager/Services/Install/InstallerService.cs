@@ -115,15 +115,9 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         string releasesJsonString;
         try
         {
-            CacheValue<string> releaseStrValue = await _cachingService.OnDisk.GetOrComputeAsync("downpatcher str",
-                async (key) =>
-                {
-                    return await GetHttpStringWithRetryAsync(
+            releasesJsonString = await GetHttpStringWithRetryAsync(
                         () => httpClient.GetStringAsync(Encoding.UTF8.GetString(Convert.FromBase64String(PATCHER_URL))),
                         TimeSpan.FromSeconds(3), 3);
-                }, TimeSpan.FromHours(6));
-            
-            releasesJsonString = releaseStrValue.Value!;
         }
         catch (AuthenticationException)
         {
