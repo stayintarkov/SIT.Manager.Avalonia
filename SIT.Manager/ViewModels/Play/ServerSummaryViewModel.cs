@@ -170,41 +170,6 @@ public partial class ServerSummaryViewModel : ObservableRecipient
         }
     }
 
-    private async Task RefreshServerData()
-    {
-        try
-        {
-            _server = await _serverService.GetAkiServerAsync(_server.Address);
-            _logger.LogDebug("{Address} found with name {Name}", Address.AbsoluteUri, Name);
-
-            // Ensure the properties get updated
-            OnPropertyChanged(nameof(Name));
-            OnPropertyChanged(nameof(Address));
-            OnPropertyChanged(nameof(ShownAddress));
-
-            string serverImageCacheKey = $"{_server.Address.Host}:{_server.Address.Port} serverimg";
-            CacheValue<Bitmap> cachedImage = await _cachingService.InMemory.GetOrComputeAsync(serverImageCacheKey, async (key) =>
-            {
-                using (MemoryStream ms = await _serverService.GetAkiServerImage(_server, "launcher/side_scav.png"))
-                {
-                    _logger.LogDebug("Creating new cached bitmap for key \"{key}\"", key);
-                    return new Bitmap(ms);
-                }
-            }, TimeSpan.FromHours(1));
-            ServerImage = cachedImage.Value;
-            _dispatcherTimer.Start();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogWarning(ex, "Couldn't retrieve server from address {Address}", _server.Address);
-            Name = _localizationService.TranslateSource("ServerSummaryViewModelNoServerNameText");
-            Ping = -2;
-            _dispatcherTimer.Stop();
-        }
-
-        Dispatcher.UIThread.Invoke(() => DispatcherTimer_Tick(null, new EventArgs()));
-    }
-
     private void UpdatePingColor()
     {
         PingColor = Ping switch
@@ -241,5 +206,40 @@ public partial class ServerSummaryViewModel : ObservableRecipient
         {
             UpdatePingColor();
         }
+    }
+
+    public async Task RefreshServerData()
+    {
+        try
+        {
+            _server = await _serverService.GetAkiServerAsync(_server.Address);
+            _logger.LogDebug("{Address} found with name {Name}", Address.AbsoluteUri, Name);
+
+            // Ensure the properties get updated
+            OnPropertyChanged(nameof(Name));
+            OnPropertyChanged(nameof(Address));
+            OnPropertyChanged(nameof(ShownAddress));
+
+            string serverImageCacheKey = $"{_server.Address.Host}:{_server.Address.Port} serverimg";
+            CacheValue<Bitmap> cachedImage = await _cachingService.InMemory.GetOrComputeAsync(serverImageCacheKey, async (key) =>
+            {
+                using (MemoryStream ms = await _serverService.GetAkiServerImage(_server, "launcher/side_scav.png"))
+                {
+                    _logger.LogDebug("Creating new cached bitmap for key \"{key}\"", key);
+                    return new Bitmap(ms);
+                }
+            }, TimeSpan.FromHours(1));
+            ServerImage = cachedImage.Value;
+            _dispatcherTimer.Start();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Couldn't retrieve server from address {Address}", _server.Address);
+            Name = _localizationService.TranslateSource("ServerSummaryViewModelNoServerNameText");
+            Ping = -2;
+            _dispatcherTimer.Stop();
+        }
+
+        Dispatcher.UIThread.Invoke(() => DispatcherTimer_Tick(null, new EventArgs()));
     }
 }

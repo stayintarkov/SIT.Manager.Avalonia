@@ -30,7 +30,7 @@
 						Command="{Binding CreateServerCommand}"/>
 
 				<Button Grid.Column="1"
-						Command="{Binding CreateServerCommand}">
+						Command="{Binding RefreshServersCommand}">
 					<ui:SymbolIcon Symbol="Refresh"
 								   FontSize="18"/>
 				</Button>
