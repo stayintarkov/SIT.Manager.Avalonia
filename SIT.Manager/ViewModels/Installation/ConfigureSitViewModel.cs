@@ -106,6 +106,18 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
                 usingInvalidLocatiion = true;
             }
 
+            if (HasSelectedOneDriveInstallPath(CurrentInstallProcessState.EftInstallPath))
+            {
+                // Using OneDrive install location which is known to cause issues so we don't want this as a location for the SIT install.
+                await new ContentDialog()
+                {
+                    Title = _localizationService.TranslateSource("ConfigureSitViewModelLocationSelectionErrorTitle"),
+                    Content = _localizationService.TranslateSource("ConfigureSitViewModelLocationSelectionOneDriveErrorDescription"),
+                    PrimaryButtonText = _localizationService.TranslateSource("ConfigureSitViewModelLocationSelectionErrorOk")
+                }.ShowAsync();
+                usingInvalidLocatiion = true;
+            }
+
             if (!usingInvalidLocatiion)
             {
                 CurrentInstallProcessState.EftInstallPath = directorySelected.Path.LocalPath;
@@ -180,10 +192,23 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
     }
 
     /// <summary>
+    /// Check if the currently selected EFT install directory has indicators of a OneDrive install lication and if so return true, otherwise return false
+    /// </summary>
+    /// <returns>True if this is a OneDrive directory otherwise false</returns>
+    private static bool HasSelectedOneDriveInstallPath(string requestedDirectory)
+    {
+        if (requestedDirectory.Contains("OneDrive"))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
     /// Check if the currently selected EFT diretory has indicators of an SPT install and if so return true, otherwise return false
     /// </summary>
     /// <returns>True if this is an SPT install directory otherwise false</returns>
-    private bool HasSelectedSPTInstallPath(string requestedDirectory)
+    private static bool HasSelectedSPTInstallPath(string requestedDirectory)
     {
         string sptLauncherPath = Path.Combine(requestedDirectory, "Aki.Launcher.exe");
         string sptServerPath = Path.Combine(requestedDirectory, "Aki.Server.exe");
@@ -211,15 +236,6 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
     {
         IsConfigurationValid = true;
 
-        if (CurrentInstallProcessState.UsingBsgInstallPath)
-        {
-            if (CurrentInstallProcessState.BsgInstallPath == CurrentInstallProcessState.EftInstallPath)
-            {
-                IsConfigurationValid = false;
-                return;
-            }
-        }
-
         if (string.IsNullOrEmpty(CurrentInstallProcessState.EftInstallPath))
         {
             IsConfigurationValid = false;
@@ -244,7 +260,17 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
             return;
         }
 
+        if (CurrentInstallProcessState.BsgInstallPath == CurrentInstallProcessState.EftInstallPath)
+        {
+            IsConfigurationValid = false;
+            return;
+        }
         if (HasSelectedSPTInstallPath(CurrentInstallProcessState.EftInstallPath))
+        {
+            IsConfigurationValid = false;
+            return;
+        }
+        if (HasSelectedOneDriveInstallPath(CurrentInstallProcessState.EftInstallPath))
         {
             IsConfigurationValid = false;
             return;

@@ -381,6 +381,7 @@
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorTitle">Помилка вибору місця розташування</system:String>
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorDescription">Ви вибрали ту саму теку, що і встановлення BSG EFT, оберіть інше місце для встановлення SIT</system:String>
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionSPTErrorDescription">Ви обрали ту саму теку, що і існуюча установка SPT. Виберіть інше місце для установки SIT.</system:String>
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionOneDriveErrorDescription">We think you've selected your 'OneDrive' folder which is known to cause issue, please choose a different location to install SIT to</system:String>
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorOk">Oк</system:String>
 
 	<!-- Install - Install View -->
