@@ -372,8 +372,6 @@
 	<system:String x:Key="ConfigureSitViewEFTPathWarningNoPath">Наразі використовується місце встановлення BSG EFT. Будь ласка, встановіть EFT в інше місце, щоб уникнути можливих проблем з SIT</system:String>
 	<system:String x:Key="ConfigureSitViewMirrorSelectionTitle">Виберіть дзеркало для використання:</system:String>
 	<system:String x:Key="ConfigureSitViewVersionSelectionTitle">Версія для установки:</system:String>
-	<system:String x:Key="ConfigureSitViewRecommendedModsTitle">Рекомендовані модифікації</system:String>
-	<system:String x:Key="ConfigureSitViewRecommendedModsDescription">Виберіть з доступних модів, які ми рекомендуємо вам встановити разом з SIT</system:String>
 	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTip">Імпортувати налаштування графіки, звуку та керування живої гри до SIT</system:String>
 	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTitle">Імпортувати налаштування EFT до SIT</system:String>
 

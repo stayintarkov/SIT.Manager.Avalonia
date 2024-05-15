@@ -371,8 +371,6 @@
 	<system:String x:Key="ConfigureSitViewEFTPathWarningNoPath">В настоящее время используется местоположение установки BSG EFT. Пожалуйста, установите EFT в другое место, чтобы избежать возможных проблем с SIT</system:String>
 	<system:String x:Key="ConfigureSitViewMirrorSelectionTitle">Выберите зеркало для использования:</system:String>
 	<system:String x:Key="ConfigureSitViewVersionSelectionTitle">Версия для установки:</system:String>
-	<system:String x:Key="ConfigureSitViewRecommendedModsTitle">Рекомендуемые моды</system:String>
-	<system:String x:Key="ConfigureSitViewRecommendedModsDescription">Выберите из доступных модов, которые мы рекомендуем вам установить вместе с SIT</system:String>
 	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTip">Импортировать в SIT настройки из EFT</system:String>
 	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTitle">Импортировать настройки EFT в SIT</system:String>
 

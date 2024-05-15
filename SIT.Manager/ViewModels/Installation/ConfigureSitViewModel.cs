@@ -5,7 +5,6 @@ using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.Logging;
 using SIT.Manager.Extentions;
 using SIT.Manager.Interfaces;
-using SIT.Manager.Models;
 using SIT.Manager.Models.Installation;
 using System;
 using System.Collections.Generic;
@@ -22,14 +21,10 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
     private readonly IInstallerService _installerService;
     private readonly ILocalizationService _localizationService;
     private readonly ILogger<ConfigureSitViewModel> _logger;
-    private readonly IModService _modService;
     private readonly IPickerDialogService _pickerDialogService;
 
     [ObservableProperty]
     private bool _isVersionSelectionLoading = false;
-
-    [ObservableProperty]
-    private bool _isModsSelectionLoading = false;
 
     [ObservableProperty]
     private bool _overridenBsgInstallPath = false;
@@ -49,12 +44,8 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
     [ObservableProperty]
     private bool _hasMirrorsAvailable = false;
 
-    [ObservableProperty]
-    private bool _hasRecommendedModsAvailable = false;
-
     public ObservableCollection<SitInstallVersion> AvailableVersions { get; } = [];
     public ObservableCollection<KeyValuePair<string, string>> AvailableMirrors { get; } = [];
-    public ObservableCollection<ModInfo> Mods { get; } = [];
 
     public IAsyncRelayCommand ChangeEftInstallLocationCommand { get; }
 
@@ -63,14 +54,12 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
         IInstallerService installerService,
         ILocalizationService localizationService,
         ILogger<ConfigureSitViewModel> logger,
-        IModService modService,
         IPickerDialogService pickerDialogService) : base()
     {
         _configService = configService;
         _installerService = installerService;
         _localizationService = localizationService;
         _logger = logger;
-        _modService = modService;
         _pickerDialogService = pickerDialogService;
 
         ChangeEftInstallLocationCommand = new AsyncRelayCommand(ChangeEftInstallLocation);
@@ -183,7 +172,7 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
     /// Check if the currently selected EFT diretory has indicators of an SPT install and if so return true, otherwise return false
     /// </summary>
     /// <returns>True if this is an SPT install directory otherwise false</returns>
-    private bool HasSelectedSPTInstallPath(string requestedDirectory)
+    private static bool HasSelectedSPTInstallPath(string requestedDirectory)
     {
         string sptLauncherPath = Path.Combine(requestedDirectory, "Aki.Launcher.exe");
         string sptServerPath = Path.Combine(requestedDirectory, "Aki.Server.exe");
@@ -238,7 +227,7 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
             return;
         }
 
-        if (IsModsSelectionLoading || IsVersionSelectionLoading)
+        if (IsVersionSelectionLoading)
         {
             IsConfigurationValid = false;
             return;
@@ -249,37 +238,6 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
             IsConfigurationValid = false;
             return;
         }
-    }
-
-    private async Task LoadAvailableModsList()
-    {
-        IsModsSelectionLoading = true;
-
-        try
-        {
-            await _modService.LoadMasterModList();
-            if (_modService.ModList.Count <= 1)
-            {
-                await _modService.DownloadModsCollection();
-                await _modService.LoadMasterModList();
-            }
-
-            Mods.Clear();
-            Mods.AddRange(_modService.ModList.Where(x => _modService.RecommendedModInstalls.Contains(x.Name)));
-
-            // Make sure that all the recommended mods are selected to start with
-            CurrentInstallProcessState.RequestedMods = [.. Mods];
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error when trying to evaluate available mod list");
-
-            Mods.Clear();
-            CurrentInstallProcessState.RequestedMods = [];
-        }
-
-        HasRecommendedModsAvailable = Mods.Count > 0;
-        IsModsSelectionLoading = false;
     }
 
     protected override async void OnActivated()
@@ -298,7 +256,7 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
         }
 
         OverridenBsgInstallPath = CurrentInstallProcessState.BsgInstallPath != CurrentInstallProcessState.EftInstallPath;
-        await Task.WhenAll(LoadAvailableModsList(), FetchVersionAndMirrorMatrix());
+        await FetchVersionAndMirrorMatrix();
     }
 
     partial void OnSelectedVersionChanged(SitInstallVersion? value)
