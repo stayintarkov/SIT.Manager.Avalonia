@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Logging;
 using SIT.Manager.Interfaces;
-using SIT.Manager.Models;
 using SIT.Manager.Models.Installation;
 using System;
 using System.Threading.Tasks;
@@ -44,10 +43,8 @@ public partial class InstallViewModel : InstallationViewModelBase
 
     private int CalculateAdditionalInstallSteps()
     {
-        int additionalSteps = 0;
-
-        // Count each mod install as an extra step so we adjust the progress bar scaling accordingly.
-        additionalSteps += CurrentInstallProcessState.RequestedMods.Count;
+        // We start with 1 additional step as we install BepInEx Configuration Manager
+        int additionalSteps = 1;
 
         // Add an extra step if we are copying the user's eft settings.
         if (CurrentInstallProcessState.CopyEftSettings)
@@ -113,14 +110,9 @@ public partial class InstallViewModel : InstallationViewModelBase
             UpdateInstallProgress();
         }
 
-        foreach (ModInfo mod in CurrentInstallProcessState.RequestedMods)
-        {
-            await _modService.InstallMod(CurrentInstallProcessState.EftInstallPath, mod, true, true);
-
-            // We copied settings so remove a step and force a progress bar recalculation
-            _installSteps--;
-            UpdateInstallProgress();
-        }
+        await _modService.InstallConfigurationManager(CurrentInstallProcessState.EftInstallPath);
+        _installSteps--;
+        UpdateInstallProgress();
     }
 
     protected override async void OnActivated()

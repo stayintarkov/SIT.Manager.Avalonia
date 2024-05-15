@@ -5,26 +5,35 @@ using Microsoft.Extensions.Logging;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Models;
 using SIT.Manager.Models.Config;
+using SIT.Manager.Models.Github;
+using SIT.Manager.Services.Caching;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Services;
 
 public class ModService(IBarNotificationService barNotificationService,
+                        ICachingService cachingService,
                         IFileService filesService,
                         ILocalizationService localizationService,
                         IManagerConfigService configService,
+                        HttpClient httpClient,
                         ILogger<ModService> logger) : IModService
 {
+    private const string BEPINEX_CONFIGURATION_MANAGER_RELEASE_URL = "https://api.github.com/repos/BepInEx/BepInEx.ConfigurationManager/releases/latest";
+    private const string CONFIGURATION_MANAGER_ZIP_CACHE_KEY = "configuration-manager-dll";
     private const string MOD_COLLECTION_URL = "https://github.com/stayintarkov/SIT-Mod-Ports/releases/latest/download/SIT.Mod.Ports.Collection.zip";
 
     private readonly IBarNotificationService _barNotificationService = barNotificationService;
+    private readonly ICachingService _cachingService = cachingService;
     private readonly IFileService _filesService = filesService;
     private readonly IManagerConfigService _configService = configService;
+    private readonly HttpClient _httpClient = httpClient;
     private readonly ILogger<ModService> _logger = logger;
     private readonly ILocalizationService _localizationService = localizationService;
 
@@ -137,6 +146,75 @@ public class ModService(IBarNotificationService barNotificationService,
         }
 
         _barNotificationService.ShowSuccess(_localizationService.TranslateSource("ModServiceUpdatedModsTitle"), _localizationService.TranslateSource("ModServiceUpdatedModsDescription", $"{outdatedMods.Count}"));
+    }
+
+    public async Task<bool> InstallConfigurationManager(string targetPath)
+    {
+        if (string.IsNullOrEmpty(targetPath))
+        {
+            throw new ArgumentException("Parameter can't be null or empty", nameof(targetPath));
+        }
+
+        CacheValue<byte[]> configurationManagerDll = await _cachingService.OnDisk.GetOrComputeAsync(CONFIGURATION_MANAGER_ZIP_CACHE_KEY,
+            async (key) =>
+            {
+                string latestReleaseJson = await _httpClient.GetStringAsync(BEPINEX_CONFIGURATION_MANAGER_RELEASE_URL).ConfigureAwait(false);
+                GithubRelease? latestRelease = JsonSerializer.Deserialize<GithubRelease>(latestReleaseJson);
+
+                if (latestRelease != null)
+                {
+                    string assetDownloadUrl = string.Empty;
+                    foreach (GithubAsset asset in latestRelease.Assets)
+                    {
+                        if (asset.Name.Contains("BepInEx5"))
+                        {
+                            assetDownloadUrl = asset.BrowserDownloadUrl;
+                        }
+                    }
+
+                    if (string.IsNullOrEmpty(assetDownloadUrl))
+                    {
+                        throw new UriFormatException("No download url available for Configuration manager");
+                    }
+
+                    string tmpZipFilePath = Path.GetTempFileName();
+                    bool downloadSuccess = await _filesService.DownloadFile(Path.GetFileName(tmpZipFilePath), Path.GetDirectoryName(tmpZipFilePath) ?? string.Empty, assetDownloadUrl, false).ConfigureAwait(false);
+                    if (downloadSuccess)
+                    {
+                        string extractedZipPath = Path.GetTempFileName();
+                        if (File.Exists(extractedZipPath))
+                        {
+                            File.Delete(extractedZipPath);
+                        }
+                        await _filesService.ExtractArchive(tmpZipFilePath, extractedZipPath).ConfigureAwait(false);
+
+                        string[] files = Directory.GetFiles(extractedZipPath, "ConfigurationManager.dll", new EnumerationOptions() { RecurseSubdirectories = true });
+                        if (files.Length == 1)
+                        {
+                            return await File.ReadAllBytesAsync(files[0]).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            throw new FileNotFoundException("Found too many or too few Configuration manager dlls in extraction target");
+                        }
+                    }
+                    else
+                    {
+                        throw new IOException("Failed to download the latest configuration manager from GitHub");
+                    }
+                }
+                throw new FileNotFoundException("Failed to get the latest release for Configuration Manager");
+            }, TimeSpan.FromDays(1));
+
+        byte[] configurationManagerBytes = configurationManagerDll.Value ?? [];
+        if (configurationManagerBytes.Length == 0)
+        {
+            throw new FileNotFoundException("Failed find and install Configuration Manager");
+        }
+
+        string targetInstallLocation = Path.Combine(targetPath, "BepInEx", "plugins", "ConfigurationManager.dll");
+        await File.WriteAllBytesAsync(targetInstallLocation, configurationManagerBytes).ConfigureAwait(false);
+        return true;
     }
 
     public async Task<bool> InstallMod(string targetPath, ModInfo mod, bool suppressNotification = false, bool suppressCompatibilityWarning = false)
