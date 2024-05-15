@@ -8,6 +8,7 @@ using SIT.Manager.Models.Aki;
 using SIT.Manager.Models.Play;
 using SIT.Manager.Views.Play;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,6 +25,8 @@ public partial class ServerSelectionViewModel : ObservableRecipient, IRecipient<
 
     public IAsyncRelayCommand CreateServerCommand { get; }
 
+    public IAsyncRelayCommand RefreshServersCommand { get; }
+
     public ServerSelectionViewModel(IServiceProvider serviceProvider, ILocalizationService localizationService, IManagerConfigService configService)
     {
         _configService = configService;
@@ -31,6 +34,7 @@ public partial class ServerSelectionViewModel : ObservableRecipient, IRecipient<
         _serviceProvider = serviceProvider;
 
         CreateServerCommand = new AsyncRelayCommand(CreateServer);
+        RefreshServersCommand = new AsyncRelayCommand(RefreshServers);
     }
 
     private async Task CreateServer()
@@ -59,6 +63,16 @@ public partial class ServerSelectionViewModel : ObservableRecipient, IRecipient<
                 await contentDialog.ShowAsync();
             }
         }
+    }
+
+    private async Task RefreshServers()
+    {
+        List<Task> serversRefreshTask = [];
+        foreach (ServerSummaryViewModel server in ServerList)
+        {
+            serversRefreshTask.Add(server.RefreshServerData());
+        }
+        await Task.WhenAll(serversRefreshTask);
     }
 
     protected override void OnActivated()
