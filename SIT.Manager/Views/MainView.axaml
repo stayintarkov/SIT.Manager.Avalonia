@@ -9,7 +9,7 @@
              x:Class="SIT.Manager.Views.MainView"
              x:DataType="vm:MainViewModel"
 			 x:CompileBindings="True"
-			 Background="Black">
+			 Background="{DynamicResource AppBlack}">
 	<UserControl.DataTemplates>
 		<DataTemplate DataType="{x:Type models:NavigationItem}">
 			<StackPanel Orientation="Horizontal"
@@ -144,7 +144,6 @@
 							MinHeight="24">
 					<TextBlock Name="ActionPanelText"
 							   Text="{Binding ActionText}"
-							   Foreground="White"
 							   VerticalAlignment="Center"
 							   FontSize="12"/>
 					<ProgressBar Name="ActionPanelBar"

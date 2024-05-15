@@ -16,12 +16,27 @@
 				<StackPanel Margin="0,8,0,0">
 					<Rectangle Fill="{DynamicResource AppAccent}"
 							   Height="32"/>
+					<Rectangle Fill="{DynamicResource AppAccentDark}"
+							   Height="32"/>
+					<Rectangle Fill="{DynamicResource AppBlack}"
+							   Height="32"/>
+					<Rectangle Fill="{DynamicResource AppError}"
+							   Height="32"/>
+					<Rectangle Fill="{DynamicResource AppPrimary}"
+							   Height="32"/>
+					<Rectangle Fill="{DynamicResource AppSecondary}"
+							   Height="32"/>
+					<Rectangle Fill="{DynamicResource AppSuccess}"
+							   Height="32"/>
+					<Rectangle Fill="{DynamicResource AppWarning}"
+							   Height="32"/>
 				</StackPanel>
 			</StackPanel>
 		</Border>
 	</Design.PreviewWith>
 	
 	<Color x:Key="AppAccent">#20AFAFAF</Color>
+	<Color x:Key="AppAccentDark">#10AFAFAF</Color>
 	<Color x:Key="AppBlack">#000000</Color>
 	<Color x:Key="AppError">#DB162F</Color>
 	<Color x:Key="AppPrimary">#060606</Color>

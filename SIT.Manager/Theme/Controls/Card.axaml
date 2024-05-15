@@ -14,14 +14,14 @@
 	<ControlTheme x:Key="Card" TargetType="controls:Card">
 		<Setter Property="assists:BoxShadowAssist.Inset" Value="False" />
 		<Setter Property="assists:BoxShadowAssist.Blur" Value="8" />
-		<Setter Property="assists:BoxShadowAssist.OffsetX" Value="1.5" />
-		<Setter Property="assists:BoxShadowAssist.OffsetY" Value="1.5" />
-		<Setter Property="assists:BoxShadowAssist.Color" Value="{DynamicResource AppBlack}" />
+		<Setter Property="assists:BoxShadowAssist.OffsetX" Value="2" />
+		<Setter Property="assists:BoxShadowAssist.OffsetY" Value="2" />
+		<Setter Property="assists:BoxShadowAssist.Color" Value="{DynamicResource AppPrimary}" />
 		<Setter Property="assists:BoxShadowAssist.Spread" Value="4" />
 		
 		<Setter Property="Background" Value="{DynamicResource AppPrimary}"/>
 		<Setter Property="ClipToBounds" Value="False" />
-		<Setter Property="CornerRadius" Value="8" />
+		<Setter Property="CornerRadius" Value="4" />
 		<Setter Property="Focusable" Value="False" />
 		<Setter Property="Foreground" Value="{DynamicResource AppSecondary}"/>
 		<Setter Property="Padding" Value="8" />
