@@ -46,7 +46,7 @@
 					   TextTrimming="CharacterEllipsis"
 					   TextWrapping="WrapWithOverflow"
 					   Text="{DynamicResource EftViewModelSitEftInstallPathMissing}"
-					   IsVisible="{Binding SitEftInstallPath}, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
+					   IsVisible="{Binding SitEftInstallPath, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
 			<Button Grid.Column="2"
 					Grid.Row="1"
 					VerticalAlignment="Center"
