@@ -30,13 +30,19 @@ public interface IModService
     /// <returns></returns>
     Task DownloadModsCollection();
     /// <summary>
+    /// Downloads (unless it's cached already) and installs the latest configuration manager from GitHub
+    /// </summary>
+    /// <param name="targetPath">Base location of where the EFT install is to put the mod</param>
+    /// <returns>True if it was successfully installed; otherwise False</returns>
+    Task<bool> InstallConfigurationManager(string targetPath);
+    /// <summary>
     /// Install a mod into the given target location
     /// </summary>
     /// <param name="targetPath">Base location of where the EFT install is to put the mod</param>
     /// <param name="mod">The meta data for the mod we want to install</param>
     /// <param name="suppressNotification">Supress notifications of the mods installation status</param>
     /// <param name="suppressCompatibilityWarning">Supress the warning about a mods compatibility</param>
-    /// <returns></returns>
+    /// <returns>True if it was successfully installed; otherwise False</returns>
     Task<bool> InstallMod(string targetPath, ModInfo mod, bool suppressNotification = false, bool suppressCompatibilityWarning = false);
     /// <summary>
     /// Load the master list of mods into memory so we know what mods are available

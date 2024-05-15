@@ -372,8 +372,6 @@
 	<system:String x:Key="ConfigureSitViewEFTPathWarningNoPath">目前使用 BSG EFT 的安裝位置。請將 EFT 安裝到其他位置以避免與 SIT 的潛在問題</system:String>
 	<system:String x:Key="ConfigureSitViewMirrorSelectionTitle">選擇要使用的鏡像：</system:String>
 	<system:String x:Key="ConfigureSitViewVersionSelectionTitle">要安裝的版本：</system:String>
-	<system:String x:Key="ConfigureSitViewRecommendedModsTitle">推薦 Mod</system:String>
-	<system:String x:Key="ConfigureSitViewRecommendedModsDescription">從可用的 Mod 中選擇我們建議您與 SIT 一起安裝的內容</system:String>
 	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTip">將現場遊戲的圖形、音頻和控制設置導入到 SIT</system:String>
 	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTitle">將 EFT 設置導入到 SIT</system:String>
 

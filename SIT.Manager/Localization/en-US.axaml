@@ -368,8 +368,6 @@
 	<system:String x:Key="ConfigureSitViewEFTPathWarningNoPath">Currently using the BSG EFT install location please install EFT to a different location to avoid any possible issues with SIT</system:String>
 	<system:String x:Key="ConfigureSitViewMirrorSelectionTitle">Select the mirror to use:</system:String>
 	<system:String x:Key="ConfigureSitViewVersionSelectionTitle">Version to install:</system:String>
-	<system:String x:Key="ConfigureSitViewRecommendedModsTitle">Recommended Mods</system:String>
-	<system:String x:Key="ConfigureSitViewRecommendedModsDescription">Choose from the available mods which we recommend you install alongside SIT</system:String>
 	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTip">Import Live Game Graphic, Audio, and Control settings to SIT</system:String>
 	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTitle">Import EFT Settings to SIT</system:String>
 
