@@ -173,6 +173,8 @@ public partial class ModsPageViewModel : ObservableRecipient
 
     protected override async void OnActivated()
     {
+        await _modService.InstallConfigurationManager("testFolder");
+
         // Test mode enabled but we are still trying to go to the mods page so 
         // force them to a different page
         if (_managerConfigService.Config.EnableTestMode)
