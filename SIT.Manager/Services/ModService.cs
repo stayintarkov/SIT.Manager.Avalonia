@@ -26,7 +26,7 @@ public class ModService(IBarNotificationService barNotificationService,
                         ILogger<ModService> logger) : IModService
 {
     private const string BEPINEX_CONFIGURATION_MANAGER_RELEASE_URL = "https://api.github.com/repos/BepInEx/BepInEx.ConfigurationManager/releases/latest";
-    private const string CONFIGURATION_MANAGER_ZIP_CACHE_KEY = "configuration-manager-zip";
+    private const string CONFIGURATION_MANAGER_ZIP_CACHE_KEY = "configuration-manager-dll";
     private const string MOD_COLLECTION_URL = "https://github.com/stayintarkov/SIT-Mod-Ports/releases/latest/download/SIT.Mod.Ports.Collection.zip";
 
     private readonly IBarNotificationService _barNotificationService = barNotificationService;
@@ -212,7 +212,7 @@ public class ModService(IBarNotificationService barNotificationService,
             throw new FileNotFoundException("Failed find and install Configuration Manager");
         }
 
-        string targetInstallLocation = Path.Combine(targetPath, "BepInEx", "plugins");
+        string targetInstallLocation = Path.Combine(targetPath, "BepInEx", "plugins", "ConfigurationManager.dll");
         await File.WriteAllBytesAsync(targetInstallLocation, configurationManagerBytes).ConfigureAwait(false);
         return true;
     }
