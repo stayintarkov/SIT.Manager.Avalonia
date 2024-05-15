@@ -1,5 +1,4 @@
 ﻿using FluentAvalonia.UI.Controls;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Logging;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Models;
@@ -7,6 +6,7 @@ using SIT.Manager.Models.Config;
 using SIT.Manager.Models.Gitea;
 using SIT.Manager.Models.Github;
 using SIT.Manager.Models.Installation;
+using SIT.Manager.Services.Caching;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -28,18 +28,13 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                                       IFileService fileService,
                                       HttpClient httpClient,
                                       ILogger<InstallerService> logger,
-                                      IVersionService versionService) : IInstallerService
+                                      IVersionService versionService,
+                                      ICachingService cachingService) : IInstallerService
 {
     // Base 64 encoded url :)
     private const string PATCHER_URL = "aHR0cHM6Ly9wYXRjaGVyLnN0YXlpbnRhcmtvdi5jb20vYXBpL3YxL3JlcG9zL1NJVC9Eb3duZ3JhZGUtUGF0Y2hlcy9yZWxlYXNlcw==";
 
-    private readonly IBarNotificationService _barNotificationService = barNotificationService;
-    private readonly IManagerConfigService _configService = configService;
-    private readonly IFileService _fileService = fileService;
-    private readonly HttpClient _httpClient = httpClient;
-    private readonly ILogger<InstallerService> _logger = logger;
-    private readonly IVersionService _versionService = versionService;
-    private readonly ILocalizationService _localizationService = localizationService;
+    private readonly ICachingService _cachingService = cachingService;
 
     [GeneratedRegex("This server version works with version ([0]{1,}\\.[0-9]{1,2}\\.[0-9]{1,2})\\.[0-9]{1,2}\\.[0-9]{1,5}")]
     private static partial Regex ServerReleaseVersionRegex();
@@ -55,35 +50,35 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
     /// <returns></returns>
     private void CleanUpEFTDirectory()
     {
-        _logger.LogInformation("Cleaning up EFT directory...");
+        logger.LogInformation("Cleaning up EFT directory...");
         try
         {
-            string battlEyeDir = Path.Combine(_configService.Config.SitEftInstallPath, "BattlEye");
+            string battlEyeDir = Path.Combine(configService.Config.SitEftInstallPath, "BattlEye");
             if (Directory.Exists(battlEyeDir))
             {
                 Directory.Delete(battlEyeDir, true);
             }
-            string battlEyeExe = Path.Combine(_configService.Config.SitEftInstallPath, "EscapeFromTarkov_BE.exe");
+            string battlEyeExe = Path.Combine(configService.Config.SitEftInstallPath, "EscapeFromTarkov_BE.exe");
             if (File.Exists(battlEyeExe))
             {
                 File.Delete(battlEyeExe);
             }
-            string cacheDir = Path.Combine(_configService.Config.SitEftInstallPath, "cache");
+            string cacheDir = Path.Combine(configService.Config.SitEftInstallPath, "cache");
             if (Directory.Exists(cacheDir))
             {
                 Directory.Delete(cacheDir, true);
             }
-            string consistencyPath = Path.Combine(_configService.Config.SitEftInstallPath, "ConsistencyInfo");
+            string consistencyPath = Path.Combine(configService.Config.SitEftInstallPath, "ConsistencyInfo");
             if (File.Exists(consistencyPath))
             {
                 File.Delete(consistencyPath);
             }
-            string uninstallPath = Path.Combine(_configService.Config.SitEftInstallPath, "Uninstall.exe");
+            string uninstallPath = Path.Combine(configService.Config.SitEftInstallPath, "Uninstall.exe");
             if (File.Exists(uninstallPath))
             {
                 File.Delete(uninstallPath);
             }
-            string logsDirPath = Path.Combine(_configService.Config.SitEftInstallPath, "Logs");
+            string logsDirPath = Path.Combine(configService.Config.SitEftInstallPath, "Logs");
             if (Directory.Exists(logsDirPath))
             {
                 Directory.Delete(logsDirPath, true);
@@ -91,9 +86,9 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Cleanup");
+            logger.LogError(ex, "Cleanup");
         }
-        _logger.LogInformation("Cleanup done.");
+        logger.LogInformation("Cleanup done.");
     }
 
     /// <summary>
@@ -106,21 +101,29 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
     {
         if (string.IsNullOrEmpty(tarkovVersion))
         {
-            _logger.LogError("Available mirrors has no tarkov version to use");
+            logger.LogError("Available mirrors has no tarkov version to use");
             return sitVersions;
         }
 
         ContentDialog blockedByISPWarning = new()
         {
-            Title = _localizationService.TranslateSource("InstallServiceErrorTitle"),
-            Content = _localizationService.TranslateSource("InstallServiceSSLError"),
-            PrimaryButtonText = _localizationService.TranslateSource("PlayPageViewModelButtonOk")
+            Title = localizationService.TranslateSource("InstallServiceErrorTitle"),
+            Content = localizationService.TranslateSource("InstallServiceSSLError"),
+            PrimaryButtonText = localizationService.TranslateSource("PlayPageViewModelButtonOk")
         };
 
         string releasesJsonString;
         try
         {
-            releasesJsonString = await GetHttpStringWithRetryAsync(() => _httpClient.GetStringAsync(Encoding.UTF8.GetString(Convert.FromBase64String(PATCHER_URL))), TimeSpan.FromSeconds(3), 3);
+            CacheValue<string> releaseStrValue = await _cachingService.OnDisk.GetOrComputeAsync("downpatcher str",
+                async (key) =>
+                {
+                    return await GetHttpStringWithRetryAsync(
+                        () => httpClient.GetStringAsync(Encoding.UTF8.GetString(Convert.FromBase64String(PATCHER_URL))),
+                        TimeSpan.FromSeconds(3), 3);
+                }, TimeSpan.FromHours(6));
+            
+            releasesJsonString = releaseStrValue.Value!;
         }
         catch (AuthenticationException)
         {
@@ -141,11 +144,11 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
 
         if (giteaReleases.Count == 0)
         {
-            _logger.LogError("Found no available mirrors to use as a downgrade patcher");
+            logger.LogError("Found no available mirrors to use as a downgrade patcher");
             return sitVersions;
         }
 
-        string tarkovBuild = tarkovVersion ?? _configService.Config.SitTarkovVersion;
+        string tarkovBuild = tarkovVersion ?? configService.Config.SitTarkovVersion;
         tarkovBuild = tarkovBuild.Split(".").Last();
 
         for (int i = 0; i < sitVersions.Count; i++)
@@ -179,11 +182,11 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             if (compatibleDowngradePatcher != null)
             {
                 string mirrorsUrl = compatibleDowngradePatcher.Assets.Find(q => q.Name == "mirrors.json")?.BrowserDownloadUrl ?? string.Empty;
-                string mirrorsJsonString = await GetHttpStringWithRetryAsync(() => _httpClient.GetStringAsync(mirrorsUrl), TimeSpan.FromSeconds(3), 3);
+                string mirrorsJsonString = await GetHttpStringWithRetryAsync(() => httpClient.GetStringAsync(mirrorsUrl), TimeSpan.FromSeconds(3), 3);
                 List<Mirrors> mirrors = JsonSerializer.Deserialize<List<Mirrors>>(mirrorsJsonString) ?? [];
                 if (mirrors.Count == 0)
                 {
-                    _logger.LogError("No download mirrors found for patcher.");
+                    logger.LogError("No download mirrors found for patcher.");
                     continue;
                 }
 
@@ -202,7 +205,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             }
             else
             {
-                _logger.LogWarning("No applicable patcher found for the specified SIT version ({sitVersion} and Tarkov version {tarkovVersion}.", sitVersions[i].SitVersion, tarkovVersion);
+                logger.LogWarning("No applicable patcher found for the specified SIT version ({sitVersion} and Tarkov version {tarkovVersion}.", sitVersions[i].SitVersion, tarkovVersion);
             }
         }
 
@@ -237,14 +240,14 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         List<GithubRelease> githubReleases;
         try
         {
-            string releasesJsonString = await _httpClient.GetStringAsync(@"https://api.github.com/repos/stayintarkov/StayInTarkov.Client/releases");
+            string releasesJsonString = await httpClient.GetStringAsync(@"https://api.github.com/repos/stayintarkov/StayInTarkov.Client/releases");
             githubReleases = JsonSerializer.Deserialize<List<GithubRelease>>(releasesJsonString) ?? [];
 
         }
         catch (Exception ex)
         {
             githubReleases = [];
-            _logger.LogError(ex, "Failed to get SIT releases");
+            logger.LogError(ex, "Failed to get SIT releases");
         }
 
         List<SitInstallVersion> result = [];
@@ -266,24 +269,24 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                         SitVersion = release.Name,
                     };
 
-                    if (release.Prerelease && _configService.Config.EnableTestMode)
+                    if (release.Prerelease && configService.Config.EnableTestMode)
                     {
                         result.Add(sitVersion);
                     }
-                    else if (!release.Prerelease && !_configService.Config.EnableTestMode)
+                    else if (!release.Prerelease && !configService.Config.EnableTestMode)
                     {
                         result.Add(sitVersion);
                     }
                 }
                 else
                 {
-                    _logger.LogWarning("FetchReleases: There was a SIT release without a version defined: {url}", release.HtmlUrl);
+                    logger.LogWarning("FetchReleases: There was a SIT release without a version defined: {url}", release.HtmlUrl);
                 }
             }
         }
         else
         {
-            _logger.LogWarning("Getting SIT releases: githubReleases was 0 for official branch");
+            logger.LogWarning("Getting SIT releases: githubReleases was 0 for official branch");
         }
 
         return result;
@@ -324,7 +327,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
     /// <inheritdoc/>
     public Process CreatePatcherProcess(string patcherPath)
     {
-        _logger.LogInformation("Starting Patcher");
+        logger.LogInformation("Starting Patcher");
 
         Process patcherProcess = new()
         {
@@ -338,7 +341,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         if (OperatingSystem.IsLinux())
         {
             // TODO: actually improve this (will probably be done after fixing launching problems)
-            LinuxConfig config = _configService.Config.LinuxConfig;
+            LinuxConfig config = configService.Config.LinuxConfig;
             string winePrefix = Path.GetFullPath(config.WinePrefix);
             // Update the wine prefix and install any required components
             UpdateWinePrefix(winePrefix);
@@ -376,7 +379,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error while installing .NET Desktop Runtime 6.0");
+            logger.LogError(ex, "Error while installing .NET Desktop Runtime 6.0");
         }
     }
 
@@ -385,13 +388,13 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         List<GithubRelease> githubReleases;
         try
         {
-            string releasesJsonString = await _httpClient.GetStringAsync(@"https://api.github.com/repos/stayintarkov/SIT.Aki-Server-Mod/releases");
+            string releasesJsonString = await httpClient.GetStringAsync(@"https://api.github.com/repos/stayintarkov/SIT.Aki-Server-Mod/releases");
             githubReleases = JsonSerializer.Deserialize<List<GithubRelease>>(releasesJsonString) ?? [];
         }
         catch (Exception ex)
         {
             githubReleases = [];
-            _logger.LogError(ex, "Failed to get server releases");
+            logger.LogError(ex, "Failed to get server releases");
         }
 
         List<GithubRelease> result = [];
@@ -416,25 +419,25 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                         release.TagName = $"{release.Name} - Tarkov Version: {releasePatch}";
                         release.Body = releasePatch;
 
-                        if (release.Prerelease && _configService.Config.EnableTestMode)
+                        if (release.Prerelease && configService.Config.EnableTestMode)
                         {
                             result.Add(release);
                         }
-                        else if (!release.Prerelease && !_configService.Config.EnableTestMode)
+                        else if (!release.Prerelease && !configService.Config.EnableTestMode)
                         {
                             result.Add(release);
                         }
                     }
                     else
                     {
-                        _logger.LogWarning("FetchReleases: There was a server release without a version defined: {url}", release.HtmlUrl);
+                        logger.LogWarning("FetchReleases: There was a server release without a version defined: {url}", release.HtmlUrl);
                     }
                 }
             }
         }
         else
         {
-            _logger.LogWarning("Getting Server Releases: githubReleases was 0 for official branch");
+            logger.LogWarning("Getting Server Releases: githubReleases was 0 for official branch");
         }
         return result;
 
@@ -443,11 +446,11 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
     /// <inheritdoc/>
     public async Task<bool> DownloadAndExtractPatcher(string url, string targetPath, IProgress<double> downloadProgress, IProgress<double> extractionProgress)
     {
-        _logger.LogInformation("Downloading Patcher");
+        logger.LogInformation("Downloading Patcher");
 
         if (string.IsNullOrEmpty(targetPath))
         {
-            _logger.LogError("DownloadPatcher: targetPath is null or empty");
+            logger.LogError("DownloadPatcher: targetPath is null or empty");
             return false;
         }
 
@@ -457,16 +460,16 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             File.Delete(patcherPath);
         }
 
-        bool downloadSuccess = await _fileService.DownloadFile("Patcher.zip", targetPath, url, downloadProgress).ConfigureAwait(false);
+        bool downloadSuccess = await fileService.DownloadFile("Patcher.zip", targetPath, url, downloadProgress).ConfigureAwait(false);
         if (!downloadSuccess)
         {
-            _logger.LogError("Failed to download the patcher from the selected mirror.");
+            logger.LogError("Failed to download the patcher from the selected mirror.");
             return false;
         }
 
         if (File.Exists(patcherPath))
         {
-            await _fileService.ExtractArchive(patcherPath, targetPath, extractionProgress).ConfigureAwait(false);
+            await fileService.ExtractArchive(patcherPath, targetPath, extractionProgress).ConfigureAwait(false);
             File.Delete(patcherPath);
         }
 
@@ -519,25 +522,25 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
 
     public async Task<bool> IsSitUpdateAvailable()
     {
-        if (string.IsNullOrEmpty(_configService.Config.SitTarkovVersion) || string.IsNullOrEmpty(_configService.Config.SitVersion)) return false;
+        if (string.IsNullOrEmpty(configService.Config.SitTarkovVersion) || string.IsNullOrEmpty(configService.Config.SitVersion)) return false;
 
-        TimeSpan timeSinceLastCheck = DateTime.Now - _configService.Config.LastSitUpdateCheckTime;
+        TimeSpan timeSinceLastCheck = DateTime.Now - configService.Config.LastSitUpdateCheckTime;
 
         if (timeSinceLastCheck.TotalHours >= 1)
         {
-            _availableSitUpdateVersions = await GetAvailableSitReleases(_configService.Config.SitTarkovVersion);
+            _availableSitUpdateVersions = await GetAvailableSitReleases(configService.Config.SitTarkovVersion);
 
             if (_availableSitUpdateVersions != null)
             {
                 _availableSitUpdateVersions = _availableSitUpdateVersions
                     .Where(x => Version.TryParse(x.SitVersion.Replace("StayInTarkov.Client-", ""), out Version? sitVersion) &&
-                                sitVersion > Version.Parse(_configService.Config.SitVersion) &&
-                                _configService.Config.SitTarkovVersion == x.EftVersion)
+                                sitVersion > Version.Parse(configService.Config.SitVersion) &&
+                                configService.Config.SitTarkovVersion == x.EftVersion)
                     .ToList();
             }
 
-            _configService.Config.LastSitUpdateCheckTime = DateTime.Now;
-            _configService.UpdateConfig(_configService.Config);
+            configService.Config.LastSitUpdateCheckTime = DateTime.Now;
+            configService.UpdateConfig(configService.Config);
         }
 
         return _availableSitUpdateVersions != null && _availableSitUpdateVersions.Count != 0;
@@ -549,8 +552,8 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         if (selectedVersion == null)
         {
             // TODO maybe transfer these _barNotificationErrors to only display in the install ui rather than as a disappearing bar notification?
-            _barNotificationService.ShowError("Error", "No server version selected to install");
-            _logger.LogWarning("Install Server: selectVersion is 'null'");
+            barNotificationService.ShowError("Error", "No server version selected to install");
+            logger.LogWarning("Install Server: selectVersion is 'null'");
             return;
         }
 
@@ -564,16 +567,16 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         GithubAsset? releaseAsset = selectedVersion.Assets.FirstOrDefault(a => a.Name.StartsWith("SITCoop") && a.Name.EndsWith(fileExtention));
         if (releaseAsset == null)
         {
-            _barNotificationService.ShowError("Error", "No server release found to download");
-            _logger.LogError("No matching release asset found.");
+            barNotificationService.ShowError("Error", "No server release found to download");
+            logger.LogError("No matching release asset found.");
             return;
         }
         string releaseZipUrl = releaseAsset.BrowserDownloadUrl;
 
         if (string.IsNullOrEmpty(targetInstallDir))
         {
-            _barNotificationService.ShowError("Error", "Unable to use provided installation directory");
-            _logger.LogError("Unable to use provided installation directory was null or empty");
+            barNotificationService.ShowError("Error", "Unable to use provided installation directory");
+            logger.LogError("Unable to use provided installation directory was null or empty");
             return;
         }
 
@@ -589,13 +592,13 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         try
         {
             // Download and extract the file into the target directory
-            await _fileService.DownloadFile(releaseAsset.Name, targetInstallDir, releaseZipUrl, downloadProgress);
-            await _fileService.ExtractArchive(downloadLocation, targetInstallDir, extractionProgress);
+            await fileService.DownloadFile(releaseAsset.Name, targetInstallDir, releaseZipUrl, downloadProgress);
+            await fileService.ExtractArchive(downloadLocation, targetInstallDir, extractionProgress);
         }
         catch (Exception ex)
         {
-            _barNotificationService.ShowError("Install Error", "Encountered an error during server installation.", 10);
-            _logger.LogError(ex, "Install Server");
+            barNotificationService.ShowError("Install Error", "Encountered an error during server installation.", 10);
+            logger.LogError(ex, "Install Server");
             throw;
         }
 
@@ -604,18 +607,18 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
 
         // Ensure that the file is marked as executable
         string executablePath = Path.Combine(targetInstallDir, "Aki.Server.exe");
-        await _fileService.SetFileAsExecutable(executablePath);
+        await fileService.SetFileAsExecutable(executablePath);
 
         // Attempt to automatically set the AKI Server Path after successful installation and save it to config
-        ManagerConfig config = _configService.Config;
+        ManagerConfig config = configService.Config;
         if (!string.IsNullOrEmpty(targetInstallDir))
         {
             config.AkiServerPath = targetInstallDir;
         }
-        config.SptAkiVersion = _versionService.GetSptAkiVersion(targetInstallDir);
-        config.SitModVersion = _versionService.GetSitModVersion(targetInstallDir);
+        config.SptAkiVersion = versionService.GetSptAkiVersion(targetInstallDir);
+        config.SitModVersion = versionService.GetSitModVersion(targetInstallDir);
 
-        _configService.UpdateConfig(config);
+        configService.UpdateConfig(config);
     }
 
     public async Task InstallSit(GithubRelease selectedVersion, string targetInstallDir, IProgress<double> downloadProgress, IProgress<double> extractionProgress)
@@ -637,13 +640,13 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
 
         if (string.IsNullOrEmpty(targetInstallDir))
         {
-            _barNotificationService.ShowError(_localizationService.TranslateSource("InstallServiceErrorTitle"), _localizationService.TranslateSource("InstallServiceErrorInstallSITDescription"));
+            barNotificationService.ShowError(localizationService.TranslateSource("InstallServiceErrorTitle"), localizationService.TranslateSource("InstallServiceErrorInstallSITDescription"));
             return;
         }
 
         if (selectedVersion == null)
         {
-            _logger.LogWarning("InstallSIT: selectVersion is 'null'");
+            logger.LogWarning("InstallSIT: selectVersion is 'null'");
             return;
         }
 
@@ -657,7 +660,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             var coreFilesPath = Path.Combine(targetInstallDir, "SITLauncher", "CoreFiles");
 
             // Recursively delete all downloaded files / folders
-            if(Directory.Exists(coreFilesPath))
+            if (Directory.Exists(coreFilesPath))
                 Directory.Delete(coreFilesPath, true);
 
             // Recreate directory for downloaded files / folders
@@ -675,8 +678,8 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             Directory.CreateDirectory(patchersPath);
 
             string bepinexPath = Path.Combine(targetInstallDir, "SITLauncher");
-            await _fileService.DownloadFile("BepInEx5.zip", bepinexPath, "https://github.com/BepInEx/BepInEx/releases/download/v5.4.22/BepInEx_x64_5.4.22.0.zip", internalDownloadProgress);
-            await _fileService.ExtractArchive(Path.Combine(bepinexPath, "BepInEx5.zip"), targetInstallDir, internalExtractionProgress);
+            await fileService.DownloadFile("BepInEx5.zip", bepinexPath, "https://github.com/BepInEx/BepInEx/releases/download/v5.4.22/BepInEx_x64_5.4.22.0.zip", internalDownloadProgress);
+            await fileService.ExtractArchive(Path.Combine(bepinexPath, "BepInEx5.zip"), targetInstallDir, internalExtractionProgress);
 
             CopyEftSettings(targetInstallDir);
 
@@ -695,26 +698,32 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                     extractionProgress.Report(internalExtractionProgressPercentage);
                 });
 
-                await _fileService.DownloadFile("StayInTarkov-Release.zip", coreFilesPath, releaseZipUrl, internalDownloadProgress);
-                await _fileService.ExtractArchive(Path.Combine(coreFilesPath, "StayInTarkov-Release.zip"), coreFilesPath, internalExtractionProgress);
+                await fileService.DownloadFile("StayInTarkov-Release.zip", coreFilesPath, releaseZipUrl, internalDownloadProgress);
+                await fileService.ExtractArchive(Path.Combine(coreFilesPath, "StayInTarkov-Release.zip"), coreFilesPath, internalExtractionProgress);
             }
 
+            // Create enumeration options so we can find our files regardless of if they are hiding in folders or not.
+            EnumerationOptions enumerationOptions = new()
+            {
+                RecurseSubdirectories = true
+            };
+
             // Find Assembly-CSharp file
-            var assemblyCSharpFiles = Directory.GetFiles(coreFilesPath, "*Assembly-CSharp.dll");
+            var assemblyCSharpFiles = Directory.GetFiles(coreFilesPath, "*Assembly-CSharp.dll", enumerationOptions);
             if (assemblyCSharpFiles.Length == 0)
                 throw new IndexOutOfRangeException("No Assembly-CSharp found in download!");
             if (assemblyCSharpFiles.Length > 1)
                 throw new IndexOutOfRangeException("There are more than one Assembly-CSharp files found!");
 
             // Find StayInTarkov.dll
-            var sitFiles = Directory.GetFiles(coreFilesPath, "*StayInTarkov.dll");
+            var sitFiles = Directory.GetFiles(coreFilesPath, "*StayInTarkov.dll", enumerationOptions);
             if (sitFiles.Length == 0)
                 throw new IndexOutOfRangeException("No StayInTarkov.dll found in download!");
             if (sitFiles.Length > 1)
                 throw new IndexOutOfRangeException("There are more than one StayInTarkov.dll files found!");
 
             // Find SIT.WildSpawnType.PrePatcher.dll
-            var prePatcherFiles = Directory.GetFiles(coreFilesPath, "*PrePatch*");
+            var prePatcherFiles = Directory.GetFiles(coreFilesPath, "*PrePatch*", enumerationOptions);
 
             string eftDataManagedPath = Path.Combine(targetInstallDir, "EscapeFromTarkov_Data", "Managed");
             if (File.Exists(Path.Combine(eftDataManagedPath, "Assembly-CSharp.dll")))
@@ -722,10 +731,10 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                 File.Copy(Path.Combine(eftDataManagedPath, "Assembly-CSharp.dll"), Path.Combine(backupCoreFilesPath, "Assembly-CSharp.dll"), true);
             }
 
-            if(Directory.Exists(eftDataManagedPath))
+            if (Directory.Exists(eftDataManagedPath))
                 File.Copy(assemblyCSharpFiles[0], Path.Combine(eftDataManagedPath, "Assembly-CSharp.dll"), true);
 
-            if(Directory.Exists(pluginsPath))
+            if (Directory.Exists(pluginsPath))
                 File.Copy(sitFiles[0], Path.Combine(pluginsPath, "StayInTarkov.dll"), true);
 
             foreach (var ppFI in prePatcherFiles.Select(x => new FileInfo(x)))
@@ -759,15 +768,15 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             downloadProgress.Report(1);
             extractionProgress.Report(100);
 
-            ManagerConfig config = _configService.Config;
+            ManagerConfig config = configService.Config;
             config.SitEftInstallPath = targetInstallDir;
-            config.SitTarkovVersion = _versionService.GetEFTVersion(targetInstallDir);
-            config.SitVersion = _versionService.GetSITVersion(targetInstallDir);
-            _configService.UpdateConfig(config);
+            config.SitTarkovVersion = versionService.GetEFTVersion(targetInstallDir);
+            config.SitVersion = versionService.GetSITVersion(targetInstallDir);
+            configService.UpdateConfig(config);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Install SIT");
+            logger.LogError(ex, "Install SIT");
             throw;
         }
     }
@@ -794,11 +803,11 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                 }
             }
 
-            _logger.LogInformation("Successfully copied EFT settings to '{destinationPath}'.", destinationPath);
+            logger.LogInformation("Successfully copied EFT settings to '{destinationPath}'.", destinationPath);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to copy EFT settings.");
+            logger.LogError(ex, "Failed to copy EFT settings.");
         }
     }
 }
