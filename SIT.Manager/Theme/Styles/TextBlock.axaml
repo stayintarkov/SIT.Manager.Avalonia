@@ -3,6 +3,7 @@
 	<Design.PreviewWith>
 		<Border Padding="20">
 			<StackPanel>
+				<TextBlock Classes="FrameHeading" Text="Warning"/>
 				<TextBlock Classes="ErrorMessage" Text="Error"/>
 				<TextBlock Classes="WarningMessage" Text="Warning"/>
 			</StackPanel>
@@ -25,7 +26,7 @@
 		<Setter Property="TextWrapping" Value="Wrap"/>
 		<Setter Property="VerticalAlignment" Value="Center"/>
 	</Style>
-	
+
 	<Style Selector="TextBlock.ErrorMessage">
 		<Setter Property="Foreground" Value="Red"/>
 		<Setter Property="TextWrapping" Value="Wrap"/>

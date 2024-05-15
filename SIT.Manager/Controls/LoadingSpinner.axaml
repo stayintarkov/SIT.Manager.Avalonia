@@ -37,7 +37,7 @@
 				</Animation>
 			</Style.Animations>
 
-			<Setter Property="Foreground" Value="{DynamicResource TextControlForeground}" />
+			<Setter Property="Foreground" Value="{DynamicResource AppSecondary}" />
 
 			<Setter Property="Template">
 				<ControlTemplate>

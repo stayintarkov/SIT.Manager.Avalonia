@@ -56,7 +56,7 @@
 														 Margin="4,0,0,0"
 														 VerticalAlignment="Center"
 														 IsVisible="{Binding QuickPlayCommand.IsRunning}"
-														 Foreground="{DynamicResource TextControlForeground}"
+														 Foreground="{DynamicResource AppSecondary}"
 														 StrokeWidth="2"/>
 							</StackPanel>
 						</Button>

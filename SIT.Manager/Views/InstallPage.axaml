@@ -11,7 +11,7 @@
 			 x:DataType="vm:InstallPageViewModel">
 	<UserControl.Styles>
 		<Style Selector="labs|StepBarItem:selected">
-			<Setter Property="Foreground" Value="{StaticResource TextControlForeground}"/>
+			<Setter Property="Foreground" Value="{StaticResource AppSecondary}"/>
 			<Setter Property="Background" Value="{StaticResource AppAccent}"/>
 		</Style>
 	</UserControl.Styles>

@@ -2,11 +2,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<Design.PreviewWith>
 		<Border Padding="20">
-			<!-- Add Controls for Previewer Here -->
+			<SelectableTextBlock Text="Select Me!"/>
 		</Border>
 	</Design.PreviewWith>
 
 	<Style Selector="SelectableTextBlock">
-		<Setter Property="SelectionBrush" Value="{StaticResource TextControlSelection}"/>
+		<Setter Property="SelectionBrush" Value="{DynamicResource AppAccent}"/>
 	</Style>
 </Styles>

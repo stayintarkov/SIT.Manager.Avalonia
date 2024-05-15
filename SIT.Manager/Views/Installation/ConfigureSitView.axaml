@@ -133,7 +133,7 @@
 												 Margin="0,8,0,0"
 												 HorizontalAlignment="Center"
 												 VerticalAlignment="Center"
-												 Foreground="{DynamicResource TextControlForeground}"
+												 Foreground="{DynamicResource AppSecondary}"
 												 StrokeWidth="8"/>
 						</StackPanel>
 					</StackPanel>
@@ -173,7 +173,7 @@
 												 Margin="0,8,0,0"
 												 HorizontalAlignment="Center"
 												 VerticalAlignment="Center"
-												 Foreground="{DynamicResource TextControlForeground}"
+												 Foreground="{DynamicResource AppSecondary}"
 												 StrokeWidth="8"/>
 						</StackPanel>
 					</StackPanel>

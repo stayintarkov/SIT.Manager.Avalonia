@@ -88,7 +88,7 @@
 												 HorizontalAlignment="Center"
 												 VerticalAlignment="Center"
 												 IsVisible="{Binding IsLoading}"
-												 Foreground="{DynamicResource TextControlForeground}"
+												 Foreground="{DynamicResource AppSecondary}"
 												 StrokeWidth="8"/>
 					</StackPanel>
 				</Border>

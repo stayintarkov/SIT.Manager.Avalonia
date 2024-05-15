@@ -21,7 +21,7 @@
 		
 		<Setter Property="Background" Value="{DynamicResource AppPrimary}"/>
 		<Setter Property="ClipToBounds" Value="False" />
-		<Setter Property="CornerRadius" Value="4" />
+		<Setter Property="CornerRadius" Value="8" />
 		<Setter Property="Focusable" Value="False" />
 		<Setter Property="Foreground" Value="{DynamicResource AppSecondary}"/>
 		<Setter Property="Padding" Value="8" />

@@ -11,7 +11,7 @@
 				<TextBlock Text="The Quick Brown Fox Jumped Over The Lazy Dog!"
 						   Foreground="{DynamicResource AppSuccess}"/>
 				<TextBlock Text="The Quick Brown Fox Jumped Over The Lazy Dog!"
-						   Foreground="{DynamicResource TextControlForeground}"/>
+						   Foreground="{DynamicResource AppSecondary}"/>
 
 				<StackPanel Margin="0,8,0,0">
 					<Rectangle Fill="{DynamicResource AppAccent}"

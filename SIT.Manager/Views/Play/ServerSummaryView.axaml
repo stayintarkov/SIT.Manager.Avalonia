@@ -89,7 +89,7 @@
 									 Margin="4,8"
 									 HorizontalAlignment="Center"
 									 VerticalAlignment="Center"
-									 Foreground="{DynamicResource TextControlForeground}"
+									 Foreground="{DynamicResource AppSecondary}"
 									 StrokeWidth="4"/>
 			
 			<StackPanel Grid.Column="2"

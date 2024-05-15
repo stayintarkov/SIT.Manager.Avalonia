@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<Design.PreviewWith>
 		<Border Padding="20">
-			<StackPanel>				
+			<StackPanel>
 				<Border Classes="StandardFrame"
 						Margin="12">
 					<TextBlock Text="StandardFrame"
@@ -11,6 +11,7 @@
 			</StackPanel>
 		</Border>
 	</Design.PreviewWith>
+
 	<Style Selector="Border.StandardFrame">
 		<Setter Property="CornerRadius" Value="8"/>
 		<Setter Property="BorderBrush" Value="Gray"/>
