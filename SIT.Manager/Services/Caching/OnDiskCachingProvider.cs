@@ -67,6 +67,10 @@ internal class OnDiskCachingProvider(string cachePath, ILogger<OnDiskCachingProv
                 {
                     buffer = value as byte[] ?? [];
                 }
+                else if(typeof(T) == typeof(string))
+                {
+                    buffer = Encoding.UTF8.GetBytes(value.ToString() ?? string.Empty);
+                }
                 else
                 {
                     string serializedData = JsonSerializer.Serialize(value);
