@@ -364,7 +364,8 @@
 
 	<!-- Install - Configure Sit View -->
 	<system:String x:Key="ConfigureSitViewLoadingVersionSelectionText">正在确定可用的 SIT 版本，请稍候...</system:String>
-	<system:String x:Key="ConfigureSitViewVersionSelectionErrorMessage">无法确定可用的 SIT 版本...</system:String>
+	<system:String x:Key="ConfigureSitViewVersionSelectionNoneAvailableErrorMessage">No version of SIT available for your current version of EFT. Please make sure your EFT is up to date</system:String>
+	<system:String x:Key="ConfigureSitViewVersionSelectionGenericErrorMessage">无法确定可用的 SIT 版本...</system:String>
 	<system:String x:Key="ConfigureSitViewEFTChangeInstallPathToolTip">更改 SIT EFT 安装路径。</system:String>
 	<system:String x:Key="ConfigureSitViewEFTInstallPathPlaceholder">SIT EFT 安装路径...</system:String>
 	<system:String x:Key="ConfigureSitViewEFTInstallPathTitle">SIT EFT 安装路径:</system:String>

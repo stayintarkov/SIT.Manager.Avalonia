@@ -52,6 +52,12 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
     [ObservableProperty]
     private bool _hasRecommendedModsAvailable = false;
 
+    [ObservableProperty]
+    private bool _showNoAvailableSitVersionSelectionError = false;
+
+    [ObservableProperty]
+    private bool _showGenericSitVersionSelectionError = false;
+
     public ObservableCollection<SitInstallVersion> AvailableVersions { get; } = [];
     public ObservableCollection<KeyValuePair<string, string>> AvailableMirrors { get; } = [];
     public ObservableCollection<ModInfo> Mods { get; } = [];
@@ -176,11 +182,13 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
             }
             else
             {
+                ShowNoAvailableSitVersionSelectionError = true;
                 _logger.LogWarning("Available SIT version count {availableVersions} and 0 marked as available to use so will display error message", availableVersions.Count);
             }
         }
         catch (Exception ex)
         {
+            ShowGenericSitVersionSelectionError = true;
             _logger.LogError(ex, "Issue trying to determine versions available to install for SIT");
         }
 
@@ -322,6 +330,10 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
                 return;
             }
         }
+
+        // Reset the error messages
+        ShowNoAvailableSitVersionSelectionError = false;
+        ShowGenericSitVersionSelectionError = false;
 
         OverridenBsgInstallPath = CurrentInstallProcessState.BsgInstallPath != CurrentInstallProcessState.EftInstallPath;
         await Task.WhenAll(LoadAvailableModsList(), FetchVersionAndMirrorMatrix());

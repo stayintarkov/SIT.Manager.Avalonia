@@ -364,7 +364,8 @@
 
 	<!-- Install - Configure Sit View -->
 	<system:String x:Key="ConfigureSitViewLoadingVersionSelectionText">Визначення доступних версій SIT, будь ласка, зачекайте...</system:String>
-	<system:String x:Key="ConfigureSitViewVersionSelectionErrorMessage">Не вдалося визначити доступні версії SIT...</system:String>
+	<system:String x:Key="ConfigureSitViewVersionSelectionNoneAvailableErrorMessage">No version of SIT available for your current version of EFT. Please make sure your EFT is up to date</system:String>
+	<system:String x:Key="ConfigureSitViewVersionSelectionGenericErrorMessage">Не вдалося визначити доступні версії SIT...</system:String>
 	<system:String x:Key="ConfigureSitViewEFTChangeInstallPathToolTip">Змінити шлях встановлення SIT EFT.</system:String>
 	<system:String x:Key="ConfigureSitViewEFTInstallPathPlaceholder">Шлях встановлення SIT EFT...</system:String>
 	<system:String x:Key="ConfigureSitViewEFTInstallPathTitle">Шлях встановлення SIT EFT:</system:String>
