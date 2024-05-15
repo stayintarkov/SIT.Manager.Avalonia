@@ -26,7 +26,7 @@
 		<BuildNumber Condition=" '$(BuildNumber)' == '' ">0</BuildNumber>
 		<ProductVersion>$(Version)</ProductVersion>
 		<RevisionNumber Condition=" '$(RevisionNumber)' == '' ">0</RevisionNumber>
-		<Version>2.2.$(BuildNumber).$(RevisionNumber)</Version>
+		<Version>2.3.$(BuildNumber).$(RevisionNumber)</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
