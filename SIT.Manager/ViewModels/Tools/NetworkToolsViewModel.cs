@@ -5,8 +5,6 @@ using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Registry;
 using SIT.Manager.Models.Tools;
-using System;
-using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -16,15 +14,13 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace SIT.Manager.ViewModels.Tools;
 
-public partial class NetworkToolsViewModel(
-    HttpClient httpClient,
-    ResiliencePipelineProvider<string> pipelineProvider,
-    ILogger<NetworkToolsViewModel> logger)
-    : ObservableObject
+public partial class NetworkToolsViewModel(HttpClient httpClient,
+                                           ResiliencePipelineProvider<string> pipelineProvider,
+                                           ILogger<NetworkToolsViewModel> logger) : ObservableRecipient
 {
     private readonly ILogger<NetworkToolsViewModel> _logger = logger;
-    private Symbol SuccessSymbol = Symbol.Accept;
-    private Symbol FailSymbol = Symbol.Clear;
+    private readonly Symbol SuccessSymbol = Symbol.Accept;
+    private readonly Symbol FailSymbol = Symbol.Clear;
 
     [ObservableProperty] private PortCheckerResponse _portResponse = new();
     public CancellationTokenSource RequestCancellationSource = new();
@@ -52,7 +48,7 @@ public partial class NetworkToolsViewModel(
                 req.Content = JsonContent.Create(PortResponse.PortsUsed);
                 return await httpClient.SendAsync(req, ct);
             }, token);
-            
+
             switch (reqResp.StatusCode)
             {
                 case HttpStatusCode.OK:
@@ -86,9 +82,22 @@ public partial class NetworkToolsViewModel(
     private void ProcessPortResponse(PortCheckerResponse response)
     {
         PortResponse = response;
-        
+
         OnPropertyChanged(nameof(AkiSymbol));
         OnPropertyChanged(nameof(NatSymbol));
         OnPropertyChanged(nameof(RelaySymbol));
+    }
+
+    protected override void OnActivated()
+    {
+        base.OnActivated();
+        RequestCancellationSource = new CancellationTokenSource();
+    }
+
+    protected override void OnDeactivated()
+    {
+        base.OnDeactivated();
+        RequestCancellationSource.Cancel();
+        RequestCancellationSource.Dispose();
     }
 }

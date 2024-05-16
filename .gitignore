@@ -396,9 +396,4 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-/.idea/.idea.SIT.Manager/.idea/.gitignore
-/.idea/.idea.SIT.Manager/.idea/.name
-/.idea/.idea.SIT.Manager/.idea/avalonia.xml
-/.idea/.idea.SIT.Manager/.idea/discord.xml
-/.idea/.idea.SIT.Manager/.idea/indexLayout.xml
-/.idea/.idea.SIT.Manager/.idea/vcs.xml
+/.idea
