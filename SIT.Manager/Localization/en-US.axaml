@@ -72,7 +72,6 @@
 	<system:String x:Key="ToolsManagerLogCheckboxContent">Include Manager Logs</system:String>
 
 	<!-- Server Page -->
-	<system:String x:Key="ServerConsoleOutputTitle">Console Output</system:String>
 	<system:String x:Key="ServerButtonStartToolTip">Start server.</system:String>
 	<system:String x:Key="ServerEditServerConfig">Edit Server Config</system:String>
 	<system:String x:Key="ServerEditServerConfigButtonToolTip">Edit Server</system:String>

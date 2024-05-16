@@ -72,7 +72,6 @@
 	<system:String x:Key="ToolsManagerLogCheckboxContent">包括管理器日志</system:String>
 
 	<!-- Server Page -->
-	<system:String x:Key="ServerConsoleOutputTitle">控制台输出</system:String>
 	<system:String x:Key="ServerButtonStartToolTip">启动服务器</system:String>
 	<system:String x:Key="ServerEditServerConfig">编辑服务器配置</system:String>
 	<system:String x:Key="ServerEditServerConfigButtonToolTip">编辑服务器配置文件</system:String>

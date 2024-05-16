@@ -72,7 +72,6 @@
 	<system:String x:Key="ToolsManagerLogCheckboxContent">Включити журнали менеджера</system:String>
 
 	<!-- Server Page -->
-	<system:String x:Key="ServerConsoleOutputTitle">Виведення консолі</system:String>
 	<system:String x:Key="ServerButtonStartToolTip">Запустити сервер.</system:String>
 	<system:String x:Key="ServerEditServerConfig">Редагувати конфігурацію сервера</system:String>
 	<system:String x:Key="ServerEditServerConfigButtonToolTip">Редагувати сервер</system:String>
