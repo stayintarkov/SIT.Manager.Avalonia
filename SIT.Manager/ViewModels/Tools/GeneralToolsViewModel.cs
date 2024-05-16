@@ -19,6 +19,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.ViewModels.Tools;
+
 public partial class GeneralToolsViewModel : ObservableObject
 {
     private readonly IAkiServerService _akiServerService;

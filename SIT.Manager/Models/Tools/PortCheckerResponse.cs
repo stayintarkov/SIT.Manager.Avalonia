@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace SIT.Manager.Models.Tools;
@@ -11,7 +10,7 @@ public class PortCheckerResponse
 
     [JsonPropertyName("portsUsed")] public PortCheckerPorts PortsUsed { get; init; } = new();
 
-    [JsonPropertyName("ipAddress")] public string? IpAddress { get; init; } = "x.x.x.x";
+    [JsonPropertyName("ipAddress")] public string? IpAddress { get; init; } = string.Empty;
 }
 
 public class PortCheckerPorts

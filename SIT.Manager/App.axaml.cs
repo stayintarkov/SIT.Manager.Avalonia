@@ -22,7 +22,6 @@ using SIT.Manager.Views;
 using System;
 using System.CommandLine;
 using System.Diagnostics;
-using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -177,7 +176,8 @@ public sealed partial class App : Application
                 {
                     builder.AddRetry(new RetryStrategyOptions<HttpResponseMessage>()
                     {
-                        MaxRetryAttempts = 3, Delay = TimeSpan.FromSeconds(3)
+                        MaxRetryAttempts = 3,
+                        Delay = TimeSpan.FromSeconds(3)
                     });
                 })
                 .AddResiliencePipeline<string, HttpResponseMessage>("ping-pipeline", builder =>

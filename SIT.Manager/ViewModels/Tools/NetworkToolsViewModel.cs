@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Registry;
@@ -8,9 +7,9 @@ using SIT.Manager.Models.Tools;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace SIT.Manager.ViewModels.Tools;
 
@@ -19,22 +18,19 @@ public partial class NetworkToolsViewModel(HttpClient httpClient,
                                            ILogger<NetworkToolsViewModel> logger) : ObservableRecipient
 {
     private readonly ILogger<NetworkToolsViewModel> _logger = logger;
-    private readonly Symbol SuccessSymbol = Symbol.Accept;
-    private readonly Symbol FailSymbol = Symbol.Clear;
 
-    [ObservableProperty] private PortCheckerResponse _portResponse = new();
-    public CancellationTokenSource RequestCancellationSource = new();
+    private CancellationTokenSource _requestCancellationSource = new();
 
-    //There has got to be a better way to do this
-    //Maybe this heat is fucking with my head?
-    public Symbol AkiSymbol => PortResponse.AkiSuccess ? SuccessSymbol : FailSymbol;
-    public Symbol NatSymbol => PortResponse.NatSuccess ? SuccessSymbol : FailSymbol;
-    public Symbol RelaySymbol => PortResponse.RelaySuccess ? SuccessSymbol : FailSymbol;
+    [ObservableProperty]
+    private bool _hasRunPortCheck = false;
+
+    [ObservableProperty]
+    private PortCheckerResponse _portResponse = new();
 
     [RelayCommand]
     private async Task CheckPorts()
     {
-        CancellationToken token = RequestCancellationSource.Token;
+        CancellationToken token = _requestCancellationSource.Token;
         ResiliencePipeline<HttpResponseMessage> pipeline =
             pipelineProvider.GetPipeline<HttpResponseMessage>("port-checker-pipeline");
 
@@ -44,8 +40,10 @@ public partial class NetworkToolsViewModel(HttpClient httpClient,
         {
             HttpResponseMessage reqResp = await pipeline.ExecuteAsync(async ct =>
             {
-                HttpRequestMessage req = new(HttpMethod.Post, "/checkports");
-                req.Content = JsonContent.Create(PortResponse.PortsUsed);
+                HttpRequestMessage req = new(HttpMethod.Post, "/checkports")
+                {
+                    Content = JsonContent.Create(PortResponse.PortsUsed)
+                };
                 return await httpClient.SendAsync(req, ct);
             }, token);
 
@@ -82,22 +80,20 @@ public partial class NetworkToolsViewModel(HttpClient httpClient,
     private void ProcessPortResponse(PortCheckerResponse response)
     {
         PortResponse = response;
-
-        OnPropertyChanged(nameof(AkiSymbol));
-        OnPropertyChanged(nameof(NatSymbol));
-        OnPropertyChanged(nameof(RelaySymbol));
+        HasRunPortCheck = true;
     }
 
     protected override void OnActivated()
     {
         base.OnActivated();
-        RequestCancellationSource = new CancellationTokenSource();
+        _requestCancellationSource = new CancellationTokenSource();
+        HasRunPortCheck = false;
     }
 
     protected override void OnDeactivated()
     {
         base.OnDeactivated();
-        RequestCancellationSource.Cancel();
-        RequestCancellationSource.Dispose();
+        _requestCancellationSource.Cancel();
+        _requestCancellationSource.Dispose();
     }
 }

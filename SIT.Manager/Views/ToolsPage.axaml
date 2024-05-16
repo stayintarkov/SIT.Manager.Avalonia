@@ -8,10 +8,10 @@
              x:Class="SIT.Manager.Views.ToolsPage"
 			 x:DataType="vm:ToolsPageViewModel">
 	<TabControl Margin="2">
-		<TabItem Header="Localize me 1">
+		<TabItem Header="{DynamicResource ToolsPageGenericToolsViewTabHeader}">
 			<tv:GeneralToolsView/>
 		</TabItem>
-		<TabItem Header="Localize me 2">
+		<TabItem Header="{DynamicResource ToolsPageNetworkToolsViewTabHeader}">
 			<tv:NetworkToolsView/>
 		</TabItem>
 	</TabControl>

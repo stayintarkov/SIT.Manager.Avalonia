@@ -3,72 +3,160 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:models="clr-namespace:SIT.Manager.Models.Tools"
+			 xmlns:controls="clr-namespace:SIT.Manager.Theme.Controls"
 			 xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Tools"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SIT.Manager.Views.Tools.NetworkToolsView"
-			 x:DataType="vm:NetworkToolsViewModel">
-	<StackPanel HorizontalAlignment="Left">
-		<StackPanel Orientation="Horizontal" Margin="15, 20, 0 0">
-			<Label Content="IP Address: "
-				   FontSize="16"
-				   FontWeight="DemiBold"/>
-			<SelectableTextBlock Text="{Binding PortResponse.IpAddress}"
-			                     FontSize="16"
-			                     VerticalAlignment="Center"/>
-			
+			 x:DataType="vm:NetworkToolsViewModel">	
+	<controls:Card Margin="8,8,8,8"
+				   VerticalAlignment="Top">
+		<StackPanel>
+			<StackPanel>
+				<TextBlock Text="{DynamicResource NetworkToolsViewDescriptionText}"/>
+
+				<TextBlock FontSize="16"
+						   Margin="0,8,0,0">
+					<Run Text="{DynamicResource NetworkToolsViewIPAddressLabelText}"
+						 FontWeight="DemiBold"/>
+					<SelectableTextBlock Text="{Binding PortResponse.IpAddress}"
+										 IsVisible="{Binding PortResponse.IpAddress, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+										 VerticalAlignment="Center"/>
+					<TextBlock Text="{DynamicResource NetworkToolsViewUnknownIpAddressText}"
+							   IsVisible="{Binding PortResponse.IpAddress, Converter={x:Static StringConverters.IsNullOrEmpty}}"
+							   VerticalAlignment="Center"/>
+				</TextBlock>
+			</StackPanel>
+
+			<Grid ColumnDefinitions="auto, auto, auto"
+				  RowDefinitions="*, *, *"
+				  Margin="0 16 0 0">
+
+				<Label Content="{DynamicResource NetworkToolsViewAkiPortLabelText}"
+					   FontSize="16"
+					   FontWeight="DemiBold"
+					   Grid.Column="0"
+					   Grid.Row="0"/>
+				<TextBox MinWidth="55"
+						 FontSize="16"
+						 Text="{Binding PortResponse.PortsUsed.AkiPort, Mode=TwoWay}"
+						 Grid.Column="1"
+						 Grid.Row="0"/>
+				<Panel Grid.Column="2"
+					   Grid.Row="0"
+					   Margin="8,0"
+					   VerticalAlignment="Center"
+					   IsVisible="{Binding HasRunPortCheck}">
+					<StackPanel IsVisible="{Binding PortResponse.AkiSuccess}"
+								Orientation="Horizontal">						
+						<ui:SymbolIcon Symbol="Accept"
+									   FontSize="16"
+									   Foreground="{DynamicResource AppSuccess}"/>
+						<TextBlock Foreground="{DynamicResource AppSuccess}"
+								   Margin="8,0,0,0"
+								   Text="{DynamicResource NetworkToolsViewPortTestSuccessText}"/>
+					</StackPanel>
+					<StackPanel IsVisible="{Binding !PortResponse.AkiSuccess}"
+								Orientation="Horizontal">
+						<ui:SymbolIcon Symbol="Clear"
+									   FontSize="16"
+									   Foreground="{DynamicResource AppError}"/>
+						<TextBlock Foreground="{DynamicResource AppError}"
+								   Margin="8,0,0,0"
+								   Text="{DynamicResource NetworkToolsViewPortTestFailText}"/>
+					</StackPanel>
+				</Panel>
+
+				<Label Content="{DynamicResource NetworkToolsViewRelayPortLabelText}"
+					   FontSize="16"
+					   FontWeight="DemiBold"
+					   Margin="0 10 0 0"
+					   Grid.Column="0"
+					   Grid.Row="1"/>
+				<TextBox MinWidth="55" FontSize="16"
+						 Text="{Binding PortResponse.PortsUsed.RelayPort}"
+						 Margin="0 10 0 0"
+						 Grid.Column="1"
+						 Grid.Row="1"/>
+				<Panel Grid.Column="2"
+					   Grid.Row="1"
+					   Margin="8,0"
+					   VerticalAlignment="Center"
+					   IsVisible="{Binding HasRunPortCheck}">
+					<StackPanel IsVisible="{Binding PortResponse.RelaySuccess}"
+								Orientation="Horizontal">
+						<ui:SymbolIcon Symbol="Accept"
+									   FontSize="16"
+									   Foreground="{DynamicResource AppSuccess}"/>
+						<TextBlock Foreground="{DynamicResource AppSuccess}"
+								   Margin="8,0,0,0"
+								   Text="{DynamicResource NetworkToolsViewPortTestSuccessText}"/>
+					</StackPanel>
+					<StackPanel IsVisible="{Binding !PortResponse.RelaySuccess}"
+								Orientation="Horizontal">
+						<ui:SymbolIcon Symbol="Clear"
+									   FontSize="16"
+									   Foreground="{DynamicResource AppError}"/>
+						<TextBlock Foreground="{DynamicResource AppError}"
+								   Margin="8,0,0,0"
+								   Text="{DynamicResource NetworkToolsViewPortTestFailText}"/>
+					</StackPanel>
+				</Panel>
+
+				<Label Content="{DynamicResource NetworkToolsViewNatPortLabelText}"
+					   FontSize="16"
+					   FontWeight="DemiBold"
+					   Margin="0 10 0 0"
+					   Grid.Column="0"
+					   Grid.Row="2"/>
+				<TextBox MinWidth="55" FontSize="16"
+						 Text="{Binding PortResponse.PortsUsed.NatPort}"
+						 Margin="0 10 0 0"
+						 Grid.Column="1"
+						 Grid.Row="2"/>
+				<Panel Grid.Column="2"
+					   Grid.Row="2"
+					   Margin="8,0"
+					   VerticalAlignment="Center"
+					   IsVisible="{Binding HasRunPortCheck}">
+					<StackPanel IsVisible="{Binding PortResponse.NatSuccess}"
+								Orientation="Horizontal">
+						<ui:SymbolIcon Symbol="Accept"
+									   FontSize="16"
+									   Foreground="{DynamicResource AppSuccess}"/>
+						<TextBlock Foreground="{DynamicResource AppSuccess}"
+								   Margin="8,0,0,0"
+								   Text="{DynamicResource NetworkToolsViewPortTestSuccessText}"/>
+					</StackPanel>
+					<StackPanel IsVisible="{Binding !PortResponse.NatSuccess}"
+								Orientation="Horizontal">
+						<ui:SymbolIcon Symbol="Clear"
+									   FontSize="16"
+									   Foreground="{DynamicResource AppError}"/>
+						<TextBlock Foreground="{DynamicResource AppError}"
+								   Margin="8,0,0,0"
+								   Text="{DynamicResource NetworkToolsViewPortTestFailText}"/>
+					</StackPanel>
+				</Panel>
+			</Grid>
+
+			<Button Margin="0 16 0 0"
+					HorizontalAlignment="Center"
+					MinWidth="120"
+					MinHeight="32"
+					Command="{Binding CheckPortsCommand}">
+				<Panel>
+					<TextBlock Text="{DynamicResource NetworkToolsViewRunTestButtonText}"
+							   IsVisible="{Binding !CheckPortsCommand.IsRunning}"/>
+					<controls:LoadingSpinner Width="16"
+							 Height="16"
+							 Margin="0"
+							 VerticalAlignment="Center"
+							 IsVisible="{Binding CheckPortsCommand.IsRunning}"
+							 Foreground="{DynamicResource AppSecondary}"
+							 StrokeWidth="2"/>
+				</Panel>
+			</Button>
 		</StackPanel>
-		<Grid ColumnDefinitions="auto, auto, auto"
-		      RowDefinitions="*, *, *"
-		      Margin="15 10 0 0">
-			<Label Content="Aki Port: "
-			       FontSize="16"
-			       FontWeight="DemiBold"
-			       Grid.Column="0"
-			       Grid.Row="0"/>
-			<TextBox MinWidth="55" FontSize="16"
-			         Text="{Binding PortResponse.PortsUsed.AkiPort, Mode=TwoWay}"
-			         Grid.Column="1"
-			         Grid.Row="0"/>
-			<ui:SymbolIcon Symbol="{Binding AkiSymbol}"
-			               Foreground="White"
-			               Grid.Column="2"
-			               Grid.Row="0"/>
-			
-			<Label Content="Relay Port: "
-			       FontSize="16"
-			       FontWeight="DemiBold"
-			       Margin="0 10 0 0"
-			       Grid.Column="0"
-			       Grid.Row="1"/>
-			<TextBox MinWidth="55" FontSize="16"
-			         Text="{Binding PortResponse.PortsUsed.RelayPort}"
-			         Margin="0 10 0 0"
-			         Grid.Column="1"
-			         Grid.Row="1"/>
-			<ui:SymbolIcon Symbol="{Binding RelaySymbol}"
-			               Foreground="White"
-			               Grid.Column="2"
-			               Grid.Row="1"/>
-			
-			<Label Content="Nat Port: "
-			       FontSize="16"
-			       FontWeight="DemiBold"
-			       Margin="0 10 0 0"
-			       Grid.Column="0"
-			       Grid.Row="2"/>
-			<TextBox MinWidth="55" FontSize="16"
-			         Text="{Binding PortResponse.PortsUsed.NatPort}"
-			         Margin="0 10 0 0"
-			         Grid.Column="1"
-			         Grid.Row="2"/>
-			<ui:SymbolIcon Symbol="{Binding NatSymbol}"
-			               Foreground="White"
-			               Grid.Column="2"
-			               Grid.Row="2"/>
-		</Grid>
-		<Button Content="Run Port Check"
-		        Margin="0 15 0 0"
-		        HorizontalAlignment="Center"
-		        Command="{Binding CheckPortsCommand}"/>
-	</StackPanel>
+	</controls:Card>
 </UserControl>
