@@ -194,11 +194,7 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
     /// <returns>True if this is a OneDrive directory otherwise false</returns>
     private static bool HasSelectedOneDriveInstallPath(string requestedDirectory)
     {
-        if (requestedDirectory.Contains("OneDrive"))
-        {
-            return true;
-        }
-        return false;
+        return requestedDirectory.Contains("OneDrive");
     }
 
     /// <summary>
