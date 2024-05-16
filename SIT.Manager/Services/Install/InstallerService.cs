@@ -6,7 +6,6 @@ using SIT.Manager.Models.Config;
 using SIT.Manager.Models.Gitea;
 using SIT.Manager.Models.Github;
 using SIT.Manager.Models.Installation;
-using SIT.Manager.Services.Caching;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -47,38 +46,39 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
     /// <summary>
     /// Cleans up the EFT directory
     /// </summary>
+    /// <param name="targetInstallDir">Base directory of where we are installing EFT to so that we can clean it up properly</param>
     /// <returns></returns>
-    private void CleanUpEFTDirectory()
+    private void CleanUpEFTDirectory(string targetInstallDir)
     {
         logger.LogInformation("Cleaning up EFT directory...");
         try
         {
-            string battlEyeDir = Path.Combine(configService.Config.SitEftInstallPath, "BattlEye");
+            string battlEyeDir = Path.Combine(targetInstallDir, "BattlEye");
             if (Directory.Exists(battlEyeDir))
             {
                 Directory.Delete(battlEyeDir, true);
             }
-            string battlEyeExe = Path.Combine(configService.Config.SitEftInstallPath, "EscapeFromTarkov_BE.exe");
+            string battlEyeExe = Path.Combine(targetInstallDir, "EscapeFromTarkov_BE.exe");
             if (File.Exists(battlEyeExe))
             {
                 File.Delete(battlEyeExe);
             }
-            string cacheDir = Path.Combine(configService.Config.SitEftInstallPath, "cache");
+            string cacheDir = Path.Combine(targetInstallDir, "cache");
             if (Directory.Exists(cacheDir))
             {
                 Directory.Delete(cacheDir, true);
             }
-            string consistencyPath = Path.Combine(configService.Config.SitEftInstallPath, "ConsistencyInfo");
+            string consistencyPath = Path.Combine(targetInstallDir, "ConsistencyInfo");
             if (File.Exists(consistencyPath))
             {
                 File.Delete(consistencyPath);
             }
-            string uninstallPath = Path.Combine(configService.Config.SitEftInstallPath, "Uninstall.exe");
+            string uninstallPath = Path.Combine(targetInstallDir, "Uninstall.exe");
             if (File.Exists(uninstallPath))
             {
                 File.Delete(uninstallPath);
             }
-            string logsDirPath = Path.Combine(configService.Config.SitEftInstallPath, "Logs");
+            string logsDirPath = Path.Combine(targetInstallDir, "Logs");
             if (Directory.Exists(logsDirPath))
             {
                 Directory.Delete(logsDirPath, true);
@@ -648,7 +648,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         {
             if (File.Exists(Path.Combine(targetInstallDir, "EscapeFromTarkov_BE.exe")))
             {
-                CleanUpEFTDirectory();
+                CleanUpEFTDirectory(targetInstallDir);
             }
 
             var coreFilesPath = Path.Combine(targetInstallDir, "SITLauncher", "CoreFiles");
@@ -674,8 +674,6 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             string bepinexPath = Path.Combine(targetInstallDir, "SITLauncher");
             await fileService.DownloadFile("BepInEx5.zip", bepinexPath, "https://github.com/BepInEx/BepInEx/releases/download/v5.4.22/BepInEx_x64_5.4.22.0.zip", internalDownloadProgress);
             await fileService.ExtractArchive(Path.Combine(bepinexPath, "BepInEx5.zip"), targetInstallDir, internalExtractionProgress);
-
-            CopyEftSettings(targetInstallDir);
 
             // We don't use index as they might be different from version to version
             string? releaseZipUrl = selectedVersion.Assets.Find(q => q.Name == "StayInTarkov-Release.zip")?.BrowserDownloadUrl;
@@ -759,7 +757,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                 }
             }
 
-            downloadProgress.Report(1);
+            downloadProgress.Report(100);
             extractionProgress.Report(100);
 
             ManagerConfig config = configService.Config;
@@ -774,6 +772,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             throw;
         }
     }
+
     public void CopyEftSettings(string targetInstallDir)
     {
         var sourcePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Battlestate Games", "Escape from Tarkov", "Settings");
