@@ -1,5 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
-using SIT.Manager.Controls;
+using SIT.Manager.Theme.Controls;
 using SIT.Manager.ViewModels.Play;
 
 namespace SIT.Manager.Views.Play;

@@ -2,24 +2,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="clr-namespace:SIT.Manager.Theme.Controls"
 			 xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Settings"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SIT.Manager.Views.Settings.LinuxView"
 			 x:DataType="vm:LinuxViewModel">
-	<Grid RowDefinitions="*,Auto">
-		<ScrollViewer Grid.Row="0">
-			<StackPanel Margin="0,0,12,0">
+	<Panel>
+		<ScrollViewer>
+			<StackPanel Margin="16,8">
 				<!-- TODO: Make the boxes responsive with the selected language -->
+				
 				<!-- Wine Settings-->
-				<TextBlock Text="{DynamicResource LinuxSettingsPageTitle}"
-                           Classes="FrameHeading"
-                           IsVisible="{OnPlatform Default=False, Linux=True}"/>
-				<TextBlock Text="{DynamicResource LinuxSettingsExperimentalWarning}"
-                           TextTrimming="CharacterEllipsis"
-                           Margin="8,0,0,0"
-                           Classes="WarningMessage"/>
-				<Border Classes="StandardFrame">
+				<controls:Card Margin="0,8,8,8">
 					<StackPanel>
+						<TextBlock Text="{DynamicResource LinuxSettingsPageTitle}"
+								   Classes="FrameHeading"/>
+						<TextBlock Text="{DynamicResource LinuxSettingsExperimentalWarning}"
+								   TextTrimming="CharacterEllipsis"
+								   Margin="0,0,0,8"
+								   Classes="WarningMessage"/>
+						
 						<StackPanel Orientation="Horizontal">
 							<TextBlock Text="{DynamicResource LinuxSettingsWinePrefixTitle}" Margin="0,0,10,0" VerticalAlignment="Center"/>
 							<TextBox Watermark="{DynamicResource LinuxSettingsWinePrefixPlaceholder}"
@@ -82,11 +84,12 @@
                                     Command="{Binding DeleteEnvCommand}"/>
 						</Grid>
 					</StackPanel>
-				</Border>
+				</controls:Card>
 
-				<TextBlock Text="{DynamicResource LinuxSettingsGraphicsTitle}" Classes="FrameHeading"/>
-				<Border Classes="StandardFrame">
+				<controls:Card Margin="0,8,8,8">
 					<StackPanel>
+						<TextBlock Text="{DynamicResource LinuxSettingsGraphicsTitle}" Classes="FrameHeading"/>
+
 						<!-- Graphics -->
 						<CheckBox Content="{DynamicResource LinuxSettingsEnableDxvkTitle}"
                                   ToolTip.Tip="{DynamicResource LinuxSettingsEnableDxvkToolTip}"
@@ -114,11 +117,13 @@
                                   IsEnabled="False"/>
 						<!-- TODO: Implement this, see SIT.Manager.Linux.Managers.DgVoodoo2Manager -->
 					</StackPanel>
-				</Border>
+				</controls:Card>
+				
 				<!-- Launch Options -->
-				<TextBlock Text="{DynamicResource LinuxSettingsLaunchOptionsTitle}" Classes="FrameHeading"/>
-				<Border Classes="StandardFrame">
+				<controls:Card Margin="0,8,8,8">
 					<StackPanel>
+						<TextBlock Text="{DynamicResource LinuxSettingsLaunchOptionsTitle}" Classes="FrameHeading"/>
+
 						<CheckBox Content="{DynamicResource LinuxSettingsEnableEsyncTitle}"
                                   ToolTip.Tip="{DynamicResource LinuxSettingsEnableEsyncToolTip}"
                                   IsChecked="{Binding LinuxConfig.IsEsyncEnabled, Mode=TwoWay}"/>
@@ -135,8 +140,8 @@
                                   ToolTip.Tip="{DynamicResource LinuxSettingsEnableGameModeToolTip}"
                                   IsChecked="{Binding LinuxConfig.IsGameModeEnabled, Mode=TwoWay}"/>
 					</StackPanel>
-				</Border>
+				</controls:Card>
 			</StackPanel>
 		</ScrollViewer>
-	</Grid>
+	</Panel>
 </UserControl>

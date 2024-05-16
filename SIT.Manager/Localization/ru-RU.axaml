@@ -72,7 +72,6 @@
 	<system:String x:Key="ToolsManagerLogCheckboxContent">Включить журналы менеджера</system:String>
 
 	<!-- Server Page -->
-	<system:String x:Key="ServerConsoleOutputTitle">Вывод консоли</system:String>
 	<system:String x:Key="ServerButtonStartToolTip">Запустить сервер.</system:String>
 	<system:String x:Key="ServerEditServerConfig">Редактировать конфигурацию сервера</system:String>
 	<system:String x:Key="ServerEditServerConfigButtonToolTip">Редактировать сервер</system:String>
@@ -330,7 +329,6 @@
 	<system:String x:Key="FileServiceProgressExtracting">Извлечение файла %1 (%2)</system:String>
 
 	<!-- Update Page -->
-	<system:String x:Key="UpdatePageUpdateButtonTitle">Начать обновление</system:String>
 	<system:String x:Key="UpdatePageUpdateInfoTextPt1">Менеджер SIT обновляется, пожалуйста, подождите...</system:String>
 	<system:String x:Key="UpdatePageUpdateInfoTextPt2">Приложение перезапустится сразу после завершения обновления</system:String>
 	<system:String x:Key="UpdatePageUpdatingTitle">Обновление</system:String>

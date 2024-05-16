@@ -2,12 +2,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="clr-namespace:SIT.Manager.Theme.Controls"
              xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Installation"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SIT.Manager.Views.Installation.InstallView"
 			 x:DataType="vm:InstallViewModel">
-	<Border Classes="StandardFrame" Grid.Row="0">
-		<Grid RowDefinitions="*, *, *" 
+	<controls:Card Margin="8"
+				   HorizontalAlignment="Center"
+				   VerticalAlignment="Center"
+				   MaxWidth="500">
+		<Grid RowDefinitions="*, *, *"
 			  ColumnDefinitions="*, 2*, *">
 			<!-- Downloading Row -->
 			<TextBlock Grid.Row="0"
@@ -78,5 +82,5 @@
 					   Text="{Binding InstallProgressPercentage, StringFormat={}{0:N2}%}"
 					   VerticalAlignment="Center"/>
 		</Grid>
-	</Border>
+	</controls:Card>
 </UserControl>

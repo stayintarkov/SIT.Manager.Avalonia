@@ -72,7 +72,6 @@
 	<system:String x:Key="ToolsManagerLogCheckboxContent">包括管理器日志</system:String>
 
 	<!-- Server Page -->
-	<system:String x:Key="ServerConsoleOutputTitle">控制台输出</system:String>
 	<system:String x:Key="ServerButtonStartToolTip">启动服务器</system:String>
 	<system:String x:Key="ServerEditServerConfig">编辑服务器配置</system:String>
 	<system:String x:Key="ServerEditServerConfigButtonToolTip">编辑服务器配置文件</system:String>
@@ -331,7 +330,6 @@
 	<system:String x:Key="FileServiceProgressExtracting">提取文件 %1 (%2)</system:String>
 
 	<!-- Update Page -->
-	<system:String x:Key="UpdatePageUpdateButtonTitle">开始更新</system:String>
 	<system:String x:Key="UpdatePageUpdateInfoTextPt1">SIT 管理器正在更新，请稍候...</system:String>
 	<system:String x:Key="UpdatePageUpdateInfoTextPt2">更新完成后应用程序将重新启动</system:String>
 	<system:String x:Key="UpdatePageUpdatingTitle">更新中</system:String>

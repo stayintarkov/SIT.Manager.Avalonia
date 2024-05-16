@@ -2,12 +2,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="clr-namespace:SIT.Manager.Theme.Controls"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Play"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SIT.Manager.Views.Play.CharacterSummaryView"
 			 x:DataType="vm:CharacterSummaryViewModel">
-	<Border Classes="StandardFrame" Margin="0,8">
+	<controls:Card Margin="8">
 		<Grid ColumnDefinitions="Auto, *, Auto">
 			<StackPanel Grid.Column="0">
 				<Image Grid.Column="0"
@@ -61,5 +62,5 @@
 				</Panel>
 			</Button>
 		</Grid>
-	</Border>
+	</controls:Card>
 </UserControl>

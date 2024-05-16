@@ -2,7 +2,7 @@
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace SIT.Manager.Controls;
+namespace SIT.Manager.Theme.Controls;
 
 public class ActivatableUserControl : UserControl
 {

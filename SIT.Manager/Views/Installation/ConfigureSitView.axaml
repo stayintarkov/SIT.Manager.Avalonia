@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
-			 xmlns:controls="clr-namespace:SIT.Manager.Controls"
+			 xmlns:controls="clr-namespace:SIT.Manager.Theme.Controls"
 			 xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Installation"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SIT.Manager.Views.Installation.ConfigureSitView"
@@ -17,9 +17,10 @@
 	<ScrollViewer>
 		<StackPanel Margin="0,0,16,0">
 			<StackPanel>
-				<TextBlock Text="{DynamicResource ConfigureViewVersionSelectionGroupTitle}" Classes="FrameHeading"/>
-				<Border Classes="StandardFrame">
+				<controls:Card Margin="8">
 					<StackPanel>
+						<TextBlock Text="{DynamicResource ConfigureViewVersionSelectionGroupTitle}" Classes="FrameHeading"/>
+
 						<StackPanel>
 							<StackPanel.IsVisible>
 								<MultiBinding Converter="{x:Static BoolConverters.And}">
@@ -144,27 +145,29 @@
 												 Margin="0,8,0,0"
 												 HorizontalAlignment="Center"
 												 VerticalAlignment="Center"
-												 Foreground="{DynamicResource TextControlForeground}"
+												 Foreground="{DynamicResource AppSecondary}"
 												 StrokeWidth="8"/>
 						</StackPanel>
 					</StackPanel>
-				</Border>
+				</controls:Card>
 			</StackPanel>
 
-			<TextBlock Text="{DynamicResource ConfigureViewPersonalizationOptions}" Classes="FrameHeading"/>
-			<Border Classes="StandardFrame">
-				<CheckBox HorizontalAlignment="Left"
-						  Margin="8,0,0,0"
-						  ToolTip.Tip="{DynamicResource ConfigureSitViewEFTSettingsCheckboxTip}"
-						  IsChecked="{Binding CurrentInstallProcessState.CopyEftSettings}">
-					<CheckBox.Content>
-						<Grid ColumnDefinitions="Auto,*">
-							<ui:SymbolIcon Grid.Column="0" Symbol="Settings" Margin="0,0,0,0"/>
-							<TextBlock Grid.Column="1" Text="{DynamicResource ConfigureSitViewEFTSettingsCheckboxTitle}" Margin="5,0,0,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
-						</Grid>
-					</CheckBox.Content>
-				</CheckBox>
-			</Border>
+			<controls:Card Margin="8">
+				<StackPanel>
+					<TextBlock Text="{DynamicResource ConfigureViewPersonalizationOptions}" Classes="FrameHeading"/>
+					<CheckBox HorizontalAlignment="Left"
+							  Margin="8,0,0,0"
+							  ToolTip.Tip="{DynamicResource ConfigureSitViewEFTSettingsCheckboxTip}"
+							  IsChecked="{Binding CurrentInstallProcessState.CopyEftSettings}">
+						<CheckBox.Content>
+							<Grid ColumnDefinitions="Auto,*">
+								<ui:SymbolIcon Grid.Column="0" Symbol="Settings" Margin="0,0,0,0"/>
+								<TextBlock Grid.Column="1" Text="{DynamicResource ConfigureSitViewEFTSettingsCheckboxTitle}" Margin="5,0,0,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+							</Grid>
+						</CheckBox.Content>
+					</CheckBox>
+				</StackPanel>
+			</controls:Card>
 
 			<Grid ColumnDefinitions="*, *"
 				  Margin="4,8">

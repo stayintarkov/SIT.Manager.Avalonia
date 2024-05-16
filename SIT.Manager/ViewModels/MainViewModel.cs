@@ -75,6 +75,8 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
 
     public IRelayCommand CloseButtonCommand { get; }
 
+    public IAsyncRelayCommand UpdateAppCommand { get; }
+
     public MainViewModel(IActionNotificationService actionNotificationService,
         IAppUpdaterService appUpdaterService,
         IBarNotificationService barNotificationService,
@@ -137,6 +139,7 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
         _barNotificationService.BarNotificationReceived += BarNotificationService_BarNotificationReceived;
 
         CloseButtonCommand = new RelayCommand(() => { UpdateAvailable = false; });
+        UpdateAppCommand = new AsyncRelayCommand(UpdateApp);
 
         _managerConfigService.ConfigChanged += ManagerConfigService_ConfigChanged;
     }
@@ -256,11 +259,20 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
         }
     }
 
-    [RelayCommand]
-    private void UpdateButton()
+    private async Task UpdateApp()
     {
-        NavigateToPage(typeof(UpdatePage));
-        UpdateAvailable = false;
+        ContentDialogResult updateRequestResult = await new ContentDialog()
+        {
+            Title = _localizationService.TranslateSource("UpdatePageViewModelUpdateConfirmationTitle"),
+            Content = _localizationService.TranslateSource("UpdatePageViewModelUpdateConfirmationDescription"),
+            PrimaryButtonText = _localizationService.TranslateSource("UpdatePageViewModelButtonYes"),
+            CloseButtonText = _localizationService.TranslateSource("UpdatePageViewModelButtonNo")
+        }.ShowAsync();
+        if (updateRequestResult == ContentDialogResult.Primary)
+        {
+            NavigateToPage(typeof(UpdatePage));
+            UpdateAvailable = false;
+        }
     }
 
     protected override async void OnActivated()
@@ -269,7 +281,14 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
 
         CheckInstallVersion();
 
+#if DEBUG
+        // Don't run update checks in debug builds just assume they exist
+        UpdateAvailable = true;
+        SitUpdateAvailable = true;
+        await Task.Delay(10);
+#else
         await CheckForUpdate();
+#endif
     }
 
     protected override void OnPropertyChanging(PropertyChangingEventArgs e)

@@ -3,17 +3,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
-			 xmlns:controls="clr-namespace:SIT.Manager.Controls"
+			 xmlns:controls="clr-namespace:SIT.Manager.Theme.Controls"
 			 xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Play"
 			 xmlns:pv="clr-namespace:SIT.Manager.Views.Play"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:DataType="vm:ServerSelectionViewModel"
              x:Class="SIT.Manager.Views.Play.ServerSelectionView">
 	<Grid RowDefinitions="Auto, *"
-		  Margin="0,8">
-		<Border Grid.Row="0"
-				Margin="4,0,4,8"
-				Classes="StandardFrame">
+		  Margin="0,8">		  
+		<controls:Card Grid.Row="0"
+					   Margin="8">
 			<Grid ColumnDefinitions="*, Auto">
 				<Grid.Styles>
 					<Style Selector="Button">
@@ -35,7 +34,7 @@
 								   FontSize="18"/>
 				</Button>
 			</Grid>
-		</Border>
+		</controls:Card>
 
 		<ScrollViewer Grid.Row="1"
 					  HorizontalScrollBarVisibility="Disabled"

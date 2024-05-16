@@ -3,6 +3,7 @@
 	<Design.PreviewWith>
 		<Border Padding="20">
 			<StackPanel>
+				<TextBlock Classes="FrameHeading" Text="Warning"/>
 				<TextBlock Classes="ErrorMessage" Text="Error"/>
 				<TextBlock Classes="WarningMessage" Text="Warning"/>
 			</StackPanel>
@@ -10,24 +11,20 @@
 	</Design.PreviewWith>
 
 	<Style Selector="TextBlock.FrameHeading">
-		<Setter Property="VerticalAlignment" Value="Center"/>
-		<Setter Property="Margin" Value="8,0,0,0"/>
+		<Setter Property="FontSize" Value="16"/>
 		<Setter Property="FontWeight" Value="SemiBold"/>
-		<Setter Property="Effect">
-			<Setter.Value>
-				<DropShadowEffect BlurRadius="0" OffsetX="0" OffsetY="3"/>
-			</Setter.Value>
-		</Setter>
+		<Setter Property="Margin" Value="8,0,0,4"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
 	</Style>
 
 	<Style Selector="TextBlock.WarningMessage">
-		<Setter Property="Foreground" Value="Yellow"/>
+		<Setter Property="Foreground" Value="{DynamicResource AppWarning}"/>
 		<Setter Property="TextWrapping" Value="Wrap"/>
 		<Setter Property="VerticalAlignment" Value="Center"/>
 	</Style>
-	
+
 	<Style Selector="TextBlock.ErrorMessage">
-		<Setter Property="Foreground" Value="Red"/>
+		<Setter Property="Foreground" Value="{DynamicResource AppError}"/>
 		<Setter Property="TextWrapping" Value="Wrap"/>
 		<Setter Property="VerticalAlignment" Value="Center"/>
 	</Style>

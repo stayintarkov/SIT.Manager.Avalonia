@@ -2,16 +2,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="clr-namespace:SIT.Manager.Theme.Controls"
 			 xmlns:pv="clr-namespace:SIT.Manager.Views.Play"
 			 xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Play"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="350"
              x:Class="SIT.Manager.Views.Play.CharacterSelectionView"
 			 x:DataType="vm:CharacterSelectionViewModel">
 	<Grid RowDefinitions="Auto, *"
 		  Margin="8">
-		<Border Grid.Row="0"
-				Margin="4,0,4,8"
-				Classes="StandardFrame">
+		<controls:Card Grid.Row="0"
+					   Margin="8">
 			<Grid ColumnDefinitions="Auto, Auto, *, Auto">
 				<Button Grid.Column="0"
 						VerticalAlignment="Center"
@@ -28,12 +28,12 @@
 						Content="{DynamicResource CharacterSelectionViewAddCharacterButtonText}"
 						Command="{Binding CreateCharacterCommand}"/>
 			</Grid>
-		</Border>
+		</controls:Card>
 
 		<ScrollViewer Grid.Row="1"
 					  HorizontalScrollBarVisibility="Disabled"
 					  Margin="0,8,0,0">
-			<StackPanel Margin="0,0,8,0">
+			<StackPanel Margin="0,0,16,0">
 				<ItemsControl ItemsSource="{Binding SavedCharacterList}">
 					<ItemsControl.ItemsPanel>
 						<ItemsPanelTemplate>

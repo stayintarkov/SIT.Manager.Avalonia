@@ -2,18 +2,22 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<Design.PreviewWith>
 		<Border Padding="20">
-			<Border Classes="StandardFrame">
-				<TextBlock Text="StandardFrame"/>
-			</Border>
+			<StackPanel>
+				<Border Classes="StandardFrame"
+						Margin="12">
+					<TextBlock Text="StandardFrame"
+							   HorizontalAlignment="Center"/>
+				</Border>
+			</StackPanel>
 		</Border>
 	</Design.PreviewWith>
 
 	<Style Selector="Border.StandardFrame">
 		<Setter Property="CornerRadius" Value="8"/>
-		<Setter Property="BorderBrush" Value="Gray"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource AppAccent}"/>
 		<Setter Property="BorderThickness" Value="1"/>
 		<Setter Property="Margin" Value="4"/>
 		<Setter Property="Padding" Value="10"/>
-		<Setter Property="Background" Value="Black"/>
+		<Setter Property="Background" Value="{DynamicResource AppPrimary}"/>
 	</Style>
 </Styles>

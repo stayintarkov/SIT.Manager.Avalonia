@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-namespace SIT.Manager.Controls;
+namespace SIT.Manager.Theme.Controls;
 
 public class EmbeddedProcessWindow(Process p) : NativeControlHost
 {
@@ -15,7 +15,7 @@ public class EmbeddedProcessWindow(Process p) : NativeControlHost
 
     public int ExitCode => _p.ExitCode;
 
-    public IntPtr ProcessWindowHandle { get; private set; }
+    public nint ProcessWindowHandle { get; private set; }
 
     protected override void DestroyNativeControlCore(IPlatformHandle control)
     {
@@ -65,11 +65,11 @@ public class EmbeddedProcessWindow(Process p) : NativeControlHost
             HandleRef handleRef = new(null, ProcessWindowHandle);
 
             // set the new style of the schild window
-            WindowsApi.SetWindowLongPtr(handleRef, -16, (IntPtr) style);
+            WindowsApi.SetWindowLongPtr(handleRef, -16, (nint) style);
 
             // set the parent of the ProcessWindowHandle to be the main window's handle
-            IntPtr parentHandle = ((Window) e.Root).TryGetPlatformHandle()?.Handle ?? 0;
-            if (parentHandle != IntPtr.Zero)
+            nint parentHandle = ((Window) e.Root).TryGetPlatformHandle()?.Handle ?? 0;
+            if (parentHandle != nint.Zero)
             {
                 WindowsApi.SetParent(ProcessWindowHandle, parentHandle);
             }
@@ -92,7 +92,7 @@ public class EmbeddedProcessWindow(Process p) : NativeControlHost
             if (OperatingSystem.IsWindows())
             {
                 // Wait until p.MainWindowHandle is non-zero
-                while (_p.MainWindowHandle == IntPtr.Zero)
+                while (_p.MainWindowHandle == nint.Zero)
                 {
                     // Discard cached information about the process because MainWindowHandle might be cached.
                     _p.Refresh();
