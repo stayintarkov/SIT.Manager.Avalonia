@@ -13,7 +13,7 @@
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 
-		<TabControl Margin="5">
+		<TabControl Margin="2">
 			<TabItem Header="{DynamicResource SettingsLauncherSettingsTitle}">
 				<sv:LauncherView/>
 			</TabItem>

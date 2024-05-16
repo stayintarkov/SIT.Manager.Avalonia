@@ -6,9 +6,8 @@
 			 xmlns:tv="clr-namespace:SIT.Manager.Views.Tools"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SIT.Manager.Views.ToolsPage"
-			 x:DataType="vm:ToolsPageViewModel"
-			 Background="{DynamicResource ApplicationPageBackgroundThemeBrush}">
-	<TabControl Margin="2" HorizontalAlignment="Center">
+			 x:DataType="vm:ToolsPageViewModel">
+	<TabControl Margin="2">
 		<TabItem Header="Localize me 1">
 			<tv:GeneralToolsView/>
 		</TabItem>
