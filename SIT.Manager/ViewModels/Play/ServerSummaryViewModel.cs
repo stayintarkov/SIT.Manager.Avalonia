@@ -153,9 +153,10 @@ public partial class ServerSummaryViewModel : ObservableRecipient
 
     private async void DispatcherTimer_Tick(object? sender, EventArgs e)
     {
+        _dispatcherTimer.Stop();
+
         try
         {
-            _dispatcherTimer.Stop();
             Ping = await _serverService.GetPingAsync(_server);
             _logger.LogDebug("{Name}'s ping is {Ping}ms", Name, Ping);
         }
@@ -164,7 +165,8 @@ public partial class ServerSummaryViewModel : ObservableRecipient
             Ping = -1;
             _logger.LogWarning(ex, "Couldn't evaluate ping from server {Name}", Name);
         }
-        finally
+
+        if (IsActive)
         {
             _dispatcherTimer.Start();
         }
@@ -210,6 +212,8 @@ public partial class ServerSummaryViewModel : ObservableRecipient
 
     public async Task RefreshServerData()
     {
+        _dispatcherTimer.Stop();
+
         try
         {
             _server = await _serverService.GetAkiServerAsync(_server.Address);

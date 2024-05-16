@@ -361,7 +361,8 @@
 
 	<!-- Install - Configure Sit View -->
 	<system:String x:Key="ConfigureSitViewLoadingVersionSelectionText">Определение доступных версий SIT, пожалуйста, подождите...</system:String>
-	<system:String x:Key="ConfigureSitViewVersionSelectionErrorMessage">Не удалось определить доступные версии SIT...</system:String>
+	<system:String x:Key="ConfigureSitViewVersionSelectionNoneAvailableErrorMessage">No version of SIT available for your current version of EFT. Please make sure your EFT is up to date</system:String>
+	<system:String x:Key="ConfigureSitViewVersionSelectionGenericErrorMessage">Не удалось определить доступные версии SIT...</system:String>
 	<system:String x:Key="ConfigureSitViewEFTChangeInstallPathToolTip">Изменить путь установки SIT EFT.</system:String>
 	<system:String x:Key="ConfigureSitViewEFTInstallPathPlaceholder">Путь установки SIT EFT...</system:String>
 	<system:String x:Key="ConfigureSitViewEFTInstallPathTitle">Путь установки SIT EFT:</system:String>
@@ -376,6 +377,7 @@
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorTitle">Ошибка выбора местоположения</system:String>
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorDescription">Вы выбрали ту же папку, что и установка BSG EFT, выберите другое местоположение для установки SIT</system:String>
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionSPTErrorDescription">Вы выбрали ту же папку, что и существующая установка SPT. Выберите другое местоположение для установки SIT.</system:String>
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionOneDriveErrorDescription">We think you've selected your 'OneDrive' folder which is known to cause issue, please choose a different location to install SIT to</system:String>
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorOk">Ок</system:String>
 
 	<!-- Install - Install View -->

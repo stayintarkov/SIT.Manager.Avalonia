@@ -361,7 +361,8 @@
 
 	<!-- Install - Configure Sit View -->
 	<system:String x:Key="ConfigureSitViewLoadingVersionSelectionText">正在確定可用的 SIT 版本，請稍候...</system:String>
-	<system:String x:Key="ConfigureSitViewVersionSelectionErrorMessage">無法確定可用的 SIT 服务器版本...</system:String>
+	<system:String x:Key="ConfigureSitViewVersionSelectionNoneAvailableErrorMessage">No version of SIT available for your current version of EFT. Please make sure your EFT is up to date</system:String>
+	<system:String x:Key="ConfigureSitViewVersionSelectionGenericErrorMessage">無法確定可用的 SIT 服务器版本...</system:String>
 	<system:String x:Key="ConfigureSitViewEFTChangeInstallPathToolTip">更改 EFT 的安裝路徑。</system:String>
 	<system:String x:Key="ConfigureSitViewEFTSettingsButtonChangeTitle">更改</system:String>
 	<system:String x:Key="ConfigureSitViewEFTInstallPathPlaceholder">SIT EFT 安裝路徑...</system:String>
@@ -376,6 +377,7 @@
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorTitle">位置選擇錯誤</system:String>
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorDescription">您選擇了與 BSG EFT 安裝相同的目錄，請選擇另一個位置以安裝 SIT</system:String>
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionSPTErrorDescription">您選擇了與現有的 SPT 安裝相同的文件夾，請選擇其他位置進行 SIT 安裝。</system:String>
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionOneDriveErrorDescription">We think you've selected your 'OneDrive' folder which is known to cause issue, please choose a different location to install SIT to</system:String>
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorOk">好的</system:String>
 
 	<!-- Install - Install View -->
