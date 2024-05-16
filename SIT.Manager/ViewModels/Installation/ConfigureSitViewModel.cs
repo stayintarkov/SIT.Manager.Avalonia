@@ -44,6 +44,12 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
     [ObservableProperty]
     private bool _hasMirrorsAvailable = false;
 
+    [ObservableProperty]
+    private bool _showNoAvailableSitVersionSelectionError = false;
+
+    [ObservableProperty]
+    private bool _showGenericSitVersionSelectionError = false;
+
     public ObservableCollection<SitInstallVersion> AvailableVersions { get; } = [];
     public ObservableCollection<KeyValuePair<string, string>> AvailableMirrors { get; } = [];
 
@@ -90,6 +96,18 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
                 {
                     Title = _localizationService.TranslateSource("ConfigureSitViewModelLocationSelectionErrorTitle"),
                     Content = _localizationService.TranslateSource("ConfigureSitViewModelLocationSelectionSPTErrorDescription"),
+                    PrimaryButtonText = _localizationService.TranslateSource("ConfigureSitViewModelLocationSelectionErrorOk")
+                }.ShowAsync();
+                usingInvalidLocatiion = true;
+            }
+
+            if (HasSelectedOneDriveInstallPath(CurrentInstallProcessState.EftInstallPath))
+            {
+                // Using OneDrive install location which is known to cause issues so we don't want this as a location for the SIT install.
+                await new ContentDialog()
+                {
+                    Title = _localizationService.TranslateSource("ConfigureSitViewModelLocationSelectionErrorTitle"),
+                    Content = _localizationService.TranslateSource("ConfigureSitViewModelLocationSelectionOneDriveErrorDescription"),
                     PrimaryButtonText = _localizationService.TranslateSource("ConfigureSitViewModelLocationSelectionErrorOk")
                 }.ShowAsync();
                 usingInvalidLocatiion = true;
@@ -153,11 +171,13 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
             }
             else
             {
+                ShowNoAvailableSitVersionSelectionError = true;
                 _logger.LogWarning("Available SIT version count {availableVersions} and 0 marked as available to use so will display error message", availableVersions.Count);
             }
         }
         catch (Exception ex)
         {
+            ShowGenericSitVersionSelectionError = true;
             _logger.LogError(ex, "Issue trying to determine versions available to install for SIT");
         }
 
@@ -166,6 +186,15 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
         // Validate the configuration to allow the user to start the installation without having to change the mirror
         // This way the user is able to use the first available mirror without having to change it
         ValidateConfiguration();
+    }
+
+    /// <summary>
+    /// Check if the currently selected EFT install directory has indicators of a OneDrive install lication and if so return true, otherwise return false
+    /// </summary>
+    /// <returns>True if this is a OneDrive directory otherwise false</returns>
+    private static bool HasSelectedOneDriveInstallPath(string requestedDirectory)
+    {
+        return requestedDirectory.Contains("OneDrive");
     }
 
     /// <summary>
@@ -200,15 +229,6 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
     {
         IsConfigurationValid = true;
 
-        if (CurrentInstallProcessState.UsingBsgInstallPath)
-        {
-            if (CurrentInstallProcessState.BsgInstallPath == CurrentInstallProcessState.EftInstallPath)
-            {
-                IsConfigurationValid = false;
-                return;
-            }
-        }
-
         if (string.IsNullOrEmpty(CurrentInstallProcessState.EftInstallPath))
         {
             IsConfigurationValid = false;
@@ -233,7 +253,23 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
             return;
         }
 
+        if (IsVersionSelectionLoading)
+        {
+            IsConfigurationValid = false;
+            return;
+        }
+
+        if (CurrentInstallProcessState.BsgInstallPath == CurrentInstallProcessState.EftInstallPath)
+        {
+            IsConfigurationValid = false;
+            return;
+        }
         if (HasSelectedSPTInstallPath(CurrentInstallProcessState.EftInstallPath))
+        {
+            IsConfigurationValid = false;
+            return;
+        }
+        if (HasSelectedOneDriveInstallPath(CurrentInstallProcessState.EftInstallPath))
         {
             IsConfigurationValid = false;
             return;
@@ -254,6 +290,10 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
                 return;
             }
         }
+
+        // Reset the error messages
+        ShowNoAvailableSitVersionSelectionError = false;
+        ShowGenericSitVersionSelectionError = false;
 
         OverridenBsgInstallPath = CurrentInstallProcessState.BsgInstallPath != CurrentInstallProcessState.EftInstallPath;
         await FetchVersionAndMirrorMatrix();
