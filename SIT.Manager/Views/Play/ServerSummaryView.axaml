@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
-			 xmlns:controls="clr-namespace:SIT.Manager.Controls"
+			 xmlns:controls="clr-namespace:SIT.Manager.Theme.Controls"
 			 xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Play"
              mc:Ignorable="d"
 			 d:DesignWidth="800"
@@ -14,8 +14,7 @@
 		<Geometry x:Key="CellularDataIcon">M16 8c.552 0 1 .446 1 .995v10.01c0 .55-.448.995-1 .995s-1-.446-1-.995V8.995c0-.55.448-.995 1-.995Zm-4 3a1 1 0 0 1 1 1v7a1 1 0 1 1-2 0v-7a1 1 0 0 1 1-1Zm-4 3c.552 0 1 .445 1 .994v4.012c0 .549-.448.994-1 .994s-1-.445-1-.994v-4.012c0-.549.448-.994 1-.994Zm-4 3c.552 0 1 .44 1 .984v1.032A.992.992 0 0 1 4 20c-.552 0-1-.44-1-.984v-1.032A.992.992 0 0 1 4 17Z</Geometry>
 	</UserControl.Resources>
 
-	<Border Classes="StandardFrame"
-			Background="Black">
+	<controls:Card Margin="8">
 		<Grid ColumnDefinitions="Auto, *, Auto"
 			  VerticalAlignment="Center">
 			<Image Grid.Column="0"
@@ -90,9 +89,9 @@
 									 Margin="4,8"
 									 HorizontalAlignment="Center"
 									 VerticalAlignment="Center"
-									 Foreground="{DynamicResource TextControlForeground}"
+									 Foreground="{DynamicResource AppSecondary}"
 									 StrokeWidth="4"/>
-			
+
 			<StackPanel Grid.Column="2"
 						IsVisible="{Binding !IsLoading}"
 						VerticalAlignment="Center">
@@ -108,5 +107,5 @@
 				</TextBlock>
 			</StackPanel>
 		</Grid>
-	</Border>
+	</controls:Card>
 </UserControl>

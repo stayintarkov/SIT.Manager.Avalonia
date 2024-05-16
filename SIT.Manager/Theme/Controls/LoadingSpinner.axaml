@@ -1,10 +1,10 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"			 
-             xmlns:controls="clr-namespace:SIT.Manager.Controls"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:SIT.Manager.Theme.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="SIT.Manager.Controls.LoadingSpinner">
+             x:Class="SIT.Manager.Theme.Controls.LoadingSpinner">
 	<UserControl.Styles>
 		<Style Selector="controls|LoadingSpinner Arc">
 			<Style.Animations>
@@ -37,7 +37,7 @@
 				</Animation>
 			</Style.Animations>
 
-			<Setter Property="Foreground" Value="{DynamicResource TextControlForeground}" />
+			<Setter Property="Foreground" Value="{DynamicResource AppSecondary}" />
 
 			<Setter Property="Template">
 				<ControlTemplate>

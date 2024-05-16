@@ -1,7 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 
-namespace SIT.Manager.Controls;
+namespace SIT.Manager.Theme.Controls;
 
 public partial class LoadingSpinner : UserControl
 {

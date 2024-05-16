@@ -2,53 +2,71 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:controls="clr-namespace:SIT.Manager.Controls"
+			 xmlns:controls="clr-namespace:SIT.Manager.Theme.Controls"
 			 xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Play"
-			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"			 
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:DataType="vm:DirectConnectViewModel"
              x:Class="SIT.Manager.Views.Play.DirectConnectView">
-	<Grid Margin="10" >
-		<StackPanel>
-			<!--Address box-->
-			<Label Content="{DynamicResource DirectConnectViewAddressBoxTitle}" Margin="8 8 8 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
-			<TextBox Name="AddressBox" Text="{Binding LastServer, Mode=TwoWay}" MinWidth="300" Margin="8 4 8 8" HorizontalAlignment="Left" Watermark="{DynamicResource DirectConnectViewEnterServerAddressPlaceholder}" PasswordChar="*">
-				<TextBox.RevealPassword>
-					<MultiBinding Converter="{x:Static BoolConverters.Or}">
-						<Binding Path="#AddressBox.IsFocused"/>
-						<Binding Path="!ManagerConfig.HideIpAddress"/>
-					</MultiBinding>
-				</TextBox.RevealPassword>
-			</TextBox>
-			<!--Username box-->
-			<Label Content="{DynamicResource DirectConnectViewUsernameBoxTitle}" Margin="8 8 8 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
-			<TextBox Name="UsernameBox" Text="{Binding Username, Mode=TwoWay}" MinWidth="150" Margin="8 4 8 8" HorizontalAlignment="Left" Watermark="{DynamicResource DirectConnectViewEnterUserNamePlaceholder}"/>
-			<!--Password box-->
-			<Label Content="{DynamicResource DirectConnectViewPasswordBoxTitle}" Margin="10 10 10 0" FontFamily="{StaticResource BenderFont}" FontStyle="Oblique"/>
-			<TextBox Name="PasswordBox" Text="{Binding Password, Mode=TwoWay}" MinWidth="150" Margin="8 4 8 8" HorizontalAlignment="Left" PasswordChar="●" Watermark="{DynamicResource DirectConnectViewEnterPasswordPlaceholder}"/>
-			<CheckBox Name="RememberMeCheck" Content="{DynamicResource DirectConnectViewRememberMeCheckBoxTitle}" Margin="8" IsChecked="{Binding RememberMe}"/>
+	<Grid Margin="10"
+		  MaxHeight="360"
+		  MaxWidth="600"
+		  HorizontalAlignment="Left"
+		  VerticalAlignment="Top">
+		<controls:Card>
+			<ScrollViewer>
+				<StackPanel Margin="0,0,8,0">
+					<!--Address box-->
+					<Label Content="{DynamicResource DirectConnectViewAddressBoxTitle}" Margin="8 8 8 0" FontWeight="Bold" FontSize="14"/>
+					<TextBox Name="AddressBox" Text="{Binding LastServer, Mode=TwoWay}" MinWidth="300" Margin="8 4 8 8" HorizontalAlignment="Left" Watermark="{DynamicResource DirectConnectViewEnterServerAddressPlaceholder}" PasswordChar="*">
+						<TextBox.RevealPassword>
+							<MultiBinding Converter="{x:Static BoolConverters.Or}">
+								<Binding Path="#AddressBox.IsFocused"/>
+								<Binding Path="!ManagerConfig.HideIpAddress"/>
+							</MultiBinding>
+						</TextBox.RevealPassword>
+					</TextBox>
+					<!--Username box-->
+					<Label Content="{DynamicResource DirectConnectViewUsernameBoxTitle}" Margin="8 8 8 0" FontWeight="Bold" FontSize="14"/>
+					<TextBox Name="UsernameBox" Text="{Binding Username, Mode=TwoWay}" MinWidth="300" Margin="8 4 8 8" HorizontalAlignment="Left" Watermark="{DynamicResource DirectConnectViewEnterUserNamePlaceholder}"/>
+					<!--Password box-->
+					<Label Content="{DynamicResource DirectConnectViewPasswordBoxTitle}" Margin="10 10 10 0" FontWeight="Bold" FontSize="14"/>
+					<TextBox Name="PasswordBox" Text="{Binding Password, Mode=TwoWay}" MinWidth="300" Margin="8 4 8 8" HorizontalAlignment="Left" PasswordChar="●" Watermark="{DynamicResource DirectConnectViewEnterPasswordPlaceholder}"/>
+					<CheckBox Name="RememberMeCheck" Content="{DynamicResource DirectConnectViewRememberMeCheckBoxTitle}" Margin="8" IsChecked="{Binding RememberMe}"/>
+					<Grid ColumnDefinitions="*, auto" Margin="8">
+						<Button Name="ConnectButton"
+								Grid.Column="0"
+								HorizontalAlignment="Stretch"
+								Command="{Binding ConnectToServerCommand}"
+								Content="{DynamicResource DirectConnectViewConnectButtonTitle}"
+								ToolTip.Tip="{DynamicResource DirectConnectViewConnectButtonTitleToolTip}"
+								Margin="0,0,4,0"></Button>
+						<Button Name="QuickPlayButton"
+								HorizontalAlignment="Stretch"
+								Grid.Column="1"
+								Command="{Binding QuickPlayCommand}"
+								ToolTip.Tip="{DynamicResource DirectConnectViewStartServerAndConnectButtonTitleToolTip}"
+								Margin="4,0,0,0">
+							<Button.IsVisible>
+								<MultiBinding Converter="{x:Static BoolConverters.And}">
+									<Binding Path="ManagerConfig.AkiServerPath" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
+									<Binding Path="!IsLocalServerRunning"/>
+								</MultiBinding>
+							</Button.IsVisible>
 
-			<StackPanel Orientation="Horizontal" Margin="8">
-				<Button Name="ConnectButton" 
-						Command="{Binding ConnectToServerCommand}" 
-						Content="{DynamicResource DirectConnectViewConnectButtonTitle}" 
-						ToolTip.Tip="{DynamicResource DirectConnectViewConnectButtonTitleToolTip}"
-						Margin="0,0,4,0"/>
-				<Button Name="QuickPlayButton" 
-						Command="{Binding QuickPlayCommand}" 
-						ToolTip.Tip="{DynamicResource DirectConnectViewStartServerAndConnectButtonTitleToolTip}"
-						Margin="4,0,0,0">
-					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="{Binding QuickPlayText}"/>
-						<controls:LoadingSpinner Width="12"
-												 Height="12"
-												 Margin="4,0,0,0"
-												 VerticalAlignment="Center"
-												 IsVisible="{Binding QuickPlayCommand.IsRunning}"
-												 Foreground="{DynamicResource TextControlForeground}"
-												 StrokeWidth="2"/>
-					</StackPanel>
-				</Button>
-			</StackPanel>
-		</StackPanel>
+							<StackPanel Orientation="Horizontal">
+								<TextBlock Text="{Binding QuickPlayText}"/>
+								<controls:LoadingSpinner Width="12"
+														 Height="12"
+														 Margin="4,0,0,0"
+														 VerticalAlignment="Center"
+														 IsVisible="{Binding QuickPlayCommand.IsRunning}"
+														 Foreground="{DynamicResource AppSecondary}"
+														 StrokeWidth="2"/>
+							</StackPanel>
+						</Button>
+					</Grid>
+				</StackPanel>
+			</ScrollViewer>
+		</controls:Card>
 	</Grid>
 </UserControl>

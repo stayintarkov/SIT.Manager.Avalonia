@@ -31,7 +31,7 @@ public partial class ServerPageViewModel : ObservableRecipient
     private readonly IFileService _fileService;
 
     private readonly SolidColorBrush cachedColorBrush = new(Color.FromRgb(255, 255, 255));
-    private FontFamily cachedFontFamily = FontFamily.Parse("Bender");
+    private FontFamily cachedFontFamily = FontFamily.Default;
 
     [ObservableProperty]
     private Symbol _startServerButtonSymbolIcon = Symbol.Play;

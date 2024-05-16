@@ -72,7 +72,6 @@
 	<system:String x:Key="ToolsManagerLogCheckboxContent">Включить журналы менеджера</system:String>
 
 	<!-- Server Page -->
-	<system:String x:Key="ServerConsoleOutputTitle">Вывод консоли</system:String>
 	<system:String x:Key="ServerButtonStartToolTip">Запустить сервер.</system:String>
 	<system:String x:Key="ServerEditServerConfig">Редактировать конфигурацию сервера</system:String>
 	<system:String x:Key="ServerEditServerConfigButtonToolTip">Редактировать сервер</system:String>
@@ -87,8 +86,8 @@
 	<system:String x:Key="SettingsLookForUpdatesTitleToolTip">Автоматически проверяет обновления при открытии лаунчера.</system:String>
 	<system:String x:Key="SettingsHideIpAddressTitle">Скрыть IP-адрес</system:String>
 	<system:String x:Key="SettingsHideIpAddressToolTip">Скрывает IP-адрес звездочками в поле IP-адреcа.</system:String>
-	<system:String x:Key="SettingsEnableDeveloperMode">Включить режим разработчика</system:String>
-	<system:String x:Key="SettingsEnableDeveloperModeToolTip">Позволяет разработчикам/тестерам выпускать SIT и SIT-сервер для целей тестирования</system:String>
+	<system:String x:Key="SettingsEnableTestMode">Show SIT Test Versions Only</system:String>
+	<system:String x:Key="SettingsEnableTestModeToolTip">Will show only test releases of SIT and AKI server for installation</system:String>
 	<system:String x:Key="SettingsLanguageTitle">Язык:</system:String>
 	<system:String x:Key="SettingsLanguageTitleToolTip">Переводит весь лаунчер на ваш язык, выберите свой язык!</system:String>
 	<system:String x:Key="SettingsAccentColorTitle">Цвет акцента:</system:String>
@@ -102,8 +101,8 @@
 	<system:String x:Key="SettingsLinuxWineRunnerToolTip">Установите используемую запускалку Wine для EFT</system:String>
 	<system:String x:Key="SettingsEFTSettingsTitle">Настройки EFT</system:String>
 	<system:String x:Key="SettingsEFTSettingsButtonChangeTitle">Сменить</system:String>
-	<system:String x:Key="SettingsEFTInstallPathTitle">SIT EFT Path:</system:String>
-	<system:String x:Key="SettingsEFTChangeInstallPathToolTip">Change the SIT EFT Install Path.</system:String>
+	<system:String x:Key="SettingsEFTInstallPathTitle">Путь к SIT EFT:</system:String>
+	<system:String x:Key="SettingsEFTChangeInstallPathToolTip">Изменить путь установки SIT EFT.</system:String>
 	<system:String x:Key="SettingsEFTVersionTitle">Версия EFT:</system:String>
 	<system:String x:Key="SettingsSITVersionTitle">Версия SIT:</system:String>
 	<system:String x:Key="SettingsSPTAKITitle">Настройки SPT-AKI</system:String>
@@ -113,7 +112,6 @@
 	<system:String x:Key="SettingsServerConsoleTitle">Консоль Сервера</system:String>
 	<system:String x:Key="SettingsServerConsoleFontFamilyTitle">Шрифт:</system:String>
 	<system:String x:Key="SettingsServerConsoleFontColorTitle">Цвет Шрифта:</system:String>
-	<system:String x:Key="SettingsManagerVersionTitle">Версия Менеджера (Лаунчера):</system:String>
 
 	<!-- EftView -->
 	<system:String x:Key="EftViewBsgEftInstallPath">Путь установки BSG EFT:</system:String>
@@ -265,8 +263,8 @@
 	<system:String x:Key="SettingsPageViewModelConfigInformationEFTDescription">Путь установки EFT установлен на '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">Путь установки SPT-AKI установлен на '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigErrorSPTAKI">Выбранная папка недействительна. Убедитесь, что это правильная папка сервера SPT-AKI.</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">Ошибка включения режима разработчика</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">Невозможно включить режим разработчика, так-как у вас %1 несовместимые моды все еще включены</system:String>
+	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">Enable Test Mode Failure</system:String>
+	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">Can't enable test mode as you have %1 incompatible mods still enabled</system:String>
 	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorButtonOk">Ок</system:String>
 
 	<!-- Server Page ViewModel -->
@@ -331,7 +329,6 @@
 	<system:String x:Key="FileServiceProgressExtracting">Извлечение файла %1 (%2)</system:String>
 
 	<!-- Update Page -->
-	<system:String x:Key="UpdatePageUpdateButtonTitle">Начать обновление</system:String>
 	<system:String x:Key="UpdatePageUpdateInfoTextPt1">Менеджер SIT обновляется, пожалуйста, подождите...</system:String>
 	<system:String x:Key="UpdatePageUpdateInfoTextPt2">Приложение перезапустится сразу после завершения обновления</system:String>
 	<system:String x:Key="UpdatePageUpdatingTitle">Обновление</system:String>
@@ -364,7 +361,8 @@
 
 	<!-- Install - Configure Sit View -->
 	<system:String x:Key="ConfigureSitViewLoadingVersionSelectionText">Определение доступных версий SIT, пожалуйста, подождите...</system:String>
-	<system:String x:Key="ConfigureSitViewVersionSelectionErrorMessage">Не удалось определить доступные версии SIT...</system:String>
+	<system:String x:Key="ConfigureSitViewVersionSelectionNoneAvailableErrorMessage">No version of SIT available for your current version of EFT. Please make sure your EFT is up to date</system:String>
+	<system:String x:Key="ConfigureSitViewVersionSelectionGenericErrorMessage">Не удалось определить доступные версии SIT...</system:String>
 	<system:String x:Key="ConfigureSitViewEFTChangeInstallPathToolTip">Изменить путь установки SIT EFT.</system:String>
 	<system:String x:Key="ConfigureSitViewEFTInstallPathPlaceholder">Путь установки SIT EFT...</system:String>
 	<system:String x:Key="ConfigureSitViewEFTInstallPathTitle">Путь установки SIT EFT:</system:String>
@@ -372,8 +370,6 @@
 	<system:String x:Key="ConfigureSitViewEFTPathWarningNoPath">В настоящее время используется местоположение установки BSG EFT. Пожалуйста, установите EFT в другое место, чтобы избежать возможных проблем с SIT</system:String>
 	<system:String x:Key="ConfigureSitViewMirrorSelectionTitle">Выберите зеркало для использования:</system:String>
 	<system:String x:Key="ConfigureSitViewVersionSelectionTitle">Версия для установки:</system:String>
-	<system:String x:Key="ConfigureSitViewRecommendedModsTitle">Рекомендуемые моды</system:String>
-	<system:String x:Key="ConfigureSitViewRecommendedModsDescription">Выберите из доступных модов, которые мы рекомендуем вам установить вместе с SIT</system:String>
 	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTip">Импортировать в SIT настройки из EFT</system:String>
 	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTitle">Импортировать настройки EFT в SIT</system:String>
 
@@ -381,6 +377,7 @@
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorTitle">Ошибка выбора местоположения</system:String>
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorDescription">Вы выбрали ту же папку, что и установка BSG EFT, выберите другое местоположение для установки SIT</system:String>
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionSPTErrorDescription">Вы выбрали ту же папку, что и существующая установка SPT. Выберите другое местоположение для установки SIT.</system:String>
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionOneDriveErrorDescription">We think you've selected your 'OneDrive' folder which is known to cause issue, please choose a different location to install SIT to</system:String>
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorOk">Ок</system:String>
 
 	<!-- Install - Install View -->
@@ -426,6 +423,7 @@
 
 	<!-- CharacterSelectionView -->
 	<system:String x:Key="CharacterSelectionViewBackButtonText">Назад</system:String>
+	<system:String x:Key="CharacterSelectionViewShowSavedProfilesCheckbox">Show only saved profiles</system:String>
 	<system:String x:Key="CharacterSelectionViewAddCharacterButtonText">Добавить персонажа</system:String>
 
 	<!-- CharacterSummaryView -->
@@ -531,5 +529,8 @@
 	<!-- MainViewModel -->
 	<system:String x:Key="MainViewModelUpdateErrorTitle">Ошибка</system:String>
 	<system:String x:Key="MainViewModelUpdateErrorMessage">Ошибка при проверке обновлений</system:String>
-	
+
+	<!-- HelpDialog -->
+	<system:String x:Key="HelpDialogDescription">Вы уверены, что хотите открыть документацию SIT (%1) в вашем браузере по умолчанию?</system:String>
+
 </ResourceDictionary>

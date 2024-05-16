@@ -39,7 +39,7 @@
 		<StackPanel Grid.Row="1"
 					Margin="5">
 			<TextBlock Text="{DynamicResource LocationEditorLocationTitle}"
-					   FontFamily="{StaticResource BenderFont}"
+					   
 					   Margin="0,5"/>
 			<TextBox Name="LocationTextBox"
 					 Watermark="{DynamicResource LocationEditorLocationTextBoxPlaceholder}"
@@ -129,12 +129,12 @@
 						<StackPanel Orientation="Horizontal">
 							<StackPanel>
 								<TextBlock Text="{DynamicResource LocationEditorSpawnWavesText}"
-										   FontFamily="{StaticResource BenderFont}"
+										   
 										   Margin="5"/>
 								<ListBox Name="WaveList"
 										 Margin="5,0,5,5"
 										 Width="150"
-										 ItemsSource="{Binding Location.waves, Mode=TwoWay}"
+										 ItemsSource="{Binding Location.Waves, Mode=TwoWay}"
 										 SelectedItem="{Binding SelectedWave}"
 										 VerticalAlignment="Top">
 									<ListBox.ItemTemplate>
@@ -159,7 +159,7 @@
 								</StackPanel.Styles>
 
 							<TextBlock Text="{DynamicResource LocationEditorBotPresetText}"
-	   FontFamily="{StaticResource BenderFont}"
+	   
 	   Margin="5"/>
 							<ComboBox Margin="0,0,0,5"
 									  Name="BotPresetCombo"
@@ -169,7 +169,7 @@
 									  ToolTip.Tip="{DynamicResource LocationEditorBotPresetToolTip}"/>
 
 							<TextBlock Text="{DynamicResource LocationEditorBotSideText}"
-									   FontFamily="{StaticResource BenderFont}"
+									   
 									   Margin="5"/>
 							<ComboBox Margin="0,0,0,5"
 									  Width="160"
@@ -178,7 +178,7 @@
 									  ToolTip.Tip="{DynamicResource LocationEditorBotSideToolTip}"/>
 
 							<TextBlock Text="{DynamicResource LocationEditorSpawnPointsText}"
-									   FontFamily="{StaticResource BenderFont}"
+									   
 									   Margin="5"/>
 							<ComboBox Margin="0,0,0,5"
 									  Width="160"
@@ -188,7 +188,7 @@
 							</ComboBox>
 
 							<TextBlock Text="{DynamicResource LocationEditorWildSpawnTypeText}"
-									   FontFamily="{StaticResource BenderFont}"
+									   
 									   Margin="5"/>
 							<ComboBox Margin="0,0,0,5"
 									  Width="160"
@@ -197,28 +197,28 @@
 
 							<CheckBox Margin="0,5"
 									  Content="{DynamicResource LocationEditorIsPlayersContent}"
-									  IsChecked="{Binding SelectedWave.isPlayers}"
+									  IsChecked="{Binding SelectedWave.IsPlayers}"
 									  ToolTip.Tip="{DynamicResource LocationEditorIsPlayersToolTip}"/>
 
 							<ui:NumberBox Header="{DynamicResource LocationEditorNumberHeader}"
 										  HeaderTemplate="{StaticResource BoxHeaderTemplate}"
-										  Value="{Binding SelectedWave.number, Mode=TwoWay}"
+										  Value="{Binding SelectedWave.Number, Mode=TwoWay}"
 										  ToolTip.Tip="{DynamicResource LocationEditorNumberToolTip}"/>
 							<ui:NumberBox Header="{DynamicResource LocationEditorSlotsMaxHeader}"
 										  HeaderTemplate="{StaticResource BoxHeaderTemplate}"
-										  Value="{Binding SelectedWave.slots_max, Mode=TwoWay}"
+										  Value="{Binding SelectedWave.SlotsMax, Mode=TwoWay}"
 										  ToolTip.Tip="{DynamicResource LocationEditorSlotsMaxToolTip}"/>
 							<ui:NumberBox Header="{DynamicResource LocationEditorSlotsMinHeader}"
 										  HeaderTemplate="{StaticResource BoxHeaderTemplate}"
-										  Value="{Binding SelectedWave.slots_min, Mode=TwoWay}"
+										  Value="{Binding SelectedWave.SlotsMin, Mode=TwoWay}"
 										  ToolTip.Tip="{DynamicResource LocationEditorSlotsMinToolTip}"/>
 							<ui:NumberBox Header="{DynamicResource LocationEditorTimeMaxHeader}"
 										  HeaderTemplate="{StaticResource BoxHeaderTemplate}"
-										  Value="{Binding SelectedWave.time_max, Mode=TwoWay}"
+										  Value="{Binding SelectedWave.TimeMax, Mode=TwoWay}"
 										  ToolTip.Tip="{DynamicResource LocationEditorTimeMaxToolTip}"/>
 							<ui:NumberBox Header="{DynamicResource LocationEditorTimeMinHeader}"
 										  HeaderTemplate="{StaticResource BoxHeaderTemplate}"
-										  Value="{Binding SelectedWave.time_min, Mode=TwoWay}"
+										  Value="{Binding SelectedWave.TimeMin, Mode=TwoWay}"
 										  ToolTip.Tip="{DynamicResource LocationEditorTimeMinToolTip}"/>
 							</StackPanel>
 						</StackPanel>
@@ -235,7 +235,7 @@
 						<StackPanel Orientation="Horizontal">
 							<StackPanel>
 								<TextBlock Text="{DynamicResource LocationEditorBossListText}"
-										   FontFamily="{StaticResource BenderFont}"
+										   
 										   Margin="5"/>
 								<ListBox Name="BossList"
 										 Margin="5,0,5,5"
@@ -263,14 +263,14 @@
               Value="{Binding SelectedBossLocationSpawn.BossChance, Mode=TwoWay}"/>
 
 								<TextBlock Text="{DynamicResource LocationEditorBossEscortAmountText}"
-										   FontFamily="{StaticResource BenderFont}"
+										   
 										   Margin="5"/>
 								<TextBox Margin="0,0,0,5"
 										 Width="160"
 										 Text="{Binding SelectedBossLocationSpawn.BossEscortAmount, Mode=TwoWay}"/>
 
 								<TextBlock Text="{DynamicResource LocationEditorBossEscortTypeText}"
-										   FontFamily="{StaticResource BenderFont}"
+										   
 										   Margin="5"/>
 								<ComboBox Margin="0,0,0,5"
 										  Width="160"
@@ -278,7 +278,7 @@
 										  SelectedValue="{Binding SelectedBossLocationSpawn.BossEscortType, Mode=TwoWay}"/>
 
 								<TextBlock Text="{DynamicResource LocationEditorBossNameText}"
-										   FontFamily="{StaticResource BenderFont}"
+										   
 										   Margin="5"/>
 								<ComboBox Margin="0,0,0,5"
 										  Width="160"

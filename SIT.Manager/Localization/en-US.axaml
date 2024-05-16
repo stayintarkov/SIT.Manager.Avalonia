@@ -18,7 +18,7 @@
 	<system:String x:Key="ToolsTitleToolTip">Tools to manage SIT and Tarkov.</system:String>
 	<system:String x:Key="ServerTitleToolTip">Server management.</system:String>
 	<system:String x:Key="ModsTitleToolTip">Mod management.</system:String>
-	
+
 	<!-- Mods Page -->
 	<system:String x:Key="ModsWarningTitle">WARNING</system:String>
 	<system:String x:Key="ModsWarningDescription">The use of mods can affect the stability of your game and might cause it to crash or malfunction. While mods can enhance your gaming experience and add new features, they may not be officially supported by SIT or tested for compatibility. Install mods at your own risk and always make backup copies of your game files before making any changes. We are not liable for any damage or loss of progress caused by the installation of mods. Proceed with caution.</system:String>
@@ -39,18 +39,18 @@
 	<system:String x:Key="ModInfoInstallTitle">Install</system:String>
 	<system:String x:Key="ModInfoUninstallToolTip">Uninstall the mod.</system:String>
 	<system:String x:Key="ModInfoUninstallTitle">Uninstall</system:String>
-	
+
 	<!-- Mods Page ViewModel -->
 	<system:String x:Key="ModsPageViewModelErrorTitle">Error</system:String>
 	<system:String x:Key="ModsPageViewModelErrorInstallPathDescription">Install Path is not set. Configure it in Settings.</system:String>
 	<system:String x:Key="ModsPageViewModelErrorNoModsFound">No mods found</system:String>
-	
+
 	<!-- Tools Page -->
 	<system:String x:Key="ToolsOpenEFTFolderButtonToolTip">Open the EFT installation folder.</system:String>
 	<system:String x:Key="ToolsOpenEFTFolderButtonTitle">Open EFT Folder</system:String>
 	<system:String x:Key="ToolsOpenBepInExFolderButtonToolTip">Open the BepInEx Plugins folder.</system:String>
 	<system:String x:Key="ToolsOpenBepInExFolderButtonTitle">Open Plugins Folder</system:String>
-	<system:String x:Key="ToolsOpenServerFolderButtonToolTip">Open the SPT-AKI Server Folder.</system:String>
+	<system:String x:Key="ToolsOpenServerFolderButtonToolTip">Open the AKI Server Folder.</system:String>
 	<system:String x:Key="ToolsOpenServerFolderButtonTitle">Open Server Folder</system:String>
 	<system:String x:Key="ToolsOpenSITConfigButtonToolTip">Open the SIT Config with the default text editor.</system:String>
 	<system:String x:Key="ToolsOpenSITConfigButtonTitle">Open SIT Config</system:String>
@@ -70,9 +70,8 @@
 	<system:String x:Key="ToolsSelectLogsCloseButtonText">Cancel</system:String>
 	<system:String x:Key="ToolsDiagnosticReportSaveFileTitle">Save zip file</system:String>
 	<system:String x:Key="ToolsManagerLogCheckboxContent">Include Manager Logs</system:String>
-	
+
 	<!-- Server Page -->
-	<system:String x:Key="ServerConsoleOutputTitle">Console Output</system:String>
 	<system:String x:Key="ServerButtonStartToolTip">Start server.</system:String>
 	<system:String x:Key="ServerEditServerConfig">Edit Server Config</system:String>
 	<system:String x:Key="ServerEditServerConfigButtonToolTip">Edit Server</system:String>
@@ -87,8 +86,8 @@
 	<system:String x:Key="SettingsLookForUpdatesTitleToolTip">Automatically look for updates when opening the launcher.</system:String>
 	<system:String x:Key="SettingsHideIpAddressTitle">Hide Ip Address</system:String>
 	<system:String x:Key="SettingsHideIpAddressToolTip">Hides the Ip Address with the star symbols in Ip Address Box.</system:String>
-	<system:String x:Key="SettingsEnableDeveloperMode">Enable Developer Mode</system:String>
-	<system:String x:Key="SettingsEnableDeveloperModeToolTip">Enables developer/test releases of SIT and SIT server for testing purposes</system:String>
+	<system:String x:Key="SettingsEnableTestMode">Show SIT Test Versions Only</system:String>
+	<system:String x:Key="SettingsEnableTestModeToolTip">Will show only test releases of SIT and AKI server for installation</system:String>
 	<system:String x:Key="SettingsLanguageTitle">Language:</system:String>
 	<system:String x:Key="SettingsLanguageTitleToolTip">Translates entire launcher to your language, select one!</system:String>
 	<system:String x:Key="SettingsAccentColorTitle">Accent Color:</system:String>
@@ -99,30 +98,29 @@
 	<system:String x:Key="SettingsEFTChangeInstallPathToolTip">Change the SIT EFT Install Path.</system:String>
 	<system:String x:Key="SettingsEFTVersionTitle">EFT Version:</system:String>
 	<system:String x:Key="SettingsSITVersionTitle">SIT Version:</system:String>
-	<system:String x:Key="SettingsSPTAKITitle">SPT-AKI</system:String>
-	<system:String x:Key="SettingsSPTAKIPathTitle">SPT-AKI Path:</system:String>
-	<system:String x:Key="SettingsSPTAKIVersionTitle">SPT-AKI Version:</system:String>
+	<system:String x:Key="SettingsSPTAKITitle">AKI Server</system:String>
+	<system:String x:Key="SettingsSPTAKIPathTitle">AKI Server Path:</system:String>
+	<system:String x:Key="SettingsSPTAKIVersionTitle">AKI Server Version:</system:String>
 	<system:String x:Key="SettingsSITModVersionTitle">SIT Mod Version:</system:String>
-	<system:String x:Key="SettingsSPTAKIInstallPathPlaceholder">SPT-AKI Install Path...</system:String>
-	<system:String x:Key="SettingsSPTAKIInstallPathToolTip">Change the SPT-AKI Install Path.</system:String>
+	<system:String x:Key="SettingsSPTAKIInstallPathPlaceholder">AKI Server Install Path...</system:String>
+	<system:String x:Key="SettingsSPTAKIInstallPathToolTip">Change the AKI Server Install Path.</system:String>
 	<system:String x:Key="SettingsServerConsoleTitle">Server Console</system:String>
 	<system:String x:Key="SettingsServerConsoleFontFamilyTitle">Font Family:</system:String>
 	<system:String x:Key="SettingsServerConsoleFontColorTitle">Font Color:</system:String>
-	<system:String x:Key="SettingsManagerVersionTitle">Manager Version:</system:String>
 
 	<!-- EftView -->
 	<system:String x:Key="EftViewBsgEftInstallPath">BSG EFT Install Path:</system:String>
-	
+
 	<!-- EftViewModel -->
 	<system:String x:Key="EftViewModelBsgEftInstallPathMissing">Unable to detect BSG EFT install...</system:String>
 	<system:String x:Key="EftViewModelSitEftInstallPathMissing">SIT install not found. Please point to existing install here, or install by clicking the install button on the left</system:String>
-	
+
 	<!-- Linux Settings Page -->
 	<system:String x:Key="Key">Key</system:String>
 	<system:String x:Key="Value">Value</system:String>
 	<system:String x:Key="LinuxSettingsPageTitle">Linux</system:String>
 	<system:String x:Key="LinuxSettingsExperimentalWarning">Experimental Linux settings. Some might not work or are not implemented yet. Use at your own risk.</system:String>
-	
+
 	<system:String x:Key="LinuxSettingsWinePrefixTitle">Wine Prefix:</system:String>
 	<system:String x:Key="LinuxSettingsWinePrefixPlaceholder">Wine Prefix Path</system:String>
 	<system:String x:Key="LinuxSettingsWinePrefixToolTip">Change the WINEPREFIX used for EFT</system:String>
@@ -134,7 +132,7 @@
 	<system:String x:Key="LinuxSettingsWineEnvToolTip">Set custom environment variables used for wine</system:String>
 	<system:String x:Key="LinuxSettingsWineEnvAddButton">Add</system:String>
 	<system:String x:Key="LinuxSettingsWineEnvDeleteButton">Delete</system:String>
-	
+
 	<system:String x:Key="LinuxSettingsGraphicsTitle">Graphics</system:String>
 	<system:String x:Key="LinuxSettingsEnableDxvkTitle">Enable DXVK</system:String>
 	<system:String x:Key="LinuxSettingsEnableDxvkToolTip">Use DXVK to increase compatibility and performance in Direct3D 11, 10 and 9 applications by translating their calls to Vulkan.</system:String>
@@ -148,7 +146,7 @@
 	<system:String x:Key="LinuxSettingsEnableDxvkNvapiToolTip">Enable NVAPI support in DXVK [TO BE IMPLEMENTED/DOES NOT WORK]</system:String>
 	<system:String x:Key="LinuxSettingsEnableDgVoodoo2Title">Enable dgvoodoo2</system:String>
 	<system:String x:Key="LinuxSettingsEnableDgVoodoo2ToolTip">Use dgvoodoo2 to translate Direct3D 1-11 to OpenGL</system:String>
-	
+
 	<system:String x:Key="LinuxSettingsLaunchOptionsTitle">Launch Options</system:String>
 	<system:String x:Key="LinuxSettingsEnableEsyncTitle">Enable Esync</system:String>
 	<system:String x:Key="LinuxSettingsEnableEsyncToolTip">Use Esync to improve performance in Wine</system:String>
@@ -160,11 +158,11 @@
 	<system:String x:Key="LinuxSettingsEnableMangoHudToolTip">MangoHud is a modification of the Mesa Vulkan overlay that includes GUI improvements, temperature monitoring, and more</system:String>
 	<system:String x:Key="LinuxSettingsEnableGameModeTitle">Enable Feral GameMode</system:String>
 	<system:String x:Key="LinuxSettingsEnableGameModeToolTip">GameMode is a daemon/lib combo for Linux that allows games to request a set of optimisations be temporarily applied to the host OS</system:String>
-	
+
 	<!-- Linux Settings View Model -->
 	<system:String x:Key="LinuxSettingsPageViewModelConfigErrorRunner">The selected folder was invalid. Make sure it's a proper wine runner folder with a bin folder inside</system:String>
 	<system:String x:Key="LinuxSettingsPageViewModelConfigErrorPrefix">The selected folder was invalid. Make sure the folder exists</system:String>
-	
+
 	<!-- Location Editor View -->
 	<system:String x:Key="LocationEditorLoadButtonTitle">Load</system:String>
 	<system:String x:Key="LocationEditorSaveButtonTitle">Save</system:String>
@@ -221,7 +219,7 @@
 	<system:String x:Key="LocationEditorForceSpawnContent">ForceSpawn</system:String>
 	<system:String x:Key="LocationEditorIgnoreMaxBotsContent">IgnoreMaxBots</system:String>
 	<system:String x:Key="LocationEditorRandomTimeSpawnContent">RandomTimeSpawn</system:String>
-	
+
 	<!-- LocationEditor ViewModel -->
 	<system:String x:Key="LocationEditorViewModelLoadErrorTitle">Load Error</system:String>
 	<system:String x:Key="LocationEditorViewModelLoadErrorDescription">There was an error saving the file.</system:String>
@@ -231,12 +229,12 @@
 	<system:String x:Key="LocationEditorViewModelSaveErrorDescription">There was an error saving the file.</system:String>
 	<system:String x:Key="LocationEditorViewModelSaveSuccessTitle">Save</system:String>
 	<system:String x:Key="LocationEditorViewModelSaveSuccessDescription">Successfully saved the file to: %1</system:String>
-	
+
 	<!-- Select Edition Dialog -->
 	<system:String x:Key="SelectEditionDialogTitle">Select Edition</system:String>
 	<system:String x:Key="SelectEditionDialogTextBlockTitle">Choose the Edition for your SIT account:</system:String>
 	<system:String x:Key="SelectEditionDialogButtonCreateTitle">Create</system:String>
-	
+
 	<!-- Tools Page ViewModel -->
 	<system:String x:Key="ToolsPageViewModelErrorMessageTitle">Error</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageDescription">Unable to fetch releases</system:String>
@@ -253,16 +251,16 @@
 	<system:String x:Key="ToolsPageViewModelConfigClearEFTCache">Clear EFT Local Cache</system:String>
 	<system:String x:Key="ToolsPageViewModelConfigClearAllCache">Clear All Cache</system:String>
 	<system:String x:Key="ToolsPageViewModelUnhandledExceptionError">An error occurred: %1</system:String>
-	
+
 	<!-- Settings Page ViewModel -->
 	<system:String x:Key="SettingsPageViewModelErrorTitle">Error</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigTitle">Config</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigErrorEFTDescription">The selected folder was invalid. Make sure it's a proper EFT game folder.</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigInformationEFTDescription">EFT installation path set to '%1'</system:String>
-	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">SPT-AKI installation path set to '%1'</system:String>
-	<system:String x:Key="SettingsPageViewModelConfigErrorSPTAKI">The selected folder was invalid. Make sure it's a proper SPT-AKI server folder.</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">Enable Developer Mod Failure</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">Can't enable developer mode as you have %1 incompatible mods still enabled</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">AKI server installation path set to '%1'</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigErrorSPTAKI">The selected folder was invalid. Make sure it's a proper AKI server folder.</system:String>
+	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">Enable Test Mode Failure</system:String>
+	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">Can't enable test mode as you have %1 incompatible mods still enabled</system:String>
 	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorButtonOk">Ok</system:String>
 
 	<!-- Server Page ViewModel -->
@@ -272,8 +270,8 @@
 	<system:String x:Key="ServerPageViewModelStopServer">Stop Server</system:String>
 	<system:String x:Key="ServerPageViewModelStartServer">Start Server</system:String>
 	<system:String x:Key="ServerPageViewModelServerError">Server stopped unexpectedly! Check console for errors.</system:String>
-	<system:String x:Key="ServerPageViewModelSPTAkiRunning">SPT-AKI is currently running. Please close any running instance of SPT-AKI.</system:String>
-	<system:String x:Key="ServerPageViewModelSPTAkiNotFound">SPT-AKI not found. Please configure the SPT-AKI path in Settings tab before starting the server.</system:String>
+	<system:String x:Key="ServerPageViewModelSPTAkiRunning">AKI server is currently running. Please close any running instance of AKI server.</system:String>
+	<system:String x:Key="ServerPageViewModelSPTAkiNotFound">AKI server not found. Please configure the AKI server path in Settings tab before starting the server.</system:String>
 	<system:String x:Key="ServerPageViewModelStartingServerLog">Starting server...</system:String>
 	<system:String x:Key="ServerPageViewModelStoppingServerLog">Stopping server...</system:String>
 	<system:String x:Key="ServerPageViewModelClearServerOutputTitle">Clear Server Output</system:String>
@@ -321,13 +319,12 @@
 	<system:String x:Key="InstallServiceInstallSITSuccessfulDescription">Installation of SIT was successful.</system:String>
 	<system:String x:Key="InstallerServiceNoDowngradePatcher">No downgrader is available for these versions of Tarkov.</system:String>
 	<system:String x:Key="InstallServiceSSLError">Your ISP is likely blocking our connection. Please use a VPN and try again.</system:String>
-	
+
 	<!-- File Service -->
 	<system:String x:Key="FileServiceProgressDownloading">Downloading '%1'</system:String>
 	<system:String x:Key="FileServiceProgressExtracting">Extracting file %1 (%2)</system:String>
 
 	<!-- Update Page -->
-	<system:String x:Key="UpdatePageUpdateButtonTitle">Start Update</system:String>
 	<system:String x:Key="UpdatePageUpdateInfoTextPt1">SIT Manager is updating for you please wait...</system:String>
 	<system:String x:Key="UpdatePageUpdateInfoTextPt2">The app restart as soon as it has finished</system:String>
 	<system:String x:Key="UpdatePageUpdatingTitle">Updating</system:String>
@@ -348,19 +345,20 @@
 	<system:String x:Key="ConfigureViewBackButtonTitle">Back</system:String>
 	<system:String x:Key="ConfigureViewVersionSelectionGroupTitle">Version Selection</system:String>
 	<system:String x:Key="ConfigureViewPersonalizationOptions">Personalization and Import Options</system:String>
-	
+
 	<!-- Install - Configure Server View -->
 	<system:String x:Key="ConfigureServerViewVersionSelectionErrorMessage">Unable to determine available SIT Server versions...</system:String>
-	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathToolTip">Change the SPT-AKI Install Path.</system:String>
+	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathToolTip">Change the AKI server Install Path.</system:String>
 	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathTitle">Change</system:String>
-	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathPlaceholder">SPT-AKI Install Path...</system:String>
-	<system:String x:Key="ConfigureServerViewSPTAKIPathTitle">SPT-AKI Path:</system:String>
-	<system:String x:Key="ConfigureServerViewSPTAKIPathWarningNoPath">No SPT-AKI install path specified</system:String>
+	<system:String x:Key="ConfigureServerViewSPTAKIInstallPathPlaceholder">AKI Server Install Path...</system:String>
+	<system:String x:Key="ConfigureServerViewSPTAKIPathTitle">AKI Server Path:</system:String>
+	<system:String x:Key="ConfigureServerViewSPTAKIPathWarningNoPath">No AKI server install path specified</system:String>
 	<system:String x:Key="ConfigureServerViewVersionSelectionTitle">Version to install:</system:String>
-	
+
 	<!-- Install - Configure Sit View -->
 	<system:String x:Key="ConfigureSitViewLoadingVersionSelectionText">Working out available SIT versions please wait...</system:String>
-	<system:String x:Key="ConfigureSitViewVersionSelectionErrorMessage">Unable to determine available SIT versions...</system:String>
+	<system:String x:Key="ConfigureSitViewVersionSelectionNoneAvailableErrorMessage">No version of SIT available for your current version of EFT. Please make sure your EFT is up to date</system:String>
+	<system:String x:Key="ConfigureSitViewVersionSelectionGenericErrorMessage">Unable to determine available SIT versions...</system:String>
 	<system:String x:Key="ConfigureSitViewEFTChangeInstallPathToolTip">Change the SIT EFT Install Path.</system:String>
 	<system:String x:Key="ConfigureSitViewEFTSettingsButtonChangeTitle">Change</system:String>
 	<system:String x:Key="ConfigureSitViewEFTInstallPathPlaceholder">SIT EFT Install Path...</system:String>
@@ -368,8 +366,6 @@
 	<system:String x:Key="ConfigureSitViewEFTPathWarningNoPath">Currently using the BSG EFT install location please install EFT to a different location to avoid any possible issues with SIT</system:String>
 	<system:String x:Key="ConfigureSitViewMirrorSelectionTitle">Select the mirror to use:</system:String>
 	<system:String x:Key="ConfigureSitViewVersionSelectionTitle">Version to install:</system:String>
-	<system:String x:Key="ConfigureSitViewRecommendedModsTitle">Recommended Mods</system:String>
-	<system:String x:Key="ConfigureSitViewRecommendedModsDescription">Choose from the available mods which we recommend you install alongside SIT</system:String>
 	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTip">Import Live Game Graphic, Audio, and Control settings to SIT</system:String>
 	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTitle">Import EFT Settings to SIT</system:String>
 
@@ -377,13 +373,14 @@
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorTitle">Location Selection Error</system:String>
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorDescription">You've selected the same folder as the BSG install of EFT, please choose a different location to install SIT to</system:String>
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionSPTErrorDescription">You've selected the same folder as an existing SPT install, please choose a different location to install SIT to</system:String>
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionOneDriveErrorDescription">We think you've selected your 'OneDrive' folder which is known to cause issue, please choose a different location to install SIT to</system:String>
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorOk">Ok</system:String>
 
 	<!-- Install - Install View -->
 	<system:String x:Key="InstallViewDownloadingTitle">Downloading</system:String>
 	<system:String x:Key="InstallViewExtractingTitle">Extracting</system:String>
 	<system:String x:Key="InstallViewInstallTitle">Install</system:String>
-	
+
 	<!-- Install - Patch View -->
 	<system:String x:Key="PatchViewSummaryMessage">Setting up your EFT instance so it's ready to install the requested SIT version</system:String>
 	<system:String x:Key="PatchViewCopyingTitle">Copying EFT Install</system:String>
@@ -397,10 +394,10 @@
 	<system:String x:Key="SelectViewInstallServerButtonTitle">Install Server + SIT Mod</system:String>
 	<system:String x:Key="SelectViewInstallServerButtonToolTip">Download SPT Server + SIT Server Mod.</system:String>
 	<system:String x:Key="SelectViewServerModVersionTitle">SIT Mod Version:</system:String>
-	<system:String x:Key="SelectViewServerVersionTitle">SPT-AKI Version:</system:String>
-	<system:String x:Key="SelectViewSPTAKIPathTitle">SPT-AKI Path:</system:String>
-	<system:String x:Key="SelectViewSPTAKINoPathWarningMessage">If you already have SPT-AKI installed please set the SPT-AKI Path in settings to the path where it is installed. If you have not already installed SPT-AKI, press Install Server + SIT Mod below and you will be prompted to provide an empty folder to install SPT-AKI to.</system:String>
-	<system:String x:Key="SelectViewServerSectionHeading">SPT-AKI - Server</system:String>
+	<system:String x:Key="SelectViewServerVersionTitle">AKI Server Version:</system:String>
+	<system:String x:Key="SelectViewSPTAKIPathTitle">AKI Server Path:</system:String>
+	<system:String x:Key="SelectViewSPTAKINoPathWarningMessage">If you already have AKI server installed please set the AKI Path in settings to the path where it is installed. If you have not already installed AKI server, press Install Server + SIT Mod below and you will be prompted to provide an empty folder to install AKI server to.</system:String>
+	<system:String x:Key="SelectViewServerSectionHeading">AKI - Server</system:String>
 	<system:String x:Key="SelectViewInstallSITButtonTitle">Install SIT</system:String>
 	<system:String x:Key="SelectViewInstallSITButtonToolTip">Downgrade EFT if needed, install SIT and mod support.</system:String>
 	<system:String x:Key="SelectViewUpdateSITButtonTitle">Update SIT</system:String>
@@ -422,15 +419,16 @@
 	<system:String x:Key="InstallPageViewModelPatchText">Patch</system:String>
 	<system:String x:Key="InstallPageViewModelInstallText">Install</system:String>
 	<system:String x:Key="InstallPageViewModelCompleteText">Complete</system:String>
-	
+
 	<!-- CharacterSelectionView -->
 	<system:String x:Key="CharacterSelectionViewBackButtonText">Back</system:String>
+	<system:String x:Key="CharacterSelectionViewShowSavedProfilesCheckbox">Show only saved profiles</system:String>
 	<system:String x:Key="CharacterSelectionViewAddCharacterButtonText">Add Character</system:String>
-	
+
 	<!-- CharacterSummaryView -->
 	<system:String x:Key="CharacterSummaryViewPlayButtonText">Play</system:String>
 	<system:String x:Key="CharacterSummaryViewLoginButtonText">Login</system:String>
-	
+
 	<!-- CreateServerDialogView -->
 	<system:String x:Key="CreateServerDialogViewAddTitle">Add Server</system:String>
 	<system:String x:Key="CreateServerDialogViewEditTitle">Edit Server</system:String>
@@ -462,35 +460,35 @@
 
 	<!-- ServerSelectionView -->
 	<system:String x:Key="ServerSelectionViewAddServerButtonText">Add Server</system:String>
-	
+
 	<!-- ServerSummaryView -->
 	<system:String x:Key="ServerSummaryViewModelConnectButtonText">Connect</system:String>
 	<system:String x:Key="ServerSummaryViewModelPingUnitsText">ms</system:String>
-	
+
 	<!-- PlayPage -->
 	<system:String x:Key="PlayPageBookmarksTabHeader">Bookmarks</system:String>
 	<system:String x:Key="PlayPageDirectConnectTabHeader">Direct Connect</system:String>
-		
+
 	<!-- ServerSummaryViewModel -->
 	<system:String x:Key="ServerSummaryViewModelEditDialogTitle">Edit Server Error</system:String>
 	<system:String x:Key="ServerSummaryViewModelEditDialogContent">Failed to edit server</system:String>
 	<system:String x:Key="ServerSummaryViewModelEditDialogPrimaryButtonText">Ok</system:String>
 	<system:String x:Key="ServerSummaryViewModelNoServerNameText">Failed connecting to address...</system:String>
-	
+
 	<!-- ServerSelectionViewModel -->
 	<system:String x:Key="ServerSelectionViewModelAddServerDialogTitle">Add Server Error</system:String>
 	<system:String x:Key="ServerSelectionViewModelAddServerDialogContent">Failed to add server as it already exists</system:String>
-	<system:String x:Key="ServerSelectionViewModelAddServerPrimaryButtonText">Ok</system:String>	
+	<system:String x:Key="ServerSelectionViewModelAddServerPrimaryButtonText">Ok</system:String>
 	<system:String x:Key="ServerSelectionViewModelDeleteServerDialogTitle">Delete Server</system:String>
 	<system:String x:Key="ServerSelectionViewModelDeleteServerDialogContent">Are you sure you want to delete this server?</system:String>
 	<system:String x:Key="ServerSelectionViewModelDeleteServerPrimaryButtonText">Yes</system:String>
 	<system:String x:Key="ServerSelectionViewModelDeleteServerCloseButtonText">No</system:String>
-	
+
 	<!-- CharacterSummaryViewModel -->
 	<system:String x:Key="CharacterSummaryViewModelPlayErrorDialogTitle">Error</system:String>
 	<system:String x:Key="CharacterSummaryViewModelPlayErrorDialogContent">Error launching Tarkov; consult log for details</system:String>
 	<system:String x:Key="CharacterSummaryViewModelPlayErrorDialogPrimaryButtonText">Ok</system:String>
-	
+
 	<!-- DirectConnectViewModel -->
 	<system:String x:Key="DirectConnectViewModelButtonOk">Ok</system:String>
 	<system:String x:Key="DirectConnectViewModelServerAddressTitle">Server Address</system:String>
@@ -504,9 +502,9 @@
 	<system:String x:Key="DirectConnectViewModelInputValidationTitle">Input Validation</system:String>
 	<system:String x:Key="DirectConnectViewModelInputValidationDescription">Missing input field.</system:String>
 	<system:String x:Key="DirectConnectViewModelUnhandledAkiInstanceTitle">Unhandled Aki Instance</system:String>
-	<system:String x:Key="DirectConnectViewModelUnhandledAkiInstanceDescription">SPT-AKI is currently running. Please close any running instance of SPT-AKI.</system:String>
+	<system:String x:Key="DirectConnectViewModelUnhandledAkiInstanceDescription">AKI server is currently running. Please close any running instance of AKI server.</system:String>
 	<system:String x:Key="DirectConnectViewModelMissingAKIInstallationTitle">Missing AKI Installation</system:String>
-	<system:String x:Key="DirectConnectViewModelMissingAKIInstallationDescription">SPT-AKI server executable is missing.</system:String>
+	<system:String x:Key="DirectConnectViewModelMissingAKIInstallationDescription">AKI server executable is missing.</system:String>
 	<system:String x:Key="DirectConnectViewModelLoginIncorrectPassword">Incorrect password</system:String>
 	<system:String x:Key="DirectConnectViewModelLoginErrorTitle">Login Error</system:String>
 	<system:String x:Key="DirectConnectViewModelLoginErrorDescription">Unable to communicate with the server %1</system:String>
@@ -530,4 +528,8 @@
 	<!-- MainViewModel -->
 	<system:String x:Key="MainViewModelUpdateErrorTitle">Error</system:String>
 	<system:String x:Key="MainViewModelUpdateErrorMessage">Failed when checking for updates</system:String>
+
+	<!-- HelpDialog -->
+	<system:String x:Key="HelpDialogDescription">Are you sure you want to open the SIT Documentation (%1) in your default browser?</system:String>
+
 </ResourceDictionary>

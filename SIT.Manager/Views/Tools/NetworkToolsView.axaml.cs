@@ -1,14 +1,15 @@
-using Avalonia.Controls;
 using Microsoft.Extensions.DependencyInjection;
-using SIT.Manager.Controls;
+using SIT.Manager.Theme.Controls;
 using SIT.Manager.ViewModels.Tools;
 using System;
 using System.Threading;
 
 namespace SIT.Manager.Views.Tools;
+
 public partial class NetworkToolsView : ActivatableUserControl
 {
     private readonly NetworkToolsViewModel _dc;
+
     public NetworkToolsView()
     {
         InitializeComponent();

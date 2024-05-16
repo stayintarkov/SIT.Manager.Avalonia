@@ -72,7 +72,6 @@
 	<system:String x:Key="ToolsManagerLogCheckboxContent">包括管理員日誌</system:String>
 
 	<!-- Server Page -->
-	<system:String x:Key="ServerConsoleOutputTitle">控制臺輸出</system:String>
 	<system:String x:Key="ServerButtonStartToolTip">啟動伺服器</system:String>
 	<system:String x:Key="ServerEditServerConfig">編輯伺服器設定</system:String>
 	<system:String x:Key="ServerEditServerConfigButtonToolTip">編輯伺服器設定檔</system:String>
@@ -87,8 +86,8 @@
 	<system:String x:Key="SettingsLookForUpdatesTitleToolTip">開啟啟動器時自動檢查更新</system:String>
 	<system:String x:Key="SettingsHideIpAddressTitle">隱藏 IP 位址</system:String>
 	<system:String x:Key="SettingsHideIpAddressToolTip">在 IP 位址框中使用星號隱藏 IP 位址。</system:String>
-	<system:String x:Key="SettingsEnableDeveloperMode">啟用開發者模式</system:String>
-	<system:String x:Key="SettingsEnableDeveloperModeToolTip">啟用開發者/測試版本的 SIT 和 SIT 伺服器，以進行測試用途</system:String>
+	<system:String x:Key="SettingsEnableTestMode">Show SIT Test Versions Only</system:String>
+	<system:String x:Key="SettingsEnableTestModeToolTip">Will show only test releases of SIT and AKI server for installation</system:String>
 	<system:String x:Key="SettingsLanguageTitle">語言:</system:String>
 	<system:String x:Key="SettingsLanguageTitleToolTip">將整個啟動器翻譯為您的語言，選擇其中一種!</system:String>
 	<system:String x:Key="SettingsAccentColorTitle">強調顏色:</system:String>
@@ -102,8 +101,8 @@
 	<system:String x:Key="SettingsLinuxWineRunnerToolTip">設置用於啟動 EFT 的 wine runner</system:String>
 	<system:String x:Key="SettingsEFTSettingsTitle">EFT 設定</system:String>
 	<system:String x:Key="SettingsEFTSettingsButtonChangeTitle">更改</system:String>
-	<system:String x:Key="SettingsEFTInstallPathTitle">SIT EFT Path:</system:String>
-	<system:String x:Key="SettingsEFTChangeInstallPathToolTip">Change the SIT EFT Install Path.</system:String>
+	<system:String x:Key="SettingsEFTInstallPathTitle">SIT EFT 路徑:</system:String>
+	<system:String x:Key="SettingsEFTChangeInstallPathToolTip">更改 SIT EFT 安裝路徑。</system:String>
 	<system:String x:Key="SettingsEFTVersionTitle">EFT 版本:</system:String>
 	<system:String x:Key="SettingsSITVersionTitle">SIT 版本:</system:String>
 	<system:String x:Key="SettingsSPTAKITitle">SPT-AKI 設定</system:String>
@@ -113,7 +112,6 @@
 	<system:String x:Key="SettingsServerConsoleTitle">伺服器控制臺</system:String>
 	<system:String x:Key="SettingsServerConsoleFontFamilyTitle">字體:</system:String>
 	<system:String x:Key="SettingsServerConsoleFontColorTitle">字體顏色:</system:String>
-	<system:String x:Key="SettingsManagerVersionTitle">當前 SIT Manager 版本:</system:String>
 
 	<!-- EftView -->
 	<system:String x:Key="EftViewBsgEftInstallPath">BSG EFT 安裝路徑:</system:String>
@@ -266,8 +264,8 @@
 	<system:String x:Key="SettingsPageViewModelConfigInformationEFTDescription">EFT 安裝路徑已設置為 '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">SPT-AKI 伺服器安裝路徑已設置為 '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigErrorSPTAKI">所選檔案夾無效，請確保它是正確的 SPT-AKI 伺服器檔案夾！</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">啟用開發者模式錯誤</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">無法啟用開發者模式，因為您仍然有 %1 不相容的模式處於啟用狀態</system:String>
+	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">Enable Test Mode Failure</system:String>
+	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">Can't enable test mode as you have %1 incompatible mods still enabled</system:String>
 	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorButtonOk">確定</system:String>
 
 	<!-- Server Page ViewModel -->
@@ -332,7 +330,6 @@
 	<system:String x:Key="FileServiceProgressExtracting">正在解壓縮檔案 %1 (%2)</system:String>
 
 	<!-- Update Page -->
-	<system:String x:Key="UpdatePageUpdateButtonTitle">開始更新</system:String>
 	<system:String x:Key="UpdatePageUpdateInfoTextPt1">SIT 管理員正在更新，請稍候...</system:String>
 	<system:String x:Key="UpdatePageUpdateInfoTextPt2">更新完成後應用程式將重新啟動</system:String>
 	<system:String x:Key="UpdatePageUpdatingTitle">更新中</system:String>
@@ -365,7 +362,8 @@
 
 	<!-- Install - Configure Sit View -->
 	<system:String x:Key="ConfigureSitViewLoadingVersionSelectionText">正在確定可用的 SIT 版本，請稍候...</system:String>
-	<system:String x:Key="ConfigureSitViewVersionSelectionErrorMessage">無法確定可用的 SIT 版本...</system:String>
+	<system:String x:Key="ConfigureSitViewVersionSelectionNoneAvailableErrorMessage">No version of SIT available for your current version of EFT. Please make sure your EFT is up to date</system:String>
+	<system:String x:Key="ConfigureSitViewVersionSelectionGenericErrorMessage">無法確定可用的 SIT 版本...</system:String>
 	<system:String x:Key="ConfigureSitViewEFTChangeInstallPathToolTip">更改 SIT EFT 安裝路徑。</system:String>
 	<system:String x:Key="ConfigureSitViewEFTInstallPathPlaceholder">SIT EFT 安裝路徑...</system:String>
 	<system:String x:Key="ConfigureSitViewEFTInstallPathTitle">SIT EFT 安裝路徑:</system:String>
@@ -373,8 +371,6 @@
 	<system:String x:Key="ConfigureSitViewEFTPathWarningNoPath">目前使用 BSG EFT 的安裝位置。請將 EFT 安裝到其他位置以避免與 SIT 的潛在問題</system:String>
 	<system:String x:Key="ConfigureSitViewMirrorSelectionTitle">選擇要使用的鏡像：</system:String>
 	<system:String x:Key="ConfigureSitViewVersionSelectionTitle">要安裝的版本：</system:String>
-	<system:String x:Key="ConfigureSitViewRecommendedModsTitle">推薦 Mod</system:String>
-	<system:String x:Key="ConfigureSitViewRecommendedModsDescription">從可用的 Mod 中選擇我們建議您與 SIT 一起安裝的內容</system:String>
 	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTip">將現場遊戲的圖形、音頻和控制設置導入到 SIT</system:String>
 	<system:String x:Key="ConfigureSitViewEFTSettingsCheckboxTitle">將 EFT 設置導入到 SIT</system:String>
 
@@ -382,6 +378,7 @@
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorTitle">位置選擇錯誤</system:String>
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorDescription">您選擇了與 BSG EFT 安裝相同的目錄，請選擇另一個位置以安裝 SIT</system:String>
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionSPTErrorDescription">您選擇了與現有的 SPT 安裝相同的資料夾，請選擇其他位置進行 SIT 安裝。</system:String>
+	<system:String x:Key="ConfigureSitViewModelLocationSelectionOneDriveErrorDescription">We think you've selected your 'OneDrive' folder which is known to cause issue, please choose a different location to install SIT to</system:String>
 	<system:String x:Key="ConfigureSitViewModelLocationSelectionErrorOk">好的</system:String>
 
 	<!-- Install - Install View -->
@@ -427,6 +424,7 @@
 
 	<!-- CharacterSelectionView -->
 	<system:String x:Key="CharacterSelectionViewBackButtonText">返回</system:String>
+	<system:String x:Key="CharacterSelectionViewShowSavedProfilesCheckbox">Show only saved profiles</system:String>
 	<system:String x:Key="CharacterSelectionViewAddCharacterButtonText">添加角色</system:String>
 
 	<!-- CharacterSummaryView -->
@@ -532,5 +530,7 @@
 	<!-- MainViewModel -->
 	<system:String x:Key="MainViewModelUpdateErrorTitle">錯誤</system:String>
 	<system:String x:Key="MainViewModelUpdateErrorMessage">檢查更新時出現錯誤</system:String>
-	
+
+	<!-- HelpDialog -->
+	<system:String x:Key="HelpDialogDescription">您確定要在您的預設瀏覽器中打開 SIT 文件 (%1) 嗎？</system:String>
 </ResourceDictionary>

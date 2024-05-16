@@ -2,68 +2,86 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="clr-namespace:SIT.Manager.Theme.Controls"
 			 xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Settings"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SIT.Manager.Views.Settings.EftView"
 			 x:DataType="vm:EftViewModel">
-	<Border Classes="StandardFrame">
-		<Grid Margin="0,8,0,0"
-			  RowDefinitions="Auto, Auto, Auto, Auto"
-			  ColumnDefinitions="Auto, *, Auto">
-			<!--BSG EFT Install Path-->
-			<TextBlock Grid.Column="0"
-					   Grid.Row="0"
-					   Text="{DynamicResource EftViewBsgEftInstallPath}"
-					   Margin="0,0,12,0"
-					   VerticalAlignment="Center"/>
-			<TextBlock Margin="0,0,12,0"
-					   Grid.Column="1"
-					   Grid.Row="0"
-					   TextWrapping="WrapWithOverflow"
-					   VerticalAlignment="Center"
-					   Text="{Binding BsgEftInstallPath}"/>
+	<StackPanel Margin="16,8">
+		<controls:Card Margin="0,8">
+			<Grid Margin="0,8,0,0"
+				  RowDefinitions="Auto, Auto, Auto, Auto"
+				  ColumnDefinitions="Auto, *, Auto">
+				<!--BSG EFT Install Path-->
+				<TextBlock Grid.Column="0"
+						   Grid.Row="0"
+						   TextTrimming="CharacterEllipsis"
+						   Text="{DynamicResource EftViewBsgEftInstallPath}"
+						   Margin="0,0,12,0"
+						   VerticalAlignment="Center"/>
+				<TextBlock
+						   Grid.Column="1"
+						   Grid.Row="0"
+						   TextTrimming="CharacterEllipsis"
+						   TextWrapping="WrapWithOverflow"
+						   VerticalAlignment="Center"
+						   Text="{Binding BsgEftInstallPath}"/>
 
-			<!--SIT EFT Install Path-->		
-			<TextBlock Grid.Column="0"
-					   Grid.Row="1"
-					   Text="{DynamicResource SettingsEFTInstallPathTitle}"
-					   Margin="0,12,12,0"
-					   VerticalAlignment="Center"/>
-			<TextBlock Grid.Column="1"
-					   Grid.Row="1"
-					   Margin="0,12,12,0"
-					   TextWrapping="WrapWithOverflow"
-					   Text="{Binding SitEftInstallPath}"/>
-			<Button Grid.Column="2"
-					Grid.Row="1"
-					Content="{DynamicResource SettingsEFTSettingsButtonChangeTitle}"
-					Margin="0,12,12,0"
-					ToolTip.Tip="{DynamicResource SettingsEFTChangeInstallPathToolTip}"
-					Command="{Binding ChangeInstallLocationCommand}"/>
+				<!--SIT EFT Install Path-->
+				<TextBlock Grid.Column="0"
+						   Grid.Row="1"
+						   Text="{DynamicResource SettingsEFTInstallPathTitle}"
+						   TextTrimming="CharacterEllipsis"
+						   TextWrapping="WrapWithOverflow"
+						   Margin="0,0,12,0"
+						   VerticalAlignment="Center"/>
+				<TextBlock Grid.Column="1"
+						   Grid.Row="1"
+						   VerticalAlignment="Center"
+						   TextTrimming="CharacterEllipsis"
+						   TextWrapping="WrapWithOverflow"
+						   Text="{Binding SitEftInstallPath}"
+						   Margin="0,0,8,0"
+						   IsVisible="{Binding SitEftInstallPath, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+				<TextBlock Grid.Column="1"
+						   Grid.Row="1"
+						   VerticalAlignment="Center"
+						   TextTrimming="CharacterEllipsis"
+						   TextWrapping="WrapWithOverflow"
+						   Margin="0,0,8,0"
+						   Text="{DynamicResource EftViewModelSitEftInstallPathMissing}"
+						   IsVisible="{Binding SitEftInstallPath, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
+				<Button Grid.Column="2"
+						Grid.Row="1"
+						VerticalAlignment="Center"
+						HorizontalAlignment="Left"
+						Content="{DynamicResource SettingsEFTSettingsButtonChangeTitle}"
+						ToolTip.Tip="{DynamicResource SettingsEFTChangeInstallPathToolTip}"
+						Command="{Binding ChangeInstallLocationCommand}"/>
 
-			<!--SIT EFT Version-->
-			<TextBlock Grid.Column="0"
-					   Grid.Row="2"
-					   Text="{DynamicResource SettingsEFTVersionTitle}"
-					   Margin="0,12,8,0"
-					   VerticalAlignment="Center"/>
-			<SelectableTextBlock Grid.Column="1"
-								 Grid.Row="2"
-								 Margin="0,12,8,0"
-								 Text="{Binding Config.SitTarkovVersion}"
-								 VerticalAlignment="Center"/>
+				<!--SIT EFT Version-->
+				<TextBlock Grid.Column="0"
+						   Grid.Row="2"
+						   Margin="0,0,12,0"
+						   Text="{DynamicResource SettingsEFTVersionTitle}"
+						   VerticalAlignment="Center"/>
+				<SelectableTextBlock Grid.Column="1"
+									 Grid.Row="2"
+									 Text="{Binding Config.SitTarkovVersion}"
+									 VerticalAlignment="Center"/>
 
-			<!--SIT Mod Version-->
-			<TextBlock Grid.Column="0"
-					   Grid.Row="3"
-					   Text="{DynamicResource SettingsSITVersionTitle}"
-					   Margin="0,12,8,0"
-					   VerticalAlignment="Center"/>
-			<SelectableTextBlock Grid.Column="1"
-								 Grid.Row="3"
-								 Margin="0,12,8,0"
-								 Text="{Binding Config.SitVersion}"
-								 VerticalAlignment="Center"/>
-		</Grid>
-	</Border>
+				<!--SIT Mod Version-->
+				<TextBlock Grid.Column="0"
+						   Grid.Row="3"
+						   Text="{DynamicResource SettingsSITVersionTitle}"
+						   Margin="0,12,8,0"
+						   VerticalAlignment="Center"/>
+				<SelectableTextBlock Grid.Column="1"
+									 Grid.Row="3"
+									 Margin="0,12,8,0"
+									 Text="{Binding Config.SitVersion}"
+									 VerticalAlignment="Center"/>
+			</Grid>
+		</controls:Card>
+	</StackPanel>
 </UserControl>

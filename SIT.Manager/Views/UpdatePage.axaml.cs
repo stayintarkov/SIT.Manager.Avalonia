@@ -1,10 +1,10 @@
-using Avalonia.Controls;
 using Microsoft.Extensions.DependencyInjection;
+using SIT.Manager.Theme.Controls;
 using SIT.Manager.ViewModels;
 
 namespace SIT.Manager.Views;
 
-public partial class UpdatePage : UserControl
+public partial class UpdatePage : ActivatableUserControl
 {
     public UpdatePage()
     {

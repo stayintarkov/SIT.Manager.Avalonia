@@ -1,6 +1,5 @@
 using Avalonia.Controls;
 using Microsoft.Extensions.DependencyInjection;
-using SIT.Manager.Controls;
 using SIT.Manager.ViewModels.Tools;
 
 namespace SIT.Manager.Views.Tools;

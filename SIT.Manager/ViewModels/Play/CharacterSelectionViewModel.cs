@@ -28,6 +28,9 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
 
     private AkiServer _connectedServer;
 
+    [ObservableProperty]
+    private bool _showOnlySavedProfiles = false;
+
     public ObservableCollection<CharacterSummaryViewModel> SavedCharacterList { get; } = [];
     public ObservableCollection<CharacterSummaryViewModel> CharacterList { get; } = [];
 
@@ -90,9 +93,9 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
     private async Task ReloadCharacterList()
     {
         CharacterList.Clear();
+        SavedCharacterList.Clear();
         try
         {
-            //TODO: This is currently listing *all* server characters. We should narrow this to saved only
             List<AkiMiniProfile> miniProfiles = await _serverService.GetMiniProfilesAsync(_connectedServer);
             foreach (AkiMiniProfile profile in miniProfiles)
             {
@@ -109,7 +112,7 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
 
             _logger.LogDebug("{profileCount} mini profiles retrieved from {name}", miniProfiles.Count, _connectedServer.Name);
         }
-        catch(HttpRequestException ex)
+        catch (HttpRequestException ex)
         {
             _logger.LogError(ex, "An error occured while fetching characters");
         }
@@ -126,5 +129,10 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
         }
 
         await ReloadCharacterList();
+
+        if (SavedCharacterList.Count > 0)
+        {
+            ShowOnlySavedProfiles = true;
+        }
     }
 }

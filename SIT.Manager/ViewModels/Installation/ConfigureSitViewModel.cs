@@ -5,7 +5,6 @@ using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.Logging;
 using SIT.Manager.Extentions;
 using SIT.Manager.Interfaces;
-using SIT.Manager.Models;
 using SIT.Manager.Models.Installation;
 using System;
 using System.Collections.Generic;
@@ -22,14 +21,10 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
     private readonly IInstallerService _installerService;
     private readonly ILocalizationService _localizationService;
     private readonly ILogger<ConfigureSitViewModel> _logger;
-    private readonly IModService _modService;
     private readonly IPickerDialogService _pickerDialogService;
 
     [ObservableProperty]
     private bool _isVersionSelectionLoading = false;
-
-    [ObservableProperty]
-    private bool _isModsSelectionLoading = false;
 
     [ObservableProperty]
     private bool _overridenBsgInstallPath = false;
@@ -50,11 +45,13 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
     private bool _hasMirrorsAvailable = false;
 
     [ObservableProperty]
-    private bool _hasRecommendedModsAvailable = false;
+    private bool _showNoAvailableSitVersionSelectionError = false;
+
+    [ObservableProperty]
+    private bool _showGenericSitVersionSelectionError = false;
 
     public ObservableCollection<SitInstallVersion> AvailableVersions { get; } = [];
     public ObservableCollection<KeyValuePair<string, string>> AvailableMirrors { get; } = [];
-    public ObservableCollection<ModInfo> Mods { get; } = [];
 
     public IAsyncRelayCommand ChangeEftInstallLocationCommand { get; }
 
@@ -63,14 +60,12 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
         IInstallerService installerService,
         ILocalizationService localizationService,
         ILogger<ConfigureSitViewModel> logger,
-        IModService modService,
         IPickerDialogService pickerDialogService) : base()
     {
         _configService = configService;
         _installerService = installerService;
         _localizationService = localizationService;
         _logger = logger;
-        _modService = modService;
         _pickerDialogService = pickerDialogService;
 
         ChangeEftInstallLocationCommand = new AsyncRelayCommand(ChangeEftInstallLocation);
@@ -101,6 +96,18 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
                 {
                     Title = _localizationService.TranslateSource("ConfigureSitViewModelLocationSelectionErrorTitle"),
                     Content = _localizationService.TranslateSource("ConfigureSitViewModelLocationSelectionSPTErrorDescription"),
+                    PrimaryButtonText = _localizationService.TranslateSource("ConfigureSitViewModelLocationSelectionErrorOk")
+                }.ShowAsync();
+                usingInvalidLocatiion = true;
+            }
+
+            if (HasSelectedOneDriveInstallPath(CurrentInstallProcessState.EftInstallPath))
+            {
+                // Using OneDrive install location which is known to cause issues so we don't want this as a location for the SIT install.
+                await new ContentDialog()
+                {
+                    Title = _localizationService.TranslateSource("ConfigureSitViewModelLocationSelectionErrorTitle"),
+                    Content = _localizationService.TranslateSource("ConfigureSitViewModelLocationSelectionOneDriveErrorDescription"),
                     PrimaryButtonText = _localizationService.TranslateSource("ConfigureSitViewModelLocationSelectionErrorOk")
                 }.ShowAsync();
                 usingInvalidLocatiion = true;
@@ -137,7 +144,7 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
             if (!string.IsNullOrEmpty(_configService.Config.SitVersion))
             {
                 // Don't filter down the available versions if user has enabled developer mode.
-                if (!_configService.Config.EnableDeveloperMode)
+                if (!_configService.Config.EnableTestMode)
                 {
                     availableVersions = availableVersions.Where(x =>
                     {
@@ -164,11 +171,13 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
             }
             else
             {
+                ShowNoAvailableSitVersionSelectionError = true;
                 _logger.LogWarning("Available SIT version count {availableVersions} and 0 marked as available to use so will display error message", availableVersions.Count);
             }
         }
         catch (Exception ex)
         {
+            ShowGenericSitVersionSelectionError = true;
             _logger.LogError(ex, "Issue trying to determine versions available to install for SIT");
         }
 
@@ -180,10 +189,19 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
     }
 
     /// <summary>
+    /// Check if the currently selected EFT install directory has indicators of a OneDrive install lication and if so return true, otherwise return false
+    /// </summary>
+    /// <returns>True if this is a OneDrive directory otherwise false</returns>
+    private static bool HasSelectedOneDriveInstallPath(string requestedDirectory)
+    {
+        return requestedDirectory.Contains("OneDrive");
+    }
+
+    /// <summary>
     /// Check if the currently selected EFT diretory has indicators of an SPT install and if so return true, otherwise return false
     /// </summary>
     /// <returns>True if this is an SPT install directory otherwise false</returns>
-    private bool HasSelectedSPTInstallPath(string requestedDirectory)
+    private static bool HasSelectedSPTInstallPath(string requestedDirectory)
     {
         string sptLauncherPath = Path.Combine(requestedDirectory, "Aki.Launcher.exe");
         string sptServerPath = Path.Combine(requestedDirectory, "Aki.Server.exe");
@@ -211,15 +229,6 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
     {
         IsConfigurationValid = true;
 
-        if (CurrentInstallProcessState.UsingBsgInstallPath)
-        {
-            if (CurrentInstallProcessState.BsgInstallPath == CurrentInstallProcessState.EftInstallPath)
-            {
-                IsConfigurationValid = false;
-                return;
-            }
-        }
-
         if (string.IsNullOrEmpty(CurrentInstallProcessState.EftInstallPath))
         {
             IsConfigurationValid = false;
@@ -238,48 +247,33 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
             return;
         }
 
-        if (IsModsSelectionLoading || IsVersionSelectionLoading)
+        if (IsVersionSelectionLoading)
         {
             IsConfigurationValid = false;
             return;
         }
 
+        if (IsVersionSelectionLoading)
+        {
+            IsConfigurationValid = false;
+            return;
+        }
+
+        if (CurrentInstallProcessState.BsgInstallPath == CurrentInstallProcessState.EftInstallPath)
+        {
+            IsConfigurationValid = false;
+            return;
+        }
         if (HasSelectedSPTInstallPath(CurrentInstallProcessState.EftInstallPath))
         {
             IsConfigurationValid = false;
             return;
         }
-    }
-
-    private async Task LoadAvailableModsList()
-    {
-        IsModsSelectionLoading = true;
-
-        try
+        if (HasSelectedOneDriveInstallPath(CurrentInstallProcessState.EftInstallPath))
         {
-            await _modService.LoadMasterModList();
-            if (_modService.ModList.Count <= 1)
-            {
-                await _modService.DownloadModsCollection();
-                await _modService.LoadMasterModList();
-            }
-
-            Mods.Clear();
-            Mods.AddRange(_modService.ModList.Where(x => _modService.RecommendedModInstalls.Contains(x.Name)));
-
-            // Make sure that all the recommended mods are selected to start with
-            CurrentInstallProcessState.RequestedMods = [.. Mods];
+            IsConfigurationValid = false;
+            return;
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error when trying to evaluate available mod list");
-
-            Mods.Clear();
-            CurrentInstallProcessState.RequestedMods = [];
-        }
-
-        HasRecommendedModsAvailable = Mods.Count > 0;
-        IsModsSelectionLoading = false;
     }
 
     protected override async void OnActivated()
@@ -297,8 +291,12 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
             }
         }
 
+        // Reset the error messages
+        ShowNoAvailableSitVersionSelectionError = false;
+        ShowGenericSitVersionSelectionError = false;
+
         OverridenBsgInstallPath = CurrentInstallProcessState.BsgInstallPath != CurrentInstallProcessState.EftInstallPath;
-        await Task.WhenAll(LoadAvailableModsList(), FetchVersionAndMirrorMatrix());
+        await FetchVersionAndMirrorMatrix();
     }
 
     partial void OnSelectedVersionChanged(SitInstallVersion? value)

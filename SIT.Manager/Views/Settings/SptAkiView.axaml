@@ -3,12 +3,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:controls="clr-namespace:SIT.Manager.Theme.Controls"
 			 xmlns:vm="clr-namespace:SIT.Manager.ViewModels.Settings"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SIT.Manager.Views.Settings.SptAkiView"
 			 x:DataType="vm:SptAkiViewModel">
-	<StackPanel>
-		<Border Classes="StandardFrame">
+	<StackPanel Margin="16,8">
+		<controls:Card Margin="0,8">
 			<StackPanel>
 				<StackPanel Orientation="Horizontal">
 					<TextBlock Text="{DynamicResource SettingsSPTAKIPathTitle}"  VerticalAlignment="Center"/>
@@ -38,12 +39,12 @@
 										 Text="{Binding Config.SitModVersion}"/>
 				</StackPanel>
 			</StackPanel>
-		</Border>
+		</controls:Card>
 		
 		<!--Server Console-->
-		<TextBlock Text="{DynamicResource SettingsServerConsoleTitle}" Classes="FrameHeading"/>
-		<Border Classes="StandardFrame">
+		<controls:Card Margin="0,8">
 			<StackPanel>
+				<TextBlock Text="{DynamicResource SettingsServerConsoleTitle}" Classes="FrameHeading"/>
 				<StackPanel Orientation="Horizontal">
 					<TextBlock Text="{DynamicResource SettingsServerConsoleFontFamilyTitle}" Margin="0,0,10,0" VerticalAlignment="Center"/>
 					<ComboBox x:Name="fontComboBox"
@@ -75,6 +76,6 @@
 										  Color="{Binding Config.ConsoleFontColor, Mode=TwoWay}" />
 				</StackPanel>
 			</StackPanel>
-		</Border>
+		</controls:Card>
 	</StackPanel>
 </UserControl>
