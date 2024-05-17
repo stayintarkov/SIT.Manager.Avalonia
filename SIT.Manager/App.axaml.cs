@@ -9,6 +9,7 @@ using Polly.Retry;
 using Polly.Timeout;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Interfaces.ManagedProcesses;
+using SIT.Manager.Models.Config;
 using SIT.Manager.Services;
 using SIT.Manager.Services.Caching;
 using SIT.Manager.Services.Install;
@@ -170,6 +171,7 @@ public sealed partial class App : Application
             services.AddHttpClient<NetworkToolsViewModel>(client =>
             {
                 client.BaseAddress = new Uri("http://backend.sitcoop.org/");
+                client.DefaultRequestHeaders.UserAgent.ParseAdd($"SIT Manager {Assembly.GetEntryAssembly()?.GetName().Version?.ToString()}");
             });
 
             services.AddResiliencePipeline<string, HttpResponseMessage>("default-pipeline", builder =>
