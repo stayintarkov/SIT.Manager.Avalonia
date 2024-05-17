@@ -18,16 +18,19 @@ internal class OnDiskCachingProvider(string cachePath, ILogger<OnDiskCachingProv
 
     protected override void CleanCache()
     {
-        HashSet<string> validFileNames = new(_cacheMap.Values
-            .Where(x => x.ExpiryDate > DateTime.UtcNow)
-            .Select(x => Path.GetFileName(x.GetValue<string>())));
-
-        foreach (FileInfo file in _cachePath.GetFiles())
+        lock (_cacheMap)
         {
-            if (string.IsNullOrEmpty(file.Extension) && !validFileNames.Contains(file.Name))
-                file.Delete();
+            HashSet<string> validFileNames = new(_cacheMap.Values
+                .Where(x => x.ExpiryDate > DateTime.UtcNow)
+                .Select(x => Path.GetFileName(x.GetValue<string>())));
+
+            foreach (FileInfo file in _cachePath.GetFiles())
+            {
+                if (string.IsNullOrEmpty(file.Extension) && !validFileNames.Contains(file.Name))
+                    file.Delete();
+            }
+            base.CleanCache();   
         }
-        base.CleanCache();
     }
 
     public override bool Add<T>(string key, T value, TimeSpan? expiryTime = null)

@@ -69,6 +69,5 @@ internal class InMemoryCachingProvider(string cachePath, ILogger<InMemoryCaching
 
     protected override void SaveKeysToFile(string restoreFileName)
     {
-        //TODO: Implement me!
     }
 }
