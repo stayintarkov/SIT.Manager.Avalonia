@@ -14,7 +14,7 @@ public interface ICachingProvider
     IEnumerable<string> GetAllKeys(string prefix);
     int GetCount(string prefix = "");
     CacheValue<T> GetOrCompute<T>(string key, Func<string, T> computor, TimeSpan? expiryTime = null);
-    Task<CacheValue<T>> GetOrComputeAsync<T>(string key, Func<string, Task<T>> computor, TimeSpan? expiaryTime = null);
+    Task<CacheValue<T>> GetOrComputeAsync<T>(string key, Func<string, Task<T>> computor, TimeSpan? expiryTime = null);
     bool Remove(string key);
     int RemoveByPrefix(string prefix);
     bool TryGet<T>(string key, out CacheValue<T> cacheValue);

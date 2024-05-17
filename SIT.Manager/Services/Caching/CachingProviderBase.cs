@@ -2,10 +2,8 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -136,7 +134,7 @@ internal abstract class CachingProviderBase : ICachingProvider
     }
 
     //TODO: Make this based off synchro version
-    public virtual async Task<CacheValue<T>> GetOrComputeAsync<T>(string key, Func<string, Task<T>> computor, TimeSpan? expiaryTime = null)
+    public virtual async Task<CacheValue<T>> GetOrComputeAsync<T>(string key, Func<string, Task<T>> computor, TimeSpan? expiryTime = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
 
@@ -145,7 +143,7 @@ internal abstract class CachingProviderBase : ICachingProvider
             return valOut;
 
         T computedValue = await computor(key);
-        bool addSuccess = Add(key, computedValue, expiaryTime);
+        bool addSuccess = Add(key, computedValue, expiryTime);
 
         if (!addSuccess)
             throw new Exception("Cached value did not exist but could not be added to the cache");
