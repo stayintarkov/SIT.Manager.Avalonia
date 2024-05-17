@@ -25,7 +25,8 @@ internal class InMemoryCachingProvider(string cachePath, ILogger<InMemoryCaching
 
         if (cacheEntry.ExpiryDate < DateTime.UtcNow)
         {
-            RemoveExpiredKey(key);
+            if(Remove(cacheEntry.Key))
+                OnEvictedTenant(new EvictedEventArgs(cacheEntry.Key));
             return CacheValue<T>.NoValue;
         }
 
@@ -47,25 +48,27 @@ internal class InMemoryCachingProvider(string cachePath, ILogger<InMemoryCaching
         ArgumentNullException.ThrowIfNull(value, nameof(value));
 
         DateTime expiryDate = DateTime.UtcNow + (expiryTime ?? TimeSpan.FromMinutes(15));
-        CacheEntry entry = new(key, value, expiryDate);
+        CacheEntry cacheEntry = new(key, value, expiryDate);
         if (expiryDate < DateTime.UtcNow)
         {
-            RemoveExpiredKey(entry.Key);
+            if(Remove(cacheEntry.Key))
+                OnEvictedTenant(new EvictedEventArgs(cacheEntry.Key));
             return false;
         }
 
-        if (!_cacheMap.TryAdd(entry.Key, entry))
-        {
-            if (!_cacheMap.TryGetValue(entry.Key, out CacheEntry? existingEntry) || existingEntry.ExpiryDate < DateTime.UtcNow)
-                return false;
+        if (_cacheMap.TryAdd(cacheEntry.Key, cacheEntry))
+            return true;
 
-            _cacheMap.AddOrUpdate(entry.Key, entry, (k, cacheEntry) => entry);
-        }
+        if (!_cacheMap.TryGetValue(cacheEntry.Key, out CacheEntry? existingEntry) || existingEntry.ExpiryDate < DateTime.UtcNow)
+            return false;
+
+        _cacheMap.AddOrUpdate(cacheEntry.Key, cacheEntry, (_, _) => cacheEntry);
 
         return true;
     }
 
     protected override void SaveKeysToFile(string restoreFileName)
     {
+        //TODO: Implement me!
     }
 }

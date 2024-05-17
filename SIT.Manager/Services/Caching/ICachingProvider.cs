@@ -13,7 +13,7 @@ public interface ICachingProvider
     CacheValue<T> Get<T>(string key);
     IEnumerable<string> GetAllKeys(string prefix);
     int GetCount(string prefix = "");
-    CacheValue<T> GetOrCompute<T>(string key, Func<string, T> computor, TimeSpan? expiaryTime = null);
+    CacheValue<T> GetOrCompute<T>(string key, Func<string, T> computor, TimeSpan? expiryTime = null);
     Task<CacheValue<T>> GetOrComputeAsync<T>(string key, Func<string, Task<T>> computor, TimeSpan? expiaryTime = null);
     bool Remove(string key);
     int RemoveByPrefix(string prefix);
