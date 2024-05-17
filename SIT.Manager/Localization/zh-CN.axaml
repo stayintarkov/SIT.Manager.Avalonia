@@ -251,10 +251,10 @@
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigLogDescription">找不到日志文件！</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigButtonOk">确定</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigButtonCancel">取消</system:String>
-	<system:String x:Key="ToolsPageViewModelConfigClearEFTTitle">清除缓存</system:String>
-	<system:String x:Key="ToolsPageViewModelConfigClearEFTDescription">您是否要清除 EFT 本地缓存或者是清除所有缓存？</system:String>
-	<system:String x:Key="ToolsPageViewModelConfigClearEFTCache">清除 EFT 本地缓存</system:String>
+	<system:String x:Key="ToolsPageViewModelConfigClearManagerCache">Clear Manager Cache</system:String>
 	<system:String x:Key="ToolsPageViewModelConfigClearAllCache">清除所有缓存</system:String>
+	<system:String x:Key="ToolsClearManagerCacheButtonToolTip">Clear all caching from SIT Manager</system:String>
+	<system:String x:Key="ToolsClearAllCacheButtonToolTip">Clear all caching from everywhere - EFT, Manager, Server etc</system:String>
 	<system:String x:Key="ToolsPageViewModelUnhandledExceptionError">发生错误：%1</system:String>
 
 	<!-- Settings Page ViewModel -->

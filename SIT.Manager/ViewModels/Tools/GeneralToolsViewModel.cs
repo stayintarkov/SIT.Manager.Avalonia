@@ -24,6 +24,7 @@ public partial class GeneralToolsViewModel : ObservableObject
 {
     private readonly IAkiServerService _akiServerService;
     private readonly IBarNotificationService _barNotificationService;
+    private readonly ICachingService _cachingService;
     private readonly IManagerConfigService _configService;
     private readonly IFileService _fileService;
     private readonly IModService _modService;
@@ -45,12 +46,11 @@ public partial class GeneralToolsViewModel : ObservableObject
 
     public IAsyncRelayCommand OpenEFTLogCommand { get; }
 
-    public IAsyncRelayCommand ClearCacheCommand { get; }
-
     public IAsyncRelayCommand GenerateDiagnosticReportCommand { get; }
 
     public GeneralToolsViewModel(IAkiServerService akiServerService,
                               IBarNotificationService barNotificationService,
+                              ICachingService cachingService,
                               IManagerConfigService configService,
                               IFileService fileService,
                               ILocalizationService localizationService,
@@ -60,6 +60,7 @@ public partial class GeneralToolsViewModel : ObservableObject
     {
         _akiServerService = akiServerService;
         _barNotificationService = barNotificationService;
+        _cachingService = cachingService;
         _configService = configService;
         _fileService = fileService;
         _tarkovClientService = tarkovClientService;
@@ -72,7 +73,6 @@ public partial class GeneralToolsViewModel : ObservableObject
         OpenServerFolderCommand = new AsyncRelayCommand(OpenServerFolder);
         OpenSITConfigCommand = new AsyncRelayCommand(OpenSITConfig);
         OpenEFTLogCommand = new AsyncRelayCommand(OpenEFTLog);
-        ClearCacheCommand = new AsyncRelayCommand(ClearCache);
         GenerateDiagnosticReportCommand = new AsyncRelayCommand(GenerateDiagnosticReport);
     }
 
@@ -213,46 +213,61 @@ public partial class GeneralToolsViewModel : ObservableObject
         WeakReferenceMessenger.Default.Send(new PageNavigationMessage(pageNavigation));
     }
 
-    private async Task ClearCache()
+    /// <summary>
+    /// Clear all caches - local, manager, server etc
+    /// </summary>
+    [RelayCommand]
+    private void ClearAllCache()
     {
-        // Prompt the user for their choice using a dialog.
-        ContentDialog choiceDialog = new()
-        {
-            Title = _localizationService.TranslateSource("ToolsPageViewModelConfigClearEFTTitle"),
-            Content = _localizationService.TranslateSource("ToolsPageViewModelConfigClearEFTDescription"),
-            PrimaryButtonText = _localizationService.TranslateSource("ToolsPageViewModelConfigClearEFTCache"),
-            SecondaryButtonText = _localizationService.TranslateSource("ToolsPageViewModelConfigClearAllCache"),
-            CloseButtonText = _localizationService.TranslateSource("ToolsPageViewModelErrorMessageConfigButtonCancel")
-        };
-        ContentDialogResult result = await choiceDialog.ShowAsync();
+        // Clear the other caches first
+        ClearLocalCache();
+        ClearManagerCache();
 
-        if (result == ContentDialogResult.Primary)
+        // Clear the rest that aren't managed by other clearing functions
+        try
         {
-            // User chose to clear EFT local cache.
-            try
-            {
-                _tarkovClientService.ClearLocalCache();
-            }
-            catch (Exception ex)
-            {
-                // Handle any exceptions that may occur during the process.
-                _barNotificationService.ShowError(_localizationService.TranslateSource("ToolsPageViewModelErrorMessageTitle"), _localizationService.TranslateSource("ToolsPageViewModelUnhandledExceptionError", ex.Message));
-            }
+            _akiServerService.ClearCache();
+            _modService.ClearCache();
         }
-        else if (result == ContentDialogResult.Secondary)
+        catch (Exception ex)
         {
-            // User chose to clear everything.
-            try
-            {
-                _akiServerService.ClearCache();
-                _tarkovClientService.ClearCache();
-                _modService.ClearCache();
-            }
-            catch (Exception ex)
-            {
-                // Handle any exceptions that may occur during the process.
-                _barNotificationService.ShowError(_localizationService.TranslateSource("ToolsPageViewModelErrorMessageTitle"), _localizationService.TranslateSource("ToolsPageViewModelUnhandledExceptionError", ex.Message));
-            }
+            // Handle any exceptions that may occur during the process.
+            _barNotificationService.ShowError(_localizationService.TranslateSource("ToolsPageViewModelErrorMessageTitle"), _localizationService.TranslateSource("ToolsPageViewModelUnhandledExceptionError", ex.Message));
+        }
+    }
+
+    /// <summary>
+    /// Clear EFT local cache.
+    /// </summary>
+    [RelayCommand]
+    private void ClearLocalCache()
+    {
+        try
+        {
+            _tarkovClientService.ClearLocalCache();
+        }
+        catch (Exception ex)
+        {
+            // Handle any exceptions that may occur during the process.
+            _barNotificationService.ShowError(_localizationService.TranslateSource("ToolsPageViewModelErrorMessageTitle"), _localizationService.TranslateSource("ToolsPageViewModelUnhandledExceptionError", ex.Message));
+        }
+    }
+
+    /// <summary>
+    /// Clear the managers cache directories.
+    /// </summary>
+    [RelayCommand]
+    private void ClearManagerCache()
+    {
+        try
+        {
+            _cachingService.InMemory.Clear();
+            _cachingService.OnDisk.Clear();
+        }
+        catch (Exception ex)
+        {
+            // Handle any exceptions that may occur during the process.
+            _barNotificationService.ShowError(_localizationService.TranslateSource("ToolsPageViewModelErrorMessageTitle"), _localizationService.TranslateSource("ToolsPageViewModelUnhandledExceptionError", ex.Message));
         }
     }
 
