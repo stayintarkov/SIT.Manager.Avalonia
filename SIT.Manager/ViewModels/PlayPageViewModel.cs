@@ -31,10 +31,11 @@ public partial class PlayPageViewModel : ObservableRecipient,
     {
         _cachingService = cachingService;
 
-        if (_cachingService.OnDisk.TryGet(SELECTED_TAB_INDEX_CACHE_KEY, out CacheValue<int> indexValue))
+        CacheValue<int> indexValue = _cachingService.OnDisk.GetOrCompute(SELECTED_TAB_INDEX_CACHE_KEY, (key) =>
         {
-            SelectedTabIndex = indexValue.Value;
-        }
+            return SelectedTabIndex;
+        });
+        SelectedTabIndex = indexValue.Value;
 
         PlayControl = new ServerSelectionView();
     }
