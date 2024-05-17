@@ -99,13 +99,33 @@
 					<TextBlock Classes="FrameHeading" Text="{DynamicResource GeneralToolsViewConfigurationSectionHeadingText}"/>
 					<StackPanel Orientation="Horizontal"
 								Margin="0,2,0,0">
-						<Button Name="ClearCacheButton"
+						<Button Name="ClearGameCacheButton"
 								Classes="toolsButton"
 								ToolTip.Tip="{DynamicResource ToolsClearCacheButtonToolTip}"
-								Command="{Binding ClearCacheCommand}">
+								Command="{Binding ClearLocalCacheCommand}">
 							<StackPanel Orientation="Horizontal">
 								<ui:SymbolIcon Symbol="Delete"/>
 								<TextBlock Text="{DynamicResource ToolsClearCacheButtonTitle}"/>
+							</StackPanel>
+						</Button>
+
+						<Button Name="ClearManagerCacheButton"
+								Classes="toolsButton"
+								ToolTip.Tip="{DynamicResource ToolsClearManagerCacheButtonToolTip}"
+								Command="{Binding ClearManagerCacheCommand}">
+							<StackPanel Orientation="Horizontal">
+								<ui:SymbolIcon Symbol="Delete"/>
+								<TextBlock Text="{DynamicResource ToolsPageViewModelConfigClearManagerCache}"/>
+							</StackPanel>
+						</Button>
+						
+						<Button Name="ClearAllCacheButton"
+								Classes="toolsButton"
+								ToolTip.Tip="{DynamicResource ToolsClearAllCacheButtonToolTip}"
+								Command="{Binding ClearAllCacheCommand}">
+							<StackPanel Orientation="Horizontal">
+								<ui:SymbolIcon Symbol="Delete"/>
+								<TextBlock Text="{DynamicResource ToolsPageViewModelConfigClearAllCache}"/>
 							</StackPanel>
 						</Button>
 					</StackPanel>

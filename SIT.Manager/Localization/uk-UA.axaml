@@ -255,10 +255,10 @@
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigLogDescription">Файл журналу не вдалося знайти.</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigButtonOk">ОК</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigButtonCancel">Скасувати</system:String>
-	<system:String x:Key="ToolsPageViewModelConfigClearEFTTitle">Очистити кеш</system:String>
-	<system:String x:Key="ToolsPageViewModelConfigClearEFTDescription">Бажаєте очистити локальний кеш EFT або весь кеш?</system:String>
-	<system:String x:Key="ToolsPageViewModelConfigClearEFTCache">Очистити Кеш EFT</system:String>
+	<system:String x:Key="ToolsPageViewModelConfigClearManagerCache">Clear Manager Cache</system:String>
 	<system:String x:Key="ToolsPageViewModelConfigClearAllCache">Очистити Весь Кеш</system:String>
+	<system:String x:Key="ToolsClearManagerCacheButtonToolTip">Clear all caching from SIT Manager</system:String>
+	<system:String x:Key="ToolsClearAllCacheButtonToolTip">Clear all caching from everywhere - EFT, Manager, Server etc</system:String>
 	<system:String x:Key="ToolsPageViewModelUnhandledExceptionError">Сталася помилка: %1</system:String>
 
 	<!-- Settings Page ViewModel -->

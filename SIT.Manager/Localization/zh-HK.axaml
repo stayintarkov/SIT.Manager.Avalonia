@@ -251,10 +251,10 @@
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigLogDescription">找不到日誌文件！</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigButtonOk">確定</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigButtonCancel">取消</system:String>
-	<system:String x:Key="ToolsPageViewModelConfigClearEFTTitle">清除快取</system:String>
-	<system:String x:Key="ToolsPageViewModelConfigClearEFTDescription">您是否要清除 EFT 本地快取或者是清除所有快取？</system:String>
-	<system:String x:Key="ToolsPageViewModelConfigClearEFTCache">清除 EFT 本地快取</system:String>
+	<system:String x:Key="ToolsPageViewModelConfigClearManagerCache">Clear Manager Cache</system:String>
 	<system:String x:Key="ToolsPageViewModelConfigClearAllCache">清除所有快取</system:String>
+	<system:String x:Key="ToolsClearManagerCacheButtonToolTip">Clear all caching from SIT Manager</system:String>
+	<system:String x:Key="ToolsClearAllCacheButtonToolTip">Clear all caching from everywhere - EFT, Manager, Server etc</system:String>
 	<system:String x:Key="ToolsPageViewModelUnhandledExceptionError">發生錯誤：%1</system:String>
 
 	<!-- Settings Page ViewModel -->

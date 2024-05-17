@@ -246,10 +246,10 @@
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigLogDescription">Log file could not be found.</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigButtonOk">Ok</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigButtonCancel">Cancel</system:String>
-	<system:String x:Key="ToolsPageViewModelConfigClearEFTTitle">Clear Cache</system:String>
-	<system:String x:Key="ToolsPageViewModelConfigClearEFTDescription">Do you want to clear the EFT local cache or clear all cache?</system:String>
-	<system:String x:Key="ToolsPageViewModelConfigClearEFTCache">Clear EFT Local Cache</system:String>
+	<system:String x:Key="ToolsPageViewModelConfigClearManagerCache">Clear Manager Cache</system:String>
 	<system:String x:Key="ToolsPageViewModelConfigClearAllCache">Clear All Cache</system:String>
+	<system:String x:Key="ToolsClearManagerCacheButtonToolTip">Clear all caching from SIT Manager</system:String>
+	<system:String x:Key="ToolsClearAllCacheButtonToolTip">Clear all caching from everywhere - EFT, Manager, Server etc</system:String>
 	<system:String x:Key="ToolsPageViewModelUnhandledExceptionError">An error occurred: %1</system:String>
 
 	<!-- Settings Page ViewModel -->
