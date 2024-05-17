@@ -29,7 +29,7 @@ internal class OnDiskCachingProvider(string cachePath, ILogger<OnDiskCachingProv
                 if (string.IsNullOrEmpty(file.Extension) && !validFileNames.Contains(file.Name))
                     file.Delete();
             }
-            base.CleanCache();   
+            base.CleanCache();
         }
     }
 
@@ -64,7 +64,7 @@ internal class OnDiskCachingProvider(string cachePath, ILogger<OnDiskCachingProv
                 else
                 {
                     string serializedData = JsonSerializer.Serialize(value);
-                    buffer = Encoding.UTF8.GetBytes(serializedData);   
+                    buffer = Encoding.UTF8.GetBytes(serializedData);
                 }
 
                 fs.Write(buffer);
@@ -88,7 +88,7 @@ internal class OnDiskCachingProvider(string cachePath, ILogger<OnDiskCachingProv
             string cacheFilePath = cacheEntry.GetValue<string>();
             if (File.Exists(cacheFilePath))
                 File.Delete(cacheFilePath);
-            if(Remove(key))
+            if (Remove(key))
                 OnEvictedTenant(new EvictedEventArgs(key));
             return CacheValue<T>.NoValue;
         }
@@ -100,7 +100,7 @@ internal class OnDiskCachingProvider(string cachePath, ILogger<OnDiskCachingProv
             {
                 Remove(cacheEntry.Key);
                 OnEvictedTenant(new EvictedEventArgs(cacheEntry.Key));
-                return CacheValue<T>.Null;
+                return CacheValue<T>.NoValue;
             }
 
             Type tType = typeof(T);
@@ -112,7 +112,7 @@ internal class OnDiskCachingProvider(string cachePath, ILogger<OnDiskCachingProv
             _ = fs.Read(fileBytes, 0, fileBytes.Length);
 
             if (tType == typeof(byte[]))
-                return new CacheValue<T>((T)(object)fileBytes, true);
+                return new CacheValue<T>((T) (object) fileBytes, true);
 
             return new CacheValue<T>(JsonSerializer.Deserialize<T>(fileBytes), true);
         }

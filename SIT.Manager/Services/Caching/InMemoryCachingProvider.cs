@@ -1,20 +1,15 @@
-﻿using Avalonia.Controls.ApplicationLifetimes;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.Json;
-using System.Threading;
 
 namespace SIT.Manager.Services.Caching;
 
 internal class InMemoryCachingProvider(string cachePath, ILogger<InMemoryCachingProvider> logger) : CachingProviderBase(cachePath)
 {
     private const string RESTORE_FILE_NAME = "memoryCache.dat";
+
+    private readonly ILogger<InMemoryCachingProvider> _logger = logger;
+
     protected override string RestoreFileName => RESTORE_FILE_NAME;
-    private ILogger<InMemoryCachingProvider> _logger = logger;
 
     public override CacheValue<T> Get<T>(string key)
     {
@@ -25,7 +20,7 @@ internal class InMemoryCachingProvider(string cachePath, ILogger<InMemoryCaching
 
         if (cacheEntry.ExpiryDate < DateTime.UtcNow)
         {
-            if(Remove(cacheEntry.Key))
+            if (Remove(cacheEntry.Key))
                 OnEvictedTenant(new EvictedEventArgs(cacheEntry.Key));
             return CacheValue<T>.NoValue;
         }
@@ -51,7 +46,7 @@ internal class InMemoryCachingProvider(string cachePath, ILogger<InMemoryCaching
         CacheEntry cacheEntry = new(key, value, expiryDate);
         if (expiryDate < DateTime.UtcNow)
         {
-            if(Remove(cacheEntry.Key))
+            if (Remove(cacheEntry.Key))
                 OnEvictedTenant(new EvictedEventArgs(cacheEntry.Key));
             return false;
         }

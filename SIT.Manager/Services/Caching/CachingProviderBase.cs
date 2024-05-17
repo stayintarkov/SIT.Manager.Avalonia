@@ -48,7 +48,7 @@ internal abstract class CachingProviderBase : ICachingProvider
         string keyDataPath = Path.Combine(_cachePath.FullName, restoreFileName);
         if (_cacheMap.IsEmpty)
         {
-            if(File.Exists(keyDataPath))
+            if (File.Exists(keyDataPath))
                 File.Delete(keyDataPath);
             return;
         }
@@ -59,13 +59,13 @@ internal abstract class CachingProviderBase : ICachingProvider
         if (state == null)
             return;
 
-        ConcurrentDictionary<string, CacheEntry> cache = (ConcurrentDictionary<string, CacheEntry>)state;
-        foreach(CacheEntry entry in cache.Values)
+        ConcurrentDictionary<string, CacheEntry> cache = (ConcurrentDictionary<string, CacheEntry>) state;
+        foreach (CacheEntry entry in cache.Values)
         {
             if (entry.ExpiryDate >= DateTime.UtcNow)
                 continue;
 
-            if(Remove(entry.Key))
+            if (Remove(entry.Key))
                 Evicted?.Invoke(this, new EvictedEventArgs(entry.Key));
         }
 
@@ -153,7 +153,7 @@ internal abstract class CachingProviderBase : ICachingProvider
     public virtual bool TryGet<T>(string key, out CacheValue<T> cacheValue)
     {
         cacheValue = Get<T>(key);
-        return cacheValue != CacheValue<T>.Null;
+        return cacheValue != CacheValue<T>.NoValue;
     }
 
     protected virtual void OnEvictedTenant(EvictedEventArgs e)
