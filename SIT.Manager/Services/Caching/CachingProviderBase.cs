@@ -2,10 +2,8 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,10 +19,9 @@ internal abstract class CachingProviderBase : ICachingProvider
 
     protected CachingProviderBase(string cachePath)
     {
-        _cachePath = new(cachePath);
-        _landlord = new(new TimerCallback(EvictTenents), _cacheMap, TimeSpan.FromSeconds(30), TimeSpan.FromMinutes(0.5));
-
+        _cachePath = new DirectoryInfo(cachePath);
         _cachePath.Create();
+        _landlord = new Timer(EvictTenants, _cacheMap, TimeSpan.FromSeconds(5), TimeSpan.FromMinutes(0.5));
 
         string restoreFilePath = Path.Combine(cachePath, RestoreFileName);
         if (File.Exists(restoreFilePath))
@@ -38,18 +35,16 @@ internal abstract class CachingProviderBase : ICachingProvider
                 SaveKeysToFile(RestoreFileName);
             };
         }
-
-        CleanCache();
     }
 
     protected virtual void CleanCache()
     {
-        EvictTenents(_cacheMap);
+        EvictTenants(_cacheMap);
     }
 
     protected virtual void SaveKeysToFile(string restoreFileName)
     {
-        if (!Directory.Exists(_cachePath.FullName)) Directory.CreateDirectory(_cachePath.FullName);
+        _cachePath.Create();
         string keyDataPath = Path.Combine(_cachePath.FullName, restoreFileName);
         if (_cacheMap.IsEmpty)
         {
@@ -59,7 +54,7 @@ internal abstract class CachingProviderBase : ICachingProvider
         }
         File.WriteAllText(keyDataPath, JsonSerializer.Serialize(_cacheMap));
     }
-    protected virtual void EvictTenents(object? state)
+    protected virtual void EvictTenants(object? state)
     {
         if (state == null)
             return;
@@ -67,21 +62,14 @@ internal abstract class CachingProviderBase : ICachingProvider
         ConcurrentDictionary<string, CacheEntry> cache = (ConcurrentDictionary<string, CacheEntry>)state;
         foreach(CacheEntry entry in cache.Values)
         {
-            if(entry.ExpiryDate <  DateTime.UtcNow)
-            {
-                RemoveExpiredKey(entry.Key);
-            }
+            if (entry.ExpiryDate >= DateTime.UtcNow)
+                continue;
+
+            if(Remove(entry.Key))
+                Evicted?.Invoke(this, new EvictedEventArgs(entry.Key));
         }
 
         SaveKeysToFile(RestoreFileName);
-    }
-
-    protected virtual void RemoveExpiredKey(string key)
-    {
-        if (_cacheMap.TryRemove(key, out _))
-        {
-            Evicted?.Invoke(this, new EvictedEventArgs(key));
-        }
     }
     public virtual void Clear(string prefix = "")
     {
@@ -124,16 +112,11 @@ internal abstract class CachingProviderBase : ICachingProvider
     }
     public virtual int RemoveByPrefix(string prefix)
     {
-        var keysToRemove = _cacheMap.Keys.Where(x => x.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)).ToList();
-        int removed = 0;
-        foreach (var key in keysToRemove)
-        {
-            if (Remove(key))
-                removed++;
-        }
-        return removed;
+        var keysToRemove =
+            _cacheMap.Keys.Where(x => x.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)).ToList();
+        return keysToRemove.Count(Remove);
     }
-    public virtual CacheValue<T> GetOrCompute<T>(string key, Func<string, T> computor, TimeSpan? expiaryTime = null)
+    public virtual CacheValue<T> GetOrCompute<T>(string key, Func<string, T> computor, TimeSpan? expiryTime = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
 
@@ -142,7 +125,7 @@ internal abstract class CachingProviderBase : ICachingProvider
             return valOut;
 
         T computedValue = computor(key);
-        bool addSuccess = Add(key, computedValue, expiaryTime);
+        bool addSuccess = Add(key, computedValue, expiryTime);
 
         if (!addSuccess)
             throw new Exception("Cached value did not exist but could not be added to the cache");
@@ -151,7 +134,7 @@ internal abstract class CachingProviderBase : ICachingProvider
     }
 
     //TODO: Make this based off synchro version
-    public virtual async Task<CacheValue<T>> GetOrComputeAsync<T>(string key, Func<string, Task<T>> computor, TimeSpan? expiaryTime = null)
+    public virtual async Task<CacheValue<T>> GetOrComputeAsync<T>(string key, Func<string, Task<T>> computor, TimeSpan? expiryTime = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
 
@@ -160,7 +143,7 @@ internal abstract class CachingProviderBase : ICachingProvider
             return valOut;
 
         T computedValue = await computor(key);
-        bool addSuccess = Add(key, computedValue, expiaryTime);
+        bool addSuccess = Add(key, computedValue, expiryTime);
 
         if (!addSuccess)
             throw new Exception("Cached value did not exist but could not be added to the cache");
@@ -170,9 +153,12 @@ internal abstract class CachingProviderBase : ICachingProvider
     public virtual bool TryGet<T>(string key, out CacheValue<T> cacheValue)
     {
         cacheValue = Get<T>(key);
-        if (cacheValue == CacheValue<T>.NoValue || cacheValue == CacheValue<T>.Null)
-            return false;
-        return true;
+        return cacheValue != CacheValue<T>.Null;
+    }
+
+    protected virtual void OnEvictedTenant(EvictedEventArgs e)
+    {
+        Evicted?.Invoke(this, e);
     }
     public abstract bool Add<T>(string key, T value, TimeSpan? expiryTime = null);
     public abstract CacheValue<T> Get<T>(string key);
