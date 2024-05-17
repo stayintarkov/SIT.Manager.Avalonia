@@ -104,17 +104,19 @@ internal class OnDiskCachingProvider(string cachePath, ILogger<OnDiskCachingProv
             }
 
             Type tType = typeof(T);
-            FileStream fs = File.OpenRead(filePath);
-            if (tType == typeof(Stream))
-                return new CacheValue<T>((T) (object) fs, true);
+            using (FileStream fs = File.OpenRead(filePath))
+            {
+                if (tType == typeof(Stream))
+                    return new CacheValue<T>((T) (object) fs, true);
 
-            byte[] fileBytes = new byte[fs.Length - fs.Position];
-            _ = fs.Read(fileBytes, 0, fileBytes.Length);
+                byte[] fileBytes = new byte[fs.Length - fs.Position];
+                _ = fs.Read(fileBytes, 0, fileBytes.Length);
 
-            if (tType == typeof(byte[]))
-                return new CacheValue<T>((T) (object) fileBytes, true);
+                if (tType == typeof(byte[]))
+                    return new CacheValue<T>((T) (object) fileBytes, true);
 
-            return new CacheValue<T>(JsonSerializer.Deserialize<T>(fileBytes), true);
+                return new CacheValue<T>(JsonSerializer.Deserialize<T>(fileBytes), true);
+            }
         }
         catch (Exception ex)
         {
