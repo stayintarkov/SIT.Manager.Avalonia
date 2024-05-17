@@ -1,0 +1,45 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+			<StackPanel>
+				<Button Classes="IsolatedButton">
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Text="{DynamicResource ConfigureViewBackButtonTitle}"
+								   TextTrimming="CharacterEllipsis"/>
+					</StackPanel>
+				</Button>
+			</StackPanel>
+		</Border>
+    </Design.PreviewWith>
+
+	<Style Selector="Button:pointerover">
+		<Setter Property="Cursor" Value="Hand"/>
+	</Style>
+
+	<Style Selector="Button:pressed">
+		<Setter Property="Cursor" Value="Hand"/>
+	</Style>
+
+    <!-- Add Styles Here -->
+	<Style Selector="Button.IsolatedButton">
+		<Setter Property="CornerRadius" Value="4"/>
+		<Setter Property="Background" Value="{DynamicResource AppPrimary}"/>
+		<Setter Property="Height" Value="48"/>
+		<Setter Property="HorizontalAlignment" Value="Stretch"/>
+		<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		<Setter Property="Margin" Value="4"/>
+	</Style>
+
+	<Style Selector="Button.IsolatedButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+		<Setter Property="CornerRadius" Value="4"/>
+	</Style>
+	
+	<Style Selector="Button.IsolatedButton:pressed">
+		<Setter Property="RenderTransform" Value="scale(0.98)" />
+	</Style>
+
+	<Style Selector="Button.IsolatedButton:pressed /template/ ContentPresenter#PART_ContentPresenter">
+		<Setter Property="CornerRadius" Value="4"/>
+	</Style>
+</Styles>
