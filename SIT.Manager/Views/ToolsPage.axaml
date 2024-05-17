@@ -2,120 +2,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:ui="using:FluentAvalonia.UI.Controls"
-			 xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
 			 xmlns:vm="clr-namespace:SIT.Manager.ViewModels"
+			 xmlns:tv="clr-namespace:SIT.Manager.Views.Tools"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SIT.Manager.Views.ToolsPage"
-			 x:CompileBindings="True"
 			 x:DataType="vm:ToolsPageViewModel">
-	<UserControl.Styles>
-		<Style Selector="Button.toolsButton">
-			<Setter Property="Height" Value="50"/>
-			<Setter Property="HorizontalAlignment" Value="Center"/>
-			<Setter Property="Margin" Value="7"/>
-		</Style>
-	</UserControl.Styles>
-	
-	<Grid HorizontalAlignment="Center" VerticalAlignment="Center" Background="Transparent">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="Auto"/>
-			<ColumnDefinition Width="15"/>
-			<ColumnDefinition Width="Auto"/>
-		</Grid.ColumnDefinitions>
-		<Border Padding="5" CornerRadius="8"  BorderBrush="Gray" BorderThickness="2" Background="Black" Grid.Column="0"/>
-		<Border Padding="5" CornerRadius="8"  BorderBrush="Gray" BorderThickness="2" Background="Black" Grid.Column="2"/>
-		<StackPanel VerticalAlignment="Top">
-			<Button Name="OpenEFTFolderButton" 
-					HorizontalAlignment="Stretch"
-					HorizontalContentAlignment="Stretch"					
-					Classes="toolsButton"
-					ToolTip.Tip="{DynamicResource ToolsOpenEFTFolderButtonToolTip}"
-					Command="{Binding OpenEFTFolderCommand}">
-				<StackPanel Orientation="Horizontal">
-					<ui:SymbolIcon Symbol="Folder" Margin="0,0,10,0"/>
-					<TextBlock Text="{DynamicResource ToolsOpenEFTFolderButtonTitle}"/>
-				</StackPanel>
-			</Button>
-			<Button Name="OpenBepInExFolderButton" 
-					HorizontalAlignment="Stretch"
-					HorizontalContentAlignment="Stretch"					
-					Classes="toolsButton"
-					ToolTip.Tip="{DynamicResource ToolsOpenBepInExFolderButtonToolTip}"
-					Command="{Binding OpenBepInExFolderCommand}">
-				<StackPanel Orientation="Horizontal">
-					<ui:SymbolIcon Symbol="Folder" Margin="0,0,10,0"/>
-					<TextBlock Text="{DynamicResource ToolsOpenBepInExFolderButtonTitle}"/>
-				</StackPanel>
-			</Button>
-			<Button Name="OpenServerFolder" 
-					HorizontalAlignment="Stretch"
-					HorizontalContentAlignment="Stretch"					
-					Classes="toolsButton"
-					ToolTip.Tip="{DynamicResource ToolsOpenServerFolderButtonToolTip}"
-					Command="{Binding OpenServerFolderCommand}">
-				<StackPanel Orientation="Horizontal">
-					<ui:SymbolIcon Symbol="Folder" Margin="0,0,10,0"/>
-					<TextBlock Text="{DynamicResource ToolsOpenServerFolderButtonTitle}"/>
-				</StackPanel>
-			</Button>
-			<Button Name="GenerateDiagnosticReport"
-					HorizontalAlignment="Stretch"
-					HorizontalContentAlignment="Stretch"
-					Classes="toolsButton"
-					Command="{Binding GenerateDiagnosticReportCommand}">
-				<StackPanel Orientation="Horizontal">
-					<ui:SymbolIcon Symbol="ReportHacked" Margin="0,0,10,0"/>
-					<TextBlock Text="{DynamicResource ToolsGenerateDiagnosticReportButtonTitle}"/>
-				</StackPanel>
-			</Button>
-		</StackPanel>
-		
-		<StackPanel Grid.Column="2" VerticalAlignment="Top">
-			<Button Name="OpenSITConfigButton"
-					HorizontalAlignment="Stretch"
-					HorizontalContentAlignment="Stretch"
-					Classes="toolsButton"
-					ToolTip.Tip="{DynamicResource ToolsOpenSITConfigButtonToolTip}"
-					Command="{Binding OpenSITConfigCommand}">
-				<StackPanel Orientation="Horizontal">
-					<ui:SymbolIcon Symbol="Setting" Margin="0,0,10,0"/>
-					<TextBlock Text="{DynamicResource ToolsOpenSITConfigButtonTitle}"/>
-				</StackPanel>
-			</Button>
-			<Button Name="OpenEFTLogButton" 
-					HorizontalAlignment="Stretch"
-					HorizontalContentAlignment="Stretch"					
-					Classes="toolsButton"
-					ToolTip.Tip="{DynamicResource ToolsOpenEFTLogButtonToolTip}"
-					Command="{Binding OpenEFTLogCommand}">
-				<StackPanel Orientation="Horizontal">
-					<ui:SymbolIcon Symbol="OpenFile" Margin="0,0,10,0"/>
-					<TextBlock Text="{DynamicResource ToolsOpenEFTLogButtonTitle}"/>
-				</StackPanel>
-			</Button>
-			<Button Name="OpenLocationEditorButton"
-					HorizontalAlignment="Stretch"
-					HorizontalContentAlignment="Stretch"					
-					Classes="toolsButton"
-					ToolTip.Tip="{DynamicResource ToolsOpenLocationEditorButtonToolTip}"
-					Command="{Binding OpenLocationEditorCommand}">
-				<StackPanel Orientation="Horizontal">
-					<ui:SymbolIcon Symbol="Edit" Margin="0,0,10,0"/>
-					<TextBlock Text="{DynamicResource ToolsOpenLocationEditorButtonTitle}"/>
-				</StackPanel>
-			</Button>
-			<Button Name="ClearCacheButton"
-					HorizontalAlignment="Stretch"
-					HorizontalContentAlignment="Stretch"					
-					Classes="toolsButton"
-					ToolTip.Tip="{DynamicResource ToolsClearCacheButtonToolTip}"
-					Command="{Binding ClearCacheCommand}">
-				<StackPanel Orientation="Horizontal">
-					<ui:SymbolIcon Symbol="Delete" Margin="0,0,10,0"/>
-					<TextBlock Text="{DynamicResource ToolsClearCacheButtonTitle}"/>
-				</StackPanel>
-			</Button>
-		</StackPanel>
-	</Grid>
+	<TabControl Margin="2">
+		<TabItem Header="{DynamicResource ToolsPageGenericToolsViewTabHeader}">
+			<tv:GeneralToolsView/>
+		</TabItem>
+		<TabItem Header="{DynamicResource ToolsPageNetworkToolsViewTabHeader}">
+			<tv:NetworkToolsView/>
+		</TabItem>
+	</TabControl>
 </UserControl>

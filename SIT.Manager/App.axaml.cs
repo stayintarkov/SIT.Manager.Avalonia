@@ -17,6 +17,7 @@ using SIT.Manager.ViewModels;
 using SIT.Manager.ViewModels.Installation;
 using SIT.Manager.ViewModels.Play;
 using SIT.Manager.ViewModels.Settings;
+using SIT.Manager.ViewModels.Tools;
 using SIT.Manager.Views;
 using System;
 using System.CommandLine;
@@ -146,6 +147,10 @@ public sealed partial class App : Application
                 .AddTransient<LinuxViewModel>()
                 .AddTransient<SptAkiViewModel>();
 
+            // Tools view Models
+            services.AddTransient<GeneralToolsViewModel>()
+                .AddTransient<NetworkToolsViewModel>();
+
             #endregion ViewModels
 
             #region Polly
@@ -162,33 +167,56 @@ public sealed partial class App : Application
                 MaxConnectionsPerServer = 10
             });
 
-            services.AddResiliencePipeline<string, HttpResponseMessage>("default-pipeline", builder =>
+            services.AddHttpClient<NetworkToolsViewModel>(client =>
             {
-                builder.AddRetry(new RetryStrategyOptions<HttpResponseMessage>()
-                {
-                    MaxRetryAttempts = 3,
-                    Delay = TimeSpan.FromSeconds(3)
-                });
-            })
-            .AddResiliencePipeline<string, HttpResponseMessage>("ping-pipeline", builder =>
-            {
-                builder.AddRetry(new RetryStrategyOptions<HttpResponseMessage>()
-                {
-                    MaxRetryAttempts = 6,
-                    BackoffType = DelayBackoffType.Exponential,
-                    MaxDelay = TimeSpan.FromSeconds(30),
-                    OnRetry = static args =>
-                    {
-                        Debug.WriteLine("Retrying ping. Attempt: {0}", args.AttemptNumber);
-                        //TODO: Add logging
-                        return default;
-                    },
-                    ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
-                        .Handle<HttpRequestException>()
-                        .Handle<TimeoutRejectedException>()
-                        .HandleResult(response => response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
-                });
+                client.BaseAddress = new Uri("http://backend.sitcoop.org/");
             });
+
+            services.AddResiliencePipeline<string, HttpResponseMessage>("default-pipeline", builder =>
+                {
+                    builder.AddRetry(new RetryStrategyOptions<HttpResponseMessage>()
+                    {
+                        MaxRetryAttempts = 3,
+                        Delay = TimeSpan.FromSeconds(3)
+                    });
+                })
+                .AddResiliencePipeline<string, HttpResponseMessage>("ping-pipeline", builder =>
+                {
+                    builder.AddRetry(new RetryStrategyOptions<HttpResponseMessage>()
+                    {
+                        MaxRetryAttempts = 6,
+                        BackoffType = DelayBackoffType.Exponential,
+                        MaxDelay = TimeSpan.FromSeconds(30),
+                        OnRetry = static args =>
+                        {
+                            Debug.WriteLine("Retrying ping. Attempt: {0}", args.AttemptNumber);
+                            //TODO: Add logging
+                            return default;
+                        },
+                        ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
+                            .Handle<HttpRequestException>()
+                            .Handle<TimeoutRejectedException>()
+                            .HandleResult(response =>
+                                response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                    });
+                })
+                .AddResiliencePipeline<string, HttpResponseMessage>("port-checker-pipeline", builder =>
+                {
+                    builder.AddRetry(new RetryStrategyOptions<HttpResponseMessage>()
+                    {
+                        MaxRetryAttempts = 3,
+                        BackoffType = DelayBackoffType.Exponential,
+                        MaxDelay = TimeSpan.FromSeconds(15),
+                        OnRetry = static args =>
+                        {
+                            //TODO: Log failure
+                            return default;
+                        },
+                        ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
+                            .Handle<HttpRequestException>()
+                            .Handle<TimeoutRejectedException>()
+                    });
+                });
 
             #endregion Polly
 

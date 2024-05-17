@@ -532,4 +532,25 @@
 
 	<!-- HelpDialog -->
 	<system:String x:Key="HelpDialogDescription">您確定要在您的預設瀏覽器中打開 SIT 文件 (%1) 嗎？</system:String>
+
+	<!-- Tools Page -->
+	<system:String x:Key="ToolsPageGenericToolsViewTabHeader">General Tools</system:String>
+	<system:String x:Key="ToolsPageNetworkToolsViewTabHeader">Port Checker</system:String>
+
+	<!-- GeneralToolsView -->
+	<system:String x:Key="GeneralToolsViewSupportAndLogsSectionHeadingText">Directories</system:String>
+	<system:String x:Key="GeneralToolsViewCacheSectionHeadingText">Configuration</system:String>
+	<system:String x:Key="GeneralToolsViewConfigurationSectionHeadingText">Cache</system:String>
+	<system:String x:Key="GeneralToolsViewDirectoriesSectionHeadingText">Support and Logs</system:String>
+
+	<!-- NetworkToolsView -->
+	<system:String x:Key="NetworkToolsViewDescriptionText">Please ensure that the server is running before using this tool.</system:String>
+	<system:String x:Key="NetworkToolsViewRunTestButtonText">Run Port Check</system:String>
+	<system:String x:Key="NetworkToolsViewIPAddressLabelText">Your External IP Address: </system:String>
+	<system:String x:Key="NetworkToolsViewAkiPortLabelText">Aki Port: </system:String>
+	<system:String x:Key="NetworkToolsViewRelayPortLabelText">Relay Port: </system:String>
+	<system:String x:Key="NetworkToolsViewNatPortLabelText">Nat Port: </system:String>
+	<system:String x:Key="NetworkToolsViewPortTestSuccessText">Port open!</system:String>
+	<system:String x:Key="NetworkToolsViewPortTestFailText">Port closed!</system:String>
+	<system:String x:Key="NetworkToolsViewUnknownIpAddressText">Unknown</system:String>
 </ResourceDictionary>
