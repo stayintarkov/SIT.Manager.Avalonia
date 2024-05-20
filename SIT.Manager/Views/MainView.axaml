@@ -134,32 +134,6 @@
 						</Style>
 					</ContentControl.Styles>
 				</ContentControl>
-
-				<StackPanel Name="ActionPanel"
-							Orientation="Horizontal"
-							HorizontalAlignment="Center"
-							DataContext="{Binding ActionPanelNotification}"
-							IsVisible="{Binding ShowActionPanel}"
-							Grid.Row="1"
-							MinHeight="24">
-					<TextBlock Name="ActionPanelText"
-							   Text="{Binding ActionText}"
-							   VerticalAlignment="Center"
-							   FontSize="12"/>
-					<ProgressBar Name="ActionPanelBar"
-								 Margin="15 0 0 0"
-								 VerticalAlignment="Center"
-								 Width="150"
-								 MinWidth="100"
-								 MaxWidth="150"
-								 Minimum="0"
-								 Maximum="100"
-								 Value="{Binding ProgressPercentage}"/>
-					<TextBlock Name="ActionPanelPercentageText"
-							   Margin="15 0 0 0"
-							   VerticalAlignment="Center"
-							   Text="{Binding ProgressPercentage, StringFormat={}{0:N2}%}"/>
-				</StackPanel>
 			</Grid>
 		</SplitView>
 	</Grid>

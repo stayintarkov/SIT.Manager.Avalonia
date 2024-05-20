@@ -19,32 +19,6 @@
 	<system:String x:Key="ServerTitleToolTip">Server management.</system:String>
 	<system:String x:Key="ModsTitleToolTip">Mod management.</system:String>
 
-	<!-- Mods Page -->
-	<system:String x:Key="ModsWarningTitle">WARNING</system:String>
-	<system:String x:Key="ModsWarningDescription">The use of mods can affect the stability of your game and might cause it to crash or malfunction. While mods can enhance your gaming experience and add new features, they may not be officially supported by SIT or tested for compatibility. Install mods at your own risk and always make backup copies of your game files before making any changes. We are not liable for any damage or loss of progress caused by the installation of mods. Proceed with caution.</system:String>
-	<system:String x:Key="ModsWarningButtonTitle">I Understand</system:String>
-	<system:String x:Key="ModsPageTitle">Mods</system:String>
-	<system:String x:Key="ModsDownloadCollectionButtonTitle">Download Collection</system:String>
-	<system:String x:Key="ModsDownloadCollectionButtonToolTip">Download the latest ported mod collection.</system:String>
-	<system:String x:Key="ModInfoTitle">Mod Info</system:String>
-	<system:String x:Key="ModInfoNameTitle">Name:</system:String>
-	<system:String x:Key="ModInfoAuthorTitle">Author:</system:String>
-	<system:String x:Key="ModInfoSupportedVersionTitle">Supported SIT Version:</system:String>
-	<system:String x:Key="ModInfoModVersionTitle">Mod Version:</system:String>
-	<system:String x:Key="ModInfoModPageTitle">Mod Page:</system:String>
-	<system:String x:Key="ModInfoExtraFilesToolTip">If the ported mod requires additional files. Click the link to download them.</system:String>
-	<system:String x:Key="ModInfoRequiresExtraFilesTitle">Requires Extra Files</system:String>
-	<system:String x:Key="ModInfoDescription">Description:</system:String>
-	<system:String x:Key="ModInfoInstallToolTip">Install the mod.</system:String>
-	<system:String x:Key="ModInfoInstallTitle">Install</system:String>
-	<system:String x:Key="ModInfoUninstallToolTip">Uninstall the mod.</system:String>
-	<system:String x:Key="ModInfoUninstallTitle">Uninstall</system:String>
-
-	<!-- Mods Page ViewModel -->
-	<system:String x:Key="ModsPageViewModelErrorTitle">Error</system:String>
-	<system:String x:Key="ModsPageViewModelErrorInstallPathDescription">Install Path is not set. Configure it in Settings.</system:String>
-	<system:String x:Key="ModsPageViewModelErrorNoModsFound">No mods found</system:String>
-
 	<!-- Tools Page -->
 	<system:String x:Key="ToolsOpenEFTFolderButtonToolTip">Open the EFT installation folder.</system:String>
 	<system:String x:Key="ToolsOpenEFTFolderButtonTitle">Open EFT Folder</system:String>
@@ -319,10 +293,6 @@
 	<system:String x:Key="InstallServiceInstallSITSuccessfulDescription">Installation of SIT was successful.</system:String>
 	<system:String x:Key="InstallerServiceNoDowngradePatcher">No downgrader is available for these versions of Tarkov.</system:String>
 	<system:String x:Key="InstallServiceSSLError">Your ISP is likely blocking our connection. Please use a VPN and try again.</system:String>
-
-	<!-- File Service -->
-	<system:String x:Key="FileServiceProgressDownloading">Downloading '%1'</system:String>
-	<system:String x:Key="FileServiceProgressExtracting">Extracting file %1 (%2)</system:String>
 
 	<!-- Update Page -->
 	<system:String x:Key="UpdatePageUpdateInfoTextPt1">SIT Manager is updating for you please wait...</system:String>

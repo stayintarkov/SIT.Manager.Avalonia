@@ -19,32 +19,6 @@
 	<system:String x:Key="ServerTitleToolTip">Управління сервером.</system:String>
 	<system:String x:Key="ModsTitleToolTip">Управління модами.</system:String>
 
-	<!-- Mods Page -->
-	<system:String x:Key="ModsWarningTitle">УВАГА</system:String>
-	<system:String x:Key="ModsWarningDescription">Використання модифікацій може вплинути на стабільність вашої гри і може спричинити її збій або неправильну роботу. Хоча модифікації можуть покращити ваш ігровий досвід та додати нові функції, вони можуть не бути офіційно підтримані SIT або протестовані на сумісність. Встановлюйте модифікації на свій ризик і завжди робіть резервні копії файлів вашої гри перед внесенням будь-яких змін. Ми не несемо відповідальності за будь-які збитки або втрати прогресу, спричинені встановленням модифікацій. Дійте обережно.</system:String>
-	<system:String x:Key="ModsWarningButtonTitle">Зрозуміло</system:String>
-	<system:String x:Key="ModsPageTitle">Модифікації</system:String>
-	<system:String x:Key="ModsDownloadCollectionButtonTitle">Завантажити колекцію модифікацій</system:String>
-	<system:String x:Key="ModsDownloadCollectionButtonToolTip">Завантажити останню збірку перенесених модифікацій.</system:String>
-	<system:String x:Key="ModInfoTitle">Інформація про Мод</system:String>
-	<system:String x:Key="ModInfoNameTitle">Назва:</system:String>
-	<system:String x:Key="ModInfoAuthorTitle">Автор:</system:String>
-	<system:String x:Key="ModInfoSupportedVersionTitle">Підтримувана версія SIT:</system:String>
-	<system:String x:Key="ModInfoModVersionTitle">Версія Моду:</system:String>
-	<system:String x:Key="ModInfoModPageTitle">Сторінка Моду:</system:String>
-	<system:String x:Key="ModInfoExtraFilesToolTip">Якщо перенесений мод вимагає додаткові файли. Натисніть посилання, щоб їх завантажити.</system:String>
-	<system:String x:Key="ModInfoRequiresExtraFilesTitle">Потребує Додаткові Файли</system:String>
-	<system:String x:Key="ModInfoDescription">Опис:</system:String>
-	<system:String x:Key="ModInfoInstallToolTip">Встановити мод.</system:String>
-	<system:String x:Key="ModInfoInstallTitle">Встановити</system:String>
-	<system:String x:Key="ModInfoUninstallToolTip">Видалити мод.</system:String>
-	<system:String x:Key="ModInfoUninstallTitle">Видалити</system:String>
-
-	<!-- Mods Page ViewModel -->
-	<system:String x:Key="ModsPageViewModelErrorTitle">Помилка</system:String>
-	<system:String x:Key="ModsPageViewModelErrorInstallPathDescription">Шлях встановлення не встановлено. Вкажіть його в налаштуваннях.</system:String>
-	<system:String x:Key="ModsPageViewModelErrorNoModsFound">Моди не знайдено</system:String>
-
 	<!-- Tools Page -->
 	<system:String x:Key="ToolsOpenEFTFolderButtonToolTip">Відкрити теку встановлення EFT.</system:String>
 	<system:String x:Key="ToolsOpenEFTFolderButtonTitle">Відкрити теку EFT</system:String>
@@ -324,10 +298,6 @@
 	<system:String x:Key="InstallServiceInstallSITSuccessfulDescription">Установка SIT пройшла успішно.</system:String>
 	<system:String x:Key="InstallerServiceNoDowngradePatcher">Для цієї версії EFT нема доступних програм для відкату версії.</system:String>
 	<system:String x:Key="InstallServiceSSLError">Ваш провайдер, ймовірно, блокує наше з'єднання. Будь ласка, скористайтеся VPN і спробуйте ще раз.</system:String>
-
-	<!-- File Service -->
-	<system:String x:Key="FileServiceProgressDownloading">Завантаження файлу '%1'</system:String>
-	<system:String x:Key="FileServiceProgressExtracting">Видобування файлу %1 (%2)</system:String>
 
 	<!-- Update Page -->
 	<system:String x:Key="UpdatePageUpdateInfoTextPt1">Менеджер SIT оновлюється, будь ласка, зачекайте...</system:String>

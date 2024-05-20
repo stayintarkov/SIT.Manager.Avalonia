@@ -95,18 +95,6 @@ public class ModService(IBarNotificationService barNotificationService,
         }
     }
 
-    public async Task DownloadModsCollection()
-    {
-        Directory.CreateDirectory(_localModCache);
-        await Task.Run(ClearCache).ConfigureAwait(false);
-
-        string extractedModsDir = Path.Combine(_localModCache, "Extracted");
-        Directory.CreateDirectory(extractedModsDir);
-
-        await _filesService.DownloadFile("SIT.Mod.Ports.Collection.zip", _localModCache, MOD_COLLECTION_URL, true).ConfigureAwait(false);
-        await _filesService.ExtractArchive(Path.Combine(_localModCache, "SIT.Mod.Ports.Collection.zip"), extractedModsDir).ConfigureAwait(false);
-    }
-
     public async Task AutoUpdate(List<ModInfo> outdatedMods)
     {
         List<string> outdatedNames = [.. outdatedMods.Select(x => x.Name)];
@@ -178,7 +166,7 @@ public class ModService(IBarNotificationService barNotificationService,
                     }
 
                     string tmpZipFilePath = Path.GetTempFileName();
-                    bool downloadSuccess = await _filesService.DownloadFile(Path.GetFileName(tmpZipFilePath), Path.GetDirectoryName(tmpZipFilePath) ?? string.Empty, assetDownloadUrl, false).ConfigureAwait(false);
+                    bool downloadSuccess = await _filesService.DownloadFile(Path.GetFileName(tmpZipFilePath), Path.GetDirectoryName(tmpZipFilePath) ?? string.Empty, assetDownloadUrl, new Progress<double>()).ConfigureAwait(false);
                     if (downloadSuccess)
                     {
                         string extractedZipPath = Path.GetTempFileName();

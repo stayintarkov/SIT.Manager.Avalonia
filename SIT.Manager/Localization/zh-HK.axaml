@@ -19,32 +19,6 @@
 	<system:String x:Key="ServerTitleToolTip">管理伺服器。</system:String>
 	<system:String x:Key="ModsTitleToolTip">管理模組。</system:String>
 
-	<!-- Mods Page -->
-	<system:String x:Key="ModsWarningTitle">警告</system:String>
-	<system:String x:Key="ModsWarningDescription">使用模組可能會影響遊戲的穩定性，並可能導致遊戲崩潰或出現其他問題！儘管模組可以增強您的遊戲體驗並添加新功能，但它們可能未被 SIT 官方支援或經過兼容性測試；安裝模組需自行承擔風險，並在進行任何更改之前始終備份遊戲文件；我們對由安裝模組導致的任何損壞或進度丟失概不負責，請謹慎操作！</system:String>
-	<system:String x:Key="ModsWarningButtonTitle">我了解</system:String>
-	<system:String x:Key="ModsPageTitle">模組</system:String>
-	<system:String x:Key="ModsDownloadCollectionButtonTitle">下載模組合集</system:String>
-	<system:String x:Key="ModsDownloadCollectionButtonToolTip">下載最新的移植模組合集</system:String>
-	<system:String x:Key="ModInfoTitle">模組信息</system:String>
-	<system:String x:Key="ModInfoNameTitle">名稱:</system:String>
-	<system:String x:Key="ModInfoAuthorTitle">作者:</system:String>
-	<system:String x:Key="ModInfoSupportedVersionTitle">支援的 SIT 版本:</system:String>
-	<system:String x:Key="ModInfoModVersionTitle">模組版本:</system:String>
-	<system:String x:Key="ModInfoModPageTitle">模組頁面:</system:String>
-	<system:String x:Key="ModInfoExtraFilesToolTip">如果移植模組需要額外文件，請按鏈接下載它們</system:String>
-	<system:String x:Key="ModInfoRequiresExtraFilesTitle">需要額外文件:</system:String>
-	<system:String x:Key="ModInfoDescription">描述:</system:String>
-	<system:String x:Key="ModInfoInstallToolTip">安裝模組</system:String>
-	<system:String x:Key="ModInfoInstallTitle">安裝</system:String>
-	<system:String x:Key="ModInfoUninstallToolTip">卸載模組</system:String>
-	<system:String x:Key="ModInfoUninstallTitle">卸載</system:String>
-
-	<!-- Mods Page ViewModel -->
-	<system:String x:Key="ModsPageViewModelErrorTitle">錯誤</system:String>
-	<system:String x:Key="ModsPageViewModelErrorInstallPathDescription">未設定 EFT 安裝路徑，請先在設定中配置！</system:String>
-	<system:String x:Key="ModsPageViewModelErrorNoModsFound">未找到任何模組</system:String>
-
 	<!-- Tools Page -->
 	<system:String x:Key="ToolsOpenEFTFolderButtonToolTip">打開 EFT 安裝資料夾</system:String>
 	<system:String x:Key="ToolsOpenEFTFolderButtonTitle">打開 EFT 資料夾</system:String>
@@ -324,10 +298,6 @@
 	<system:String x:Key="InstallServiceInstallSITSuccessfulDescription">SIT 安裝成功</system:String>
 	<system:String x:Key="InstallerServiceNoDowngradePatcher">這些版本的《逃離塔科夫》沒有可用的降級補丁。</system:String>
 	<system:String x:Key="InstallServiceSSLError">您的 ISP 可能阻止了我們的連接。請使用 VPN 再試一次。</system:String>
-
-	<!-- File Service -->
-	<system:String x:Key="FileServiceProgressDownloading">下載檔案 '%1'</system:String>
-	<system:String x:Key="FileServiceProgressExtracting">正在提取檔案 %1 (%2)</system:String>
 
 	<!-- Update Page -->
 	<system:String x:Key="UpdatePageUpdateInfoTextPt1">SIT 管理器正在進行更新，請稍候...</system:String>

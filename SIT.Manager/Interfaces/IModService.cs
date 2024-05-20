@@ -25,11 +25,6 @@ public interface IModService
     /// </summary>
     void ClearCache();
     /// <summary>
-    /// Download the collection of ported and compatible (probably) SIT mods.
-    /// </summary>
-    /// <returns></returns>
-    Task DownloadModsCollection();
-    /// <summary>
     /// Downloads (unless it's cached already) and installs the latest configuration manager from GitHub
     /// </summary>
     /// <param name="targetPath">Base location of where the EFT install is to put the mod</param>
