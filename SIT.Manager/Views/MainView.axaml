@@ -12,14 +12,16 @@
 			 Background="{DynamicResource AppBlack}">
 	<UserControl.DataTemplates>
 		<DataTemplate DataType="{x:Type models:NavigationItem}">
-			<StackPanel Orientation="Horizontal"
-											ToolTip.Tip="{Binding ToolTip}">
-				<ui:SymbolIcon Symbol="{Binding Icon}"
+			<Grid ColumnDefinitions="Auto, *, Auto"
+				  ToolTip.Tip="{Binding ToolTip}">
+				<ui:SymbolIcon Grid.Column="0"
+							   Symbol="{Binding Icon}"
 							   VerticalAlignment="Center"/>
-				<TextBlock VerticalAlignment="Center"
+				<TextBlock Grid.Column="1"
+						   VerticalAlignment="Center"
 						   Margin="8,0,0,0"
 						   Text="{Binding Name}"/>
-			</StackPanel>
+			</Grid>
 		</DataTemplate>
 	</UserControl.DataTemplates>
 	
@@ -49,8 +51,9 @@
 				<Panel Margin="16,0" 
 					   VerticalAlignment="Center" 
 					   Grid.Column="0">
-					<Ellipse Fill="#1E4F8A" Width="18" Height="18"/>
-					<ui:SymbolIcon Symbol="Important" VerticalAlignment="Center" Margin="0 1 0 0"/>
+					<Ellipse Fill="{DynamicResource AppError}" Width="18" Height="18"/>
+					<ui:SymbolIcon Symbol="ImportantFilled" 
+								   VerticalAlignment="Center"/>
 				</Panel>
 				
 				<TextBlock Text="{DynamicResource UpdateNotification}" 

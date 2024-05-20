@@ -237,9 +237,6 @@
 	<system:String x:Key="SettingsPageViewModelConfigInformationEFTDescription">Путь установки EFT установлен на '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">Путь установки SPT-AKI установлен на '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigErrorSPTAKI">Выбранная папка недействительна. Убедитесь, что это правильная папка сервера SPT-AKI.</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">Enable Test Mode Failure</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">Can't enable test mode as you have %1 incompatible mods still enabled</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorButtonOk">Ок</system:String>
 
 	<!-- Server Page ViewModel -->
 	<system:String x:Key="ServerPageViewModelStartingServer">Запуск сервера!</system:String>
@@ -264,27 +261,6 @@
 	<system:String x:Key="TarkovClientServiceCacheClearedErrorDescription">Не удалось найти путь установки в настройках</system:String>
 	<system:String x:Key="TarkovClientServiceCacheClearedErrorEFTDescription">Локальный каталог кеша EFT не найден по пути: %1</system:String>
 	<system:String x:Key="TarkovClientServiceCacheClearedEFTDescription">Локальный кеш EFT успешно очищен!</system:String>
-
-	<!-- Mod Service -->
-	<system:String x:Key="ModServiceOutdatedDescription">У вас %1 устаревших модов. Хотите автоматически обновить их? Устаревшие моды: %2</system:String>
-	<system:String x:Key="ModServiceOutdatedModsFoundTitle">Обнаружены устаревшие моды</system:String>
-	<system:String x:Key="ModServiceButtonNo">Нет</system:String>
-	<system:String x:Key="ModServiceButtonYes">Да</system:String>
-	<system:String x:Key="ModServiceUpdatedModsTitle">Обновленные моды</system:String>
-	<system:String x:Key="ModServiceUpdatedModsDescription">Обновлено %1 модов.</system:String>
-	<system:String x:Key="ModServiceInstallModTitle">Установить мод</system:String>
-	<system:String x:Key="ModServiceInstallErrorModDescription">Путь установки не указан. Настройте его в разделе Настройки.</system:String>
-	<system:String x:Key="ModServiceWarningTitle">Предупреждение</system:String>
-	<system:String x:Key="ModServiceWarningDescription">Мод, который вы пытаетесь установить, не совместим с текущей установленной версией SIT. Поддерживаемая версия SIT: %1 Установленная версия SIT: %2 Продолжить в любом случае?</system:String>
-	<system:String x:Key="ModServiceUnknownTitle">Неизвестно</system:String>
-	<system:String x:Key="ModServiceInstallModDescription">%1 успешно установлен.</system:String>
-	<system:String x:Key="ModServiceErrorInstallModDescription">%1 не удалось установить. Проверьте файл Launcher.log</system:String>
-	<system:String x:Key="ModServiceErrorUninstallModTitle">Ошибка при удалении мода</system:String>
-	<system:String x:Key="ModServiceErrorUninstallModDescription">В моде %1 отсутствовал файл: '%2'. Принудительно удалить мод из списка установленных модов?</system:String>
-	<system:String x:Key="ModServiceErrorExceptionUninstallModDescription">В моде %1 отсутствовал файл: '%2'. Принудительно удалить мод из списка установленных модов?</system:String>
-	<system:String x:Key="ModServiceErrorExceptionFileUninstallModDescription">В моде %1 отсутствовал файл: '%2'</system:String>
-	<system:String x:Key="ModServiceFileUninstallModTitle">Удалить мод</system:String>
-	<system:String x:Key="ModServiceFileUninstallModDescription">%1 успешно удален.</system:String>
 
 	<!-- Install Service -->
 	<system:String x:Key="InstallServiceErrorTitle">Ошибка</system:String>

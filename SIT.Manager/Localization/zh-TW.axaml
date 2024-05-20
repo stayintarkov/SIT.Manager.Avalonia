@@ -238,9 +238,6 @@
 	<system:String x:Key="SettingsPageViewModelConfigInformationEFTDescription">EFT 安裝路徑已設置為 '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">SPT-AKI 伺服器安裝路徑已設置為 '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigErrorSPTAKI">所選檔案夾無效，請確保它是正確的 SPT-AKI 伺服器檔案夾！</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">Enable Test Mode Failure</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">Can't enable test mode as you have %1 incompatible mods still enabled</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorButtonOk">確定</system:String>
 
 	<!-- Server Page ViewModel -->
 	<system:String x:Key="ServerPageViewModelStartingServer">正在啟動伺服器！</system:String>
@@ -265,27 +262,6 @@
 	<system:String x:Key="TarkovClientServiceCacheClearedErrorDescription">在設置中找不到 EFT 安裝路徑</system:String>
 	<system:String x:Key="TarkovClientServiceCacheClearedErrorEFTDescription">EFT 本地緩存目錄未找到：%1</system:String>
 	<system:String x:Key="TarkovClientServiceCacheClearedEFTDescription">EFT 本地緩存已清除！</system:String>
-
-	<!-- Mod Service -->
-	<system:String x:Key="ModServiceOutdatedDescription">您有 %1 個過時的模組，您想要自動更新它們嗎？過時的模組：%2</system:String>
-	<system:String x:Key="ModServiceOutdatedModsFoundTitle">發現過時的模組</system:String>
-	<system:String x:Key="ModServiceButtonNo">否</system:String>
-	<system:String x:Key="ModServiceButtonYes">是</system:String>
-	<system:String x:Key="ModServiceUpdatedModsTitle">已更新的模組</system:String>
-	<system:String x:Key="ModServiceUpdatedModsDescription">已更新 %1 個模組！</system:String>
-	<system:String x:Key="ModServiceInstallModTitle">安裝模組</system:String>
-	<system:String x:Key="ModServiceInstallErrorModDescription">EFT 安裝路徑未設定，請在設置中配置！</system:String>
-	<system:String x:Key="ModServiceWarningTitle">警告</system:String>
-	<system:String x:Key="ModServiceWarningDescription">您正在嘗試安裝的模組與您當前安裝的 SIT 版本不相容！支持的 SIT 版本：%1 已安裝的 SIT 版本：%2 仍要繼續安裝嗎？</system:String>
-	<system:String x:Key="ModServiceUnknownTitle">未知</system:String>
-	<system:String x:Key="ModServiceInstallModDescription">成功安裝了 %1！</system:String>
-	<system:String x:Key="ModServiceErrorInstallModDescription">%1 安裝失敗，請檢查您的 Launcher.log！</system:String>
-	<system:String x:Key="ModServiceErrorUninstallModTitle">卸載模組時出錯</system:String>
-	<system:String x:Key="ModServiceErrorUninstallModDescription">模組 %1 中缺少文件：'%2' ，是否強制從已安裝模組列表中移除此模組？</system:String>
-	<system:String x:Key="ModServiceErrorExceptionUninstallModDescription">模組 %1 中缺少文件：'%2' ，是否強制從已安裝模組列表中移除此模組？</system:String>
-	<system:String x:Key="ModServiceErrorExceptionFileUninstallModDescription">模組 %1 中缺少文件：'%2'</system:String>
-	<system:String x:Key="ModServiceFileUninstallModTitle">卸載模組</system:String>
-	<system:String x:Key="ModServiceFileUninstallModDescription">已成功卸載 %1 ！</system:String>
 
 	<!-- Install Service -->
 	<system:String x:Key="InstallServiceErrorTitle">錯誤</system:String>

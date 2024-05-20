@@ -233,9 +233,6 @@
 	<system:String x:Key="SettingsPageViewModelConfigInformationEFTDescription">EFT installation path set to '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">AKI server installation path set to '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigErrorSPTAKI">The selected folder was invalid. Make sure it's a proper AKI server folder.</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">Enable Test Mode Failure</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">Can't enable test mode as you have %1 incompatible mods still enabled</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorButtonOk">Ok</system:String>
 
 	<!-- Server Page ViewModel -->
 	<system:String x:Key="ServerPageViewModelStartingServer">Starting Server!</system:String>
@@ -260,27 +257,6 @@
 	<system:String x:Key="TarkovClientServiceCacheClearedErrorDescription">InstallPath not found in settings</system:String>
 	<system:String x:Key="TarkovClientServiceCacheClearedErrorEFTDescription">EFT local cache directory not found at: %1</system:String>
 	<system:String x:Key="TarkovClientServiceCacheClearedEFTDescription">EFT local cache cleared successfully!</system:String>
-
-	<!-- Mod Service -->
-	<system:String x:Key="ModServiceOutdatedDescription">You have %1 outdated mods. Would you like to automatically update them? Outdated Mods: %2</system:String>
-	<system:String x:Key="ModServiceOutdatedModsFoundTitle">Outdated Mods Found</system:String>
-	<system:String x:Key="ModServiceButtonNo">No</system:String>
-	<system:String x:Key="ModServiceButtonYes">Yes</system:String>
-	<system:String x:Key="ModServiceUpdatedModsTitle">Updated Mods</system:String>
-	<system:String x:Key="ModServiceUpdatedModsDescription">Updated %1 mods.</system:String>
-	<system:String x:Key="ModServiceInstallModTitle">Install Mod</system:String>
-	<system:String x:Key="ModServiceInstallErrorModDescription">Install Path is not set. Configure it in Settings.</system:String>
-	<system:String x:Key="ModServiceWarningTitle">Warning</system:String>
-	<system:String x:Key="ModServiceWarningDescription">The mod you are trying to install is not compatible with your currently installed version of SIT. Supported SIT Version: %1 Installed SIT Version: %2 Continue anyway?</system:String>
-	<system:String x:Key="ModServiceUnknownTitle">Unknown</system:String>
-	<system:String x:Key="ModServiceInstallModDescription">%1 was successfully installed.</system:String>
-	<system:String x:Key="ModServiceErrorInstallModDescription">%1 failed to install. Check your Launcher.log</system:String>
-	<system:String x:Key="ModServiceErrorUninstallModTitle">Error Uninstalling Mod</system:String>
-	<system:String x:Key="ModServiceErrorUninstallModDescription">A file was missing from the mod %1: '%2' Force remove the mod from the list of installed mods anyway?</system:String>
-	<system:String x:Key="ModServiceErrorExceptionUninstallModDescription">A file was missing from the mod %1: '%2' Force remove the mod from the list of installed mods anyway?</system:String>
-	<system:String x:Key="ModServiceErrorExceptionFileUninstallModDescription">A file was missing from the mod %1: '%2'</system:String>
-	<system:String x:Key="ModServiceFileUninstallModTitle">Uninstall Mod</system:String>
-	<system:String x:Key="ModServiceFileUninstallModDescription">%1 was successfully uninstalled.</system:String>
 
 	<!-- Install Service -->
 	<system:String x:Key="InstallServiceErrorTitle">Error</system:String>

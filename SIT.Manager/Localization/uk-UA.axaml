@@ -242,9 +242,6 @@
 	<system:String x:Key="SettingsPageViewModelConfigInformationEFTDescription">Шлях встановлення EFT встановлено на '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">Шлях встановлення SPT-AKI встановлено на '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigErrorSPTAKI">Вибрана тека є недійсною. Переконайтеся, що це вірна тека сервера SPT-AKI.</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">Enable Test Mode Failure</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">Can't enable test mode as you have %1 incompatible mods still enabled</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorButtonOk">Ок</system:String>
 
 	<!-- Server Page ViewModel -->
 	<system:String x:Key="ServerPageViewModelStartingServer">Запуск сервера!</system:String>
@@ -265,27 +262,6 @@
 	<system:String x:Key="TarkovClientServiceCacheClearedErrorDescription">Шлях встановлення не знайдено в налаштуваннях</system:String>
 	<system:String x:Key="TarkovClientServiceCacheClearedErrorEFTDescription">Локальний каталог кешу EFT не знайдено за адресою: %1</system:String>
 	<system:String x:Key="TarkovClientServiceCacheClearedEFTDescription">Локальний кеш EFT успішно очищений!</system:String>
-
-	<!-- Mod Service -->
-	<system:String x:Key="ModServiceOutdatedDescription">У вас %1 застарілих модів. Бажаєте автоматично оновити їх? Застарілі моди: %2</system:String>
-	<system:String x:Key="ModServiceOutdatedModsFoundTitle">Знайдено застарілі моди</system:String>
-	<system:String x:Key="ModServiceButtonNo">Ні</system:String>
-	<system:String x:Key="ModServiceButtonYes">Так</system:String>
-	<system:String x:Key="ModServiceUpdatedModsTitle">Оновлені моди</system:String>
-	<system:String x:Key="ModServiceUpdatedModsDescription">Оновлено %1 модів.</system:String>
-	<system:String x:Key="ModServiceInstallModTitle">Встановити мод</system:String>
-	<system:String x:Key="ModServiceInstallErrorModDescription">Шлях встановлення не налаштований. Налаштуйте його в розділі Налаштування.</system:String>
-	<system:String x:Key="ModServiceWarningTitle">Попередження</system:String>
-	<system:String x:Key="ModServiceWarningDescription">Мод, який ви намагаєтеся встановити, несумісний з вашою поточною встановленою версією SIT. Підтримувана версія SIT: %1 Встановлена версія SIT: %2 Продовжити в будь-якому випадку?</system:String>
-	<system:String x:Key="ModServiceUnknownTitle">Невідомо</system:String>
-	<system:String x:Key="ModServiceInstallModDescription">%1 було успішно встановлено.</system:String>
-	<system:String x:Key="ModServiceErrorInstallModDescription">%1 не вдалося встановити. Перевірте ваш Launcher.log</system:String>
-	<system:String x:Key="ModServiceErrorUninstallModTitle">Помилка видалення моду</system:String>
-	<system:String x:Key="ModServiceErrorUninstallModDescription">Файл відсутній в моду %1: '%2' Примусово видалити мод із списку встановлених модів все одно?</system:String>
-	<system:String x:Key="ModServiceErrorExceptionUninstallModDescription">Файл відсутній в моду %1: '%2' Примусово видалити мод із списку встановлених модів все одно?</system:String>
-	<system:String x:Key="ModServiceErrorExceptionFileUninstallModDescription">Файл відсутній в моду %1: '%2'</system:String>
-	<system:String x:Key="ModServiceFileUninstallModTitle">Видалити мод</system:String>
-	<system:String x:Key="ModServiceFileUninstallModDescription">%1 було успішно видалено.</system:String>
 
 	<!-- Install Service -->
 	<system:String x:Key="InstallServiceErrorTitle">Помилка</system:String>

@@ -15,6 +15,7 @@
     <Application.Styles>
 		<sty:FluentAvaloniaTheme CustomAccentColor="#FF7F7F7F"/>
 		<labs:ControlThemes/>
+		<StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
 		<StyleInclude Source="avares://SIT.Manager.ASM/Theme/Theme.axaml"/>
     </Application.Styles>
 </Application>
