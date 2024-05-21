@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using SIT.Manager.Extentions;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Models;
@@ -13,7 +14,34 @@ public partial class ModsPageViewModel(IModService modService) : ObservableRecip
     [ObservableProperty]
     private bool _isModCompatibilityLayerInstalled = false;
 
+    [ObservableProperty]
+    private string _searchText = string.Empty;
+
     public ObservableCollection<ModInfo> ModList { get; } = [];
+
+    [RelayCommand]
+    private void DisableMod(ModInfo mod)
+    {
+        // TODO
+    }
+
+    [RelayCommand]
+    private void EnableMod(ModInfo mod)
+    {
+        // TODO
+    }
+
+    [RelayCommand]
+    private void InstallModCompatibilityLayer()
+    {
+        // TODO
+    }
+
+    [RelayCommand]
+    private void SearchMods()
+    {
+        // TODO
+    }
 
     protected override void OnActivated()
     {
