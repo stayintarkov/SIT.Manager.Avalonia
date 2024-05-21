@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -19,7 +20,9 @@ public class ModService(ICachingService cachingService,
                         HttpClient httpClient) : IModService
 {
     private const string BEPINEX_CONFIGURATION_MANAGER_RELEASE_URL = "https://api.github.com/repos/BepInEx/BepInEx.ConfigurationManager/releases/latest";
-    private const string CONFIGURATION_MANAGER_ZIP_CACHE_KEY = "configuration-manager-dll";
+    private const string MOD_COMPAT_LAYER_URL = "aHR0cHM6Ly9kcC1ldS5zaXRjb29wLm9yZy9ha2ktY3VzdG9tLnppcA==";
+    private const string CONFIGURATION_MANAGER_DLL_CACHE_KEY = "configuration-manager-dll";
+    private const string MOD_COMPAT_LAYER_ZIP_CACHE_KEY = "mod-compat-layer.zip";
 
     private readonly ICachingService _cachingService = cachingService;
     private readonly IManagerConfigService _configService = configService;
@@ -101,12 +104,26 @@ public class ModService(ICachingService cachingService,
         throw new FileNotFoundException("Failed to get the latest release for Configuration Manager");
     }
 
-    public bool CheckModCompatibilityLayerInstalled()
+    private async Task<byte[]> DownloadModCompatLayerZip()
+    {
+        string downloadUrl = Encoding.UTF8.GetString(Convert.FromBase64String(MOD_COMPAT_LAYER_URL));
+
+        string tmpDownloadPath = Path.GetTempFileName();
+        bool downloadSuccess = await _filesService.DownloadFile(Path.GetFileName(tmpDownloadPath), Path.GetDirectoryName(tmpDownloadPath) ?? string.Empty, downloadUrl, new Progress<double>()).ConfigureAwait(false);
+        if (!downloadSuccess)
+        {
+            throw new IOException("Failed to download the latest configuration manager from GitHub");
+        }
+
+        return await File.ReadAllBytesAsync(tmpDownloadPath).ConfigureAwait(false);
+    }
+
+    public bool CheckModCompatibilityLayerInstalled(string targetPath)
     {
         bool modCompatInstalled = true;
 
         // Check if the plugins and patchers dlls are installed
-        List<ModInfo> modList = GetInstalledMods();
+        List<ModInfo> modList = GetInstalledMods(targetPath);
         foreach (string mod in _modCompatDlls)
         {
             if (modList.Any(x => x.Name == mod))
@@ -121,7 +138,7 @@ public class ModService(ICachingService cachingService,
         }
 
         // Check if Aki.Common.dll and Aki.Reflection.dll are installed
-        string basePath = Path.Combine(_configService.Config.SitEftInstallPath, "EscapeFromTarkov_Data", "Managed");
+        string basePath = Path.Combine(targetPath, "EscapeFromTarkov_Data", "Managed");
         string akiCommonPath = Path.Combine(basePath, "Aki.Common.dll");
         string akiReflectionPath = Path.Combine(basePath, "Aki.Reflection.dll");
         if (!File.Exists(akiCommonPath) || !File.Exists(akiReflectionPath))
@@ -132,24 +149,23 @@ public class ModService(ICachingService cachingService,
         return modCompatInstalled;
     }
 
-    public List<ModInfo> GetInstalledMods()
+    public List<ModInfo> GetInstalledMods(string targetPath)
     {
         List<ModInfo> mods = [];
 
-        string eftPath = _configService.Config.SitEftInstallPath;
         mods.Add(new ModInfo()
         {
             IsRequired = true,
-            ModVersion = _configService.Config.SitTarkovVersion,
+            ModVersion = _versionService.GetEFTVersion(targetPath),
             Name = "Escape From Tarkov"
         });
 
         List<FileInfo> rawMods = [];
 
-        DirectoryInfo pluginsDir = new(GetPluginsDirectoryPath(eftPath));
+        DirectoryInfo pluginsDir = new(GetPluginsDirectoryPath(targetPath));
         rawMods.AddRange(pluginsDir.GetFiles("*.dll", new EnumerationOptions() { RecurseSubdirectories = true }));
 
-        DirectoryInfo patchersDir = new(GetPatchersDirectoryPath(eftPath));
+        DirectoryInfo patchersDir = new(GetPatchersDirectoryPath(targetPath));
         rawMods.AddRange(patchersDir.GetFiles("*.dll", new EnumerationOptions() { RecurseSubdirectories = true }));
 
         foreach (FileInfo fileInfo in rawMods)
@@ -180,7 +196,7 @@ public class ModService(ICachingService cachingService,
             throw new ArgumentException("Parameter can't be null or empty", nameof(targetPath));
         }
 
-        CacheValue<byte[]> configurationManagerDll = await _cachingService.OnDisk.GetOrComputeAsync(CONFIGURATION_MANAGER_ZIP_CACHE_KEY, (key) => DownloadConfigurationManager(), TimeSpan.FromDays(1));
+        CacheValue<byte[]> configurationManagerDll = await _cachingService.OnDisk.GetOrComputeAsync(CONFIGURATION_MANAGER_DLL_CACHE_KEY, (key) => DownloadConfigurationManager(), TimeSpan.FromDays(1));
 
         byte[] configurationManagerBytes = configurationManagerDll.Value ?? [];
         if (configurationManagerBytes.Length == 0)
@@ -190,6 +206,56 @@ public class ModService(ICachingService cachingService,
 
         string targetInstallLocation = Path.Combine(GetPluginsDirectoryPath(targetPath), "ConfigurationManager.dll");
         await File.WriteAllBytesAsync(targetInstallLocation, configurationManagerBytes).ConfigureAwait(false);
+        return true;
+    }
+
+    public async Task<bool> InstallModCompatLayer(string targetPath)
+    {
+        if (string.IsNullOrEmpty(targetPath))
+        {
+            throw new ArgumentException("Parameter can't be null or empty", nameof(targetPath));
+        }
+
+        CacheValue<byte[]> modCompatLayerZip = await _cachingService.OnDisk.GetOrComputeAsync(MOD_COMPAT_LAYER_ZIP_CACHE_KEY, (key) => DownloadModCompatLayerZip(), TimeSpan.FromDays(1));
+
+        string tmpZipFilePath = Path.GetTempFileName();
+        await File.WriteAllBytesAsync(tmpZipFilePath, modCompatLayerZip.Value ?? []);
+
+        string extractedZipPath = Path.GetTempFileName();
+        if (File.Exists(extractedZipPath))
+        {
+            File.Delete(extractedZipPath);
+        }
+        await _filesService.ExtractArchive(tmpZipFilePath, extractedZipPath).ConfigureAwait(false);
+
+        DirectoryInfo sourceFiles = new DirectoryInfo(extractedZipPath);
+        foreach (FileInfo file in sourceFiles.GetFiles("*", new EnumerationOptions() { RecurseSubdirectories = true }))
+        {
+            string destinationPath = string.Empty;
+
+            if (file.FullName.Contains("EscapeFromTarkov_Data"))
+            {
+                DirectoryInfo eftManagedDir = new(Path.Combine(targetPath, "EscapeFromTarkov_Data", "Managed"));
+                destinationPath = Path.Combine(eftManagedDir.FullName, file.Name);
+            }
+            else if (file.FullName.Contains("plugins"))
+            {
+                DirectoryInfo pluginsDir = new(GetPluginsDirectoryPath(targetPath));
+                destinationPath = Path.Combine(pluginsDir.FullName, file.Name);
+            }
+            else if (file.FullName.Contains("patchers"))
+            {
+                DirectoryInfo patchersDir = new(GetPatchersDirectoryPath(targetPath));
+                destinationPath = Path.Combine(patchersDir.FullName, file.Name);
+            }
+            else
+            {
+                throw new InvalidOperationException($"Unknown file target: {file.FullName}");
+            }
+
+            file.MoveTo(destinationPath, true);
+        }
+
         return true;
     }
 }

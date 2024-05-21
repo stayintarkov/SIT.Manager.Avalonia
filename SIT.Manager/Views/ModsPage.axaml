@@ -36,8 +36,18 @@
 						Grid.Column="2"
 						Command="{Binding InstallModCompatibilityLayerCommand}">
 					<StackPanel Orientation="Horizontal">
-						<ui:SymbolIcon Symbol="Add" Margin="0,0,4,0"/>
-						<TextBlock Text="Install"/>
+						<ui:SymbolIcon Symbol="Add" 
+									   Margin="0,0,4,0"
+									   IsVisible="{Binding !InstallModCompatibilityLayerCommand.IsRunning}"/>
+						<TextBlock Text="Install"
+								   IsVisible="{Binding !InstallModCompatibilityLayerCommand.IsRunning}"/>
+
+						<controls:LoadingSpinner Width="12"
+												 Height="12"
+												 VerticalAlignment="Center"
+												 IsVisible="{Binding InstallModCompatibilityLayerCommand.IsRunning}"
+												 Foreground="{DynamicResource AppSecondary}"
+												 StrokeWidth="2"/>
 					</StackPanel>
 				</Button>
 			</Grid>

@@ -4,12 +4,14 @@ using SIT.Manager.Extentions;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Models;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace SIT.Manager.ViewModels;
 
-public partial class ModsPageViewModel(IModService modService) : ObservableRecipient
+public partial class ModsPageViewModel : ObservableRecipient
 {
-    private readonly IModService _modService = modService;
+    private readonly IManagerConfigService _configService;
+    private readonly IModService _modService;
 
     [ObservableProperty]
     private bool _isModCompatibilityLayerInstalled = false;
@@ -17,7 +19,17 @@ public partial class ModsPageViewModel(IModService modService) : ObservableRecip
     [ObservableProperty]
     private string _searchText = string.Empty;
 
+    public IAsyncRelayCommand InstallModCompatibilityLayerCommand { get; }
+
     public ObservableCollection<ModInfo> ModList { get; } = [];
+
+    public ModsPageViewModel(IManagerConfigService configService, IModService modService)
+    {
+        _configService = configService;
+        _modService = modService;
+
+        InstallModCompatibilityLayerCommand = new AsyncRelayCommand(InstallModCompatibilityLayer);
+    }
 
     [RelayCommand]
     private void DisableMod(ModInfo mod)
@@ -31,10 +43,12 @@ public partial class ModsPageViewModel(IModService modService) : ObservableRecip
         // TODO
     }
 
-    [RelayCommand]
-    private void InstallModCompatibilityLayer()
+    private async Task InstallModCompatibilityLayer()
     {
-        // TODO
+        await _modService.InstallModCompatLayer(_configService.Config.SitEftInstallPath);
+
+        // Now that we have supposedly installed the mod compat layer check if it is right.
+        IsModCompatibilityLayerInstalled = _modService.CheckModCompatibilityLayerInstalled(_configService.Config.SitEftInstallPath);
     }
 
     [RelayCommand]
@@ -48,8 +62,8 @@ public partial class ModsPageViewModel(IModService modService) : ObservableRecip
         base.OnActivated();
 
         ModList.Clear();
-        ModList.AddRange(_modService.GetInstalledMods());
+        ModList.AddRange(_modService.GetInstalledMods(_configService.Config.SitEftInstallPath));
 
-        IsModCompatibilityLayerInstalled = _modService.CheckModCompatibilityLayerInstalled();
+        IsModCompatibilityLayerInstalled = _modService.CheckModCompatibilityLayerInstalled(_configService.Config.SitEftInstallPath);
     }
 }

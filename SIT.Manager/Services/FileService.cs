@@ -148,7 +148,6 @@ public class FileService(HttpClient httpClient,
         }
     }
 
-    // TODO unify this and the other DownloadFile function nicely - will have to do some things on the mods page for this I think.
     public async Task<bool> DownloadFile(string fileName, string filePath, string fileUrl, IProgress<double> progress)
     {
         bool result = false;
