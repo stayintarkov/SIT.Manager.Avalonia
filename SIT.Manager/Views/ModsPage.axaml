@@ -55,26 +55,32 @@
 
 		<controls:Card Grid.Row="1"
 					   Margin="8">
-			<StackPanel Grid.Row="1">
-				<Grid ColumnDefinitions="*,Auto">
+			<Grid Grid.Row="1"
+				  RowDefinitions="Auto,*">
+				<Grid Grid.Row="0"
+					  ColumnDefinitions="*,Auto">
 					<TextBox Grid.Column="0"
 							 Watermark="Search"
 							 Text="{Binding SearchText, Mode=TwoWay}"/>
 					<Button Grid.Column="1"
-							Content="Search"
-							Command="{Binding SearchModsCommand}"/>
+							Command="{Binding SearchModsCommand}"
+							CommandParameter="{Binding SearchText}">
+						<ui:SymbolIcon Symbol="Zoom"
+									   FontSize="20"
+									   VerticalAlignment="Center"/>
+					</Button>
 				</Grid>
 
 				<DataGrid Name="ModListDataGrid"
+						  Grid.Row="1"
 						  Margin="0,4,0,0" 
-						  CornerRadius="8"
-						  ItemsSource="{Binding ModList}"
-						  BorderThickness="2"		
+						  ItemsSource="{Binding ModList}"	
 						  GridLinesVisibility="All"
 						  HeadersVisibility="All"
+						  VerticalAlignment="Stretch"
 						  HorizontalScrollBarVisibility="Disabled"
 						  VerticalScrollBarVisibility="Visible"
-						  BorderBrush="{DynamicResource AppAccentDark}"
+						  Foreground="{DynamicResource AppSecondary}"
 						  AutoGenerateColumns="False" >
 					<DataGrid.Styles>						
 						<Style Selector="TextBlock">
@@ -84,8 +90,23 @@
 					</DataGrid.Styles>
 					
 					<DataGrid.Columns>
-						<DataGridCheckBoxColumn Binding="{Binding IsEnabled}"
-												IsReadOnly="True"/>
+						<DataGridTemplateColumn Width="Auto">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<CheckBox HorizontalAlignment="Center"
+											  HorizontalContentAlignment="Center"
+											  IsEnabled="False"
+											  IsChecked="{Binding IsEnabled}">
+										<CheckBox.IsVisible>
+											<MultiBinding Converter="{x:Static BoolConverters.And}">
+												<Binding Path="!IsRequired"/>
+												<Binding Path="IsEnabled"/>
+											</MultiBinding>
+										</CheckBox.IsVisible>
+									</CheckBox>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 						
 						<DataGridTextColumn Binding="{Binding Name}"
 											Header="Name"
@@ -137,7 +158,7 @@
 						</DataGridTemplateColumn>
 					</DataGrid.Columns>
 				</DataGrid>
-			</StackPanel>
+			</Grid>
 		</controls:Card>
 	</Grid>
 </UserControl>
