@@ -15,7 +15,6 @@ namespace SIT.Manager.Services;
 
 public class ModService(ICachingService cachingService,
                         IFileService filesService,
-                        IManagerConfigService configService,
                         IVersionService versionService,
                         HttpClient httpClient) : IModService
 {
@@ -25,7 +24,6 @@ public class ModService(ICachingService cachingService,
     private const string MOD_COMPAT_LAYER_ZIP_CACHE_KEY = "mod-compat-layer.zip";
 
     private readonly ICachingService _cachingService = cachingService;
-    private readonly IManagerConfigService _configService = configService;
     private readonly IFileService _filesService = filesService;
     private readonly IVersionService _versionService = versionService;
     private readonly HttpClient _httpClient = httpClient;
@@ -228,7 +226,7 @@ public class ModService(ICachingService cachingService,
         }
         await _filesService.ExtractArchive(tmpZipFilePath, extractedZipPath).ConfigureAwait(false);
 
-        DirectoryInfo sourceFiles = new DirectoryInfo(extractedZipPath);
+        DirectoryInfo sourceFiles = new(extractedZipPath);
         foreach (FileInfo file in sourceFiles.GetFiles("*", new EnumerationOptions() { RecurseSubdirectories = true }))
         {
             string destinationPath = string.Empty;
