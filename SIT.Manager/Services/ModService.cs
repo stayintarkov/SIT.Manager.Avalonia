@@ -15,6 +15,7 @@ namespace SIT.Manager.Services;
 public class ModService(ICachingService cachingService,
                         IFileService filesService,
                         IManagerConfigService configService,
+                        IVersionService versionService,
                         HttpClient httpClient) : IModService
 {
     private const string BEPINEX_CONFIGURATION_MANAGER_RELEASE_URL = "https://api.github.com/repos/BepInEx/BepInEx.ConfigurationManager/releases/latest";
@@ -23,6 +24,7 @@ public class ModService(ICachingService cachingService,
     private readonly ICachingService _cachingService = cachingService;
     private readonly IManagerConfigService _configService = configService;
     private readonly IFileService _filesService = filesService;
+    private readonly IVersionService _versionService = versionService;
     private readonly HttpClient _httpClient = httpClient;
 
     private static readonly List<string> _modCompatDlls = [
@@ -157,7 +159,7 @@ public class ModService(ICachingService cachingService,
             ModInfo mod = new()
             {
                 Name = filename,
-                ModVersion = "TODO",
+                ModVersion = _versionService.GetFileProductVersionString(fileInfo.FullName),
             };
 
             if (filename.Contains("StayInTarkov") || _modCompatDlls.Contains(filename))

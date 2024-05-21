@@ -5,7 +5,6 @@ using PeNet.Header.Resource;
 using SIT.Manager.Interfaces;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace SIT.Manager.Services;
@@ -20,7 +19,7 @@ public partial class VersionService(ILogger<VersionService> logger) : IVersionSe
     [GeneratedRegex("[1]{1,}\\.[0-9]{1,2}\\.[0-9]{1,5}\\.[0-9]{1,5}")]
     private static partial Regex SITVersionRegex();
 
-    private static string GetFileProductVersionString(string filePath)
+    public string GetFileProductVersionString(string filePath)
     {
         if (!File.Exists(filePath))
         {
@@ -37,7 +36,7 @@ public partial class VersionService(ILogger<VersionService> logger) : IVersionSe
             StringFileInfo? stringFileInfo = peHeader.Resources?.VsVersionInfo?.StringFileInfo;
             if (stringFileInfo != null)
             {
-                StringTable? fileinfoTable = stringFileInfo.StringTable.Any() ? stringFileInfo.StringTable[0] : null;
+                StringTable? fileinfoTable = stringFileInfo.StringTable.Length != 0 ? stringFileInfo.StringTable[0] : null;
                 fileVersion = fileinfoTable?.ProductVersion ?? string.Empty;
             }
         }
@@ -52,11 +51,11 @@ public partial class VersionService(ILogger<VersionService> logger) : IVersionSe
         string fileVersion = GetFileProductVersionString(filePath);
         if (string.IsNullOrEmpty(fileVersion))
         {
-            _logger.LogWarning("Check SPT AKI Version: File did not exist at " + filePath);
+            _logger.LogWarning("Check SPT AKI Version: File did not exist at {filePath}", filePath);
         }
         else
         {
-            _logger.LogInformation("SPT AKI Version is now: " + fileVersion);
+            _logger.LogInformation("SPT AKI Version is now {fileVersion}", fileVersion);
         }
         return fileVersion;
     }
@@ -74,12 +73,12 @@ public partial class VersionService(ILogger<VersionService> logger) : IVersionSe
         string fileVersion = GetFileProductVersionString(filePath);
         if (string.IsNullOrEmpty(fileVersion))
         {
-            _logger.LogWarning("CheckEFTVersion: File did not exist at " + filePath);
+            _logger.LogWarning("CheckEFTVersion: File did not exist at {filePath}", filePath);
         }
         else
         {
             fileVersion = EFTVersionRegex().Match(fileVersion).Value.Replace("-", ".");
-            _logger.LogInformation("EFT Version is now: " + fileVersion);
+            _logger.LogInformation("EFT Version is now {fileVersion}", fileVersion);
         }
         return fileVersion;
     }
@@ -90,12 +89,12 @@ public partial class VersionService(ILogger<VersionService> logger) : IVersionSe
         string fileVersion = GetFileProductVersionString(filePath);
         if (string.IsNullOrEmpty(fileVersion))
         {
-            _logger.LogWarning("CheckSITVersion: File did not exist at " + filePath);
+            _logger.LogWarning("CheckSITVersion: File did not exist at {filePath}", filePath);
         }
         else
         {
             fileVersion = SITVersionRegex().Match(fileVersion).Value.ToString();
-            _logger.LogInformation("SIT Version is now: " + fileVersion);
+            _logger.LogInformation("SIT Version is now: {fileVersion}", fileVersion);
         }
         return fileVersion;
     }
