@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Microsoft.Extensions.Logging;
 using SIT.Manager.Extentions;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Models;
@@ -7,11 +6,12 @@ using System.Collections.ObjectModel;
 
 namespace SIT.Manager.ViewModels;
 
-public partial class ModsPageViewModel(ILogger<ModsPageViewModel> logger,
-                                       IModService modService) : ObservableRecipient
+public partial class ModsPageViewModel(IModService modService) : ObservableRecipient
 {
-    private readonly ILogger _logger = logger;
     private readonly IModService _modService = modService;
+
+    [ObservableProperty]
+    private bool _isModCompatibilityLayerInstalled = false;
 
     public ObservableCollection<ModInfo> ModList { get; } = [];
 
@@ -21,5 +21,7 @@ public partial class ModsPageViewModel(ILogger<ModsPageViewModel> logger,
 
         ModList.Clear();
         ModList.AddRange(_modService.GetInstalledMods());
+
+        IsModCompatibilityLayerInstalled = _modService.CheckModCompatibilityLayerInstalled();
     }
 }

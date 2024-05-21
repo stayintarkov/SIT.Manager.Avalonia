@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using SIT.Manager.Interfaces;
+﻿using SIT.Manager.Interfaces;
 using SIT.Manager.Models;
 using SIT.Manager.Models.Github;
 using SIT.Manager.Services.Caching;
@@ -16,8 +15,7 @@ namespace SIT.Manager.Services;
 public class ModService(ICachingService cachingService,
                         IFileService filesService,
                         IManagerConfigService configService,
-                        HttpClient httpClient,
-                        ILogger<ModService> logger) : IModService
+                        HttpClient httpClient) : IModService
 {
     private const string BEPINEX_CONFIGURATION_MANAGER_RELEASE_URL = "https://api.github.com/repos/BepInEx/BepInEx.ConfigurationManager/releases/latest";
     private const string CONFIGURATION_MANAGER_ZIP_CACHE_KEY = "configuration-manager-dll";
@@ -26,7 +24,13 @@ public class ModService(ICachingService cachingService,
     private readonly IManagerConfigService _configService = configService;
     private readonly IFileService _filesService = filesService;
     private readonly HttpClient _httpClient = httpClient;
-    private readonly ILogger<ModService> _logger = logger;
+
+    private static readonly List<string> _modCompatDlls = [
+        "aki-core",
+        "aki-custom",
+        "aki-singleplayer",
+        "aki_PrePatch"
+    ];
 
     private static string GetPatchersDirectoryPath(string baseDirectory)
     {
@@ -95,6 +99,37 @@ public class ModService(ICachingService cachingService,
         throw new FileNotFoundException("Failed to get the latest release for Configuration Manager");
     }
 
+    public bool CheckModCompatibilityLayerInstalled()
+    {
+        bool modCompatInstalled = true;
+
+        // Check if the plugins and patchers dlls are installed
+        List<ModInfo> modList = GetInstalledMods();
+        foreach (string mod in _modCompatDlls)
+        {
+            if (modList.Any(x => x.Name == mod))
+            {
+                continue;
+            }
+            else
+            {
+                modCompatInstalled = false;
+                break;
+            }
+        }
+
+        // Check if Aki.Common.dll and Aki.Reflection.dll are installed
+        string basePath = Path.Combine(_configService.Config.SitEftInstallPath, "EscapeFromTarkov_Data", "Managed");
+        string akiCommonPath = Path.Combine(basePath, "Aki.Common.dll");
+        string akiReflectionPath = Path.Combine(basePath, "Aki.Reflection.dll");
+        if (!File.Exists(akiCommonPath) || !File.Exists(akiReflectionPath))
+        {
+            modCompatInstalled = false;
+        }
+
+        return modCompatInstalled;
+    }
+
     public List<ModInfo> GetInstalledMods()
     {
         List<ModInfo> mods = [];
@@ -117,17 +152,15 @@ public class ModService(ICachingService cachingService,
 
         foreach (FileInfo fileInfo in rawMods)
         {
+            string filename = fileInfo.Name.Replace(".dll", string.Empty);
+
             ModInfo mod = new()
             {
-                Name = fileInfo.Name,
+                Name = filename,
                 ModVersion = "TODO",
             };
 
-            if (fileInfo.Name.Contains("StayInTarkov") ||
-                fileInfo.Name.Contains("aki-core") ||
-                fileInfo.Name.Contains("aki-custom") ||
-                fileInfo.Name.Contains("aki-singleplayer") ||
-                fileInfo.Name.Contains("aki_PrePatch"))
+            if (filename.Contains("StayInTarkov") || _modCompatDlls.Contains(filename))
             {
                 mod.IsRequired = true;
             }
@@ -135,7 +168,7 @@ public class ModService(ICachingService cachingService,
             mods.Add(mod);
         }
 
-        return mods.OrderBy(x => !x.IsRequired).ToList();
+        return [.. mods.OrderBy(x => !x.IsRequired)];
     }
 
     public async Task<bool> InstallConfigurationManager(string targetPath)
