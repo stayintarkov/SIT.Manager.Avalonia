@@ -95,14 +95,13 @@
 								<DataTemplate>
 									<CheckBox HorizontalAlignment="Center"
 											  HorizontalContentAlignment="Center"
-											  IsEnabled="False"
-											  IsChecked="{Binding IsEnabled}">
-										<CheckBox.IsVisible>
-											<MultiBinding Converter="{x:Static BoolConverters.And}">
-												<Binding Path="!IsRequired"/>
+											  IsEnabled="False">
+										<CheckBox.IsChecked>
+											<MultiBinding Converter="{x:Static BoolConverters.Or}">
+												<Binding Path="IsRequired"/>
 												<Binding Path="IsEnabled"/>
 											</MultiBinding>
-										</CheckBox.IsVisible>
+										</CheckBox.IsChecked>
 									</CheckBox>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
@@ -120,39 +119,35 @@
 						<DataGridTemplateColumn Width="Auto">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
-									<Button
-										HorizontalAlignment="Center"
-										HorizontalContentAlignment="Center"
-										Content="Enable"
-										Command="{Binding #ModListDataGrid.((vm:ModsPageViewModel)DataContext).EnableModCommand}"
-										CommandParameter="{Binding .}">
-										<Button.IsVisible>
-											<MultiBinding Converter="{x:Static BoolConverters.And}">
-												<Binding Path="!IsRequired"/>
-												<Binding Path="!IsEnabled"/>
-											</MultiBinding>
-										</Button.IsVisible>
-									</Button>
-								</DataTemplate>
-							</DataGridTemplateColumn.CellTemplate>
-						</DataGridTemplateColumn>
+									<Panel>
+										<Button
+											HorizontalAlignment="Center"
+											HorizontalContentAlignment="Center"
+											Content="Disable"
+											Command="{Binding #ModListDataGrid.((vm:ModsPageViewModel)DataContext).DisableModCommand}"
+											CommandParameter="{Binding .}">
+											<Button.IsVisible>
+												<MultiBinding Converter="{x:Static BoolConverters.And}">
+													<Binding Path="!IsRequired"/>
+													<Binding Path="IsEnabled"/>
+												</MultiBinding>
+											</Button.IsVisible>
+										</Button>
 
-						<DataGridTemplateColumn Width="Auto">
-							<DataGridTemplateColumn.CellTemplate>
-								<DataTemplate>
-									<Button
-										HorizontalAlignment="Center"
-										HorizontalContentAlignment="Center"
-										Content="Disable"
-										Command="{Binding #ModListDataGrid.((vm:ModsPageViewModel)DataContext).DisableModCommand}"
-										CommandParameter="{Binding .}">
-										<Button.IsVisible>
-											<MultiBinding Converter="{x:Static BoolConverters.And}">
-												<Binding Path="!IsRequired"/>
-												<Binding Path="IsEnabled"/>
-											</MultiBinding>
-										</Button.IsVisible>
-									</Button>
+										<Button
+											HorizontalAlignment="Center"
+											HorizontalContentAlignment="Center"
+											Content="Enable"
+											Command="{Binding #ModListDataGrid.((vm:ModsPageViewModel)DataContext).EnableModCommand}"
+											CommandParameter="{Binding .}">
+											<Button.IsVisible>
+												<MultiBinding Converter="{x:Static BoolConverters.And}">
+													<Binding Path="!IsRequired"/>
+													<Binding Path="!IsEnabled"/>
+												</MultiBinding>
+											</Button.IsVisible>
+										</Button>
+									</Panel>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>

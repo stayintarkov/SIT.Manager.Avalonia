@@ -69,7 +69,7 @@ public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterServi
 
         foreach (DirectoryInfo directory in directories)
         {
-            if (directory.Name.Equals("backup", StringComparison.InvariantCultureIgnoreCase))
+            if (directory.Name.Equals("backup", StringComparison.InvariantCultureIgnoreCase) || directory.Name.Equals(IModService.DISABLED_MODS_DIR, StringComparison.InvariantCultureIgnoreCase))
             {
                 continue;
             }

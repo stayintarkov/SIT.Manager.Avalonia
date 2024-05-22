@@ -116,6 +116,63 @@ public class ModService(ICachingService cachingService,
         return await File.ReadAllBytesAsync(tmpDownloadPath).ConfigureAwait(false);
     }
 
+    private List<ModInfo> FindModsInLocation(string targetPath)
+    {
+        List<ModInfo> mods = [];
+        List<FileInfo> rawMods = [];
+
+        DirectoryInfo pluginsDir = new(GetPluginsDirectoryPath(targetPath));
+        if (pluginsDir.Exists)
+        {
+            rawMods.AddRange(pluginsDir.GetFiles("*.dll", new EnumerationOptions() { RecurseSubdirectories = true }));
+        }
+
+        DirectoryInfo patchersDir = new(GetPatchersDirectoryPath(targetPath));
+        if (patchersDir.Exists)
+        {
+            rawMods.AddRange(patchersDir.GetFiles("*.dll", new EnumerationOptions() { RecurseSubdirectories = true }));
+        }
+
+        foreach (FileInfo fileInfo in rawMods)
+        {
+            string filename = fileInfo.Name.Replace(".dll", string.Empty);
+
+            ModInfo mod = new()
+            {
+                Name = filename,
+                ModVersion = _versionService.GetFileProductVersionString(fileInfo.FullName),
+                Path = fileInfo.FullName
+            };
+
+            if (filename.Contains("StayInTarkov") || _modCompatDlls.Contains(filename))
+            {
+                mod.IsRequired = true;
+            }
+
+            // If we're in the disabled mods path then the mod needs to be set as disabled.
+            if (targetPath.Contains(IModService.DISABLED_MODS_DIR))
+            {
+                mod.IsEnabled = false;
+            }
+
+            mods.Add(mod);
+        }
+
+        return mods;
+    }
+
+    private static string MoveModFile(string sourceDirectory, string targetDirectory, string modFilePath)
+    {
+        string relativeSourceModPath = Path.GetRelativePath(sourceDirectory, modFilePath);
+        string targetModPath = Path.Combine(targetDirectory, relativeSourceModPath);
+        string targetModPathDirectory = Path.GetDirectoryName(targetModPath) ?? throw new DirectoryNotFoundException($"Failed to evaluate directory from {targetModPath}");
+        Directory.CreateDirectory(targetModPathDirectory);
+
+        FileInfo modFileInfo = new(modFilePath);
+        modFileInfo.MoveTo(targetModPath);
+        return targetModPath;
+    }
+
     public bool CheckModCompatibilityLayerInstalled(string targetPath)
     {
         bool modCompatInstalled = true;
@@ -147,6 +204,20 @@ public class ModService(ICachingService cachingService,
         return modCompatInstalled;
     }
 
+    public ModInfo DisableMod(ModInfo mod, string eftDir)
+    {
+        mod.IsEnabled = false;
+        mod.Path = MoveModFile(eftDir, Path.Combine(AppContext.BaseDirectory, IModService.DISABLED_MODS_DIR), mod.Path);
+        return mod;
+    }
+
+    public ModInfo EnableMod(ModInfo mod, string eftDir)
+    {
+        mod.IsEnabled = true;
+        mod.Path = MoveModFile(Path.Combine(AppContext.BaseDirectory, IModService.DISABLED_MODS_DIR), eftDir, mod.Path);
+        return mod;
+    }
+
     public List<ModInfo> GetInstalledMods(string targetPath)
     {
         List<ModInfo> mods = [];
@@ -158,31 +229,10 @@ public class ModService(ICachingService cachingService,
             Name = "Escape From Tarkov"
         });
 
-        List<FileInfo> rawMods = [];
-
-        DirectoryInfo pluginsDir = new(GetPluginsDirectoryPath(targetPath));
-        rawMods.AddRange(pluginsDir.GetFiles("*.dll", new EnumerationOptions() { RecurseSubdirectories = true }));
-
-        DirectoryInfo patchersDir = new(GetPatchersDirectoryPath(targetPath));
-        rawMods.AddRange(patchersDir.GetFiles("*.dll", new EnumerationOptions() { RecurseSubdirectories = true }));
-
-        foreach (FileInfo fileInfo in rawMods)
-        {
-            string filename = fileInfo.Name.Replace(".dll", string.Empty);
-
-            ModInfo mod = new()
-            {
-                Name = filename,
-                ModVersion = _versionService.GetFileProductVersionString(fileInfo.FullName),
-            };
-
-            if (filename.Contains("StayInTarkov") || _modCompatDlls.Contains(filename))
-            {
-                mod.IsRequired = true;
-            }
-
-            mods.Add(mod);
-        }
+        // Load the mods in the targeted installation directory
+        mods.AddRange(FindModsInLocation(targetPath));
+        // Load all the mods which are in the disable location
+        mods.AddRange(FindModsInLocation(Path.Combine(AppContext.BaseDirectory, IModService.DISABLED_MODS_DIR)));
 
         return [.. mods.OrderBy(x => !x.IsRequired)];
     }

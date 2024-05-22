@@ -6,12 +6,28 @@ namespace SIT.Manager.Interfaces;
 
 public interface IModService
 {
+    const string DISABLED_MODS_DIR = "DisabledMods";
+
     /// <summary>
     /// Checks if all the dlls required to support mods are installed
     /// </summary>
     /// <param name="targetPath">Base location of where the EFT install check for compatibility</param>
     /// <returns>True if all the DLLs are installed; otherwise false</returns>
     bool CheckModCompatibilityLayerInstalled(string targetPath);
+    /// <summary>
+    /// Disable a mod which is currently active for the users EFT
+    /// </summary>
+    /// <param name="mod">Metadata about the mod to disable</param>
+    /// <param name="eftDir">The users base EFT directory</param>
+    /// <returns>The updated ModInfo object</returns>
+    ModInfo DisableMod(ModInfo mod, string eftDir);
+    /// <summary>
+    /// Enable a currently disabled mod for the users EFT
+    /// </summary>
+    /// <param name="mod">Metadata about the mod to enable</param>
+    /// <param name="eftDir">The users base EFT directory</param>
+    /// <returns>The updated ModInfo object</returns>
+    ModInfo EnableMod(ModInfo mod, string eftDir);
     /// <summary>
     /// Looks in the configured EFT folder and evaluates what mods are currently installed.
     /// </summary>

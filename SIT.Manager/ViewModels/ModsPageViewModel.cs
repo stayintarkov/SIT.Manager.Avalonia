@@ -39,13 +39,17 @@ public partial class ModsPageViewModel : ObservableRecipient
     [RelayCommand]
     private void DisableMod(ModInfo mod)
     {
-        // TODO
+        int modIndex = ModList.IndexOf(mod);
+        ModInfo updatedModInfo = _modService.DisableMod(mod, _configService.Config.SitEftInstallPath);
+        ModList[modIndex] = updatedModInfo;
     }
 
     [RelayCommand]
     private void EnableMod(ModInfo mod)
     {
-        // TODO
+        int modIndex = ModList.IndexOf(mod);
+        ModInfo updatedModInfo = _modService.EnableMod(mod, _configService.Config.SitEftInstallPath);
+        ModList[modIndex] = updatedModInfo;
     }
 
     private async Task InstallModCompatibilityLayer()

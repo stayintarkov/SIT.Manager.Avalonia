@@ -1,9 +1,17 @@
-﻿namespace SIT.Manager.Models;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-public class ModInfo
+namespace SIT.Manager.Models;
+
+public partial class ModInfo : ObservableObject
 {
-    public string Name { get; set; } = string.Empty;
-    public string ModVersion { get; set; } = string.Empty;
-    public bool IsEnabled { get; set; } = true;
-    public bool IsRequired { get; set; } = false;
+    [ObservableProperty]
+    public string _name = string.Empty;
+    [ObservableProperty]
+    public string _modVersion = string.Empty;
+    [ObservableProperty]
+    public string _path = string.Empty;
+    [ObservableProperty]
+    public bool _isEnabled = true;
+    [ObservableProperty]
+    public bool _isRequired = false;
 }
