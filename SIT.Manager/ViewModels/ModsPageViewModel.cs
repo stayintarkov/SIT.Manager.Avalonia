@@ -64,11 +64,14 @@ public partial class ModsPageViewModel : ObservableRecipient
     {
         await _modService.InstallModCompatLayer(_configService.Config.SitEftInstallPath);
 
+        ModList.Clear();
+        ModList.AddRange(_modService.GetInstalledMods(_configService.Config.SitEftInstallPath));
+
         // Now that we have supposedly installed the mod compat layer check if it is right.
         IsModCompatibilityLayerInstalled = _modService.CheckModCompatibilityLayerInstalled(_configService.Config.SitEftInstallPath);
         if (IsModCompatibilityLayerInstalled)
         {
-            _barNotificationService.ShowError(_localizationService.TranslateSource("ModsPageViewModelModCompatInstallSuccessTitle"), _localizationService.TranslateSource("ModsPageViewModelModCompatInstallSuccessMessage"));
+            _barNotificationService.ShowSuccess(_localizationService.TranslateSource("ModsPageViewModelModCompatInstallSuccessTitle"), _localizationService.TranslateSource("ModsPageViewModelModCompatInstallSuccessMessage"));
         }
         else
         {
