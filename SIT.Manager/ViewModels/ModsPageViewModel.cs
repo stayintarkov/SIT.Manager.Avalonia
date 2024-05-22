@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FluentAvalonia.UI.Controls;
 using SIT.Manager.Extentions;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Models;
@@ -12,7 +13,9 @@ namespace SIT.Manager.ViewModels;
 
 public partial class ModsPageViewModel : ObservableRecipient
 {
+    private readonly IBarNotificationService _barNotificationService;
     private readonly IManagerConfigService _configService;
+    private readonly ILocalizationService _localizationService;
     private readonly IModService _modService;
 
     private ModInfo[] _unfilteredModList = [];
@@ -28,9 +31,14 @@ public partial class ModsPageViewModel : ObservableRecipient
 
     public IAsyncRelayCommand InstallModCompatibilityLayerCommand { get; }
 
-    public ModsPageViewModel(IManagerConfigService configService, IModService modService)
+    public ModsPageViewModel(IBarNotificationService barNotificationService,
+                             IManagerConfigService configService,
+                             ILocalizationService localizationService,
+                             IModService modService)
     {
+        _barNotificationService = barNotificationService;
         _configService = configService;
+        _localizationService = localizationService;
         _modService = modService;
 
         InstallModCompatibilityLayerCommand = new AsyncRelayCommand(InstallModCompatibilityLayer);
@@ -60,11 +68,16 @@ public partial class ModsPageViewModel : ObservableRecipient
         IsModCompatibilityLayerInstalled = _modService.CheckModCompatibilityLayerInstalled(_configService.Config.SitEftInstallPath);
         if (IsModCompatibilityLayerInstalled)
         {
-            // TODO show an alert that this is done so we aren't just hiding the notification
+            _barNotificationService.ShowError(_localizationService.TranslateSource("ModsPageViewModelModCompatInstallSuccessTitle"), _localizationService.TranslateSource("ModsPageViewModelModCompatInstallSuccessMessage"));
         }
         else
         {
-            // TODO alert the user that the install has failed and to consult the log for details or just try again.
+            await new ContentDialog()
+            {
+                Title = _localizationService.TranslateSource("ModsPageViewModelModCompatInstallErrorTitle"),
+                Content = _localizationService.TranslateSource("ModsPageViewModelModCompatInstallErrorMessage"),
+                PrimaryButtonText = _localizationService.TranslateSource("ModsPageViewModelModCompatInstallErrorButtonOk"),
+            }.ShowAsync();
         }
     }
 

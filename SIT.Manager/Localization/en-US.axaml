@@ -497,5 +497,20 @@
 	<system:String x:Key="NetworkToolsViewNatPortLabelText">Nat Port: </system:String>
 	<system:String x:Key="NetworkToolsViewPortTestSuccessText">Port open!</system:String>
 	<system:String x:Key="NetworkToolsViewPortTestFailText">Port closed!</system:String>
-	<system:String x:Key="NetworkToolsViewUnknownIpAddressText">Unknown</system:String>	
+	<system:String x:Key="NetworkToolsViewUnknownIpAddressText">Unknown</system:String>
+
+	<!-- ModsPageViewModel -->
+	<system:String x:Key="ModsPageViewModelModCompatInstallSuccessTitle">Success</system:String>
+	<system:String x:Key="ModsPageViewModelModCompatInstallSuccessMessage">Installed mod compatibility layer sucessfully!</system:String>
+	<system:String x:Key="ModsPageViewModelModCompatInstallErrorTitle">Install Error</system:String>
+	<system:String x:Key="ModsPageViewModelModCompatInstallErrorMessage">Failed to install mod compatibility layer; please consult the logs for more details</system:String>
+	<system:String x:Key="ModsPageViewModelModCompatInstallErrorButtonOk">OK</system:String>
+
+	<!-- ModsPageView -->
+	<system:String x:Key="ModsPageViewModCompatInstallMissingMessage">You don't have the mod compatibility layer installed. Please install this before trying to play with mods enabled to avoid issues.</system:String>
+	<system:String x:Key="ModsPageViewModSearchTextBoxWatermark">Search</system:String>
+	<system:String x:Key="ModsPageViewModsDatagridNameColumnHeader">Name</system:String>
+	<system:String x:Key="ModsPageViewModDatagridVersionColumnHeader">Version</system:String>
+	<system:String x:Key="ModsPageViewModDatagridEnableModButtonToolTip">Enable this mod</system:String>
+	<system:String x:Key="ModsPageViewModDatagridDisableModButtonToolTip">Disable this mod</system:String>
 </ResourceDictionary>

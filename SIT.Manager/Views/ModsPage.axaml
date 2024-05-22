@@ -25,7 +25,7 @@
 								   VerticalAlignment="Center"/>
 				</Panel>
 
-				<TextBlock Text="You don't have the mod compatibility layer installed. Please install this before trying to play with mods enabled to avoid issues."
+				<TextBlock Text="{DynamicResource ModsPageViewModCompatInstallMissingMessage}"
 						   Grid.Column="1"
 						   VerticalAlignment="Center"
 						   TextWrapping="Wrap"/>
@@ -60,7 +60,7 @@
 				<Grid Grid.Row="0"
 					  ColumnDefinitions="*,Auto">
 					<TextBox Grid.Column="0"
-							 Watermark="Search"
+							 Watermark="{DynamicResource ModsPageViewModSearchTextBoxWatermark}"
 							 Text="{Binding SearchText, Mode=TwoWay}"/>
 					<Button Grid.Column="1"
 							Command="{Binding SearchModsCommand}"
@@ -108,12 +108,12 @@
 						</DataGridTemplateColumn>
 						
 						<DataGridTextColumn Binding="{Binding Name}"
-											Header="Name"
+											Header="{DynamicResource ModsPageViewModsDatagridNameColumnHeader}"
 											Width="*"
 											IsReadOnly="True"/>
 						
 						<DataGridTextColumn Binding="{Binding ModVersion}"
-											Header="Version"
+											Header="{DynamicResource ModsPageViewModDatagridVersionColumnHeader}"
 											IsReadOnly="True"/>
 						
 						<DataGridTemplateColumn Width="Auto">
@@ -123,29 +123,41 @@
 										<Button
 											HorizontalAlignment="Center"
 											HorizontalContentAlignment="Center"
-											Content="Disable"
 											Command="{Binding #ModListDataGrid.((vm:ModsPageViewModel)DataContext).DisableModCommand}"
-											CommandParameter="{Binding .}">
+											CommandParameter="{Binding .}"
+											ToolTip.Tip="{DynamicResource ModsPageViewModDatagridDisableModButtonToolTip}">
 											<Button.IsVisible>
 												<MultiBinding Converter="{x:Static BoolConverters.And}">
 													<Binding Path="!IsRequired"/>
 													<Binding Path="IsEnabled"/>
 												</MultiBinding>
 											</Button.IsVisible>
+
+											<Button.Content>
+												<ui:SymbolIcon Symbol="StarFilled"
+															   FontSize="20"
+															   VerticalAlignment="Center"/>
+											</Button.Content>
 										</Button>
 
 										<Button
 											HorizontalAlignment="Center"
 											HorizontalContentAlignment="Center"
-											Content="Enable"
 											Command="{Binding #ModListDataGrid.((vm:ModsPageViewModel)DataContext).EnableModCommand}"
-											CommandParameter="{Binding .}">
+											CommandParameter="{Binding .}"
+											ToolTip.Tip="{DynamicResource ModsPageViewModDatagridEnableModButtonToolTip}">
 											<Button.IsVisible>
 												<MultiBinding Converter="{x:Static BoolConverters.And}">
 													<Binding Path="!IsRequired"/>
 													<Binding Path="!IsEnabled"/>
 												</MultiBinding>
 											</Button.IsVisible>
+
+											<Button.Content>
+												<ui:SymbolIcon Symbol="Star"
+															   FontSize="20"
+															   VerticalAlignment="Center"/>
+											</Button.Content>
 										</Button>
 									</Panel>
 								</DataTemplate>
