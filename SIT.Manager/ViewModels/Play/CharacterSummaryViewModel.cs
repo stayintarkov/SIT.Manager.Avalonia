@@ -145,14 +145,6 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
             if (success && rememberLogin)
             {
                 _connectedServer.Characters.Add(character);
-
-                int index = _configService.Config.BookmarkedServers.FindIndex(x => x.Address == _connectedServer.Address);
-
-                if (index != -1 && !_configService.Config.BookmarkedServers[index].Characters.Any(x => x.Username == character.Username))
-                {
-                    _configService.Config.BookmarkedServers[index].Characters.Add(character);
-                }
-
                 _configService.UpdateConfig(_configService.Config);
                 RequireLogin = false;
             }
@@ -172,18 +164,9 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
 
     private async Task Logout()
     {
-        AkiCharacter? character = _connectedServer.Characters.FirstOrDefault(x => x.Username == Profile.Username);
-
         if (character != null)
         {
             _connectedServer.Characters.Remove(character);
-
-            int index = _configService.Config.BookmarkedServers.FindIndex(x => x.Address == _connectedServer.Address);
-
-            if (index != -1 && !_configService.Config.BookmarkedServers[index].Characters.Any(x => x.Username == character.Username))
-            {
-                _configService.Config.BookmarkedServers[index].Characters.Remove(character);
-            }
             _configService.UpdateConfig(_configService.Config);
             RequireLogin = true;
         }
