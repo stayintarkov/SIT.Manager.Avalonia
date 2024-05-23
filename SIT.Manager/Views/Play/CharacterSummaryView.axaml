@@ -53,8 +53,8 @@
 			</StackPanel>
 
 			<Button Grid.Column="2"
-					Command="{Binding PlayCommand}">
-				<Panel>
+					Command="{Binding PlayCommand}" IsEnabled="{Binding CanLaunch}">
+                <Panel>
 					<TextBlock IsVisible="{Binding !RequireLogin}"
 							   Text="{DynamicResource CharacterSummaryViewPlayButtonText}"/>
 					<TextBlock IsVisible="{Binding RequireLogin}" 
