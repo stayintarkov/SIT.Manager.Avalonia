@@ -121,7 +121,10 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
         }
 
         AkiCharacter? character = _connectedServer.Characters.FirstOrDefault(x => x.Username == Profile.Username);
-        bool rememberLogin = true;
+
+        // Set this to false rather than true - this was causing duplicate saved profiles
+        // If we were already logged on the code to see if EFT was launched AND remember password would pass and save a duplicate each time
+        bool rememberLogin = false;
 
         if (character == null)
         {
