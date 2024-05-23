@@ -430,6 +430,7 @@
 	<!-- CharacterSummaryView -->
 	<system:String x:Key="CharacterSummaryViewPlayButtonText">Грати</system:String>
 	<system:String x:Key="CharacterSummaryViewLoginButtonText">Ввійти</system:String>
+    <system:String x:Key="CharacterSummaryViewLogoutButtonText">Вихід</system:String>
 
 	<!-- CreateServerDialogView -->
 	<system:String x:Key="CreateServerDialogViewAddTitle">Додати сервер</system:String>

@@ -430,6 +430,7 @@
 	<!-- CharacterSummaryView -->
 	<system:String x:Key="CharacterSummaryViewPlayButtonText">玩</system:String>
 	<system:String x:Key="CharacterSummaryViewLoginButtonText">登入</system:String>
+    <system:String x:Key="CharacterSummaryViewLogoutButtonText">注销</system:String>
 
 	<!-- CreateServerDialogView -->
 	<system:String x:Key="CreateServerDialogViewAddTitle">添加伺服器</system:String>
