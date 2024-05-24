@@ -30,17 +30,13 @@ public partial class LauncherViewModel(IManagerConfigService configService,
 
     [ObservableProperty]
     private CultureInfo _currentLocalization = localizationService.DefaultLocale;
-
-    //TODO: Change this to work with new config!!
-    private void Config_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    
+    private void LauncherSettingPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(_launcherSettings.AccentColor))
-        {
-            if (faTheme != null && faTheme.CustomAccentColor != _launcherSettings.AccentColor)
-            {
-                faTheme.CustomAccentColor = _launcherSettings.AccentColor;
-            }
-        }
+        if (e.PropertyName != nameof(_launcherSettings.AccentColor)) return;
+
+        if (faTheme != null && faTheme.CustomAccentColor != _launcherSettings.AccentColor)
+            faTheme.CustomAccentColor = _launcherSettings.AccentColor;
     }
 
     protected override void OnActivated()
@@ -49,11 +45,14 @@ public partial class LauncherViewModel(IManagerConfigService configService,
 
         CurrentLocalization = AvailableLocalizations.FirstOrDefault(x => x.Name == _launcherSettings.CurrentLanguageSelected, _localizationService.DefaultLocale);
         IsTestModeEnabled = _launcherSettings.EnableTestMode;
+
+        _launcherSettings.PropertyChanged += LauncherSettingPropertyChanged;
     }
 
     protected override void OnDeactivated()
     {
         base.OnDeactivated();
+        _launcherSettings.PropertyChanged -= LauncherSettingPropertyChanged;
     }
 
     partial void OnCurrentLocalizationChanged(CultureInfo value)
