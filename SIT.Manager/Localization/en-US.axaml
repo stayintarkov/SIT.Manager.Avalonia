@@ -428,6 +428,7 @@
 	<!-- CharacterSummaryView -->
 	<system:String x:Key="CharacterSummaryViewPlayButtonText">Play</system:String>
 	<system:String x:Key="CharacterSummaryViewLoginButtonText">Login</system:String>
+	<system:String x:Key="CharacterSummaryViewLogoutButtonText">Logout</system:String>
 
 	<!-- CreateServerDialogView -->
 	<system:String x:Key="CreateServerDialogViewAddTitle">Add Server</system:String>

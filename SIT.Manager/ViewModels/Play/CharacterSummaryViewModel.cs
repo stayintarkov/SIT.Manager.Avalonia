@@ -9,6 +9,8 @@ using SIT.Manager.Models.Aki;
 using SIT.Manager.Services.Caching;
 using SIT.Manager.Views.Play;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -42,6 +44,8 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
     private bool _requireLogin = true;
 
     public IAsyncRelayCommand PlayCommand { get; }
+
+    public IAsyncRelayCommand LogoutCommand { get; }
 
     public CharacterSummaryViewModel(AkiServer server,
         AkiMiniProfile profile,
@@ -86,6 +90,7 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
         Task.Run(SetSideImage);
 
         PlayCommand = new AsyncRelayCommand(Play);
+        LogoutCommand = new AsyncRelayCommand(Logout);
     }
 
     private async Task SetSideImage()
@@ -143,11 +148,6 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
             if (success && rememberLogin)
             {
                 _connectedServer.Characters.Add(character);
-                int index = _configService.Config.BookmarkedServers.FindIndex(x => x.Address == _connectedServer.Address);
-                if (index != -1 && !_configService.Config.BookmarkedServers[index].Characters.Any(x => x.Username == character.Username))
-                {
-                    _configService.Config.BookmarkedServers[index].Characters.Add(character);
-                }
                 _configService.UpdateConfig(_configService.Config);
                 RequireLogin = false;
             }
@@ -162,6 +162,16 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
                 PrimaryButtonText = _localizationService.TranslateSource("CharacterSummaryViewModelPlayErrorDialogPrimaryButtonText"),
             };
             await errorDialog.ShowAsync();
+        }
+    }
+
+    private async Task Logout()
+    {
+        if (character != null)
+        {
+            _connectedServer.Characters.Remove(character);
+            _configService.UpdateConfig(_configService.Config);
+            RequireLogin = true;
         }
     }
 }

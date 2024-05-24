@@ -429,6 +429,7 @@
 	<!-- CharacterSummaryView -->
 	<system:String x:Key="CharacterSummaryViewPlayButtonText">Играть</system:String>
 	<system:String x:Key="CharacterSummaryViewLoginButtonText">Войти</system:String>
+    <system:String x:Key="CharacterSummaryViewLogoutButtonText">Выход</system:String>
 
 	<!-- CreateServerDialogView -->
 	<system:String x:Key="CreateServerDialogViewAddTitle">Добавить сервер</system:String>
