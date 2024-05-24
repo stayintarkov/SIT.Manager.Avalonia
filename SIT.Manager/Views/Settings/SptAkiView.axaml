@@ -17,7 +17,7 @@
 							 Margin="5"
 							 MaxWidth="400"
 							 IsReadOnly="True"
-							 Text="{Binding Config.AkiServerPath}"/>
+							 Text="{Binding _akiConfig.AkiServerPath}"/>
 					<Button Name="ChangeAkiServerPath"
 							Content="{DynamicResource SettingsEFTSettingsButtonChangeTitle}"
 							Margin="5"
@@ -29,14 +29,14 @@
 							Orientation="Horizontal">
 					<TextBlock Text="{DynamicResource SettingsSPTAKIVersionTitle}"/>
 					<SelectableTextBlock Margin="8,0"
-										 Text="{Binding Config.SptAkiVersion}"/>
+										 Text="{Binding _akiConfig.SptAkiVersion}"/>
 				</StackPanel>
 
 				<StackPanel Margin="0,10,0,0"
 							Orientation="Horizontal">
 					<TextBlock Text="{DynamicResource SettingsSITModVersionTitle}"/>
 					<SelectableTextBlock Margin="8,0"
-										 Text="{Binding Config.SitModVersion}"/>
+										 Text="{Binding _akiConfig.SitModVersion}"/>
 				</StackPanel>
 			</StackPanel>
 		</controls:Card>
@@ -73,7 +73,7 @@
 										  UseColorPalette="False"
 										  UseColorWheel="False"
 										  UseSpectrum="True"
-										  Color="{Binding Config.ConsoleFontColor, Mode=TwoWay}" />
+										  Color="{Binding _akiConfig.ConsoleFontColor, Mode=TwoWay}" />
 				</StackPanel>
 			</StackPanel>
 		</controls:Card>

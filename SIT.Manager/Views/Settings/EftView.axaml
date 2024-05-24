@@ -67,7 +67,7 @@
 						   VerticalAlignment="Center"/>
 				<SelectableTextBlock Grid.Column="1"
 									 Grid.Row="2"
-									 Text="{Binding Config.SitTarkovVersion}"
+									 Text="{Binding _sitConfig.SitTarkovVersion}"
 									 VerticalAlignment="Center"/>
 
 				<!--SIT Mod Version-->
@@ -79,7 +79,7 @@
 				<SelectableTextBlock Grid.Column="1"
 									 Grid.Row="3"
 									 Margin="0,12,8,0"
-									 Text="{Binding Config.SitVersion}"
+									 Text="{Binding _sitConfig.SitVersion}"
 									 VerticalAlignment="Center"/>
 			</Grid>
 		</controls:Card>
