@@ -18,10 +18,11 @@ namespace SIT.Manager.ViewModels;
 public partial class ModsPageViewModel : ObservableRecipient
 {
     private readonly IBarNotificationService _barNotificationService;
-    private readonly IManagerConfigService _managerConfigService;
+    private readonly IManagerConfigService _configService;
     private readonly ILocalizationService _localizationService;
     private readonly ILogger _logger;
     private readonly IModService _modService;
+    private SITConfig _sitConfig => _configService.Config.SITSettings;
 
     [ObservableProperty]
     private bool _showModsDisclaimer = true;
@@ -43,19 +44,19 @@ public partial class ModsPageViewModel : ObservableRecipient
 
     public IAsyncRelayCommand UninstallModCommand { get; }
 
-    public ModsPageViewModel(IManagerConfigService managerConfigService,
+    public ModsPageViewModel(IManagerConfigService configService,
                              ILocalizationService localizationService,
                              IBarNotificationService barNotificationService,
                              ILogger<ModsPageViewModel> logger,
                              IModService modService)
     {
         _barNotificationService = barNotificationService;
-        _managerConfigService = managerConfigService;
+        _configService = configService;
         _localizationService = localizationService;
         _logger = logger;
         _modService = modService;
 
-        if (_managerConfigService.Config.AcceptedModsDisclaimer)
+        if (_configService.Config.AcceptedModsDisclaimer)
         {
             ShowModsDisclaimer = false;
         }
@@ -67,7 +68,7 @@ public partial class ModsPageViewModel : ObservableRecipient
 
     private async Task LoadMasterList()
     {
-        if (string.IsNullOrEmpty(_managerConfigService.Config.SitEftInstallPath))
+        if (string.IsNullOrEmpty(_sitConfig.SitEFTInstallPath))
         {
             _barNotificationService.ShowError(_localizationService.TranslateSource("ModsPageViewModelErrorTitle"), _localizationService.TranslateSource("ModsPageViewModelErrorInstallPathDescription"));
             return;
@@ -81,7 +82,7 @@ public partial class ModsPageViewModel : ObservableRecipient
         {
             ModList.Add(mod);
 
-            var keyValuePair = _managerConfigService.Config.InstalledMods.Where(x => x.Key == mod.Name).FirstOrDefault();
+            var keyValuePair = _configService.Config.InstalledMods.Where(x => x.Key == mod.Name).FirstOrDefault();
 
             if (!keyValuePair.Equals(default(KeyValuePair<string, string>)))
             {
@@ -112,14 +113,13 @@ public partial class ModsPageViewModel : ObservableRecipient
     {
         ShowModsDisclaimer = false;
 
-        ManagerConfig config = _managerConfigService.Config;
+        ManagerConfig config = _configService.Config;
         config.AcceptedModsDisclaimer = true;
-        _managerConfigService.UpdateConfig(config);
     }
 
     private async Task DownloadModPackage()
     {
-        if (string.IsNullOrEmpty(_managerConfigService.Config.SitEftInstallPath))
+        if (string.IsNullOrEmpty(_sitConfig.SitEFTInstallPath))
         {
             _barNotificationService.ShowError(_localizationService.TranslateSource("ModsPageViewModelErrorTitle"), _localizationService.TranslateSource("ModsPageViewModelErrorInstallPathDescription"));
             return;
@@ -145,7 +145,7 @@ public partial class ModsPageViewModel : ObservableRecipient
             return;
         }
 
-        bool isInstalled = _managerConfigService.Config.InstalledMods.ContainsKey(value.Name);
+        bool isInstalled = _configService.Config.InstalledMods.ContainsKey(value.Name);
         EnableInstall = !isInstalled;
     }
 
@@ -156,7 +156,7 @@ public partial class ModsPageViewModel : ObservableRecipient
             return;
         }
 
-        bool installSuccessful = await _modService.InstallMod(_managerConfigService.Config.SitEftInstallPath, SelectedMod);
+        bool installSuccessful = await _modService.InstallMod(_sitConfig.SitEFTInstallPath, SelectedMod);
         EnableInstall = !installSuccessful;
     }
 
@@ -167,7 +167,7 @@ public partial class ModsPageViewModel : ObservableRecipient
             return;
         }
 
-        bool uninstallSuccessful = await _modService.UninstallMod(_managerConfigService.Config.SitEftInstallPath, SelectedMod);
+        bool uninstallSuccessful = await _modService.UninstallMod(_sitConfig.SitEFTInstallPath, SelectedMod);
         EnableInstall = uninstallSuccessful;
     }
 
@@ -175,7 +175,7 @@ public partial class ModsPageViewModel : ObservableRecipient
     {
         // Test mode enabled but we are still trying to go to the mods page so 
         // force them to a different page
-        if (_managerConfigService.Config.EnableTestMode)
+        if (_configService.Config.LauncherSettings.EnableTestMode)
         {
             // TODO show dialog here :)
             PageNavigation pageNavigation = new(typeof(PlayPage), false);

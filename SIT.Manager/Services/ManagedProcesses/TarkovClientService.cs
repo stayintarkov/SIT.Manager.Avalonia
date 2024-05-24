@@ -32,14 +32,16 @@ public class TarkovClientService(IAkiServerRequestingService serverRequestingSer
     private readonly IAkiServerRequestingService _serverRequestingService = serverRequestingService;
     private readonly ILocalizationService _localizationService = localizationService;
     private readonly ILogger<TarkovClientService> _logger = logger;
+    private SITConfig _sitConfig => configService.Config.SITSettings;
 
-    public override string ExecutableDirectory => !string.IsNullOrEmpty(_configService.Config.SitEftInstallPath) ? _configService.Config.SitEftInstallPath : string.Empty;
+    public override string ExecutableDirectory =>
+        !string.IsNullOrEmpty(_sitConfig.SitEFTInstallPath) ? _sitConfig.SitEFTInstallPath : string.Empty;
 
     protected override string EXECUTABLE_NAME => TARKOV_EXE;
 
     private void ClearModCache()
     {
-        string cachePath = _configService.Config.SitEftInstallPath;
+        string cachePath = _sitConfig.SitEFTInstallPath;
         if (!string.IsNullOrEmpty(cachePath) && Directory.Exists(cachePath))
         {
             // Combine the installPath with the additional subpath.
@@ -184,7 +186,7 @@ public class TarkovClientService(IAkiServerRequestingService serverRequestingSer
             return false;
         }
 
-        if (_configService.Config.CloseAfterLaunch)
+        if (_configService.Config.LauncherSettings.CloseAfterLaunch)
         {
             CloseManager();
         }
@@ -206,7 +208,7 @@ public class TarkovClientService(IAkiServerRequestingService serverRequestingSer
         };
         if (OperatingSystem.IsLinux())
         {
-            LinuxConfig linuxConfig = _configService.Config.LinuxConfig;
+            LinuxConfig linuxConfig = _configService.Config.LinuxSettings;
 
             // Check if either mangohud or gamemode is enabled.
             StringBuilder argumentsBuilder = new();
@@ -263,7 +265,7 @@ public class TarkovClientService(IAkiServerRequestingService serverRequestingSer
         _process.Exited += ExitedEvent;
         _process.Start();
 
-        if (_configService.Config.CloseAfterLaunch)
+        if (_configService.Config.LauncherSettings.CloseAfterLaunch)
         {
             IApplicationLifetime? lifetime = App.Current.ApplicationLifetime;
             if (lifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
@@ -318,12 +320,11 @@ public class TarkovClientService(IAkiServerRequestingService serverRequestingSer
         if (result.SaveLogin)
         {
             server.Characters.Add(character);
-            int index = _configService.Config.BookmarkedServers.FindIndex(x => x.Address == server.Address);
-            if (index != -1 && !_configService.Config.BookmarkedServers[index].Characters.Any(x => x.Username == character.Username))
+            int index = _sitConfig.BookmarkedServers.FindIndex(x => x.Address == server.Address);
+            if (index != -1 && !_sitConfig.BookmarkedServers[index].Characters.Any(x => x.Username == character.Username))
             {
-                _configService.Config.BookmarkedServers[index].Characters.Add(character);
+                _sitConfig.BookmarkedServers[index].Characters.Add(character);
             }
-            _configService.UpdateConfig(_configService.Config);
         }
 
         return character;

@@ -141,17 +141,18 @@ public partial class ConfigureSitViewModel : InstallationViewModelBase
         try
         {
             List<SitInstallVersion> availableVersions = await _installerService.GetAvailableSitReleases(CurrentInstallProcessState.EftVersion);
-            if (!string.IsNullOrEmpty(_configService.Config.SitVersion))
+            string? sitVersionStr = _configService.Config.SITSettings.SitVersion;
+            if (!string.IsNullOrEmpty(sitVersionStr))
             {
                 // Don't filter down the available versions if user has enabled developer mode.
-                if (!_configService.Config.EnableTestMode)
+                if (!_configService.Config.LauncherSettings.EnableTestMode)
                 {
                     availableVersions = availableVersions.Where(x =>
                     {
                         bool parsedSitVersion = Version.TryParse(x.SitVersion.Replace("StayInTarkov.Client-", ""), out Version? sitVersion);
                         if (parsedSitVersion)
                         {
-                            Version installedSit = Version.Parse(_configService.Config.SitVersion);
+                            Version installedSit = Version.Parse(sitVersionStr);
                             if (sitVersion >= installedSit)
                             {
                                 return true;

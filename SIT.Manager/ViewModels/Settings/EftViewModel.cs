@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using SIT.Manager.Interfaces;
+using SIT.Manager.Models.Config;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -13,6 +14,7 @@ public partial class EftViewModel : SettingsViewModelBase
     private readonly IInstallerService _installerService;
     private readonly ILocalizationService _localizationService;
     private readonly IVersionService _versionService;
+    private SITConfig _sitConfig => _configsService.Config.SITSettings;
 
     [ObservableProperty]
     private string _bsgEftInstallPath;
@@ -35,7 +37,7 @@ public partial class EftViewModel : SettingsViewModelBase
         _versionService = versionService;
 
         BsgEftInstallPath = Path.GetDirectoryName(_installerService.GetEFTInstallPath()) ?? _localizationService.TranslateSource("EftViewModelBsgEftInstallPathMissing");
-        SitEftInstallPath = _configsService.Config.SitEftInstallPath;
+        SitEftInstallPath = _sitConfig.SitEFTInstallPath;
 
         ChangeInstallLocationCommand = new AsyncRelayCommand(ChangeInstallLocation);
     }
@@ -59,9 +61,9 @@ public partial class EftViewModel : SettingsViewModelBase
 
             SitEftInstallPath = targetPath;
 
-            Config.SitEftInstallPath = targetPath;
-            Config.SitTarkovVersion = _versionService.GetEFTVersion(targetPath);
-            Config.SitVersion = _versionService.GetSITVersion(targetPath);
+            _sitConfig.SitEFTInstallPath = targetPath;
+            _sitConfig.SitTarkovVersion = _versionService.GetEFTVersion(targetPath);
+            _sitConfig.SitVersion = _versionService.GetSITVersion(targetPath);
 
             _barNotificationService.ShowInformational(_localizationService.TranslateSource("SettingsPageViewModelConfigTitle"), _localizationService.TranslateSource("SettingsPageViewModelConfigInformationEFTDescription", targetPath));
         }

@@ -14,6 +14,7 @@ public partial class LocalizationService : ILocalizationService
     public const string DEFAULT_LANGUAGE = "en-US";
 
     private readonly IManagerConfigService _configService;
+    private string _currentSelectedLanguage => _configService.Config.LauncherSettings.CurrentLanguageSelected;
 
     private ResourceInclude? resourceInclude;
 
@@ -43,11 +44,11 @@ public partial class LocalizationService : ILocalizationService
 
     private void VerifyLocaleAvailability()
     {
-        string currentLanguage = _configService.Config.CurrentLanguageSelected;
+        string currentLanguage = _currentSelectedLanguage;
         List<CultureInfo> availableLanguages = GetAvailableLocalizations();
-        if (!availableLanguages.Any(x => x.Name == _configService.Config.CurrentLanguageSelected))
+        if (!availableLanguages.Any(x => x.Name == _currentSelectedLanguage))
         {
-            _configService.Config.CurrentLanguageSelected = DEFAULT_LANGUAGE;
+            _configService.Config.LauncherSettings.CurrentLanguageSelected = DEFAULT_LANGUAGE;
         }
     }
 
@@ -111,7 +112,7 @@ public partial class LocalizationService : ILocalizationService
     {
         CultureInfo culture = new(cultureInfo);
         App.Current.Resources.MergedDictionaries.Add(CreateResourceLocalization(culture.Name));
-        _configService.Config.CurrentLanguageSelected = culture.Name;
+        _configService.Config.LauncherSettings.CurrentLanguageSelected = culture.Name;
     }
 
     /// <summary>
@@ -128,7 +129,7 @@ public partial class LocalizationService : ILocalizationService
         {
             try
             {
-                resourceInclude = CreateResourceLocalization(_configService.Config.CurrentLanguageSelected);
+                resourceInclude = CreateResourceLocalization(_currentSelectedLanguage);
             }
             catch // If there was an issue loading current Culture language, we will default by English.
             {

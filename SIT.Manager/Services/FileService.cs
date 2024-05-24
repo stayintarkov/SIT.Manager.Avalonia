@@ -155,8 +155,8 @@ public class FileService(IActionNotificationService actionNotificationService,
 
             Uri fileLink = new(fileUrl);
             INode fileNode = await megaApiClient.GetNodeFromLinkAsync(fileLink);
-
-            string targetPath = Path.Combine(_configService.Config.SitEftInstallPath, fileName);
+            
+            string targetPath = Path.Combine(_configService.Config.SITSettings.SitEFTInstallPath, fileName);
             await megaApiClient.DownloadFileAsync(fileNode, targetPath, progress);
 
             return true;

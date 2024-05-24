@@ -3,6 +3,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Microsoft.Extensions.Logging;
 using SIT.Manager.Extentions;
 using SIT.Manager.Interfaces;
+using SIT.Manager.Models.Config;
 using SIT.Manager.Models.Github;
 using System;
 using System.Collections.Generic;
@@ -15,14 +16,15 @@ using System.Threading.Tasks;
 
 namespace SIT.Manager.Services;
 
-public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterService> logger, HttpClient httpClient, IManagerConfigService managerConfigService) : IAppUpdaterService
+public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterService> logger, HttpClient httpClient, IManagerConfigService configService) : IAppUpdaterService
 {
     private const string MANAGER_VERSION_URL = @"https://api.github.com/repos/stayintarkov/SIT.Manager.Avalonia/releases/latest";
 
     private readonly IFileService _fileService = fileService;
     private readonly ILogger<AppUpdaterService> _logger = logger;
     private readonly HttpClient _httpClient = httpClient;
-    private readonly IManagerConfigService _managerConfigService = managerConfigService;
+    private readonly IManagerConfigService _configService = configService;
+    private SITConfig _sitConfig => _configService.Config.SITSettings;
 
     private static string ProcessName
     {
@@ -99,9 +101,9 @@ public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterServi
         Version currentVersion = Assembly.GetEntryAssembly()?.GetName().Version ?? new Version("0");
         Version latestVersion = new();
 
-        TimeSpan timeSinceLastCheck = DateTime.Now - _managerConfigService.Config.LastManagerUpdateCheckTime;
+        TimeSpan timeSinceLastCheck = DateTime.Now - _sitConfig.LastSitUpdateCheckTime;
 
-        if (_managerConfigService.Config.LookForUpdates && timeSinceLastCheck.TotalHours >= 1)
+        if (_configService.Config.LauncherSettings.LookForUpdates && timeSinceLastCheck.TotalHours >= 1)
         {
             try
             {
@@ -117,8 +119,7 @@ public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterServi
                 _logger.LogError(ex, "CheckForUpdate");
             }
 
-            _managerConfigService.Config.LastManagerUpdateCheckTime = DateTime.Now;
-            _managerConfigService.UpdateConfig(_managerConfigService.Config);
+            _sitConfig.LastSitUpdateCheckTime = DateTime.Now;
         }
 
         return latestVersion > currentVersion;

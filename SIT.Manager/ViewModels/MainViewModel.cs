@@ -30,13 +30,16 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
     private readonly IAppUpdaterService _appUpdaterService;
     private readonly IBarNotificationService _barNotificationService;
     private readonly IInstallerService _installerService;
-    private readonly IManagerConfigService _managerConfigService;
+    private readonly IManagerConfigService _configService;
     private readonly ILocalizationService _localizationService;
     private readonly ILogger<MainViewModel> _logger;
     private readonly IServiceProvider _serviceProvider;
     private readonly IVersionService _versionService;
 
     private NavigationItem? _previousFooterNavigationItem;
+    private SITConfig _sitConfig => _configService.Config.SITSettings;
+    private AkiConfig _akiConfig => _configService.Config.AkiSettings;
+    private LauncherConfig _launcherConfig => _configService.Config.LauncherSettings;
 
     [ObservableProperty]
     private ActionNotification? _actionPanelNotification = new(string.Empty, 0, false);
@@ -81,7 +84,7 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
         IAppUpdaterService appUpdaterService,
         IBarNotificationService barNotificationService,
         IInstallerService installerService,
-        IManagerConfigService managerConfigService,
+        IManagerConfigService configService,
         ILocalizationService localizationService,
         ILogger<MainViewModel> logger,
         IServiceProvider serviceProvider,
@@ -91,13 +94,13 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
         _appUpdaterService = appUpdaterService;
         _barNotificationService = barNotificationService;
         _installerService = installerService;
-        _managerConfigService = managerConfigService;
+        _configService = configService;
         _localizationService = localizationService;
         _logger = logger;
         _serviceProvider = serviceProvider;
         _versionService = versionService;
 
-        _localizationService.Translate(new CultureInfo(_managerConfigService.Config.CurrentLanguageSelected));
+        _localizationService.Translate(new CultureInfo(_launcherConfig.CurrentLanguageSelected));
         _localizationService.LocalizationChanged += LocalizationService_LocalizationChanged;
 
         FooterNavigationItems = new ReadOnlyCollection<NavigationItem>([
@@ -132,7 +135,7 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
         FluentAvaloniaTheme? faTheme = Application.Current?.Styles.OfType<FluentAvaloniaTheme>().FirstOrDefault();
         if (faTheme != null)
         {
-            faTheme.CustomAccentColor = _managerConfigService.Config.AccentColor;
+            faTheme.CustomAccentColor = _launcherConfig.AccentColor;
         }
 
         _actionNotificationService.ActionNotificationReceived += ActionNotificationService_ActionNotificationReceived;
@@ -140,8 +143,6 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
 
         CloseButtonCommand = new RelayCommand(() => { UpdateAvailable = false; });
         UpdateAppCommand = new AsyncRelayCommand(UpdateApp);
-
-        _managerConfigService.ConfigChanged += ManagerConfigService_ConfigChanged;
     }
 
     private void ActionNotificationService_ActionNotificationReceived(object? sender, ActionNotification e)
@@ -161,25 +162,23 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
 
     private void CheckInstallVersion()
     {
-        ManagerConfig config = _managerConfigService.Config;
-        if (!string.IsNullOrEmpty(_managerConfigService.Config.SitTarkovVersion))
+        ManagerConfig config = _configService.Config;
+        if (!string.IsNullOrEmpty(_sitConfig.SitTarkovVersion))
         {
-            config.SitTarkovVersion = _versionService.GetEFTVersion(config.SitEftInstallPath);
-            config.SitVersion = _versionService.GetSITVersion(config.SitEftInstallPath);
-            if (string.IsNullOrEmpty(config.SitTarkovVersion) || string.IsNullOrEmpty(config.SitVersion))
+            _sitConfig.SitTarkovVersion = _versionService.GetEFTVersion(_sitConfig.SitEFTInstallPath);
+            _sitConfig.SitVersion = _versionService.GetSITVersion(_sitConfig.SitEFTInstallPath);
+            if (string.IsNullOrEmpty(_sitConfig.SitTarkovVersion) || string.IsNullOrEmpty(_sitConfig.SitVersion))
             {
-                config.SitEftInstallPath = string.Empty;
-                _managerConfigService.UpdateConfig(config);
+                _sitConfig.SitEFTInstallPath = string.Empty;
             }
         }
-        if (!string.IsNullOrEmpty(_managerConfigService.Config.SptAkiVersion))
+        if (!string.IsNullOrEmpty(_akiConfig.SptAkiVersion))
         {
-            config.SptAkiVersion = _versionService.GetSptAkiVersion(config.AkiServerPath);
-            config.SitModVersion = _versionService.GetSitModVersion(config.AkiServerPath);
-            if (string.IsNullOrEmpty(config.SptAkiVersion) || string.IsNullOrEmpty(config.SptAkiVersion))
+            _akiConfig.SptAkiVersion = _versionService.GetSptAkiVersion(_akiConfig.AkiServerPath);
+            _akiConfig.SitModVersion = _versionService.GetSitModVersion(_akiConfig.AkiServerPath);
+            if (string.IsNullOrEmpty(_akiConfig.SptAkiVersion) || string.IsNullOrEmpty(_akiConfig.SptAkiVersion))
             {
-                config.AkiServerPath = string.Empty;
-                _managerConfigService.UpdateConfig(config);
+                _akiConfig.AkiServerPath = string.Empty;
             }
         }
     }
@@ -215,7 +214,7 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
 
     private void ManagerConfigService_ConfigChanged(object? sender, ManagerConfig e)
     {
-        IsTestModeEnabled = e.EnableTestMode;
+        IsTestModeEnabled = e.LauncherSettings.EnableTestMode;
     }
 
     private void NavigateToPage(Type page)

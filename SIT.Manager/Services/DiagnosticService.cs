@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Models;
+using SIT.Manager.Models.Config;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,6 +19,8 @@ public partial class DiagnosticService : IDiagnosticService
     private readonly IManagerConfigService _configService;
     private readonly HttpClient _httpClient;
     private readonly Lazy<Task<string>> _externalIP;
+    private SITConfig _sitConfig => _configService.Config.SITSettings;
+    private AkiConfig _akiConfig => _configService.Config.AkiSettings;
     public static string EFTLogPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "..", "LocalLow", "Battlestate Games", "EscapeFromTarkov", "Player.log");
     public DiagnosticService(IManagerConfigService configService, HttpClient client)
     {
@@ -105,14 +108,14 @@ public partial class DiagnosticService : IDiagnosticService
             string eftLogData = await GetLogFile(eftLogPath, bleachIt: true);
             diagnosticLogs.Add(new(Path.GetFileName(eftLogPath), eftLogData));
 
-            string bepinexLogOutputPath = Path.Combine(_configService.Config.SitEftInstallPath, "BepInEx", "LogOutput.log");
+            string bepinexLogOutputPath = Path.Combine(_sitConfig.SitEFTInstallPath, "BepInEx", "LogOutput.log");
             if (File.Exists(bepinexLogOutputPath))
             {
                 string crashFileData = await GetLogFile(bepinexLogOutputPath, bleachIt: true);
                 diagnosticLogs.Add(new(Path.GetFileName(bepinexLogOutputPath), crashFileData));
             }
 
-            string bepinexFullLogOutputPath = Path.Combine(_configService.Config.SitEftInstallPath, "BepInEx", "FullLogOutput.log");
+            string bepinexFullLogOutputPath = Path.Combine(_sitConfig.SitEFTInstallPath, "BepInEx", "FullLogOutput.log");
             if (File.Exists(bepinexFullLogOutputPath))
             {
                 string crashFileData = await GetLogFile(bepinexFullLogOutputPath, bleachIt: true);
@@ -137,11 +140,11 @@ public partial class DiagnosticService : IDiagnosticService
             }
         }
 
-        if (!string.IsNullOrEmpty(_configService.Config.AkiServerPath))
+        if (!string.IsNullOrEmpty(_akiConfig.AkiServerPath))
         {
             if (options.IncludeServerLog)
             {
-                DirectoryInfo serverLogDirectory = new(Path.Combine(_configService.Config.AkiServerPath, "user", "logs"));
+                DirectoryInfo serverLogDirectory = new(Path.Combine(_akiConfig.AkiServerPath, "user", "logs"));
                 if (serverLogDirectory.Exists)
                 {
                     IEnumerable<FileInfo> files = serverLogDirectory.GetFiles("*.log");
@@ -157,7 +160,7 @@ public partial class DiagnosticService : IDiagnosticService
 
             if (options.IncludeHttpJson)
             {
-                string httpJsonPath = Path.Combine(_configService.Config.AkiServerPath, "Aki_Data", "Server", "configs", "http.json");
+                string httpJsonPath = Path.Combine(_akiConfig.AkiServerPath, "Aki_Data", "Server", "configs", "http.json");
                 string httpJsonData = await GetLogFile(httpJsonPath);
                 diagnosticLogs.Add(new(Path.GetFileName(httpJsonPath), httpJsonData));
             }
@@ -187,9 +190,9 @@ public partial class DiagnosticService : IDiagnosticService
 
         //Versioning information
         sb.AppendLine("#-- Versions --#");
-        sb.AppendLine($"SIT: {_configService.Config.SitVersion}");
-        sb.AppendLine($"EFT: {_configService.Config.SitTarkovVersion}");
-        sb.AppendLine($"AKI: {_configService.Config.SptAkiVersion}");
+        sb.AppendLine($"SIT: {_sitConfig.SitVersion}");
+        sb.AppendLine($"EFT: {_sitConfig.SitTarkovVersion}");
+        sb.AppendLine($"AKI: {_akiConfig.SptAkiVersion}");
         sb.AppendLine();
 
         //Get all networks adaptors local address if they're online

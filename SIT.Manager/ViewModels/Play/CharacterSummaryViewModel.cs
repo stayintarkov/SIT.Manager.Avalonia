@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Interfaces.ManagedProcesses;
 using SIT.Manager.Models.Aki;
+using SIT.Manager.Models.Config;
 using SIT.Manager.Services.Caching;
 using SIT.Manager.Views.Play;
 using System;
@@ -25,6 +26,7 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
 
     private readonly AkiServer _connectedServer;
     private readonly AkiCharacter? character;
+    private SITConfig _sitConfig => _configService.Config.SITSettings;
 
     [ObservableProperty]
     private AkiMiniProfile _profile;
@@ -75,10 +77,10 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
         character = _connectedServer.Characters.FirstOrDefault(x => x.Username == Profile.Username);
         if (character != null)
         {
-            int serverIndex = _configService.Config.BookmarkedServers.FindIndex(x => x.Address == _connectedServer.Address);
+            int serverIndex = _sitConfig.BookmarkedServers.FindIndex(x => x.Address == _connectedServer.Address);
             if (serverIndex != -1)
             {
-                character = _configService.Config.BookmarkedServers[serverIndex].Characters.FirstOrDefault(x => x?.Username == character.Username, null);
+                character = _sitConfig.BookmarkedServers[serverIndex].Characters.FirstOrDefault(x => x?.Username == character.Username, null);
                 RequireLogin = string.IsNullOrEmpty(character?.Password);
             }
         }
@@ -109,7 +111,7 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
 
     private async Task Play()
     {
-        if (string.IsNullOrEmpty(_configService.Config.SitVersion) && string.IsNullOrEmpty(_configService.Config.SitTarkovVersion))
+        if (string.IsNullOrEmpty(_sitConfig.SitVersion) && string.IsNullOrEmpty(_sitConfig.SitTarkovVersion))
         {
             await new ContentDialog()
             {
@@ -140,12 +142,11 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
             if (success && rememberLogin)
             {
                 _connectedServer.Characters.Add(character);
-                int index = _configService.Config.BookmarkedServers.FindIndex(x => x.Address == _connectedServer.Address);
-                if (index != -1 && !_configService.Config.BookmarkedServers[index].Characters.Any(x => x.Username == character.Username))
+                int index = _sitConfig.BookmarkedServers.FindIndex(x => x.Address == _connectedServer.Address);
+                if (index != -1 && !_sitConfig.BookmarkedServers[index].Characters.Any(x => x.Username == character.Username))
                 {
-                    _configService.Config.BookmarkedServers[index].Characters.Add(character);
+                    _sitConfig.BookmarkedServers[index].Characters.Add(character);
                 }
-                _configService.UpdateConfig(_configService.Config);
                 RequireLogin = false;
             }
         }

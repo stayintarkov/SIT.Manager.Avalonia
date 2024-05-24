@@ -34,6 +34,9 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
     private const string PATCHER_URL = "aHR0cHM6Ly9wYXRjaGVyLnN0YXlpbnRhcmtvdi5jb20vYXBpL3YxL3JlcG9zL1NJVC9Eb3duZ3JhZGUtUGF0Y2hlcy9yZWxlYXNlcw==";
 
     private readonly ICachingService _cachingService = cachingService;
+    private SITConfig _sitConfig => configService.Config.SITSettings;
+    private LauncherConfig _launcherConfig => configService.Config.LauncherSettings;
+    private AkiConfig _akiConfig => configService.Config.AkiSettings;
 
     [GeneratedRegex("This server version works with version ([0]{1,}\\.[0-9]{1,2}\\.[0-9]{1,2})\\.[0-9]{1,2}\\.[0-9]{1,5}")]
     private static partial Regex ServerReleaseVersionRegex();
@@ -142,7 +145,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             return sitVersions;
         }
 
-        string tarkovBuild = tarkovVersion ?? configService.Config.SitTarkovVersion;
+        string tarkovBuild = tarkovVersion;
         tarkovBuild = tarkovBuild.Split(".").Last();
 
         for (int i = 0; i < sitVersions.Count; i++)
@@ -263,11 +266,11 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                         SitVersion = release.Name,
                     };
 
-                    if (release.Prerelease && configService.Config.EnableTestMode)
+                    if (release.Prerelease && _launcherConfig.EnableTestMode)
                     {
                         result.Add(sitVersion);
                     }
-                    else if (!release.Prerelease && !configService.Config.EnableTestMode)
+                    else if (!release.Prerelease && !_launcherConfig.EnableTestMode)
                     {
                         result.Add(sitVersion);
                     }
@@ -335,7 +338,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         if (OperatingSystem.IsLinux())
         {
             // TODO: actually improve this (will probably be done after fixing launching problems)
-            LinuxConfig config = configService.Config.LinuxConfig;
+            LinuxConfig config = configService.Config.LinuxSettings;
             string winePrefix = Path.GetFullPath(config.WinePrefix);
             // Update the wine prefix and install any required components
             UpdateWinePrefix(winePrefix);
@@ -413,11 +416,11 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                         release.TagName = $"{release.Name} - Tarkov Version: {releasePatch}";
                         release.Body = releasePatch;
 
-                        if (release.Prerelease && configService.Config.EnableTestMode)
+                        if (release.Prerelease && _launcherConfig.EnableTestMode)
                         {
                             result.Add(release);
                         }
-                        else if (!release.Prerelease && !configService.Config.EnableTestMode)
+                        else if (!release.Prerelease && !_launcherConfig.EnableTestMode)
                         {
                             result.Add(release);
                         }
@@ -516,25 +519,25 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
 
     public async Task<bool> IsSitUpdateAvailable()
     {
-        if (string.IsNullOrEmpty(configService.Config.SitTarkovVersion) || string.IsNullOrEmpty(configService.Config.SitVersion)) return false;
+        string? sitTarkovVersion = _sitConfig.SitTarkovVersion;
+        if (string.IsNullOrEmpty(sitTarkovVersion) || string.IsNullOrEmpty(sitTarkovVersion)) return false;
 
-        TimeSpan timeSinceLastCheck = DateTime.Now - configService.Config.LastSitUpdateCheckTime;
+        TimeSpan timeSinceLastCheck = DateTime.Now - _sitConfig.LastSitUpdateCheckTime;
 
         if (timeSinceLastCheck.TotalHours >= 1)
         {
-            _availableSitUpdateVersions = await GetAvailableSitReleases(configService.Config.SitTarkovVersion);
+            _availableSitUpdateVersions = await GetAvailableSitReleases(sitTarkovVersion);
 
             if (_availableSitUpdateVersions != null)
             {
                 _availableSitUpdateVersions = _availableSitUpdateVersions
                     .Where(x => Version.TryParse(x.SitVersion.Replace("StayInTarkov.Client-", ""), out Version? sitVersion) &&
-                                sitVersion > Version.Parse(configService.Config.SitVersion) &&
-                                configService.Config.SitTarkovVersion == x.EftVersion)
+                                sitVersion > Version.Parse(sitTarkovVersion) &&
+                                sitTarkovVersion == x.EftVersion)
                     .ToList();
             }
 
-            configService.Config.LastSitUpdateCheckTime = DateTime.Now;
-            configService.UpdateConfig(configService.Config);
+            _sitConfig.LastSitUpdateCheckTime = DateTime.Now;
         }
 
         return _availableSitUpdateVersions != null && _availableSitUpdateVersions.Count != 0;
@@ -604,15 +607,12 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         await fileService.SetFileAsExecutable(executablePath);
 
         // Attempt to automatically set the AKI Server Path after successful installation and save it to config
-        ManagerConfig config = configService.Config;
         if (!string.IsNullOrEmpty(targetInstallDir))
         {
-            config.AkiServerPath = targetInstallDir;
+            _akiConfig.AkiServerPath = targetInstallDir;
         }
-        config.SptAkiVersion = versionService.GetSptAkiVersion(targetInstallDir);
-        config.SitModVersion = versionService.GetSitModVersion(targetInstallDir);
-
-        configService.UpdateConfig(config);
+        _akiConfig.SptAkiVersion = versionService.GetSptAkiVersion(targetInstallDir);
+        _akiConfig.SitModVersion = versionService.GetSitModVersion(targetInstallDir);
     }
 
     public async Task InstallSit(GithubRelease selectedVersion, string targetInstallDir, IProgress<double> downloadProgress, IProgress<double> extractionProgress)
@@ -759,12 +759,10 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
 
             downloadProgress.Report(100);
             extractionProgress.Report(100);
-
-            ManagerConfig config = configService.Config;
-            config.SitEftInstallPath = targetInstallDir;
-            config.SitTarkovVersion = versionService.GetEFTVersion(targetInstallDir);
-            config.SitVersion = versionService.GetSITVersion(targetInstallDir);
-            configService.UpdateConfig(config);
+            
+            _sitConfig.SitEFTInstallPath = targetInstallDir;
+            _sitConfig.SitTarkovVersion = versionService.GetEFTVersion(targetInstallDir);
+            _sitConfig.SitVersion = versionService.GetSITVersion(targetInstallDir);
         }
         catch (Exception ex)
         {

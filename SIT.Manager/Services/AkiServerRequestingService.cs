@@ -118,7 +118,7 @@ public class AkiServerRequestingService(
 
     private string CreateLoginData(AkiServer server, AkiCharacter character)
     {
-        Version SITVersion = new(_configService.Config.SitVersion);
+        Version SITVersion = new(_configService.Config.SITSettings.SitVersion);
         string compatibleUri = server.Address.AbsoluteUri[..^(SITVersion >= standardUriFormatSupportedVersion ? 0 : 1)];
         JsonObject loginData = new()
         {

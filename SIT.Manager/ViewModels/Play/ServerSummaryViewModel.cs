@@ -12,6 +12,7 @@ using SIT.Manager.Models.Play;
 using SIT.Manager.Services.Caching;
 using SIT.Manager.Views.Play;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -30,6 +31,7 @@ public partial class ServerSummaryViewModel : ObservableRecipient
     private readonly DispatcherTimer _dispatcherTimer;
 
     private AkiServer _server;
+    private readonly List<AkiServer> _bookmarkedServers;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShownAddress))]
@@ -53,12 +55,13 @@ public partial class ServerSummaryViewModel : ObservableRecipient
     {
         get
         {
-            if (!_configService.Config.HideIpAddress || ShowIPOverride)
+            string ret = new('*', Address.AbsoluteUri.Length);
+            if (!_configService.Config.LauncherSettings.HideIpAddress || ShowIPOverride)
             {
-                return Address.AbsoluteUri;
+                ret = Address.AbsoluteUri;
             }
 
-            return new string('*', Address.AbsoluteUri.Length);
+            return ret;
         }
     }
 
@@ -91,6 +94,7 @@ public partial class ServerSummaryViewModel : ObservableRecipient
         _cachingService = cachingService;
 
         _server = server;
+        _bookmarkedServers = _configService.Config.SITSettings.BookmarkedServers;
 
         EditCommand = new AsyncRelayCommand(Edit);
 
@@ -120,10 +124,10 @@ public partial class ServerSummaryViewModel : ObservableRecipient
         (ContentDialogResult result, Uri serverUri) = await dialog.ShowAsync();
         if (result == ContentDialogResult.Primary)
         {
-            AkiServer? server = _configService.Config.BookmarkedServers.FirstOrDefault(x => x.Address == _server.Address);
+            AkiServer? server = _bookmarkedServers.FirstOrDefault(x => x.Address == _server.Address);
             if (server != null)
             {
-                _configService.Config.BookmarkedServers.Remove(server);
+                _bookmarkedServers.Remove(server);
 
                 AkiServer updatedServer = new(serverUri)
                 {
@@ -131,10 +135,9 @@ public partial class ServerSummaryViewModel : ObservableRecipient
                     Name = server.Name,
                     Ping = server.Ping
                 };
-                _configService.Config.BookmarkedServers.Add(updatedServer);
+                _bookmarkedServers.Add(updatedServer);
 
                 _server = updatedServer;
-                _configService.UpdateConfig(_configService.Config);
 
                 await RefreshServerData();
             }

@@ -32,6 +32,7 @@ public partial class ServerPageViewModel : ObservableRecipient
 
     private readonly SolidColorBrush cachedColorBrush = new(Color.FromRgb(255, 255, 255));
     private FontFamily cachedFontFamily = FontFamily.Default;
+    private AkiConfig _akiConfig => _configService.Config.AkiSettings;
 
     [ObservableProperty]
     private Symbol _startServerButtonSymbolIcon = Symbol.Play;
@@ -74,6 +75,7 @@ public partial class ServerPageViewModel : ObservableRecipient
         }
     }
 
+    //TODO: Make this work with new config
     private void UpdateCachedServerProperties(object? sender, ManagerConfig newConfig)
     {
         FontFamily newFont = FontManager.Current.SystemFonts.FirstOrDefault(x => x.Name == newConfig.ConsoleFontFamily, FontFamily.Parse("Bender"));
@@ -169,7 +171,7 @@ public partial class ServerPageViewModel : ObservableRecipient
 
     private async Task EditServerConfig()
     {
-        string serverPath = _configService.Config.AkiServerPath;
+        string serverPath = _akiConfig.AkiServerPath;
         if (string.IsNullOrEmpty(serverPath))
         {
             return;
@@ -229,7 +231,6 @@ public partial class ServerPageViewModel : ObservableRecipient
 
         _akiServerService.OutputDataReceived += AkiServer_OutputDataReceived;
         _akiServerService.RunningStateChanged += AkiServer_RunningStateChanged;
-        _configService.ConfigChanged += UpdateCachedServerProperties;
 
         UpdateCachedServerProperties(null, _configService.Config);
         UpdateConsoleWithCachedEntries();
@@ -240,6 +241,5 @@ public partial class ServerPageViewModel : ObservableRecipient
         // We don't want these event firing when the page isn't currently active.
         _akiServerService.OutputDataReceived -= AkiServer_OutputDataReceived;
         _akiServerService.RunningStateChanged -= AkiServer_RunningStateChanged;
-        _configService.ConfigChanged -= UpdateCachedServerProperties;
     }
 }
