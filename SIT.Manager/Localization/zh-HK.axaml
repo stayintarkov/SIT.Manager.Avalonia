@@ -80,6 +80,8 @@
 	
 	<!-- Settings Page -->
 	<system:String x:Key="SettingsLauncherSettingsTitle">啟動器設定</system:String>
+    <system:String x:Key="SettingsMinimizeLauncherAfterGameLaunchTitle">游戏启动后最小化启动器</system:String>
+    <system:String x:Key="SettingsMinimizeLauncherAfterGameLaunchToolTip">打开游戏后自动最小化启动器</system:String>
 	<system:String x:Key="SettingsCloseLauncherAfterGameLaunchTitle">遊戲啟動後關閉啟動器</system:String>
 	<system:String x:Key="SettingsCloseLauncherAfterGameLaunchToolTip">打開遊戲後自動關閉啟動器</system:String>
 	<system:String x:Key="SettingsLookForUpdatesTitle">檢查更新</system:String>

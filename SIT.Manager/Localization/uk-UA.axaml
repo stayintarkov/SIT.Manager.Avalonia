@@ -84,6 +84,8 @@
 
 	<!-- Settings Page -->
 	<system:String x:Key="SettingsLauncherSettingsTitle">Налаштування Лаунчера</system:String>
+    <system:String x:Key="SettingsMinimizeLauncherAfterGameLaunchTitle">Згортає лаунчер автоматично після відкриття гри.</system:String>
+    <system:String x:Key="SettingsMinimizeLauncherAfterGameLaunchToolTip">Згортає лаунчер автоматично після відкриття гри.</system:String>
 	<system:String x:Key="SettingsCloseLauncherAfterGameLaunchTitle">Закрити лаунчер після запуску гри</system:String>
 	<system:String x:Key="SettingsCloseLauncherAfterGameLaunchToolTip">Автоматично закриває лаунчер після відкриття гри.</system:String>
 	<system:String x:Key="SettingsLookForUpdatesTitle">Перевіряти Оновлення</system:String>
