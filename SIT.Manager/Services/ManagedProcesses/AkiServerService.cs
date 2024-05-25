@@ -58,24 +58,14 @@ public class AkiServerService(
     }
 
     public string[] GetCachedServerOutput()
-    {
-        return [.. _cachedServerOutput];
-    }
+        => [.. _cachedServerOutput];
 
     public bool IsUnhandledInstanceRunning()
     {
         Process[] akiServerProcesses = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(SERVER_EXE));
 
-        if (akiServerProcesses.Length <= 0)
-        {
-            return false;
-        }
-
-        if (ProcessToManage == null || ProcessToManage.HasExited)
-        {
-            return true;
-        }
-
+        if (akiServerProcesses.Length <= 0) return false;
+        if (ProcessToManage == null || ProcessToManage.HasExited) return true;
         return akiServerProcesses.Any(akiServerProcess => ProcessToManage.Id != akiServerProcess.Id);
     }
 
