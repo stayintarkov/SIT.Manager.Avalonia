@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Interfaces.ManagedProcesses;
@@ -11,111 +10,86 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Services.ManagedProcesses;
 
-public class AkiServerService(IBarNotificationService barNotificationService,
-                              IManagerConfigService configService,
-                              ILogger<AkiServerService> logger,
-                              IAkiServerRequestingService requestingService) : ManagedProcess(barNotificationService, configService), IAkiServerService
+public class AkiServerService(
+    IBarNotificationService barNotificationService,
+    IManagerConfigService configService,
+    ILogger<AkiServerService> logger,
+    IAkiServerRequestingService requestingService)
+    : ManagedProcess(barNotificationService, configService), IAkiServerService
 {
     private const string SERVER_EXE = "Aki.Server.exe";
     private const int SERVER_LINE_LIMIT = 10_000;
 
-    private readonly ILogger<AkiServerService> _logger = logger;
-    private readonly IAkiServerRequestingService _requestingService = requestingService;
-
-    private readonly List<string> cachedServerOutput = [];
+    private readonly List<string> _cachedServerOutput = [];
     private AkiServer? _selfServer;
 
     protected override string EXECUTABLE_NAME => SERVER_EXE;
-    public override string ExecutableDirectory => !string.IsNullOrEmpty(_configService.Config.AkiServerPath) ? _configService.Config.AkiServerPath : string.Empty;
-    public bool IsStarted { get; private set; } = false;
+
+    public override string ExecutableDirectory => !string.IsNullOrEmpty(ConfigService.Config.AkiServerPath)
+        ? ConfigService.Config.AkiServerPath
+        : string.Empty;
+
+    public bool IsStarted { get; private set; }
     public int ServerLineLimit => SERVER_LINE_LIMIT;
 
     public event EventHandler<DataReceivedEventArgs>? OutputDataReceived;
     public event EventHandler? ServerStarted;
 
-    private void AkiServer_OutputDataReceived(object sender, DataReceivedEventArgs e)
-    {
-        if (OutputDataReceived != null)
-        {
-            if (cachedServerOutput.Any())
-            {
-                cachedServerOutput.Clear();
-            }
-            OutputDataReceived?.Invoke(sender, e);
-        }
-        else
-        {
-            if (cachedServerOutput.Count > ServerLineLimit)
-            {
-                cachedServerOutput.RemoveAt(0);
-            }
-
-            if (!string.IsNullOrEmpty(e.Data))
-            {
-                cachedServerOutput.Add(e.Data);
-            }
-        }
-    }
-
     public override void ClearCache()
     {
-        string serverPath = _configService.Config.AkiServerPath;
-        if (!string.IsNullOrEmpty(serverPath))
+        string serverPath = ConfigService.Config.AkiServerPath;
+        if (string.IsNullOrEmpty(serverPath))
         {
-            // Combine the serverPath with the additional subpath.
-            string serverCachePath = Path.Combine(serverPath, "user", "cache");
-            if (Directory.Exists(serverCachePath))
-            {
-                Directory.Delete(serverCachePath, true);
-            }
-            Directory.CreateDirectory(serverCachePath);
+            return;
         }
+
+        // Combine the serverPath with the additional subpath.
+        string serverCachePath = Path.Combine(serverPath, "user", "cache");
+        if (Directory.Exists(serverCachePath))
+        {
+            Directory.Delete(serverCachePath, true);
+        }
+
+        Directory.CreateDirectory(serverCachePath);
     }
 
     public string[] GetCachedServerOutput()
     {
-        return [.. cachedServerOutput];
+        return [.. _cachedServerOutput];
     }
 
     public bool IsUnhandledInstanceRunning()
     {
         Process[] akiServerProcesses = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(SERVER_EXE));
 
-        if (akiServerProcesses.Length > 0)
+        if (akiServerProcesses.Length <= 0)
         {
-            if (_process == null || _process.HasExited)
-            {
-                return true;
-            }
-
-            foreach (Process akiServerProcess in akiServerProcesses)
-            {
-                if (_process.Id != akiServerProcess.Id)
-                {
-                    return true;
-                }
-            }
+            return false;
         }
 
-        return false;
+        if (ProcessToManage == null || ProcessToManage.HasExited)
+        {
+            return true;
+        }
+
+        return akiServerProcesses.Any(akiServerProcess => ProcessToManage.Id != akiServerProcess.Id);
     }
 
-    public override void Start(string? arguments = null)
+    public override void Start(string? arguments)
     {
-        if (State == RunningState.Running || State == RunningState.Starting)
+        if (State is RunningState.Running or RunningState.Starting)
         {
             return;
         }
 
-        bool cal = _configService.Config.CloseAfterLaunch;
-        _process = new Process()
+        bool cal = ConfigService.Config.CloseAfterLaunch;
+        ProcessToManage = new Process
         {
-            StartInfo = new ProcessStartInfo()
+            StartInfo = new ProcessStartInfo
             {
                 FileName = ExecutableFilePath,
                 WorkingDirectory = ExecutableDirectory,
@@ -127,38 +101,63 @@ public class AkiServerService(IBarNotificationService barNotificationService,
             EnableRaisingEvents = true
         };
 
-        _process.OutputDataReceived += AkiServer_OutputDataReceived;
-        _process.Exited += new EventHandler((sender, e) =>
+        ProcessToManage.OutputDataReceived += AkiServer_OutputDataReceived;
+        ProcessToManage.Exited += (sender, e) =>
         {
             ExitedEvent(sender, e);
             IsStarted = false;
-        });
+        };
 
-        _process.Start();
+        ProcessToManage.Start();
         UpdateRunningState(RunningState.Starting);
 
         if (!cal)
         {
-            _process.BeginOutputReadLine();
+            ProcessToManage.BeginOutputReadLine();
         }
 
         Uri serverUri = new("http://127.0.0.1:6969");
 
-        string httpConfigPath = Path.Combine(_configService.Config.AkiServerPath, "Aki_Data", "Server", "configs", "http.json");
+        string httpConfigPath = Path.Combine(ConfigService.Config.AkiServerPath, "Aki_Data", "Server", "configs",
+            "http.json");
+        //TODO: Refactor this
         if (File.Exists(httpConfigPath))
         {
             JObject httpConfig = JObject.Parse(File.ReadAllText(httpConfigPath));
-            if (httpConfig.TryGetValue("ip", out JToken IPToken) && httpConfig.TryGetValue("port", out JToken PortToken))
+            if (httpConfig.TryGetValue("ip", out JToken IPToken) &&
+                httpConfig.TryGetValue("port", out JToken PortToken))
             {
                 string ipAddress = IPToken.ToString();
+                //TODO: Come back and refactor this
                 string addressToUse = $"http://{(ipAddress == "0.0.0.0" ? serverUri.Host : IPToken)}:{PortToken}";
-                serverUri = new(addressToUse);
+                serverUri = new Uri(addressToUse);
             }
         }
 
-        _selfServer = new(serverUri);
-
+        _selfServer = new AkiServer(serverUri);
         Task.Run(ListenForHeartbeat);
+    }
+
+    private void AkiServer_OutputDataReceived(object sender, DataReceivedEventArgs e)
+    {
+        if (OutputDataReceived != null)
+        {
+            _cachedServerOutput.Clear();
+            OutputDataReceived?.Invoke(sender, e);
+        }
+        else
+        {
+            //TODO: Replace this with a FILO object like a queue
+            if (_cachedServerOutput.Count > ServerLineLimit)
+            {
+                _cachedServerOutput.RemoveAt(0);
+            }
+
+            if (!string.IsNullOrEmpty(e.Data))
+            {
+                _cachedServerOutput.Add(e.Data);
+            }
+        }
     }
 
     private async Task ListenForHeartbeat()
@@ -166,12 +165,14 @@ public class AkiServerService(IBarNotificationService barNotificationService,
         try
         {
             if (_selfServer == null)
-                return;
-
-            int ping = await _requestingService.GetPingAsync(_selfServer);
-            if(ping != -1)
             {
-                if(_process?.HasExited == true)
+                return;
+            }
+
+            int ping = await requestingService.GetPingAsync(_selfServer);
+            if (ping != -1)
+            {
+                if (ProcessToManage?.HasExited == true)
                 {
                     UpdateRunningState(RunningState.NotRunning);
                 }
@@ -179,17 +180,18 @@ public class AkiServerService(IBarNotificationService barNotificationService,
                 {
                     //TODO: Refactor this
                     IsStarted = true;
-                    ServerStarted?.Invoke(this, new EventArgs());
+                    ServerStarted?.Invoke(this, EventArgs.Empty);
                     UpdateRunningState(RunningState.Running);
                 }
+
                 return;
             }
         }
-        catch(HttpRequestException ex)
+        catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "Exception throw while attempting to ping local server.");
+            logger.LogError(ex, "Exception throw while attempting to ping local server.");
         }
 
-        _process?.Kill();
+        ProcessToManage?.Kill();
     }
 }
