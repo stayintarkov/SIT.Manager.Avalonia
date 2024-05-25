@@ -154,25 +154,25 @@ public class AkiServerService(
     {
         try
         {
-            if (_selfServer == null)
-            {
-                return;
-            }
+            if (_selfServer == null) return;
 
             int ping = await requestingService.GetPingAsync(_selfServer);
             if (ping != -1)
             {
+                RunningState updatedState;
                 if (ProcessToManage?.HasExited == true)
                 {
-                    UpdateRunningState(RunningState.NotRunning);
+                    updatedState = RunningState.NotRunning;
                 }
                 else
                 {
                     //TODO: Refactor this
                     IsStarted = true;
                     ServerStarted?.Invoke(this, EventArgs.Empty);
-                    UpdateRunningState(RunningState.Running);
+                    updatedState = RunningState.Running;
                 }
+                
+                UpdateRunningState(updatedState);
 
                 return;
             }
