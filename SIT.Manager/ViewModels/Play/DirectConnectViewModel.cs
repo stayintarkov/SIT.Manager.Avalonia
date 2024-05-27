@@ -12,6 +12,7 @@ using SIT.Manager.Models.Config;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -28,18 +29,19 @@ public partial class DirectConnectViewModel : ObservableRecipient
     private readonly ILogger<DirectConnectViewModel> _logger;
     private readonly IManagerConfigService _configService;
     private readonly ITarkovClientService _tarkovClientService;
+    private SITConfig _sitConfig => _configService.Config.SITSettings;
 
     [ObservableProperty]
-    private string _lastServer;
+    private string _lastServer = string.Empty;
 
     [ObservableProperty]
-    private string _username;
+    private string _username = string.Empty;
 
     [ObservableProperty]
-    private string _password;
+    private string _password = string.Empty;
 
     [ObservableProperty]
-    private bool _rememberMe;
+    private bool _rememberMe = false;
 
     [ObservableProperty]
     private ManagerConfig _managerConfig;
@@ -70,10 +72,18 @@ public partial class DirectConnectViewModel : ObservableRecipient
         _managerConfig = configService.Config;
         _logger = logger;
 
-        _lastServer = _configService.Config.LastServer;
-        _username = _configService.Config.Username;
-        _password = _configService.Config.Password;
-        _rememberMe = _configService.Config.RememberLogin;
+        AkiServer? lastAkiServer = _configService.Config.SITSettings.LastServer;
+        if (lastAkiServer != null)
+        {
+            _lastServer = lastAkiServer.Address.AbsoluteUri;
+            if (lastAkiServer.Characters.Count != 0)
+            {
+                AkiCharacter savedCharacter = lastAkiServer.Characters.First();
+                _username = savedCharacter.Username;
+                _password = savedCharacter.Password;
+                _rememberMe = true;
+            }
+        }
 
         ConnectToServerCommand = new AsyncRelayCommand(async () => await ConnectToServer());
         QuickPlayCommand = new AsyncRelayCommand(async () => await ConnectToServer(true));
@@ -107,7 +117,7 @@ public partial class DirectConnectViewModel : ObservableRecipient
 
     private async Task ConnectToServer(bool launchServer = false)
     {
-        if (string.IsNullOrEmpty(_configService.Config.SitVersion) && string.IsNullOrEmpty(_configService.Config.SitTarkovVersion))
+        if (string.IsNullOrEmpty(_sitConfig.SitVersion) && string.IsNullOrEmpty(_sitConfig.SitTarkovVersion))
         {
             await new ContentDialog()
             {
@@ -118,12 +128,20 @@ public partial class DirectConnectViewModel : ObservableRecipient
             return;
         }
 
-        ManagerConfig config = _configService.Config;
-        config.Username = Username;
-        config.Password = Password;
-        config.LastServer = LastServer;
-        config.RememberLogin = RememberMe;
-        _configService.UpdateConfig(config, true, config.RememberLogin);
+        AkiServer? lastDirectServer = _configService.Config.SITSettings.LastServer;
+        if (lastDirectServer == null)
+        {
+            lastDirectServer = new AkiServer(GetUriFromAddress(LastServer)!);
+            lastDirectServer.Characters.Add(new AkiCharacter());
+        }
+
+        lastDirectServer.Characters.Clear();
+        AkiCharacter lastDirectCharacter = new()
+        {
+            Username = Username,
+            Password = Password
+        };
+        lastDirectServer.Characters.Add(lastDirectCharacter);
 
         Uri? serverAddress = GetUriFromAddress(LastServer);
 
@@ -227,21 +245,21 @@ public partial class DirectConnectViewModel : ObservableRecipient
             {
                 Name = _localizationService.TranslateSource("DirectConnectViewModelInstallPathTitle"),
                 ErrorMessage = _localizationService.TranslateSource("DirectConnectViewModelInstallPathDescription"),
-                Check = () => { return !string.IsNullOrEmpty(_configService.Config.SitEftInstallPath); }
+                Check = () => { return !string.IsNullOrEmpty(_sitConfig.SitEFTInstallPath); }
             },
             //SIT check
             new()
             {
                 Name = _localizationService.TranslateSource("DirectConnectViewModelSITInstallationTitle"),
                 ErrorMessage = _localizationService.TranslateSource("DirectConnectViewModelSITInstallationDescription", SIT_DLL_FILENAME),
-                Check = () => { return File.Exists(Path.Combine(_configService.Config.SitEftInstallPath, "BepInEx", "plugins", SIT_DLL_FILENAME)); }
+                Check = () => { return File.Exists(Path.Combine(_sitConfig.SitEFTInstallPath, "BepInEx", "plugins", SIT_DLL_FILENAME)); }
             },
             //EFT Check
             new()
             {
                 Name = _localizationService.TranslateSource("DirectConnectViewModelEFTInstallationTitle"),
                 ErrorMessage = _localizationService.TranslateSource("DirectConnectViewModelEFTInstallationDescription", EFT_EXE_FILENAME),
-                Check = () => { return File.Exists(Path.Combine(_configService.Config.SitEftInstallPath, EFT_EXE_FILENAME)); }
+                Check = () => { return File.Exists(Path.Combine(_sitConfig.SitEFTInstallPath, EFT_EXE_FILENAME)); }
             },
             //Field Check
             new()

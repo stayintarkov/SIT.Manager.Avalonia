@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SIT.Manager.Interfaces;
+using SIT.Manager.Models.Config;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ public partial class SptAkiViewModel : SettingsViewModelBase
     private readonly IBarNotificationService _barNotificationService;
     private readonly ILocalizationService _localizationService;
     private readonly IVersionService _versionService;
+    private AkiConfig _akiConfig => Config.AkiSettings;
 
     [ObservableProperty]
     private FontFamily _selectedConsoleFontFamily = FontFamily.Default;
@@ -44,9 +46,9 @@ public partial class SptAkiViewModel : SettingsViewModelBase
         string targetPath = await GetPathLocation("Aki.Server.exe");
         if (!string.IsNullOrEmpty(targetPath))
         {
-            Config.AkiServerPath = targetPath;
-            Config.SptAkiVersion = _versionService.GetSptAkiVersion(targetPath);
-            Config.SitModVersion = _versionService.GetSitModVersion(targetPath);
+            _akiConfig.AkiServerPath = targetPath;
+            _akiConfig.SptAkiVersion = _versionService.GetSptAkiVersion(targetPath);
+            _akiConfig.SitModVersion = _versionService.GetSitModVersion(targetPath);
             _barNotificationService.ShowInformational(_localizationService.TranslateSource("SettingsPageViewModelConfigTitle"), _localizationService.TranslateSource("SettingsPageViewModelConfigInformationSPTAKIDescription", targetPath));
         }
         else
@@ -59,11 +61,11 @@ public partial class SptAkiViewModel : SettingsViewModelBase
     {
         base.OnActivated();
 
-        SelectedConsoleFontFamily = InstalledFonts.FirstOrDefault(x => x.Name == Config.ConsoleFontFamily, FontFamily.Parse("Bender"));
+        SelectedConsoleFontFamily = InstalledFonts.FirstOrDefault(x => x.Name == _akiConfig.ConsoleFontFamily, FontFamily.Parse("Bender"));
     }
 
     partial void OnSelectedConsoleFontFamilyChanged(FontFamily value)
     {
-        Config.ConsoleFontFamily = value.Name;
+        _akiConfig.ConsoleFontFamily = value.Name;
     }
 }

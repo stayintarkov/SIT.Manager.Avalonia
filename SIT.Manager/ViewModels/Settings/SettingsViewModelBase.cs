@@ -22,11 +22,6 @@ public partial class SettingsViewModelBase : ObservableRecipient
         _pickerDialogService = pickerDialogService;
     }
 
-    private void Config_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        _configsService.UpdateConfig(Config);
-    }
-
     /// <summary>
     /// Gets the path containing the required filename based on the folder picker selection from a user
     /// </summary>
@@ -50,12 +45,10 @@ public partial class SettingsViewModelBase : ObservableRecipient
         base.OnActivated();
 
         Config = _configsService.Config;
-        Config.PropertyChanged += Config_PropertyChanged;
     }
 
     protected override void OnDeactivated()
     {
         base.OnDeactivated();
-        Config.PropertyChanged -= Config_PropertyChanged;
     }
 }

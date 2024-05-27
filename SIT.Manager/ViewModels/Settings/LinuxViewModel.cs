@@ -75,24 +75,17 @@ public partial class LinuxViewModel : SettingsViewModelBase
             _barNotificationService.ShowError(_localizationService.TranslateSource("SettingsPageViewModelErrorTitle"), _localizationService.TranslateSource("LinuxSettingsPageViewModelConfigErrorRunner"));
         }
     }
-
-    private void LinuxConfig_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        _configsService.UpdateConfig(_configsService.Config);
-    }
+    
 
     protected override void OnActivated()
     {
         base.OnActivated();
 
-        LinuxConfig = _configsService.Config.LinuxConfig;
-
-        LinuxConfig.PropertyChanged += LinuxConfig_PropertyChanged;
+        LinuxConfig = _configsService.Config.LinuxSettings;
     }
 
     protected override void OnDeactivated()
     {
         base.OnDeactivated();
-        LinuxConfig.PropertyChanged -= LinuxConfig_PropertyChanged;
     }
 }

@@ -10,10 +10,12 @@ using SIT.Manager.Models.Config;
 using SIT.Manager.Services;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.ViewModels;
@@ -32,6 +34,7 @@ public partial class ServerPageViewModel : ObservableRecipient
 
     private readonly SolidColorBrush cachedColorBrush = new(Color.FromRgb(255, 255, 255));
     private FontFamily cachedFontFamily = FontFamily.Default;
+    private AkiConfig _akiConfig => _configService.Config.AkiSettings;
 
     [ObservableProperty]
     private Symbol _startServerButtonSymbolIcon = Symbol.Play;
@@ -74,21 +77,42 @@ public partial class ServerPageViewModel : ObservableRecipient
         }
     }
 
-    private void UpdateCachedServerProperties(object? sender, ManagerConfig newConfig)
+    private void UpdateCachedFont()
     {
-        FontFamily newFont = FontManager.Current.SystemFonts.FirstOrDefault(x => x.Name == newConfig.ConsoleFontFamily, FontFamily.Parse("Bender"));
-        if (!newFont.Name.Equals(cachedFontFamily.Name))
+        string newFontFamilyName = _configService.Config.AkiSettings.ConsoleFontFamily;
+        if (newFontFamilyName.Equals(cachedFontFamily.Name)) return;
+        
+        FontFamily newFont = FontManager.Current.SystemFonts.FirstOrDefault(x => x.Name == newFontFamilyName, FontFamily.Parse("Bender"));
+        cachedFontFamily = newFont;
+
+        lock (ConsoleOutput) //Idk if this is needed but better safe than sorry ig
         {
-            cachedFontFamily = newFont;
             foreach (ConsoleText textEntry in ConsoleOutput)
             {
                 textEntry.TextFont = cachedFontFamily;
             }
         }
+    }
 
-        if (newConfig.ConsoleFontColor != cachedColorBrush.Color)
+    private void UpdateCachedColour()
+    {
+        Color newColor = _configService.Config.AkiSettings.ConsoleFontColor;
+        if (newColor == cachedColorBrush.Color) return;
+        Dispatcher.UIThread.Post(() => cachedColorBrush.Color = newColor);
+    }
+
+    private void OnAkiPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        switch (e.PropertyName)
         {
-            Dispatcher.UIThread.Post(() => cachedColorBrush.Color = newConfig.ConsoleFontColor);
+            case nameof(_akiConfig.ConsoleFontFamily):
+                UpdateCachedFont();
+                break;
+            case nameof(_akiConfig.ConsoleFontColor):
+                UpdateCachedColour();
+                break;
+            default:
+                return;
         }
     }
 
@@ -169,7 +193,7 @@ public partial class ServerPageViewModel : ObservableRecipient
 
     private async Task EditServerConfig()
     {
-        string serverPath = _configService.Config.AkiServerPath;
+        string serverPath = _akiConfig.AkiServerPath;
         if (string.IsNullOrEmpty(serverPath))
         {
             return;
@@ -229,9 +253,7 @@ public partial class ServerPageViewModel : ObservableRecipient
 
         _akiServerService.OutputDataReceived += AkiServer_OutputDataReceived;
         _akiServerService.RunningStateChanged += AkiServer_RunningStateChanged;
-        _configService.ConfigChanged += UpdateCachedServerProperties;
-
-        UpdateCachedServerProperties(null, _configService.Config);
+        _akiConfig.PropertyChanged += OnAkiPropertyChanged;
         UpdateConsoleWithCachedEntries();
     }
 
@@ -240,6 +262,6 @@ public partial class ServerPageViewModel : ObservableRecipient
         // We don't want these event firing when the page isn't currently active.
         _akiServerService.OutputDataReceived -= AkiServer_OutputDataReceived;
         _akiServerService.RunningStateChanged -= AkiServer_RunningStateChanged;
-        _configService.ConfigChanged -= UpdateCachedServerProperties;
+        _akiConfig.PropertyChanged -= OnAkiPropertyChanged;
     }
 }

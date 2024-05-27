@@ -25,7 +25,8 @@ public partial class SelectViewModel(IManagerConfigService configsService,
 
     private void EstablishEFTInstallStatus()
     {
-        if (string.IsNullOrEmpty(_configService.Config.SitEftInstallPath))
+        string? sitEFTInstallPath = _configService.Config.SITSettings.SitEFTInstallPath;
+        if (string.IsNullOrEmpty(sitEFTInstallPath))
         {
             string detectedBSGInstallPath = Path.GetDirectoryName(_installerService.GetEFTInstallPath()) ?? string.Empty;
             if (!string.IsNullOrEmpty(detectedBSGInstallPath))
@@ -37,7 +38,7 @@ public partial class SelectViewModel(IManagerConfigService configsService,
         }
         else
         {
-            CurrentInstallProcessState.EftInstallPath = _configService.Config.SitEftInstallPath;
+            CurrentInstallProcessState.EftInstallPath = sitEFTInstallPath;
             CurrentInstallProcessState.UsingBsgInstallPath = false;
         }
 
@@ -50,9 +51,10 @@ public partial class SelectViewModel(IManagerConfigService configsService,
 
     private void EstablishSptAkiInstallStatus()
     {
-        if (!string.IsNullOrEmpty(_configService.Config.AkiServerPath))
+        string? akiServerPath = _configService.Config.AkiSettings.AkiServerPath;
+        if (!string.IsNullOrEmpty(akiServerPath))
         {
-            CurrentInstallProcessState.SptAkiInstallPath = _configService.Config.AkiServerPath;
+            CurrentInstallProcessState.SptAkiInstallPath = akiServerPath;
 
             CurrentInstallProcessState.SptAkiVersion = _versionService.GetSptAkiVersion(CurrentInstallProcessState.SptAkiInstallPath);
             CurrentInstallProcessState.SitModVersion = _versionService.GetSitModVersion(CurrentInstallProcessState.SptAkiInstallPath);

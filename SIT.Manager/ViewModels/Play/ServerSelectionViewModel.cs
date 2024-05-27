@@ -5,6 +5,7 @@ using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Models.Aki;
+using SIT.Manager.Models.Config;
 using SIT.Manager.Models.Play;
 using SIT.Manager.Views.Play;
 using System;
@@ -20,6 +21,7 @@ public partial class ServerSelectionViewModel : ObservableRecipient, IRecipient<
     private readonly IManagerConfigService _configService;
     private readonly ILocalizationService _localizationService;
     private readonly IServiceProvider _serviceProvider;
+    private SITConfig _sitConfig => _configService.Config.SITSettings;
 
     public ObservableCollection<ServerSummaryViewModel> ServerList { get; } = [];
 
@@ -43,14 +45,13 @@ public partial class ServerSelectionViewModel : ObservableRecipient, IRecipient<
         (ContentDialogResult result, Uri serverUri) = await dialog.ShowAsync();
         if (result == ContentDialogResult.Primary)
         {
-            bool serverExists = _configService.Config.BookmarkedServers
+            bool serverExists = _sitConfig.BookmarkedServers
                 .Any(x => Uri.Compare(x.Address, serverUri, UriComponents.HostAndPort, UriFormat.SafeUnescaped, StringComparison.OrdinalIgnoreCase) == 0);
             if (!serverExists)
             {
                 AkiServer newServer = new(serverUri);
                 ServerList.Add(ActivatorUtilities.CreateInstance<ServerSummaryViewModel>(_serviceProvider, newServer));
-                _configService.Config.BookmarkedServers.Add(newServer);
-                _configService.UpdateConfig(_configService.Config);
+                _sitConfig.BookmarkedServers.Add(newServer);
             }
             else
             {
@@ -79,7 +80,7 @@ public partial class ServerSelectionViewModel : ObservableRecipient, IRecipient<
     {
         base.OnActivated();
 
-        foreach (AkiServer server in _configService.Config.BookmarkedServers)
+        foreach (AkiServer server in _sitConfig.BookmarkedServers)
         {
             //This has the potential to be kinda slow on *large* sets. If so we can swap to a hashset but that feels overkill rn
             if (!ServerList.Where(x => Uri.Compare(x.Address, server.Address, UriComponents.HostAndPort, UriFormat.SafeUnescaped, StringComparison.OrdinalIgnoreCase) == 0).Any())
@@ -104,11 +105,10 @@ public partial class ServerSelectionViewModel : ObservableRecipient, IRecipient<
             {
                 ServerList.Remove(server);
 
-                AkiServer? serverToRemove = _configService.Config.BookmarkedServers.Find(x => x.Address == server.Address);
+                AkiServer? serverToRemove = _sitConfig.BookmarkedServers.Find(x => x.Address == server.Address);
                 if (serverToRemove != null)
                 {
-                    _configService.Config.BookmarkedServers.Remove(serverToRemove);
-                    _configService.UpdateConfig(_configService.Config);
+                    _sitConfig.BookmarkedServers.Remove(serverToRemove);
                 }
             }
         }

@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Interfaces.ManagedProcesses;
 using SIT.Manager.Models.Aki;
+using SIT.Manager.Models.Config;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -26,12 +27,14 @@ public class AkiServerService(IBarNotificationService barNotificationService,
 
     private readonly ILogger<AkiServerService> _logger = logger;
     private readonly IAkiServerRequestingService _requestingService = requestingService;
+    private AkiConfig _akiConfig => _configService.Config.AkiSettings;
 
     private readonly List<string> cachedServerOutput = [];
     private AkiServer? _selfServer;
 
     protected override string EXECUTABLE_NAME => SERVER_EXE;
-    public override string ExecutableDirectory => !string.IsNullOrEmpty(_configService.Config.AkiServerPath) ? _configService.Config.AkiServerPath : string.Empty;
+    public override string ExecutableDirectory =>
+        !string.IsNullOrEmpty(_akiConfig.AkiServerPath) ? _akiConfig.AkiServerPath : string.Empty;
     public bool IsStarted { get; private set; } = false;
     public int ServerLineLimit => SERVER_LINE_LIMIT;
 
@@ -64,7 +67,7 @@ public class AkiServerService(IBarNotificationService barNotificationService,
 
     public override void ClearCache()
     {
-        string serverPath = _configService.Config.AkiServerPath;
+        string serverPath = _akiConfig.AkiServerPath;
         if (!string.IsNullOrEmpty(serverPath))
         {
             // Combine the serverPath with the additional subpath.
@@ -112,7 +115,7 @@ public class AkiServerService(IBarNotificationService barNotificationService,
             return;
         }
 
-        bool cal = _configService.Config.CloseAfterLaunch;
+        bool cal = _configService.Config.LauncherSettings.CloseAfterLaunch;
         _process = new Process()
         {
             StartInfo = new ProcessStartInfo()
@@ -144,7 +147,7 @@ public class AkiServerService(IBarNotificationService barNotificationService,
 
         Uri serverUri = new("http://127.0.0.1:6969");
 
-        string httpConfigPath = Path.Combine(_configService.Config.AkiServerPath, "Aki_Data", "Server", "configs", "http.json");
+        string httpConfigPath = Path.Combine(_akiConfig.AkiServerPath, "Aki_Data", "Server", "configs", "http.json");
         if (File.Exists(httpConfigPath))
         {
             JObject httpConfig = JObject.Parse(File.ReadAllText(httpConfigPath));

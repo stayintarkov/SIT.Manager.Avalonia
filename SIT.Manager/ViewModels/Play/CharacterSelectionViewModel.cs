@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Interfaces.ManagedProcesses;
 using SIT.Manager.Models.Aki;
+using SIT.Manager.Models.Config;
 using SIT.Manager.Models.Play;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,7 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
     private readonly ITarkovClientService _tarkovClientService;
 
     private AkiServer _connectedServer;
+    private SITConfig _sitConfig => _configService.Config.SITSettings;
 
     [ObservableProperty]
     private bool _showOnlySavedProfiles = false;
@@ -75,7 +77,7 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
 
     private async Task CreateCharacter()
     {
-        if (string.IsNullOrEmpty(_configService.Config.SitVersion) && string.IsNullOrEmpty(_configService.Config.SitTarkovVersion))
+        if (string.IsNullOrEmpty(_sitConfig.SitVersion) && string.IsNullOrEmpty(_sitConfig.SitTarkovVersion))
         {
             await new ContentDialog()
             {
@@ -122,7 +124,7 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
     {
         base.OnActivated();
 
-        AkiServer? currentServer = _configService.Config.BookmarkedServers.FirstOrDefault(x => x.Address == _connectedServer.Address);
+        AkiServer? currentServer = _sitConfig.BookmarkedServers.FirstOrDefault(x => x.Address == _connectedServer.Address);
         if (currentServer != null)
         {
             _connectedServer = currentServer;

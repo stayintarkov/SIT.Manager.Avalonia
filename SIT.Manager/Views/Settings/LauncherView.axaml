@@ -13,13 +13,13 @@
 			<StackPanel>
 				<CheckBox Content="{DynamicResource SettingsCloseLauncherAfterGameLaunchTitle}"
 						  ToolTip.Tip="{DynamicResource SettingsCloseLauncherAfterGameLaunchToolTip}"
-						  IsChecked="{Binding Config.CloseAfterLaunch, Mode=TwoWay}"/>
+						  IsChecked="{Binding _launcherSettings.CloseAfterLaunch, Mode=TwoWay}"/>
 				<CheckBox Content="{DynamicResource SettingsLookForUpdatesTitle}"
 						  ToolTip.Tip="{DynamicResource SettingsLookForUpdatesTitleToolTip}"
-						  IsChecked="{Binding Config.LookForUpdates, Mode=TwoWay}"/>
+						  IsChecked="{Binding _launcherSettings.LookForUpdates, Mode=TwoWay}"/>
 				<CheckBox Content="{DynamicResource SettingsHideIpAddressTitle}"
 						  ToolTip.Tip="{DynamicResource SettingsHideIpAddressToolTip}"
-						  IsChecked="{Binding Config.HideIpAddress, Mode=TwoWay}"/>
+						  IsChecked="{Binding _launcherSettings.HideIpAddress, Mode=TwoWay}"/>
 				<CheckBox Content="{DynamicResource SettingsEnableTestMode}"
 						  ToolTip.Tip="{DynamicResource SettingsEnableTestModeToolTip}"
 						  IsChecked="{Binding IsTestModeEnabled, Mode=TwoWay}"/>
@@ -45,7 +45,7 @@
 										  UseColorPalette="False"
 										  UseColorWheel="False"
 										  UseSpectrum="True"
-										  Color="{Binding Config.AccentColor, Mode=TwoWay}"/>
+										  Color="{Binding _launcherSettings.AccentColor, Mode=TwoWay}"/>
 				</Grid>
 			</StackPanel>
 		</controls:Card>
