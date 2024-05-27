@@ -13,6 +13,8 @@ public partial class ManagerConfig : ObservableObject
     [ObservableProperty]
     private Color? _accentColor = Color.FromRgb(0x7f, 0x7f, 0x7f);
     [ObservableProperty]
+    public bool _minimizeAfterLaunch = false;
+    [ObservableProperty]
     public bool _closeAfterLaunch = false;
     [ObservableProperty]
     public string _currentLanguageSelected = CultureInfo.CurrentCulture.Name;

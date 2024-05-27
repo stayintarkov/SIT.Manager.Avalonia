@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls.ApplicationLifetimes;
+﻿using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.Logging;
 using SIT.Manager.Exceptions;
@@ -55,6 +56,16 @@ public class TarkovClientService(IAkiServerRequestingService serverRequestingSer
         {
             // Handle the case where InstallPath is not found or empty.
             _barNotificationService.ShowError(_localizationService.TranslateSource("TarkovClientServiceCacheClearedErrorTitle"), _localizationService.TranslateSource("TarkovClientServiceCacheClearedErrorDescription"));
+        }
+    }
+
+    private static void MinimizeManager()
+    {
+        IApplicationLifetime? lifetime = App.Current.ApplicationLifetime;
+
+        if (lifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: not null } desktopLifetime)
+        {
+            desktopLifetime.MainWindow.WindowState = WindowState.Minimized;
         }
     }
 
@@ -182,6 +193,11 @@ public class TarkovClientService(IAkiServerRequestingService serverRequestingSer
                 Content = ex.Message
             }.ShowAsync();
             return false;
+        }
+
+        if (_configService.Config.MinimizeAfterLaunch)
+        {
+            MinimizeManager();
         }
 
         if (_configService.Config.CloseAfterLaunch)

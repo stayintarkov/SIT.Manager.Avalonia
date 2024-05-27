@@ -54,9 +54,11 @@
 
 	<!-- Settings Page -->
 	<system:String x:Key="SettingsLauncherSettingsTitle">Launcher</system:String>
+    <system:String x:Key="SettingsMinimizeLauncherAfterGameLaunchTitle">Minimize Launcher After Game Launch</system:String>
+    <system:String x:Key="SettingsMinimizeLauncherAfterGameLaunchToolTip">Minimizes the launcher automatically after opening the game.</system:String>
 	<system:String x:Key="SettingsCloseLauncherAfterGameLaunchTitle">Close Launcher After Game Launch</system:String>
 	<system:String x:Key="SettingsCloseLauncherAfterGameLaunchToolTip">Closes the launcher automatically after opening the game.</system:String>
-	<system:String x:Key="SettingsLookForUpdatesTitle">Look For Updates</system:String>
+    <system:String x:Key="SettingsLookForUpdatesTitle">Look For Updates</system:String>
 	<system:String x:Key="SettingsLookForUpdatesTitleToolTip">Automatically look for updates when opening the launcher.</system:String>
 	<system:String x:Key="SettingsHideIpAddressTitle">Hide Ip Address</system:String>
 	<system:String x:Key="SettingsHideIpAddressToolTip">Hides the Ip Address with the star symbols in Ip Address Box.</system:String>
@@ -374,6 +376,7 @@
 	<!-- CharacterSummaryView -->
 	<system:String x:Key="CharacterSummaryViewPlayButtonText">Play</system:String>
 	<system:String x:Key="CharacterSummaryViewLoginButtonText">Login</system:String>
+	<system:String x:Key="CharacterSummaryViewLogoutButtonText">Logout</system:String>
 
 	<!-- CreateServerDialogView -->
 	<system:String x:Key="CreateServerDialogViewAddTitle">Add Server</system:String>
