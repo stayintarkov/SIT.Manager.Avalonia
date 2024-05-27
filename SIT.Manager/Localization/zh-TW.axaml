@@ -516,6 +516,7 @@
 	<system:String x:Key="ModsPageViewModSearchTextBoxWatermark">Search</system:String>
 	<system:String x:Key="ModsPageViewModsDatagridNameColumnHeader">Name</system:String>
 	<system:String x:Key="ModsPageViewModDatagridVersionColumnHeader">Version</system:String>
-	<system:String x:Key="ModsPageViewModDatagridEnableModButtonToolTip">Enable this mod</system:String>
-	<system:String x:Key="ModsPageViewModDatagridDisableModButtonToolTip">Disable this mod</system:String>
+	<system:String x:Key="ModsPageViewModDatagridToggleSwitchModEnabledToolTip">Enable or disable this mod</system:String>
+	<system:String x:Key="ModsPageViewModDatagridToggleSwitchOnContent">Enabled</system:String>
+	<system:String x:Key="ModsPageViewModDatagridToggleSwitchOffContent">Disabled</system:String>
 </ResourceDictionary>

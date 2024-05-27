@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Threading;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using SIT.Manager.Extentions;
@@ -19,6 +20,9 @@ public partial class ModsPageViewModel : ObservableRecipient
     private readonly IModService _modService;
 
     private ModInfo[] _unfilteredModList = [];
+
+    [ObservableProperty]
+    private bool _isLoading = false;
 
     [ObservableProperty]
     private bool _isModCompatibilityLayerInstalled = false;
@@ -45,18 +49,21 @@ public partial class ModsPageViewModel : ObservableRecipient
     }
 
     [RelayCommand]
-    private void DisableMod(ModInfo mod)
+    private void ToggleModEnabled(ModInfo mod)
     {
         int modIndex = ModList.IndexOf(mod);
-        ModInfo updatedModInfo = _modService.DisableMod(mod, _configService.Config.SitEftInstallPath);
-        ModList[modIndex] = updatedModInfo;
-    }
 
-    [RelayCommand]
-    private void EnableMod(ModInfo mod)
-    {
-        int modIndex = ModList.IndexOf(mod);
-        ModInfo updatedModInfo = _modService.EnableMod(mod, _configService.Config.SitEftInstallPath);
+        // The toggle button which calls this already update the IsEnabled value to be
+        // the action we want to call so just follow whatever that value is.
+        ModInfo updatedModInfo;
+        if (mod.IsEnabled)
+        {
+            updatedModInfo = _modService.EnableMod(mod, _configService.Config.SitEftInstallPath);
+        }
+        else
+        {
+            updatedModInfo = _modService.DisableMod(mod, _configService.Config.SitEftInstallPath);
+        }
         ModList[modIndex] = updatedModInfo;
     }
 
@@ -106,14 +113,30 @@ public partial class ModsPageViewModel : ObservableRecipient
         ModList = new(ModList.Where(x => x.Name.Contains(searchText)));
     }
 
-    protected override void OnActivated()
+    protected override async void OnActivated()
     {
         base.OnActivated();
 
-        ModList.Clear();
-        ModList.AddRange(_modService.GetInstalledMods(_configService.Config.SitEftInstallPath));
+        IsLoading = true;
 
-        IsModCompatibilityLayerInstalled = _modService.CheckModCompatibilityLayerInstalled(_configService.Config.SitEftInstallPath);
+        Task loadModsTask = Task.Run(async () =>
+        {
+            List<ModInfo> installedModsList = _modService.GetInstalledMods(_configService.Config.SitEftInstallPath);
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                ModList.Clear();
+                ModList.AddRange(installedModsList);
+            });
+        });
+        Task checkModCompatibilityLayerTask = Task.Run(async () =>
+        {
+            bool modCompatibilityLayerInstalled = _modService.CheckModCompatibilityLayerInstalled(_configService.Config.SitEftInstallPath);
+            await Dispatcher.UIThread.InvokeAsync(() => IsModCompatibilityLayerInstalled = modCompatibilityLayerInstalled);
+        });
+
+        await Task.WhenAll(loadModsTask, checkModCompatibilityLayerTask, Task.Delay(3000));
+
+        IsLoading = false;
     }
 
     partial void OnSearchTextChanged(string value)

@@ -206,14 +206,12 @@ public class ModService(ICachingService cachingService,
 
     public ModInfo DisableMod(ModInfo mod, string eftDir)
     {
-        mod.IsEnabled = false;
         mod.Path = MoveModFile(eftDir, Path.Combine(AppContext.BaseDirectory, IModService.DISABLED_MODS_DIR), mod.Path);
         return mod;
     }
 
     public ModInfo EnableMod(ModInfo mod, string eftDir)
     {
-        mod.IsEnabled = true;
         mod.Path = MoveModFile(Path.Combine(AppContext.BaseDirectory, IModService.DISABLED_MODS_DIR), eftDir, mod.Path);
         return mod;
     }
