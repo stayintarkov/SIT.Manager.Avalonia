@@ -145,8 +145,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             return sitVersions;
         }
 
-        string tarkovBuild = tarkovVersion;
-        tarkovBuild = tarkovBuild.Split(".").Last();
+        string tarkovBuild = tarkovVersion.Split(".").Last();
 
         for (int i = 0; i < sitVersions.Count; i++)
         {
@@ -532,7 +531,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             {
                 _availableSitUpdateVersions = _availableSitUpdateVersions
                     .Where(x => Version.TryParse(x.SitVersion.Replace("StayInTarkov.Client-", ""), out Version? sitVersion) &&
-                                sitVersion > Version.Parse(sitTarkovVersion) &&
+                                sitVersion > Version.Parse(_sitConfig.SitVersion) &&
                                 sitTarkovVersion == x.EftVersion)
                     .ToList();
             }

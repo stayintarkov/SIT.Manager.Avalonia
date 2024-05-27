@@ -101,7 +101,7 @@ public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterServi
         Version currentVersion = Assembly.GetEntryAssembly()?.GetName().Version ?? new Version("0");
         Version latestVersion = new();
 
-        TimeSpan timeSinceLastCheck = DateTime.Now - _sitConfig.LastSitUpdateCheckTime;
+        TimeSpan timeSinceLastCheck = DateTime.Now - _configService.Config.LauncherSettings.LastManagerUpdateCheckTime;
 
         if (_configService.Config.LauncherSettings.LookForUpdates && timeSinceLastCheck.TotalHours >= 1)
         {
