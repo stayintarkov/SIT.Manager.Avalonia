@@ -105,36 +105,20 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             return sitVersions;
         }
 
-        ContentDialog blockedByISPWarning = new()
-        {
-            Title = localizationService.TranslateSource("InstallServiceErrorTitle"),
-            Content = localizationService.TranslateSource("InstallServiceSSLError"),
-            PrimaryButtonText = localizationService.TranslateSource("PlayPageViewModelButtonOk")
-        };
-
         string releasesJsonString;
         try
         {
             releasesJsonString = await GetHttpStringWithRetryAsync(
                         () => httpClient.GetStringAsync(Encoding.UTF8.GetString(Convert.FromBase64String(PATCHER_URL))),
-                        TimeSpan.FromSeconds(3), 3);
+                        TimeSpan.FromSeconds(3));
         }
-        catch (AuthenticationException)
+        catch (Exception e)
         {
-            await blockedByISPWarning.ShowAsync();
+            logger.LogError(e, "Error while fetching mirrors");
             return [];
         }
 
-        List<GiteaRelease> giteaReleases;
-        try
-        {
-            giteaReleases = JsonSerializer.Deserialize<List<GiteaRelease>>(releasesJsonString) ?? [];
-        }
-        catch (JsonException)
-        {
-            await blockedByISPWarning.ShowAsync();
-            return [];
-        }
+        List<GiteaRelease> giteaReleases = JsonSerializer.Deserialize<List<GiteaRelease>>(releasesJsonString) ?? [];
 
         if (giteaReleases.Count == 0)
         {
@@ -142,15 +126,15 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             return sitVersions;
         }
 
-        string tarkovBuild = tarkovVersion ?? configService.Config.SitTarkovVersion;
+        string tarkovBuild = tarkovVersion;
         tarkovBuild = tarkovBuild.Split(".").Last();
 
-        for (int i = 0; i < sitVersions.Count; i++)
+        foreach (var installVersion in sitVersions)
         {
-            string sitVersionTargetBuild = sitVersions[i].Release.Body.Split(".").Last();
+            string sitVersionTargetBuild = installVersion.Release.Body.Split(".").Last();
             if (tarkovBuild == sitVersionTargetBuild)
             {
-                sitVersions[i].DownloadMirrors = [];
+                installVersion.DownloadMirrors = [];
                 continue;
             }
 
@@ -158,25 +142,21 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             foreach (GiteaRelease? release in giteaReleases)
             {
                 string[] splitRelease = release.Name.Split("to");
-                if (splitRelease.Length != 2)
-                {
-                    continue;
-                }
+                if (splitRelease.Length != 2) continue;   
 
                 string patcherFrom = splitRelease[0].Trim();
                 string patcherTo = splitRelease[1].Trim();
 
-                if (patcherFrom == tarkovBuild && patcherTo == sitVersionTargetBuild)
-                {
-                    compatibleDowngradePatcher = release;
-                    break;
-                }
+                if (patcherFrom != tarkovBuild || patcherTo != sitVersionTargetBuild) continue;
+
+                compatibleDowngradePatcher = release;
+                break;
             }
 
             if (compatibleDowngradePatcher != null)
             {
                 string mirrorsUrl = compatibleDowngradePatcher.Assets.Find(q => q.Name == "mirrors.json")?.BrowserDownloadUrl ?? string.Empty;
-                string mirrorsJsonString = await GetHttpStringWithRetryAsync(() => httpClient.GetStringAsync(mirrorsUrl), TimeSpan.FromSeconds(3), 3);
+                string mirrorsJsonString = await GetHttpStringWithRetryAsync(() => httpClient.GetStringAsync(mirrorsUrl), TimeSpan.FromSeconds(3));
                 List<Mirrors> mirrors = JsonSerializer.Deserialize<List<Mirrors>>(mirrorsJsonString) ?? [];
                 if (mirrors.Count == 0)
                 {
@@ -194,12 +174,12 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
 
                 if (providerLinks.Count > 0)
                 {
-                    sitVersions[i].DownloadMirrors = providerLinks;
+                    installVersion.DownloadMirrors = providerLinks;
                 }
             }
             else
             {
-                logger.LogWarning("No applicable patcher found for the specified SIT version ({sitVersion} and Tarkov version {tarkovVersion}.", sitVersions[i].SitVersion, tarkovVersion);
+                logger.LogWarning("No applicable patcher found for the specified SIT version ({sitVersion} and Tarkov version {tarkovVersion}.", installVersion.SitVersion, tarkovVersion);
             }
         }
 
@@ -288,13 +268,9 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
 
     private static async Task CloneFileAsync(string sourceFile, string destinationFile)
     {
-        using (var sourceStream = new FileStream(sourceFile, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan))
-        {
-            using (var destinationStream = new FileStream(destinationFile, FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan))
-            {
-                await sourceStream.CopyToAsync(destinationStream);
-            }
-        }
+        await using var sourceStream = new FileStream(sourceFile, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan);
+        await using var destinationStream = new FileStream(destinationFile, FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan);
+        await sourceStream.CopyToAsync(destinationStream);
     }
 
     /// <summary>
@@ -325,13 +301,14 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
 
         Process patcherProcess = new()
         {
-            StartInfo = new()
+            StartInfo = new ProcessStartInfo
             {
                 FileName = patcherPath,
                 Arguments = "autoclose"
             },
             EnableRaisingEvents = true
         };
+        
         if (OperatingSystem.IsLinux())
         {
             // TODO: actually improve this (will probably be done after fixing launching problems)
@@ -364,7 +341,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         {
             using Process process = new();
             process.StartInfo.FileName = "/bin/bash";
-            process.StartInfo.Arguments = "-c \"WINEPREFIX=" + configWinePrefix + " winetricks -q arial times dotnetdesktop6 dotnetdesktop8 win81\"";
+            process.StartInfo.Arguments = $"-c \"WINEPREFIX={configWinePrefix} winetricks -q arial times dotnetdesktop6 dotnetdesktop8 win81\"";
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.UseShellExecute = false;
             process.Start();
@@ -379,7 +356,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
 
     public async Task<List<GithubRelease>> GetServerReleases()
     {
-        List<GithubRelease> githubReleases;
+        List<GithubRelease> githubReleases = [];
         try
         {
             string releasesJsonString = await httpClient.GetStringAsync(@"https://api.github.com/repos/stayintarkov/SIT.Aki-Server-Mod/releases");
@@ -387,7 +364,6 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         }
         catch (Exception ex)
         {
-            githubReleases = [];
             logger.LogError(ex, "Failed to get server releases");
         }
 
@@ -397,35 +373,29 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             foreach (GithubRelease release in githubReleases)
             {
                 // Check there is an asset available for this OS
-                string fileExtention = ".zip";
-                if (OperatingSystem.IsLinux())
+                string fileExtension = OperatingSystem.IsLinux() ? ".tar.gz" : ".zip";
+
+                GithubAsset? releaseAsset = release.Assets.Find(asset => asset.Name.EndsWith(fileExtension));
+                if (releaseAsset == null) continue;
+
+                Match match = ServerReleaseVersionRegex().Match(release.Body);
+                if (match.Success)
                 {
-                    fileExtention = ".tar.gz";
+                    string releasePatch = match.Value.Replace("This server version works with version ", "");
+                    release.TagName = $"{release.Name} - Tarkov Version: {releasePatch}";
+                    release.Body = releasePatch;
+
+                    switch (release.Prerelease)
+                    {
+                        case true when configService.Config.EnableTestMode:
+                        case false when !configService.Config.EnableTestMode:
+                            result.Add(release);
+                            break;
+                    }
                 }
-
-                GithubAsset? releaseAsset = release.Assets.Find(asset => asset.Name.EndsWith(fileExtention));
-                if (releaseAsset != null)
+                else
                 {
-                    Match match = ServerReleaseVersionRegex().Match(release.Body);
-                    if (match.Success)
-                    {
-                        string releasePatch = match.Value.Replace("This server version works with version ", "");
-                        release.TagName = $"{release.Name} - Tarkov Version: {releasePatch}";
-                        release.Body = releasePatch;
-
-                        if (release.Prerelease && configService.Config.EnableTestMode)
-                        {
-                            result.Add(release);
-                        }
-                        else if (!release.Prerelease && !configService.Config.EnableTestMode)
-                        {
-                            result.Add(release);
-                        }
-                    }
-                    else
-                    {
-                        logger.LogWarning("FetchReleases: There was a server release without a version defined: {url}", release.HtmlUrl);
-                    }
+                    logger.LogWarning("FetchReleases: There was a server release without a version defined: {url}", release.HtmlUrl);
                 }
             }
         }
@@ -484,17 +454,17 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         availableVersions = await GetAvaiableMirrorsForVerison(availableVersions, tarkovVersion);
 
         // Evaluate the availability of the SIT versions based on the current tarkov version
-        for (int i = 0; i < availableVersions.Count; i++)
+        foreach (var availableVersion in availableVersions)
         {
-            if (availableVersions[i].EftVersion == tarkovVersion)
+            if (availableVersion.EftVersion == tarkovVersion)
             {
-                availableVersions[i].DowngradeRequired = false;
-                availableVersions[i].IsAvailable = true;
+                availableVersion.DowngradeRequired = false;
+                availableVersion.IsAvailable = true;
             }
-            else if (availableVersions[i].DownloadMirrors.Count != 0)
+            else if (availableVersion.DownloadMirrors.Count != 0)
             {
-                availableVersions[i].DowngradeRequired = true;
-                availableVersions[i].IsAvailable = true;
+                availableVersion.DowngradeRequired = true;
+                availableVersion.IsAvailable = true;
             }
         }
         return availableVersions;
@@ -502,11 +472,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
 
     public string GetEFTInstallPath()
     {
-        if (!OperatingSystem.IsWindows())
-        {
-            return string.Empty;
-        }
-        return EFTGameFinder.FindOfficialGamePath();
+        return !OperatingSystem.IsWindows() ? string.Empty : EFTGameFinder.FindOfficialGamePath();
     }
 
     public SitInstallVersion? GetLatestAvailableSitRelease()
@@ -520,22 +486,20 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
 
         TimeSpan timeSinceLastCheck = DateTime.Now - configService.Config.LastSitUpdateCheckTime;
 
-        if (timeSinceLastCheck.TotalHours >= 1)
+        if (timeSinceLastCheck.TotalHours < 1)
         {
-            _availableSitUpdateVersions = await GetAvailableSitReleases(configService.Config.SitTarkovVersion);
-
-            if (_availableSitUpdateVersions != null)
-            {
-                _availableSitUpdateVersions = _availableSitUpdateVersions
-                    .Where(x => Version.TryParse(x.SitVersion.Replace("StayInTarkov.Client-", ""), out Version? sitVersion) &&
-                                sitVersion > Version.Parse(configService.Config.SitVersion) &&
-                                configService.Config.SitTarkovVersion == x.EftVersion)
-                    .ToList();
-            }
-
-            configService.Config.LastSitUpdateCheckTime = DateTime.Now;
-            configService.UpdateConfig(configService.Config);
+            return _availableSitUpdateVersions != null && _availableSitUpdateVersions.Count != 0;
         }
+
+        _availableSitUpdateVersions = await GetAvailableSitReleases(configService.Config.SitTarkovVersion);
+
+        _availableSitUpdateVersions = _availableSitUpdateVersions?.Where(x => Version.TryParse(x.SitVersion.Replace("StayInTarkov.Client-", ""), out Version? sitVersion) &&
+                                                                              sitVersion > Version.Parse(configService.Config.SitVersion) &&
+                                                                              configService.Config.SitTarkovVersion == x.EftVersion)
+            .ToList();
+
+        configService.Config.LastSitUpdateCheckTime = DateTime.Now;
+        configService.UpdateConfig(configService.Config);
 
         return _availableSitUpdateVersions != null && _availableSitUpdateVersions.Count != 0;
     }
@@ -543,20 +507,8 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
 
     public async Task InstallServer(GithubRelease selectedVersion, string targetInstallDir, IProgress<double> downloadProgress, IProgress<double> extractionProgress)
     {
-        if (selectedVersion == null)
-        {
-            // TODO maybe transfer these _barNotificationErrors to only display in the install ui rather than as a disappearing bar notification?
-            barNotificationService.ShowError("Error", "No server version selected to install");
-            logger.LogWarning("Install Server: selectVersion is 'null'");
-            return;
-        }
-
         // Dynamically find the asset that starts with "SITCoop" and ends with ".zip"
-        string fileExtention = ".zip";
-        if (OperatingSystem.IsLinux())
-        {
-            fileExtention = ".tar.gz";
-        }
+        string fileExtention = OperatingSystem.IsLinux() ? ".tar.gz" : ".zip";
 
         GithubAsset? releaseAsset = selectedVersion.Assets.FirstOrDefault(a => a.Name.StartsWith("SITCoop") && a.Name.EndsWith(fileExtention));
         if (releaseAsset == null)
@@ -575,10 +527,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         }
 
         // Create SPT-AKI directory (default: Server)
-        if (!Directory.Exists(targetInstallDir))
-        {
-            Directory.CreateDirectory(targetInstallDir);
-        }
+        Directory.CreateDirectory(targetInstallDir);
 
         // Define the paths for download target directory
         string downloadLocation = Path.Combine(targetInstallDir, releaseAsset.Name);
@@ -638,12 +587,6 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             return;
         }
 
-        if (selectedVersion == null)
-        {
-            logger.LogWarning("InstallSIT: selectVersion is 'null'");
-            return;
-        }
-
         try
         {
             if (File.Exists(Path.Combine(targetInstallDir, "EscapeFromTarkov_BE.exe")))
@@ -679,12 +622,12 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             string? releaseZipUrl = selectedVersion.Assets.Find(q => q.Name == "StayInTarkov-Release.zip")?.BrowserDownloadUrl;
             if (!string.IsNullOrEmpty(releaseZipUrl))
             {
-                internalDownloadProgress = new(progress =>
+                internalDownloadProgress = new Progress<double>(progress =>
                 {
                     internalDownloadProgressPercentage = 50 + (progress / downloadAndExtractionSteps);
                     downloadProgress.Report(internalDownloadProgressPercentage);
                 });
-                internalExtractionProgress = new(progress =>
+                internalExtractionProgress = new Progress<double>(progress =>
                 {
                     internalExtractionProgressPercentage = 50 + (progress / downloadAndExtractionSteps);
                     extractionProgress.Report(internalExtractionProgressPercentage);
@@ -702,17 +645,23 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
 
             // Find Assembly-CSharp file
             var assemblyCSharpFiles = Directory.GetFiles(coreFilesPath, "*Assembly-CSharp.dll", enumerationOptions);
-            if (assemblyCSharpFiles.Length == 0)
-                throw new IndexOutOfRangeException("No Assembly-CSharp found in download!");
-            if (assemblyCSharpFiles.Length > 1)
-                throw new IndexOutOfRangeException("There are more than one Assembly-CSharp files found!");
+            switch (assemblyCSharpFiles.Length)
+            {
+                case 0:
+                    throw new IndexOutOfRangeException("No Assembly-CSharp found in download!");
+                case > 1:
+                    throw new IndexOutOfRangeException("There are more than one Assembly-CSharp files found!");
+            }
 
             // Find StayInTarkov.dll
             var sitFiles = Directory.GetFiles(coreFilesPath, "*StayInTarkov.dll", enumerationOptions);
-            if (sitFiles.Length == 0)
-                throw new IndexOutOfRangeException("No StayInTarkov.dll found in download!");
-            if (sitFiles.Length > 1)
-                throw new IndexOutOfRangeException("There are more than one StayInTarkov.dll files found!");
+            switch (sitFiles.Length)
+            {
+                case 0:
+                    throw new IndexOutOfRangeException("No StayInTarkov.dll found in download!");
+                case > 1:
+                    throw new IndexOutOfRangeException("There are more than one StayInTarkov.dll files found!");
+            }
 
             // Find SIT.WildSpawnType.PrePatcher.dll
             var prePatcherFiles = Directory.GetFiles(coreFilesPath, "*PrePatch*", enumerationOptions);
@@ -735,9 +684,9 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                 File.Copy(ppFI.FullName, Path.Combine(patchersPath, ppFilePath), true);
             }
 
-            using (Stream? resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("SIT.Manager.Resources.Aki.Common.dll"))
+            await using (Stream? resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("SIT.Manager.Resources.Aki.Common.dll"))
             {
-                using (FileStream file = new(Path.Combine(eftDataManagedPath, "Aki.Common.dll"), FileMode.Create, FileAccess.Write))
+                await using (FileStream file = new(Path.Combine(eftDataManagedPath, "Aki.Common.dll"), FileMode.Create, FileAccess.Write))
                 {
                     if (resource != null)
                     {
@@ -746,9 +695,9 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                 }
             }
 
-            using (Stream? resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("SIT.Manager.Resources.Aki.Reflection.dll"))
+            await using (Stream? resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("SIT.Manager.Resources.Aki.Reflection.dll"))
             {
-                using (FileStream file = new(Path.Combine(eftDataManagedPath, "Aki.Reflection.dll"), FileMode.Create, FileAccess.Write))
+                await using (FileStream file = new(Path.Combine(eftDataManagedPath, "Aki.Reflection.dll"), FileMode.Create, FileAccess.Write))
                 {
                     if (resource != null)
                     {
@@ -789,11 +738,10 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             foreach (var fileName in filesToCopy)
             {
                 var sourceFile = Path.Combine(sourcePath, fileName);
-                if (File.Exists(sourceFile))
-                {
-                    var destFile = Path.Combine(destinationPath, fileName);
-                    File.Copy(sourceFile, destFile, overwrite: true);
-                }
+                if (!File.Exists(sourceFile)) continue;
+
+                var destFile = Path.Combine(destinationPath, fileName);
+                File.Copy(sourceFile, destFile, overwrite: true);
             }
 
             logger.LogInformation("Successfully copied EFT settings to '{destinationPath}'.", destinationPath);

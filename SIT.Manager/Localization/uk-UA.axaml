@@ -323,7 +323,6 @@
 	<system:String x:Key="InstallServiceInstallSuccessfulDescription">Установка сервера пройшла успішно.</system:String>
 	<system:String x:Key="InstallServiceInstallSITSuccessfulDescription">Установка SIT пройшла успішно.</system:String>
 	<system:String x:Key="InstallerServiceNoDowngradePatcher">Для цієї версії EFT нема доступних програм для відкату версії.</system:String>
-	<system:String x:Key="InstallServiceSSLError">Ваш провайдер, ймовірно, блокує наше з'єднання. Будь ласка, скористайтеся VPN і спробуйте ще раз.</system:String>
 
 	<!-- File Service -->
 	<system:String x:Key="FileServiceProgressDownloading">Завантаження файлу '%1'</system:String>
