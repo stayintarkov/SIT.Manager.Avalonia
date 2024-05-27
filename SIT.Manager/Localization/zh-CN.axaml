@@ -323,7 +323,6 @@
 	<system:String x:Key="InstallServiceInstallSuccessfulDescription">服务器端安装成功</system:String>
 	<system:String x:Key="InstallServiceInstallSITSuccessfulDescription">SIT 安装成功</system:String>
 	<system:String x:Key="InstallerServiceNoDowngradePatcher">这些版本的《逃离塔科夫》没有可用的降级补丁程序。</system:String>
-	<system:String x:Key="InstallServiceSSLError">您的 ISP 可能阻止了我们的连接。请使用 VPN 再次尝试。</system:String>
 
 	<!-- File Service -->
 	<system:String x:Key="FileServiceProgressDownloading">下载文件 '%1'</system:String>
