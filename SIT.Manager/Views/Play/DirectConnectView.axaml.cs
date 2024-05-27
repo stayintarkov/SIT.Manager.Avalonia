@@ -12,7 +12,7 @@ public partial class DirectConnectView : ActivatableUserControl
         DataContext = App.Current.Services.GetService<DirectConnectViewModel>();
         if (DataContext is DirectConnectViewModel dataContext)
         {
-            AddressBox.LostFocus += (o, e) => { if (!dataContext.ManagerConfig.HideIpAddress) AddressBox.RevealPassword = true; };
+            AddressBox.LostFocus += (o, e) => { if (!dataContext.ManagerConfig.LauncherSettings.HideIpAddress) AddressBox.RevealPassword = true; };
         }
     }
 }

@@ -29,11 +29,13 @@ public class TarkovClientService(
     IManagerConfigService configService) : ManagedProcess(barNotificationService, configService), ITarkovClientService
 {
     private const string TARKOV_EXE = "EscapeFromTarkov.exe";
+    private SITConfig _sitConfig => configService.Config.SITSettings;
+    private LauncherConfig _launcherConfig => configService.Config.LauncherSettings;
 
     protected override string EXECUTABLE_NAME => TARKOV_EXE;
 
-    public override string ExecutableDirectory => !string.IsNullOrEmpty(ConfigService.Config.SitEftInstallPath)
-        ? ConfigService.Config.SitEftInstallPath
+    public override string ExecutableDirectory => !string.IsNullOrEmpty(_sitConfig.SitEFTInstallPath)
+        ? _sitConfig.SitEFTInstallPath
         : string.Empty;
 
     public override void ClearCache()
@@ -127,7 +129,7 @@ public class TarkovClientService(
             return false;
         }
 
-        if (ConfigService.Config.CloseAfterLaunch)
+        if (_launcherConfig.CloseAfterLaunch)
         {
             CloseManager();
         }
@@ -146,7 +148,7 @@ public class TarkovClientService(
         };
         if (OperatingSystem.IsLinux())
         {
-            LinuxConfig linuxConfig = ConfigService.Config.LinuxConfig;
+            LinuxConfig linuxConfig = configService.Config.LinuxSettings;
 
             // Check if either mangohud or gamemode is enabled.
             StringBuilder argumentsBuilder = new();
@@ -205,7 +207,7 @@ public class TarkovClientService(
         ProcessToManage.Exited += ExitedEvent;
         ProcessToManage.Start();
 
-        if (ConfigService.Config.CloseAfterLaunch)
+        if (_launcherConfig.CloseAfterLaunch)
         {
             IApplicationLifetime? lifetime = App.Current.ApplicationLifetime;
             if (lifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
@@ -260,14 +262,12 @@ public class TarkovClientService(
         if (result.SaveLogin)
         {
             server.Characters.Add(character);
-            int index = ConfigService.Config.BookmarkedServers.FindIndex(x => x.Address == server.Address);
-            if (index != -1 && !ConfigService.Config.BookmarkedServers[index].Characters
+            int index = _sitConfig.BookmarkedServers.FindIndex(x => x.Address == server.Address);
+            if (index != -1 && !_sitConfig.BookmarkedServers[index].Characters
                     .Any(x => x.Username == character.Username))
             {
-                ConfigService.Config.BookmarkedServers[index].Characters.Add(character);
+                _sitConfig.BookmarkedServers[index].Characters.Add(character);
             }
-
-            ConfigService.UpdateConfig(ConfigService.Config);
         }
 
         return character;
@@ -280,7 +280,7 @@ public class TarkovClientService(
 
     private void ClearModCache()
     {
-        string cachePath = ConfigService.Config.SitEftInstallPath;
+        string cachePath = _sitConfig.SitEFTInstallPath;
         if (!string.IsNullOrEmpty(cachePath) && Directory.Exists(cachePath))
         {
             // Combine the installPath with the additional subpath.

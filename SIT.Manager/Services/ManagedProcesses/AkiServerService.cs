@@ -27,13 +27,13 @@ public class AkiServerService(
     private const int SERVER_LINE_LIMIT = 10_000;
 
     private readonly List<string> _cachedServerOutput = [];
-    private AkiConfig _akiConfig => _configService.Config.AkiSettings;
+    private AkiConfig _akiConfig => configService.Config.AkiSettings;
     
     private AkiServer? _selfServer;
 
     protected override string EXECUTABLE_NAME => SERVER_EXE;
 
-    public override string ExecutableDirectory => !string.IsNullOrEmpty(ConfigService.Config.AkiServerPath)
+    public override string ExecutableDirectory => !string.IsNullOrEmpty(_akiConfig.AkiServerPath)
         ? _akiConfig.AkiServerPath
         : string.Empty;
 
@@ -112,7 +112,7 @@ public class AkiServerService(
 
         Uri serverUri = new("http://127.0.0.1:6969");
 
-        string httpConfigPath = Path.Combine(ConfigService.Config.AkiServerPath, "Aki_Data", "Server", "configs",
+        string httpConfigPath = Path.Combine(_akiConfig.AkiServerPath, "Aki_Data", "Server", "configs",
             "http.json");
         //TODO: Refactor this
         if (File.Exists(httpConfigPath))

@@ -21,7 +21,7 @@
 						<TextBox.RevealPassword>
 							<MultiBinding Converter="{x:Static BoolConverters.Or}">
 								<Binding Path="#AddressBox.IsFocused"/>
-								<Binding Path="!ManagerConfig.HideIpAddress"/>
+								<Binding Path="!ManagerConfig.LauncherSettings.HideIpAddress"/>
 							</MultiBinding>
 						</TextBox.RevealPassword>
 					</TextBox>
@@ -48,7 +48,7 @@
 								Margin="4,0,0,0">
 							<Button.IsVisible>
 								<MultiBinding Converter="{x:Static BoolConverters.And}">
-									<Binding Path="ManagerConfig.AkiServerPath" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
+									<Binding Path="ManagerConfig.AkiSettings.AkiServerPath" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
 									<Binding Path="!IsLocalServerRunning"/>
 								</MultiBinding>
 							</Button.IsVisible>
