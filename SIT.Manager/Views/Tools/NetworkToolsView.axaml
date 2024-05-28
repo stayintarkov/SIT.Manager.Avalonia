@@ -12,11 +12,22 @@
 	<controls:Card Margin="8,8,8,8"
 				   VerticalAlignment="Top">
 		<StackPanel>
-			<StackPanel>
-				<TextBlock Text="{DynamicResource NetworkToolsViewDescriptionText}"/>
-
-				<TextBlock FontSize="16"
-						   Margin="0,8,0,0">
+			<TextBlock Text="{DynamicResource NetworkToolsViewDescriptionText}"/>
+			
+			<StackPanel Margin="0,8">
+				<TextBlock Margin="0 10 0 5"
+						   Text="{DynamicResource NetworkToolsViewServerLocationRadioGroupHeader}"/>
+				<RadioButton GroupName="ServerLocationRadioGroup"
+							 IsChecked="{Binding CheckLocalServer}"
+							 Content="{DynamicResource NetworkToolsViewServerLocationLocalServerOption}"/>
+				<RadioButton GroupName="ServerLocationRadioGroup"
+							 IsChecked="{Binding !CheckLocalServer}"
+							 Content="{DynamicResource NetworkToolsViewServerLocationExternalServerOption}"/>
+			</StackPanel>	
+			
+			<StackPanel Margin="0,8"
+						IsVisible="{Binding CheckLocalServer}">
+				<TextBlock FontSize="16">
 					<Run Text="{DynamicResource NetworkToolsViewIPAddressLabelText}"
 						 FontWeight="DemiBold"/>
 					<SelectableTextBlock Text="{Binding PortResponse.IpAddress}"
@@ -25,13 +36,25 @@
 					<TextBlock Text="{DynamicResource NetworkToolsViewUnknownIpAddressText}"
 							   IsVisible="{Binding PortResponse.IpAddress, Converter={x:Static StringConverters.IsNullOrEmpty}}"
 							   VerticalAlignment="Center"/>
-				</TextBlock>
+				</TextBlock>	
+			</StackPanel>	
+			
+			<StackPanel Margin="0,8"
+						IsVisible="{Binding !CheckLocalServer}"
+						Orientation="Horizontal">
+				<TextBlock FontSize="16"
+						   Text="{DynamicResource NetworkToolsViewExternalIPAddressSelectionText}"
+						   FontWeight="DemiBold"
+						   Margin="0,0,8,0" 
+						   VerticalAlignment="Center"/>	
+				<TextBox Watermark="{DynamicResource NetworkToolsViewExternalIPAddressSelectionWatermark}" 
+						 Text="{Binding ExternalServerIP}" 
+						 VerticalAlignment="Center"/>
 			</StackPanel>
 
 			<Grid ColumnDefinitions="auto, auto, auto"
 				  RowDefinitions="*, *, *"
-				  Margin="0 16 0 0">
-
+				  Margin="0,8">
 				<Label Content="{DynamicResource NetworkToolsViewAkiPortLabelText}"
 					   FontSize="16"
 					   FontWeight="DemiBold"

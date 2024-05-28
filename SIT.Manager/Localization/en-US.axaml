@@ -554,5 +554,10 @@
 	<system:String x:Key="NetworkToolsViewNatPortLabelText">Nat Port: </system:String>
 	<system:String x:Key="NetworkToolsViewPortTestSuccessText">Port open!</system:String>
 	<system:String x:Key="NetworkToolsViewPortTestFailText">Port closed!</system:String>
-	<system:String x:Key="NetworkToolsViewUnknownIpAddressText">Unknown</system:String>	
+	<system:String x:Key="NetworkToolsViewUnknownIpAddressText">Unknown</system:String>
+	<system:String x:Key="NetworkToolsViewServerLocationRadioGroupHeader">Where is the server you wish to check?</system:String>
+	<system:String x:Key="NetworkToolsViewServerLocationLocalServerOption">Local</system:String>
+	<system:String x:Key="NetworkToolsViewServerLocationExternalServerOption">External</system:String>
+	<system:String x:Key="NetworkToolsViewExternalIPAddressSelectionText">External IP to test:</system:String>
+	<system:String x:Key="NetworkToolsViewExternalIPAddressSelectionWatermark">External Server Address</system:String>
 </ResourceDictionary>
