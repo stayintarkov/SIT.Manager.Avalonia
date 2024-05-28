@@ -441,6 +441,8 @@
 	<system:String x:Key="CreateServerDialogViewCloseButtonText">关闭</system:String>
 	<system:String x:Key="CreateServerDialogViewAddressLabel">地址</system:String>
 	<system:String x:Key="CreateServerDialogViewAddressTextBoxWatermark">输入服务器地址...</system:String>
+	<system:String x:Key="CreateServerDialogViewNicknameLabel">Nickname</system:String>
+	<system:String x:Key="CreateServerDialogViewNicknameTextBoxWatermark">Optional nickname for server...</system:String>
 
 	<!-- DirectConnectView -->
 	<system:String x:Key="DirectConnectViewAddressBoxTitle">地址</system:String>
@@ -469,6 +471,7 @@
 	<!-- ServerSummaryView -->
 	<system:String x:Key="ServerSummaryViewModelConnectButtonText">连接</system:String>
 	<system:String x:Key="ServerSummaryViewModelPingUnitsText">毫秒</system:String>
+	<system:String x:Key="ServerSummaryViewServerConnectingText">Connecting...</system:String>
 
 	<!-- PlayPage -->
 	<system:String x:Key="PlayPageBookmarksTabHeader">书签</system:String>

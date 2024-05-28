@@ -1,5 +1,6 @@
 using FluentAvalonia.UI.Controls;
 using SIT.Manager.Interfaces;
+using SIT.Manager.Models.Play;
 using SIT.Manager.ViewModels.Play;
 using System;
 using System.Threading.Tasks;
@@ -14,15 +15,15 @@ public partial class CreateServerDialogView : ContentDialog
 
     protected override Type StyleKeyOverride => typeof(ContentDialog);
 
-    public CreateServerDialogView(ILocalizationService localizationService, bool isEdit, string currentServerAddress = DEFAULT_SERVER_ADDRESS)
+    public CreateServerDialogView(ILocalizationService localizationService, bool isEdit, string serverNickname, string currentServerAddress = DEFAULT_SERVER_ADDRESS)
     {
-        dc = new CreateServerDialogViewModel(currentServerAddress, isEdit, localizationService);
+        dc = new CreateServerDialogViewModel(currentServerAddress, serverNickname, isEdit, localizationService);
         DataContext = dc;
         InitializeComponent();
     }
 
-    public new Task<(ContentDialogResult, Uri)> ShowAsync()
+    public new Task<CreateServerDialogResult> ShowAsync()
     {
-        return ShowAsync(null).ContinueWith(t => (t.Result, dc.ServerUri));
+        return ShowAsync(null).ContinueWith(t => new CreateServerDialogResult(t.Result, dc.ServerUri, dc.ServerNickname));
     }
 }

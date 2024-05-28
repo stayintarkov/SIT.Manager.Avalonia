@@ -62,10 +62,27 @@ public partial class ServerSummaryViewModel : ObservableRecipient
         }
     }
 
+    public string ServerDisplayName
+    {
+        get
+        {
+            AkiServer? bookmarkedServer = _configService.Config.BookmarkedServers.FirstOrDefault(x => x.Address == _server.Address);
+            if (bookmarkedServer != null)
+            {
+                return !string.IsNullOrEmpty(bookmarkedServer.Nickname) ? bookmarkedServer.Nickname : Name;
+            }
+            return Name;
+        }
+    }
+
     public string Name
     {
         get => _server.Name;
-        set => SetProperty(_server.Name, value, _server, (u, n) => u.Name = n);
+        set
+        {
+            SetProperty(_server.Name, value, _server, (u, n) => u.Name = n);
+            OnPropertyChanged(nameof(ServerDisplayName));
+        }
     }
 
     public int Ping
@@ -116,20 +133,22 @@ public partial class ServerSummaryViewModel : ObservableRecipient
 
     private async Task Edit()
     {
-        CreateServerDialogView dialog = new(_localizationService, true, Address.AbsoluteUri);
-        (ContentDialogResult result, Uri serverUri) = await dialog.ShowAsync();
-        if (result == ContentDialogResult.Primary)
-        {
-            AkiServer? server = _configService.Config.BookmarkedServers.FirstOrDefault(x => x.Address == _server.Address);
-            if (server != null)
-            {
-                _configService.Config.BookmarkedServers.Remove(server);
+        AkiServer? currentServer = _configService.Config.BookmarkedServers.FirstOrDefault(x => x.Address == _server.Address);
 
-                AkiServer updatedServer = new(serverUri)
+        CreateServerDialogView dialog = new(_localizationService, true, currentServer?.Nickname ?? string.Empty, Address.AbsoluteUri);
+        CreateServerDialogResult result = await dialog.ShowAsync();
+        if (result.DialogResult == ContentDialogResult.Primary)
+        {
+            if (currentServer != null)
+            {
+                _configService.Config.BookmarkedServers.Remove(currentServer);
+
+                AkiServer updatedServer = new(result.ServerUri)
                 {
-                    Characters = server.Characters,
-                    Name = server.Name,
-                    Ping = server.Ping
+                    Characters = currentServer.Characters,
+                    Name = currentServer.Name,
+                    Nickname = result.ServerNickname,
+                    Ping = currentServer.Ping
                 };
                 _configService.Config.BookmarkedServers.Add(updatedServer);
 
@@ -223,6 +242,7 @@ public partial class ServerSummaryViewModel : ObservableRecipient
             OnPropertyChanged(nameof(Name));
             OnPropertyChanged(nameof(Address));
             OnPropertyChanged(nameof(ShownAddress));
+            OnPropertyChanged(nameof(ServerDisplayName));
 
             string serverImageCacheKey = $"{_server.Address.Host}:{_server.Address.Port} serverimg";
             CacheValue<Bitmap> cachedImage = await _cachingService.InMemory.GetOrComputeAsync(serverImageCacheKey, async (key) =>
