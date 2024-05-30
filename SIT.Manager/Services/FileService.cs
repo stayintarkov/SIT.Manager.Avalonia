@@ -3,8 +3,6 @@ using Microsoft.Extensions.Logging;
 using SharpCompress.Common;
 using SharpCompress.Readers;
 using SIT.Manager.Extentions;
-using SIT.Manager.Interfaces;
-using SIT.Manager.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,17 +15,11 @@ using System.Threading.Tasks;
 
 namespace SIT.Manager.Services;
 
-public class FileService(IActionNotificationService actionNotificationService,
-                         IManagerConfigService configService,
-                         ILocalizationService localizationService,
-                         HttpClient httpClient,
+public class FileService(HttpClient httpClient,
                          ILogger<FileService> logger) : IFileService
 {
-    private readonly IActionNotificationService _actionNotificationService = actionNotificationService;
-    private readonly IManagerConfigService _configService = configService;
     private readonly HttpClient _httpClient = httpClient;
     private readonly ILogger<FileService> _logger = logger;
-    private readonly ILocalizationService _localizationService = localizationService;
 
     private static async Task<long> CalculateDirectorySize(DirectoryInfo d)
     {
@@ -131,42 +123,6 @@ public class FileService(IActionNotificationService actionNotificationService,
         return true;
     }
 
-    // TODO unify this and the other DownloadMegaFile function nicely - will have to do some things on the mods page for this I think.
-    private async Task<bool> DownloadMegaFile(string fileName, string fileUrl, bool showProgress)
-    {
-        _logger.LogInformation("Attempting to use Mega API.");
-        try
-        {
-            MegaApiClient megaApiClient = new();
-            await megaApiClient.LoginAnonymousAsync();
-
-            // TODO: Add proper error handling below
-            if (!megaApiClient.IsLoggedIn)
-            {
-                return false;
-            }
-
-            _logger.LogInformation($"Starting download of '{fileName}' from '{fileUrl}'");
-
-            Progress<double> progress = new((prog) =>
-            {
-                _actionNotificationService.UpdateActionNotification(new ActionNotification(_localizationService.TranslateSource("FileServiceProgressDownloading", fileName), prog, showProgress));
-            });
-
-            Uri fileLink = new(fileUrl);
-            INode fileNode = await megaApiClient.GetNodeFromLinkAsync(fileLink);
-
-            string targetPath = Path.Combine(_configService.Config.SitEftInstallPath, fileName);
-            await megaApiClient.DownloadFileAsync(fileNode, targetPath, progress);
-
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
-    }
-
     public async Task CopyDirectory(string source, string destination, IProgress<double>? progress = null)
     {
         DirectoryInfo sourceDir = new(source);
@@ -192,7 +148,6 @@ public class FileService(IActionNotificationService actionNotificationService,
         }
     }
 
-    // TODO unify this and the other DownloadFile function nicely - will have to do some things on the mods page for this I think.
     public async Task<bool> DownloadFile(string fileName, string filePath, string fileUrl, IProgress<double> progress)
     {
         bool result = false;
@@ -223,47 +178,6 @@ public class FileService(IActionNotificationService actionNotificationService,
                 _logger.LogError(ex, "DownloadFile");
             }
         }
-        return result;
-    }
-
-    public async Task<bool> DownloadFile(string fileName, string filePath, string fileUrl, bool showProgress = false)
-    {
-        _actionNotificationService.StartActionNotification();
-
-        bool result = false;
-        if (fileUrl.Contains("mega.nz"))
-        {
-            result = await DownloadMegaFile(fileName, fileUrl, showProgress);
-        }
-        else
-        {
-            _logger.LogInformation($"Starting download of '{fileName}' from '{fileUrl}'");
-            filePath = Path.Combine(filePath, fileName);
-            if (File.Exists(filePath))
-            {
-                File.Delete(filePath);
-            }
-
-            Progress<double> progress = new((prog) =>
-            {
-                _actionNotificationService.UpdateActionNotification(new ActionNotification(_localizationService.TranslateSource("FileServiceProgressDownloading", fileName), Math.Floor(prog), showProgress));
-            });
-
-            try
-            {
-                using (FileStream file = new(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
-                {
-                    await _httpClient.DownloadAsync(file, fileUrl, progress);
-                }
-                result = true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "DownloadFile");
-            }
-        }
-
-        _actionNotificationService.StopActionNotification();
         return result;
     }
 

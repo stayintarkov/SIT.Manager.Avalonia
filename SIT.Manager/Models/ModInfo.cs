@@ -1,18 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace SIT.Manager.Models;
 
-public class ModInfo
+public partial class ModInfo : ObservableObject
 {
-    public string Name { get; set; } = string.Empty;
-    public string Author { get; set; } = string.Empty;
-    public string SupportedVersion { get; set; } = string.Empty;
-    public string ModVersion { get; set; } = string.Empty;
-    public string PortVersion { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
-    public string ModUrl { get; set; } = string.Empty;
-    public bool RequiresFiles { get; set; }
-    public List<string> PluginFiles { get; set; } = [];
-    public List<string> ConfigFiles { get; set; } = [];
-    public List<string> PatcherFiles { get; set; } = [];
+    [ObservableProperty]
+    public string _name = string.Empty;
+    [ObservableProperty]
+    public string _modVersion = string.Empty;
+    [ObservableProperty]
+    public string _path = string.Empty;
+    [ObservableProperty]
+    public bool _isEnabled = true;
+    [ObservableProperty]
+    public bool _isRequired = false;
 }

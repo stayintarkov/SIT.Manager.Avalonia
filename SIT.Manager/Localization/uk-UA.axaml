@@ -19,32 +19,6 @@
 	<system:String x:Key="ServerTitleToolTip">Управління сервером.</system:String>
 	<system:String x:Key="ModsTitleToolTip">Управління модами.</system:String>
 
-	<!-- Mods Page -->
-	<system:String x:Key="ModsWarningTitle">УВАГА</system:String>
-	<system:String x:Key="ModsWarningDescription">Використання модифікацій може вплинути на стабільність вашої гри і може спричинити її збій або неправильну роботу. Хоча модифікації можуть покращити ваш ігровий досвід та додати нові функції, вони можуть не бути офіційно підтримані SIT або протестовані на сумісність. Встановлюйте модифікації на свій ризик і завжди робіть резервні копії файлів вашої гри перед внесенням будь-яких змін. Ми не несемо відповідальності за будь-які збитки або втрати прогресу, спричинені встановленням модифікацій. Дійте обережно.</system:String>
-	<system:String x:Key="ModsWarningButtonTitle">Зрозуміло</system:String>
-	<system:String x:Key="ModsPageTitle">Модифікації</system:String>
-	<system:String x:Key="ModsDownloadCollectionButtonTitle">Завантажити колекцію модифікацій</system:String>
-	<system:String x:Key="ModsDownloadCollectionButtonToolTip">Завантажити останню збірку перенесених модифікацій.</system:String>
-	<system:String x:Key="ModInfoTitle">Інформація про Мод</system:String>
-	<system:String x:Key="ModInfoNameTitle">Назва:</system:String>
-	<system:String x:Key="ModInfoAuthorTitle">Автор:</system:String>
-	<system:String x:Key="ModInfoSupportedVersionTitle">Підтримувана версія SIT:</system:String>
-	<system:String x:Key="ModInfoModVersionTitle">Версія Моду:</system:String>
-	<system:String x:Key="ModInfoModPageTitle">Сторінка Моду:</system:String>
-	<system:String x:Key="ModInfoExtraFilesToolTip">Якщо перенесений мод вимагає додаткові файли. Натисніть посилання, щоб їх завантажити.</system:String>
-	<system:String x:Key="ModInfoRequiresExtraFilesTitle">Потребує Додаткові Файли</system:String>
-	<system:String x:Key="ModInfoDescription">Опис:</system:String>
-	<system:String x:Key="ModInfoInstallToolTip">Встановити мод.</system:String>
-	<system:String x:Key="ModInfoInstallTitle">Встановити</system:String>
-	<system:String x:Key="ModInfoUninstallToolTip">Видалити мод.</system:String>
-	<system:String x:Key="ModInfoUninstallTitle">Видалити</system:String>
-
-	<!-- Mods Page ViewModel -->
-	<system:String x:Key="ModsPageViewModelErrorTitle">Помилка</system:String>
-	<system:String x:Key="ModsPageViewModelErrorInstallPathDescription">Шлях встановлення не встановлено. Вкажіть його в налаштуваннях.</system:String>
-	<system:String x:Key="ModsPageViewModelErrorNoModsFound">Моди не знайдено</system:String>
-
 	<!-- Tools Page -->
 	<system:String x:Key="ToolsOpenEFTFolderButtonToolTip">Відкрити теку встановлення EFT.</system:String>
 	<system:String x:Key="ToolsOpenEFTFolderButtonTitle">Відкрити теку EFT</system:String>
@@ -270,9 +244,6 @@
 	<system:String x:Key="SettingsPageViewModelConfigInformationEFTDescription">Шлях встановлення EFT встановлено на '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">Шлях встановлення SPT-AKI встановлено на '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigErrorSPTAKI">Вибрана тека є недійсною. Переконайтеся, що це вірна тека сервера SPT-AKI.</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">Enable Test Mode Failure</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">Can't enable test mode as you have %1 incompatible mods still enabled</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorButtonOk">Ок</system:String>
 
 	<!-- Server Page ViewModel -->
 	<system:String x:Key="ServerPageViewModelStartingServer">Запуск сервера!</system:String>
@@ -294,27 +265,6 @@
 	<system:String x:Key="TarkovClientServiceCacheClearedErrorEFTDescription">Локальний каталог кешу EFT не знайдено за адресою: %1</system:String>
 	<system:String x:Key="TarkovClientServiceCacheClearedEFTDescription">Локальний кеш EFT успішно очищений!</system:String>
 
-	<!-- Mod Service -->
-	<system:String x:Key="ModServiceOutdatedDescription">У вас %1 застарілих модів. Бажаєте автоматично оновити їх? Застарілі моди: %2</system:String>
-	<system:String x:Key="ModServiceOutdatedModsFoundTitle">Знайдено застарілі моди</system:String>
-	<system:String x:Key="ModServiceButtonNo">Ні</system:String>
-	<system:String x:Key="ModServiceButtonYes">Так</system:String>
-	<system:String x:Key="ModServiceUpdatedModsTitle">Оновлені моди</system:String>
-	<system:String x:Key="ModServiceUpdatedModsDescription">Оновлено %1 модів.</system:String>
-	<system:String x:Key="ModServiceInstallModTitle">Встановити мод</system:String>
-	<system:String x:Key="ModServiceInstallErrorModDescription">Шлях встановлення не налаштований. Налаштуйте його в розділі Налаштування.</system:String>
-	<system:String x:Key="ModServiceWarningTitle">Попередження</system:String>
-	<system:String x:Key="ModServiceWarningDescription">Мод, який ви намагаєтеся встановити, несумісний з вашою поточною встановленою версією SIT. Підтримувана версія SIT: %1 Встановлена версія SIT: %2 Продовжити в будь-якому випадку?</system:String>
-	<system:String x:Key="ModServiceUnknownTitle">Невідомо</system:String>
-	<system:String x:Key="ModServiceInstallModDescription">%1 було успішно встановлено.</system:String>
-	<system:String x:Key="ModServiceErrorInstallModDescription">%1 не вдалося встановити. Перевірте ваш Launcher.log</system:String>
-	<system:String x:Key="ModServiceErrorUninstallModTitle">Помилка видалення моду</system:String>
-	<system:String x:Key="ModServiceErrorUninstallModDescription">Файл відсутній в моду %1: '%2' Примусово видалити мод із списку встановлених модів все одно?</system:String>
-	<system:String x:Key="ModServiceErrorExceptionUninstallModDescription">Файл відсутній в моду %1: '%2' Примусово видалити мод із списку встановлених модів все одно?</system:String>
-	<system:String x:Key="ModServiceErrorExceptionFileUninstallModDescription">Файл відсутній в моду %1: '%2'</system:String>
-	<system:String x:Key="ModServiceFileUninstallModTitle">Видалити мод</system:String>
-	<system:String x:Key="ModServiceFileUninstallModDescription">%1 було успішно видалено.</system:String>
-
 	<!-- Install Service -->
 	<system:String x:Key="InstallServiceErrorTitle">Помилка</system:String>
 	<system:String x:Key="InstallServiceErrorInstallServerDescription">Будь ласка, налаштуйте Шлях до EFT в Налаштуваннях.</system:String>
@@ -326,10 +276,6 @@
 	<system:String x:Key="InstallServiceInstallSITSuccessfulDescription">Установка SIT пройшла успішно.</system:String>
 	<system:String x:Key="InstallerServiceNoDowngradePatcher">Для цієї версії EFT нема доступних програм для відкату версії.</system:String>
 	<system:String x:Key="InstallServiceSSLError">Ваш провайдер, ймовірно, блокує наше з'єднання. Будь ласка, скористайтеся VPN і спробуйте ще раз.</system:String>
-
-	<!-- File Service -->
-	<system:String x:Key="FileServiceProgressDownloading">Завантаження файлу '%1'</system:String>
-	<system:String x:Key="FileServiceProgressExtracting">Видобування файлу %1 (%2)</system:String>
 
 	<!-- Update Page -->
 	<system:String x:Key="UpdatePageUpdateInfoTextPt1">Менеджер SIT оновлюється, будь ласка, зачекайте...</system:String>
@@ -557,4 +503,20 @@
 	<system:String x:Key="NetworkToolsViewPortTestSuccessText">Port open!</system:String>
 	<system:String x:Key="NetworkToolsViewPortTestFailText">Port closed!</system:String>
 	<system:String x:Key="NetworkToolsViewUnknownIpAddressText">Unknown</system:String>
+
+	<!-- ModsPageViewModel -->
+	<system:String x:Key="ModsPageViewModelModCompatInstallSuccessTitle">Success</system:String>
+	<system:String x:Key="ModsPageViewModelModCompatInstallSuccessMessage">Installed mod compatibility layer sucessfully!</system:String>
+	<system:String x:Key="ModsPageViewModelModCompatInstallErrorTitle">Install Error</system:String>
+	<system:String x:Key="ModsPageViewModelModCompatInstallErrorMessage">Failed to install mod compatibility layer; please consult the logs for more details</system:String>
+	<system:String x:Key="ModsPageViewModelModCompatInstallErrorButtonOk">OK</system:String>
+
+	<!-- ModsPageView -->
+	<system:String x:Key="ModsPageViewModCompatInstallMissingMessage">You don't have the mod compatibility layer installed. Please install this before trying to play with mods enabled to avoid issues.</system:String>
+	<system:String x:Key="ModsPageViewModSearchTextBoxWatermark">Search</system:String>
+	<system:String x:Key="ModsPageViewModsDatagridNameColumnHeader">Name</system:String>
+	<system:String x:Key="ModsPageViewModDatagridVersionColumnHeader">Version</system:String>
+	<system:String x:Key="ModsPageViewModDatagridToggleSwitchModEnabledToolTip">Enable or disable this mod</system:String>
+	<system:String x:Key="ModsPageViewModDatagridToggleSwitchOnContent">Enabled</system:String>
+	<system:String x:Key="ModsPageViewModDatagridToggleSwitchOffContent">Disabled</system:String>
 </ResourceDictionary>

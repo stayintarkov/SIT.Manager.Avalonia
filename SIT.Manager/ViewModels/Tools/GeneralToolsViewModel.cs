@@ -227,7 +227,6 @@ public partial class GeneralToolsViewModel : ObservableObject
         try
         {
             _akiServerService.ClearCache();
-            _modService.ClearCache();
         }
         catch (Exception ex)
         {

@@ -19,32 +19,6 @@
 	<system:String x:Key="ServerTitleToolTip">管理伺服器。</system:String>
 	<system:String x:Key="ModsTitleToolTip">管理模組。</system:String>
 
-	<!-- Mods Page -->
-	<system:String x:Key="ModsWarningTitle">警告</system:String>
-	<system:String x:Key="ModsWarningDescription">使用模組可能會影響遊戲的穩定性，並可能導致遊戲崩潰或出現其他問題！儘管模組可以增強您的遊戲體驗並添加新功能，但它們可能未被 SIT 官方支持或經過兼容性測試；安裝模組需自擔風險，並在進行任何更改之前始終備份遊戲文件；我們對由安裝模組導致的任何損壞或進度丟失概不負責，請謹慎操作！</system:String>
-	<system:String x:Key="ModsWarningButtonTitle">我了解</system:String>
-	<system:String x:Key="ModsPageTitle">模組</system:String>
-	<system:String x:Key="ModsDownloadCollectionButtonTitle">下載模組合集</system:String>
-	<system:String x:Key="ModsDownloadCollectionButtonToolTip">下載最新的移植模組合集</system:String>
-	<system:String x:Key="ModInfoTitle">模組信息</system:String>
-	<system:String x:Key="ModInfoNameTitle">名稱:</system:String>
-	<system:String x:Key="ModInfoAuthorTitle">作者:</system:String>
-	<system:String x:Key="ModInfoSupportedVersionTitle">支援的 SIT 版本:</system:String>
-	<system:String x:Key="ModInfoModVersionTitle">模組版本:</system:String>
-	<system:String x:Key="ModInfoModPageTitle">模組頁面:</system:String>
-	<system:String x:Key="ModInfoExtraFilesToolTip">如果移植模組需要額外文件，請點擊鏈接下載它們</system:String>
-	<system:String x:Key="ModInfoRequiresExtraFilesTitle">需要額外文件:</system:String>
-	<system:String x:Key="ModInfoDescription">描述:</system:String>
-	<system:String x:Key="ModInfoInstallToolTip">安裝模組</system:String>
-	<system:String x:Key="ModInfoInstallTitle">安裝</system:String>
-	<system:String x:Key="ModInfoUninstallToolTip">卸載模組</system:String>
-	<system:String x:Key="ModInfoUninstallTitle">卸載</system:String>
-
-	<!-- Mods Page ViewModel -->
-	<system:String x:Key="ModsPageViewModelErrorTitle">錯誤</system:String>
-	<system:String x:Key="ModsPageViewModelErrorInstallPathDescription">未設定 EFT 安裝路徑，請先在設定中配置！</system:String>
-	<system:String x:Key="ModsPageViewModelErrorNoModsFound">未找到任何模組</system:String>
-
 	<!-- Tools Page -->
 	<system:String x:Key="ToolsOpenEFTFolderButtonToolTip">打開 EFT 安裝資料夾</system:String>
 	<system:String x:Key="ToolsOpenEFTFolderButtonTitle">打開 EFT 資料夾</system:String>
@@ -266,9 +240,6 @@
 	<system:String x:Key="SettingsPageViewModelConfigInformationEFTDescription">EFT 安裝路徑已設置為 '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">SPT-AKI 伺服器安裝路徑已設置為 '%1'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigErrorSPTAKI">所選檔案夾無效，請確保它是正確的 SPT-AKI 伺服器檔案夾！</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">Enable Test Mode Failure</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">Can't enable test mode as you have %1 incompatible mods still enabled</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorButtonOk">確定</system:String>
 
 	<!-- Server Page ViewModel -->
 	<system:String x:Key="ServerPageViewModelStartingServer">正在啟動伺服器！</system:String>
@@ -294,27 +265,6 @@
 	<system:String x:Key="TarkovClientServiceCacheClearedErrorEFTDescription">EFT 本地緩存目錄未找到：%1</system:String>
 	<system:String x:Key="TarkovClientServiceCacheClearedEFTDescription">EFT 本地緩存已清除！</system:String>
 
-	<!-- Mod Service -->
-	<system:String x:Key="ModServiceOutdatedDescription">您有 %1 個過時的模組，您想要自動更新它們嗎？過時的模組：%2</system:String>
-	<system:String x:Key="ModServiceOutdatedModsFoundTitle">發現過時的模組</system:String>
-	<system:String x:Key="ModServiceButtonNo">否</system:String>
-	<system:String x:Key="ModServiceButtonYes">是</system:String>
-	<system:String x:Key="ModServiceUpdatedModsTitle">已更新的模組</system:String>
-	<system:String x:Key="ModServiceUpdatedModsDescription">已更新 %1 個模組！</system:String>
-	<system:String x:Key="ModServiceInstallModTitle">安裝模組</system:String>
-	<system:String x:Key="ModServiceInstallErrorModDescription">EFT 安裝路徑未設定，請在設置中配置！</system:String>
-	<system:String x:Key="ModServiceWarningTitle">警告</system:String>
-	<system:String x:Key="ModServiceWarningDescription">您正在嘗試安裝的模組與您當前安裝的 SIT 版本不相容！支持的 SIT 版本：%1 已安裝的 SIT 版本：%2 仍要繼續安裝嗎？</system:String>
-	<system:String x:Key="ModServiceUnknownTitle">未知</system:String>
-	<system:String x:Key="ModServiceInstallModDescription">成功安裝了 %1！</system:String>
-	<system:String x:Key="ModServiceErrorInstallModDescription">%1 安裝失敗，請檢查您的 Launcher.log！</system:String>
-	<system:String x:Key="ModServiceErrorUninstallModTitle">卸載模組時出錯</system:String>
-	<system:String x:Key="ModServiceErrorUninstallModDescription">模組 %1 中缺少文件：'%2' ，是否強制從已安裝模組列表中移除此模組？</system:String>
-	<system:String x:Key="ModServiceErrorExceptionUninstallModDescription">模組 %1 中缺少文件：'%2' ，是否強制從已安裝模組列表中移除此模組？</system:String>
-	<system:String x:Key="ModServiceErrorExceptionFileUninstallModDescription">模組 %1 中缺少文件：'%2'</system:String>
-	<system:String x:Key="ModServiceFileUninstallModTitle">卸載模組</system:String>
-	<system:String x:Key="ModServiceFileUninstallModDescription">已成功卸載 %1 ！</system:String>
-
 	<!-- Install Service -->
 	<system:String x:Key="InstallServiceErrorTitle">錯誤</system:String>
 	<system:String x:Key="InstallServiceErrorInstallServerDescription">請先在設置中配置 EFT 路徑</system:String>
@@ -326,10 +276,6 @@
 	<system:String x:Key="InstallServiceInstallSITSuccessfulDescription">SIT 安裝成功</system:String>
 	<system:String x:Key="InstallerServiceNoDowngradePatcher">《逃離塔科夫》這些版本沒有可用的降級補丁。</system:String>
 	<system:String x:Key="InstallServiceSSLError">您的 ISP 可能封鎖了我們的連線。請使用 VPN 再試一次。</system:String>
-
-	<!-- File Service -->
-	<system:String x:Key="FileServiceProgressDownloading">下載檔案 '%1'</system:String>
-	<system:String x:Key="FileServiceProgressExtracting">正在解壓縮檔案 %1 (%2)</system:String>
 
 	<!-- Update Page -->
 	<system:String x:Key="UpdatePageUpdateInfoTextPt1">SIT 管理員正在更新，請稍候...</system:String>
@@ -557,4 +503,20 @@
 	<system:String x:Key="NetworkToolsViewPortTestSuccessText">Port open!</system:String>
 	<system:String x:Key="NetworkToolsViewPortTestFailText">Port closed!</system:String>
 	<system:String x:Key="NetworkToolsViewUnknownIpAddressText">Unknown</system:String>
+
+	<!-- ModsPageViewModel -->
+	<system:String x:Key="ModsPageViewModelModCompatInstallSuccessTitle">Success</system:String>
+	<system:String x:Key="ModsPageViewModelModCompatInstallSuccessMessage">Installed mod compatibility layer sucessfully!</system:String>
+	<system:String x:Key="ModsPageViewModelModCompatInstallErrorTitle">Install Error</system:String>
+	<system:String x:Key="ModsPageViewModelModCompatInstallErrorMessage">Failed to install mod compatibility layer; please consult the logs for more details</system:String>
+	<system:String x:Key="ModsPageViewModelModCompatInstallErrorButtonOk">OK</system:String>
+
+	<!-- ModsPageView -->
+	<system:String x:Key="ModsPageViewModCompatInstallMissingMessage">You don't have the mod compatibility layer installed. Please install this before trying to play with mods enabled to avoid issues.</system:String>
+	<system:String x:Key="ModsPageViewModSearchTextBoxWatermark">Search</system:String>
+	<system:String x:Key="ModsPageViewModsDatagridNameColumnHeader">Name</system:String>
+	<system:String x:Key="ModsPageViewModDatagridVersionColumnHeader">Version</system:String>
+	<system:String x:Key="ModsPageViewModDatagridToggleSwitchModEnabledToolTip">Enable or disable this mod</system:String>
+	<system:String x:Key="ModsPageViewModDatagridToggleSwitchOnContent">Enabled</system:String>
+	<system:String x:Key="ModsPageViewModDatagridToggleSwitchOffContent">Disabled</system:String>
 </ResourceDictionary>

@@ -1,13 +1,10 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Threading;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
-using Microsoft.Extensions.Logging;
+using FluentAvalonia.UI.Controls;
+using SIT.Manager.Extentions;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Models;
-using SIT.Manager.Models.Config;
-using SIT.Manager.Models.Messages;
-using SIT.Manager.Views;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -18,170 +15,132 @@ namespace SIT.Manager.ViewModels;
 public partial class ModsPageViewModel : ObservableRecipient
 {
     private readonly IBarNotificationService _barNotificationService;
-    private readonly IManagerConfigService _managerConfigService;
+    private readonly IManagerConfigService _configService;
     private readonly ILocalizationService _localizationService;
-    private readonly ILogger _logger;
     private readonly IModService _modService;
 
-    [ObservableProperty]
-    private bool _showModsDisclaimer = true;
+    private ModInfo[] _unfilteredModList = [];
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(ShowModInfo))]
-    private ModInfo? _selectedMod = null;
+    private bool _isLoading = false;
 
     [ObservableProperty]
-    private bool _enableInstall = false;
+    private bool _isModCompatibilityLayerInstalled = false;
 
-    public bool ShowModInfo => SelectedMod != null;
+    [ObservableProperty]
+    private string _searchText = string.Empty;
 
-    public ObservableCollection<ModInfo> ModList { get; } = [];
+    [ObservableProperty]
+    public ObservableCollection<ModInfo> _modList = [];
 
-    public IAsyncRelayCommand DownloadModPackageCommand { get; }
+    public IAsyncRelayCommand InstallModCompatibilityLayerCommand { get; }
 
-    public IAsyncRelayCommand InstallModCommand { get; }
-
-    public IAsyncRelayCommand UninstallModCommand { get; }
-
-    public ModsPageViewModel(IManagerConfigService managerConfigService,
+    public ModsPageViewModel(IBarNotificationService barNotificationService,
+                             IManagerConfigService configService,
                              ILocalizationService localizationService,
-                             IBarNotificationService barNotificationService,
-                             ILogger<ModsPageViewModel> logger,
                              IModService modService)
     {
         _barNotificationService = barNotificationService;
-        _managerConfigService = managerConfigService;
+        _configService = configService;
         _localizationService = localizationService;
-        _logger = logger;
         _modService = modService;
 
-        if (_managerConfigService.Config.AcceptedModsDisclaimer)
-        {
-            ShowModsDisclaimer = false;
-        }
-
-        DownloadModPackageCommand = new AsyncRelayCommand(DownloadModPackage);
-        InstallModCommand = new AsyncRelayCommand(InstallMod);
-        UninstallModCommand = new AsyncRelayCommand(UninstallMod);
+        InstallModCompatibilityLayerCommand = new AsyncRelayCommand(InstallModCompatibilityLayer);
     }
 
-    private async Task LoadMasterList()
+    [RelayCommand]
+    private void ToggleModEnabled(ModInfo mod)
     {
-        if (string.IsNullOrEmpty(_managerConfigService.Config.SitEftInstallPath))
-        {
-            _barNotificationService.ShowError(_localizationService.TranslateSource("ModsPageViewModelErrorTitle"), _localizationService.TranslateSource("ModsPageViewModelErrorInstallPathDescription"));
-            return;
-        }
+        int modIndex = ModList.IndexOf(mod);
 
-        await _modService.LoadMasterModList();
+        // The toggle button which calls this already update the IsEnabled value to be
+        // the action we want to call so just follow whatever that value is.
+        ModInfo updatedModInfo;
+        if (mod.IsEnabled)
+        {
+            updatedModInfo = _modService.EnableMod(mod, _configService.Config.SitEftInstallPath);
+        }
+        else
+        {
+            updatedModInfo = _modService.DisableMod(mod, _configService.Config.SitEftInstallPath);
+        }
+        ModList[modIndex] = updatedModInfo;
+    }
+
+    private async Task InstallModCompatibilityLayer()
+    {
+        await _modService.InstallModCompatLayer(_configService.Config.SitEftInstallPath);
 
         ModList.Clear();
-        List<ModInfo> outdatedMods = [];
-        foreach (ModInfo mod in _modService.ModList)
+        ModList.AddRange(_modService.GetInstalledMods(_configService.Config.SitEftInstallPath));
+
+        // Now that we have supposedly installed the mod compat layer check if it is right.
+        IsModCompatibilityLayerInstalled = _modService.CheckModCompatibilityLayerInstalled(_configService.Config.SitEftInstallPath);
+        if (IsModCompatibilityLayerInstalled)
         {
-            ModList.Add(mod);
-
-            var keyValuePair = _managerConfigService.Config.InstalledMods.Where(x => x.Key == mod.Name).FirstOrDefault();
-
-            if (!keyValuePair.Equals(default(KeyValuePair<string, string>)))
+            _barNotificationService.ShowSuccess(_localizationService.TranslateSource("ModsPageViewModelModCompatInstallSuccessTitle"), _localizationService.TranslateSource("ModsPageViewModelModCompatInstallSuccessMessage"));
+        }
+        else
+        {
+            await new ContentDialog()
             {
-                Version installedVersion = new(keyValuePair.Value);
-                Version currentVersion = new(mod.PortVersion);
-
-                int result = installedVersion.CompareTo(currentVersion);
-                if (result < 0)
-                {
-                    outdatedMods.Add(mod);
-                }
-            }
-        }
-
-        if (ModList.Count > 0)
-        {
-            SelectedMod = ModList[0];
-        }
-
-        if (outdatedMods.Count > 0)
-        {
-            await _modService.AutoUpdate(outdatedMods);
+                Title = _localizationService.TranslateSource("ModsPageViewModelModCompatInstallErrorTitle"),
+                Content = _localizationService.TranslateSource("ModsPageViewModelModCompatInstallErrorMessage"),
+                PrimaryButtonText = _localizationService.TranslateSource("ModsPageViewModelModCompatInstallErrorButtonOk"),
+            }.ShowAsync();
         }
     }
 
     [RelayCommand]
-    private void AcceptModsDisclaimer()
+    private void SearchMods(string searchText)
     {
-        ShowModsDisclaimer = false;
-
-        ManagerConfig config = _managerConfigService.Config;
-        config.AcceptedModsDisclaimer = true;
-        _managerConfigService.UpdateConfig(config);
-    }
-
-    private async Task DownloadModPackage()
-    {
-        if (string.IsNullOrEmpty(_managerConfigService.Config.SitEftInstallPath))
+        if (string.IsNullOrEmpty(searchText))
         {
-            _barNotificationService.ShowError(_localizationService.TranslateSource("ModsPageViewModelErrorTitle"), _localizationService.TranslateSource("ModsPageViewModelErrorInstallPathDescription"));
-            return;
-        }
-        _logger.LogInformation("DownloadModPack: Starting download of mod package.");
-
-        try
-        {
-            await _modService.DownloadModsCollection();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, $"DownloadModPack");
-        }
-
-        await LoadMasterList();
-    }
-
-    partial void OnSelectedModChanged(ModInfo? value)
-    {
-        if (value == null)
-        {
+            if (_unfilteredModList.Length > 0)
+            {
+                ModList = new ObservableCollection<ModInfo>(_unfilteredModList);
+                _unfilteredModList = [];
+            }
             return;
         }
 
-        bool isInstalled = _managerConfigService.Config.InstalledMods.ContainsKey(value.Name);
-        EnableInstall = !isInstalled;
-    }
-
-    private async Task InstallMod()
-    {
-        if (SelectedMod == null)
+        if (_unfilteredModList.Length <= 0)
         {
-            return;
+            _unfilteredModList = new ModInfo[ModList.Count];
+            ModList.CopyTo(_unfilteredModList, 0);
         }
 
-        bool installSuccessful = await _modService.InstallMod(_managerConfigService.Config.SitEftInstallPath, SelectedMod);
-        EnableInstall = !installSuccessful;
-    }
-
-    private async Task UninstallMod()
-    {
-        if (SelectedMod == null)
-        {
-            return;
-        }
-
-        bool uninstallSuccessful = await _modService.UninstallMod(_managerConfigService.Config.SitEftInstallPath, SelectedMod);
-        EnableInstall = uninstallSuccessful;
+        ModList = new(ModList.Where(x => x.Name.Contains(searchText)));
     }
 
     protected override async void OnActivated()
     {
-        // Test mode enabled but we are still trying to go to the mods page so 
-        // force them to a different page
-        if (_managerConfigService.Config.EnableTestMode)
-        {
-            // TODO show dialog here :)
-            PageNavigation pageNavigation = new(typeof(PlayPage), false);
-            WeakReferenceMessenger.Default.Send(new PageNavigationMessage(pageNavigation));
-        }
+        base.OnActivated();
 
-        await LoadMasterList();
+        IsLoading = true;
+
+        Task loadModsTask = Task.Run(async () =>
+        {
+            List<ModInfo> installedModsList = _modService.GetInstalledMods(_configService.Config.SitEftInstallPath);
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                ModList.Clear();
+                ModList.AddRange(installedModsList);
+            });
+        });
+        Task checkModCompatibilityLayerTask = Task.Run(async () =>
+        {
+            bool modCompatibilityLayerInstalled = _modService.CheckModCompatibilityLayerInstalled(_configService.Config.SitEftInstallPath);
+            await Dispatcher.UIThread.InvokeAsync(() => IsModCompatibilityLayerInstalled = modCompatibilityLayerInstalled);
+        });
+
+        await Task.WhenAll(loadModsTask, checkModCompatibilityLayerTask, Task.Delay(3000));
+
+        IsLoading = false;
+    }
+
+    partial void OnSearchTextChanged(string value)
+    {
+        SearchMods(value);
     }
 }

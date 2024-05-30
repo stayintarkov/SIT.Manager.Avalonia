@@ -1,7 +1,6 @@
 ﻿using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 using FluentAvalonia.Styling;
-using FluentAvalonia.UI.Controls;
 using SIT.Manager.Interfaces;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -65,31 +64,8 @@ public partial class LauncherViewModel(IManagerConfigService configService,
         }
     }
 
-    async partial void OnIsTestModeEnabledChanged(bool value)
+    partial void OnIsTestModeEnabledChanged(bool value)
     {
-        // If test mode is enabled then we want to check that there's no mods we don't approve of currently installed.
-        if (value)
-        {
-            List<string> installedMods = _configsService.Config.InstalledMods.Keys.ToList();
-            int compatibleModCount = installedMods.Count(x => _modService.RecommendedModInstalls.Contains(x));
-            int totalIncompatibleMods = installedMods.Count - compatibleModCount;
-            if (totalIncompatibleMods > 0)
-            {
-                await new ContentDialog()
-                {
-                    Title = _localizationService.TranslateSource("SettingsPageViewModelEnableDevModeErrorTitle"),
-                    Content = _localizationService.TranslateSource("SettingsPageViewModelEnableDevModeErrorDescription", totalIncompatibleMods.ToString()),
-                    CloseButtonText = _localizationService.TranslateSource("SettingsPageViewModelEnableDevModeErrorButtonOk")
-                }.ShowAsync();
-            }
-            else
-            {
-                Config.EnableTestMode = value;
-            }
-        }
-        else
-        {
-            Config.EnableTestMode = value;
-        }
+        Config.EnableTestMode = value;
     }
 }

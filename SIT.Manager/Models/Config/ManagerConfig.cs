@@ -31,12 +31,6 @@ public partial class ManagerConfig : ObservableObject
     [ObservableProperty]
     public LinuxConfig _linuxConfig = new();
 
-    // Mods settings
-    [ObservableProperty]
-    public bool _acceptedModsDisclaimer = false;
-    public string ModCollectionVersion { get; set; } = string.Empty;
-    public Dictionary<string, string> InstalledMods { get; set; } = [];
-
     // SIT settings
     [ObservableProperty]
     public string _sitEftInstallPath = string.Empty;

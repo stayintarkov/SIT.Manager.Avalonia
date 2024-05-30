@@ -1,10 +1,5 @@
-﻿using Avalonia.Controls;
-using Avalonia.Layout;
-using FluentAvalonia.UI.Controls;
-using Microsoft.Extensions.Logging;
-using SIT.Manager.Interfaces;
+﻿using SIT.Manager.Interfaces;
 using SIT.Manager.Models;
-using SIT.Manager.Models.Config;
 using SIT.Manager.Models.Github;
 using SIT.Manager.Services.Caching;
 using System;
@@ -12,140 +7,232 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Services;
 
-public class ModService(IBarNotificationService barNotificationService,
-                        ICachingService cachingService,
+public class ModService(ICachingService cachingService,
                         IFileService filesService,
-                        ILocalizationService localizationService,
-                        IManagerConfigService configService,
-                        HttpClient httpClient,
-                        ILogger<ModService> logger) : IModService
+                        IVersionService versionService,
+                        HttpClient httpClient) : IModService
 {
     private const string BEPINEX_CONFIGURATION_MANAGER_RELEASE_URL = "https://api.github.com/repos/BepInEx/BepInEx.ConfigurationManager/releases/latest";
-    private const string CONFIGURATION_MANAGER_ZIP_CACHE_KEY = "configuration-manager-dll";
-    private const string MOD_COLLECTION_URL = "https://github.com/stayintarkov/SIT-Mod-Ports/releases/latest/download/SIT.Mod.Ports.Collection.zip";
+    private const string MOD_COMPAT_LAYER_URL = "aHR0cHM6Ly9kcC1ldS5zaXRjb29wLm9yZy9ha2ktY3VzdG9tLnppcA==";
+    private const string CONFIGURATION_MANAGER_DLL_CACHE_KEY = "configuration-manager-dll";
+    private const string MOD_COMPAT_LAYER_ZIP_CACHE_KEY = "mod-compat-layer.zip";
 
-    private readonly IBarNotificationService _barNotificationService = barNotificationService;
     private readonly ICachingService _cachingService = cachingService;
     private readonly IFileService _filesService = filesService;
-    private readonly IManagerConfigService _configService = configService;
+    private readonly IVersionService _versionService = versionService;
     private readonly HttpClient _httpClient = httpClient;
-    private readonly ILogger<ModService> _logger = logger;
-    private readonly ILocalizationService _localizationService = localizationService;
 
-    // Stores the downloaded mods and caches it in the manager's directory
-    private readonly string _localModCache = Path.Combine(AppContext.BaseDirectory, "Mods");
+    private static readonly List<string> _modCompatDlls = [
+        "aki-core",
+        "aki-custom",
+        "aki-singleplayer",
+        "aki_PrePatch"
+    ];
 
-    public string[] RecommendedModInstalls => ["ConfigurationManager"];
-
-    public List<ModInfo> ModList { get; private set; } = [];
-
-    private async Task InstallFiles(string baseSourceDirectory, string baseTargetDirectory, List<string> files)
+    private static string GetPatchersDirectoryPath(string baseDirectory)
     {
-        // Ensure that the directory that we are trying to copy to exists
-        Directory.CreateDirectory(baseTargetDirectory);
-
-        foreach (string file in files)
-        {
-            string sourcePath = Path.Combine(baseSourceDirectory, file);
-            string targetPath = Path.Combine(baseTargetDirectory, file);
-            await _filesService.CopyFileAsync(sourcePath, targetPath).ConfigureAwait(false);
-        }
+        return Path.Combine(baseDirectory, "BepInEx", "patchers");
     }
 
-    private async Task UninstallFiles(string baseInstallDirectory, List<string> files, string modName)
+    private static string GetPluginsDirectoryPath(string baseDirectory)
     {
-        foreach (string file in files)
+        return Path.Combine(baseDirectory, "BepInEx", "plugins");
+    }
+
+    /// <summary>
+    /// Downloads the latest ConfigurationManager from the BepInEx GitHub
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="UriFormatException"></exception>
+    /// <exception cref="FileNotFoundException"></exception>
+    /// <exception cref="IOException"></exception>
+    private async Task<byte[]> DownloadConfigurationManager()
+    {
+        string latestReleaseJson = await _httpClient.GetStringAsync(BEPINEX_CONFIGURATION_MANAGER_RELEASE_URL).ConfigureAwait(false);
+        GithubRelease? latestRelease = JsonSerializer.Deserialize<GithubRelease>(latestReleaseJson);
+
+        if (latestRelease != null)
         {
-            string targetPath = Path.Combine(baseInstallDirectory, file);
-            if (File.Exists(targetPath))
+            string assetDownloadUrl = string.Empty;
+            foreach (GithubAsset asset in latestRelease.Assets)
             {
-                File.Delete(targetPath);
+                if (asset.Name.Contains("BepInEx5"))
+                {
+                    assetDownloadUrl = asset.BrowserDownloadUrl;
+                }
+            }
+
+            if (string.IsNullOrEmpty(assetDownloadUrl))
+            {
+                throw new UriFormatException("No download url available for Configuration manager");
+            }
+
+            string tmpZipFilePath = Path.GetTempFileName();
+            bool downloadSuccess = await _filesService.DownloadFile(Path.GetFileName(tmpZipFilePath), Path.GetDirectoryName(tmpZipFilePath) ?? string.Empty, assetDownloadUrl, new Progress<double>()).ConfigureAwait(false);
+            if (downloadSuccess)
+            {
+                string extractedZipPath = Path.GetTempFileName();
+                if (File.Exists(extractedZipPath))
+                {
+                    File.Delete(extractedZipPath);
+                }
+                await _filesService.ExtractArchive(tmpZipFilePath, extractedZipPath).ConfigureAwait(false);
+
+                string[] files = Directory.GetFiles(extractedZipPath, "ConfigurationManager.dll", new EnumerationOptions() { RecurseSubdirectories = true });
+                if (files.Length == 1)
+                {
+                    return await File.ReadAllBytesAsync(files[0]).ConfigureAwait(false);
+                }
+                else
+                {
+                    throw new FileNotFoundException("Found too many or too few Configuration manager dlls in extraction target");
+                }
             }
             else
             {
-                ContentDialog dialog = new()
-                {
-                    Title = _localizationService.TranslateSource("ModServiceErrorUninstallModTitle"),
-                    Content = _localizationService.TranslateSource("ModServiceErrorUninstallModDescription", modName, file),
-                    CloseButtonText = _localizationService.TranslateSource("ModServiceButtonNo"),
-                    IsPrimaryButtonEnabled = true,
-                    PrimaryButtonText = _localizationService.TranslateSource("ModServiceButtonYes")
-                };
-
-                ContentDialogResult result = await dialog.ShowAsync();
-                if (result != ContentDialogResult.Primary)
-                {
-                    throw new FileNotFoundException(_localizationService.TranslateSource("ModServiceErrorExceptionUninstallModDescription", modName, modName));
-                }
+                throw new IOException("Failed to download the latest configuration manager from GitHub");
             }
         }
+        throw new FileNotFoundException("Failed to get the latest release for Configuration Manager");
     }
 
-    public void ClearCache()
+    private async Task<byte[]> DownloadModCompatLayerZip()
     {
-        string[] subDirs = Directory.GetDirectories(_localModCache);
-        foreach (string subDir in subDirs)
+        string downloadUrl = Encoding.UTF8.GetString(Convert.FromBase64String(MOD_COMPAT_LAYER_URL));
+
+        string tmpDownloadPath = Path.GetTempFileName();
+        bool downloadSuccess = await _filesService.DownloadFile(Path.GetFileName(tmpDownloadPath), Path.GetDirectoryName(tmpDownloadPath) ?? string.Empty, downloadUrl, new Progress<double>()).ConfigureAwait(false);
+        if (!downloadSuccess)
         {
-            Directory.Delete(subDir, true);
+            throw new IOException("Failed to download the latest configuration manager from GitHub");
         }
+
+        return await File.ReadAllBytesAsync(tmpDownloadPath).ConfigureAwait(false);
     }
 
-    public async Task DownloadModsCollection()
+    private List<ModInfo> FindModsInLocation(string targetPath)
     {
-        Directory.CreateDirectory(_localModCache);
-        await Task.Run(ClearCache).ConfigureAwait(false);
+        List<ModInfo> mods = [];
+        List<FileInfo> rawMods = [];
 
-        string extractedModsDir = Path.Combine(_localModCache, "Extracted");
-        Directory.CreateDirectory(extractedModsDir);
-
-        await _filesService.DownloadFile("SIT.Mod.Ports.Collection.zip", _localModCache, MOD_COLLECTION_URL, true).ConfigureAwait(false);
-        await _filesService.ExtractArchive(Path.Combine(_localModCache, "SIT.Mod.Ports.Collection.zip"), extractedModsDir).ConfigureAwait(false);
-    }
-
-    public async Task AutoUpdate(List<ModInfo> outdatedMods)
-    {
-        List<string> outdatedNames = [.. outdatedMods.Select(x => x.Name)];
-        string outdatedString = string.Join("\n", outdatedNames);
-
-        ScrollViewer scrollView = new()
+        DirectoryInfo pluginsDir = new(GetPluginsDirectoryPath(targetPath));
+        if (pluginsDir.Exists)
         {
-            Content = new TextBlock()
+            rawMods.AddRange(pluginsDir.GetFiles("*.dll", new EnumerationOptions() { RecurseSubdirectories = true }));
+        }
+
+        DirectoryInfo patchersDir = new(GetPatchersDirectoryPath(targetPath));
+        if (patchersDir.Exists)
+        {
+            rawMods.AddRange(patchersDir.GetFiles("*.dll", new EnumerationOptions() { RecurseSubdirectories = true }));
+        }
+
+        foreach (FileInfo fileInfo in rawMods)
+        {
+            string filename = fileInfo.Name.Replace(".dll", string.Empty);
+
+            ModInfo mod = new()
             {
-                Text = _localizationService.TranslateSource("ModServiceOutdatedDescription", $"{outdatedMods.Count}", outdatedString)
-            }
-        };
+                Name = filename,
+                ModVersion = _versionService.GetFileProductVersionString(fileInfo.FullName),
+                Path = fileInfo.FullName
+            };
 
-        ContentDialog contentDialog = new()
-        {
-            Title = _localizationService.TranslateSource("ModServiceOutdatedModsFoundTitle"),
-            Content = scrollView,
-            CloseButtonText = _localizationService.TranslateSource("ModServiceButtonNo"),
-            IsPrimaryButtonEnabled = true,
-            PrimaryButtonText = _localizationService.TranslateSource("ModServiceButtonYes")
-        };
-
-        ContentDialogResult result = await contentDialog.ShowAsync();
-        if (result == ContentDialogResult.Primary)
-        {
-            foreach (ModInfo mod in outdatedMods)
+            if (filename.Contains("StayInTarkov") || _modCompatDlls.Contains(filename))
             {
-                ManagerConfig config = _configService.Config;
-                config.InstalledMods.Remove(mod.Name);
-                _configService.UpdateConfig(config);
-                await InstallMod(_configService.Config.SitEftInstallPath, mod, true).ConfigureAwait(false);
+                mod.IsRequired = true;
             }
-        }
-        else
-        {
-            return;
+
+            // If we're in the disabled mods path then the mod needs to be set as disabled.
+            if (targetPath.Contains(IModService.DISABLED_MODS_DIR))
+            {
+                mod.IsEnabled = false;
+            }
+
+            mods.Add(mod);
         }
 
-        _barNotificationService.ShowSuccess(_localizationService.TranslateSource("ModServiceUpdatedModsTitle"), _localizationService.TranslateSource("ModServiceUpdatedModsDescription", $"{outdatedMods.Count}"));
+        return mods;
+    }
+
+    private static string MoveModFile(string sourceDirectory, string targetDirectory, string modFilePath)
+    {
+        string relativeSourceModPath = Path.GetRelativePath(sourceDirectory, modFilePath);
+        string targetModPath = Path.Combine(targetDirectory, relativeSourceModPath);
+        string targetModPathDirectory = Path.GetDirectoryName(targetModPath) ?? throw new DirectoryNotFoundException($"Failed to evaluate directory from {targetModPath}");
+        Directory.CreateDirectory(targetModPathDirectory);
+
+        FileInfo modFileInfo = new(modFilePath);
+        modFileInfo.MoveTo(targetModPath);
+        return targetModPath;
+    }
+
+    public bool CheckModCompatibilityLayerInstalled(string targetPath)
+    {
+        bool modCompatInstalled = true;
+
+        // Check if the plugins and patchers dlls are installed
+        List<ModInfo> modList = GetInstalledMods(targetPath);
+        foreach (string mod in _modCompatDlls)
+        {
+            if (modList.Any(x => x.Name == mod))
+            {
+                continue;
+            }
+            else
+            {
+                modCompatInstalled = false;
+                break;
+            }
+        }
+
+        // Check if Aki.Common.dll and Aki.Reflection.dll are installed
+        string basePath = Path.Combine(targetPath, "EscapeFromTarkov_Data", "Managed");
+        string akiCommonPath = Path.Combine(basePath, "Aki.Common.dll");
+        string akiReflectionPath = Path.Combine(basePath, "Aki.Reflection.dll");
+        if (!File.Exists(akiCommonPath) || !File.Exists(akiReflectionPath))
+        {
+            modCompatInstalled = false;
+        }
+
+        return modCompatInstalled;
+    }
+
+    public ModInfo DisableMod(ModInfo mod, string eftDir)
+    {
+        mod.Path = MoveModFile(eftDir, Path.Combine(AppContext.BaseDirectory, IModService.DISABLED_MODS_DIR), mod.Path);
+        return mod;
+    }
+
+    public ModInfo EnableMod(ModInfo mod, string eftDir)
+    {
+        mod.Path = MoveModFile(Path.Combine(AppContext.BaseDirectory, IModService.DISABLED_MODS_DIR), eftDir, mod.Path);
+        return mod;
+    }
+
+    public List<ModInfo> GetInstalledMods(string targetPath)
+    {
+        List<ModInfo> mods = [];
+
+        mods.Add(new ModInfo()
+        {
+            IsRequired = true,
+            ModVersion = _versionService.GetEFTVersion(targetPath),
+            Name = "Escape From Tarkov"
+        });
+
+        // Load the mods in the targeted installation directory
+        mods.AddRange(FindModsInLocation(targetPath));
+        // Load all the mods which are in the disable location
+        mods.AddRange(FindModsInLocation(Path.Combine(AppContext.BaseDirectory, IModService.DISABLED_MODS_DIR)));
+
+        return [.. mods.OrderBy(x => !x.IsRequired)];
     }
 
     public async Task<bool> InstallConfigurationManager(string targetPath)
@@ -155,56 +242,7 @@ public class ModService(IBarNotificationService barNotificationService,
             throw new ArgumentException("Parameter can't be null or empty", nameof(targetPath));
         }
 
-        CacheValue<byte[]> configurationManagerDll = await _cachingService.OnDisk.GetOrComputeAsync(CONFIGURATION_MANAGER_ZIP_CACHE_KEY,
-            async (key) =>
-            {
-                string latestReleaseJson = await _httpClient.GetStringAsync(BEPINEX_CONFIGURATION_MANAGER_RELEASE_URL).ConfigureAwait(false);
-                GithubRelease? latestRelease = JsonSerializer.Deserialize<GithubRelease>(latestReleaseJson);
-
-                if (latestRelease != null)
-                {
-                    string assetDownloadUrl = string.Empty;
-                    foreach (GithubAsset asset in latestRelease.Assets)
-                    {
-                        if (asset.Name.Contains("BepInEx5"))
-                        {
-                            assetDownloadUrl = asset.BrowserDownloadUrl;
-                        }
-                    }
-
-                    if (string.IsNullOrEmpty(assetDownloadUrl))
-                    {
-                        throw new UriFormatException("No download url available for Configuration manager");
-                    }
-
-                    string tmpZipFilePath = Path.GetTempFileName();
-                    bool downloadSuccess = await _filesService.DownloadFile(Path.GetFileName(tmpZipFilePath), Path.GetDirectoryName(tmpZipFilePath) ?? string.Empty, assetDownloadUrl, false).ConfigureAwait(false);
-                    if (downloadSuccess)
-                    {
-                        string extractedZipPath = Path.GetTempFileName();
-                        if (File.Exists(extractedZipPath))
-                        {
-                            File.Delete(extractedZipPath);
-                        }
-                        await _filesService.ExtractArchive(tmpZipFilePath, extractedZipPath).ConfigureAwait(false);
-
-                        string[] files = Directory.GetFiles(extractedZipPath, "ConfigurationManager.dll", new EnumerationOptions() { RecurseSubdirectories = true });
-                        if (files.Length == 1)
-                        {
-                            return await File.ReadAllBytesAsync(files[0]).ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            throw new FileNotFoundException("Found too many or too few Configuration manager dlls in extraction target");
-                        }
-                    }
-                    else
-                    {
-                        throw new IOException("Failed to download the latest configuration manager from GitHub");
-                    }
-                }
-                throw new FileNotFoundException("Failed to get the latest release for Configuration Manager");
-            }, TimeSpan.FromDays(1));
+        CacheValue<byte[]> configurationManagerDll = await _cachingService.OnDisk.GetOrComputeAsync(CONFIGURATION_MANAGER_DLL_CACHE_KEY, (key) => DownloadConfigurationManager(), TimeSpan.FromDays(1));
 
         byte[] configurationManagerBytes = configurationManagerDll.Value ?? [];
         if (configurationManagerBytes.Length == 0)
@@ -212,128 +250,56 @@ public class ModService(IBarNotificationService barNotificationService,
             throw new FileNotFoundException("Failed find and install Configuration Manager");
         }
 
-        string targetInstallLocation = Path.Combine(targetPath, "BepInEx", "plugins", "ConfigurationManager.dll");
+        string targetInstallLocation = Path.Combine(GetPluginsDirectoryPath(targetPath), "ConfigurationManager.dll");
         await File.WriteAllBytesAsync(targetInstallLocation, configurationManagerBytes).ConfigureAwait(false);
         return true;
     }
 
-    public async Task<bool> InstallMod(string targetPath, ModInfo mod, bool suppressNotification = false, bool suppressCompatibilityWarning = false)
+    public async Task<bool> InstallModCompatLayer(string targetPath)
     {
         if (string.IsNullOrEmpty(targetPath))
         {
-            _barNotificationService.ShowError(_localizationService.TranslateSource("ModServiceInstallModTitle"), _localizationService.TranslateSource("ModServiceInstallErrorModDescription"));
-            return false;
+            throw new ArgumentException("Parameter can't be null or empty", nameof(targetPath));
         }
 
-        try
+        CacheValue<byte[]> modCompatLayerZip = await _cachingService.OnDisk.GetOrComputeAsync(MOD_COMPAT_LAYER_ZIP_CACHE_KEY, (key) => DownloadModCompatLayerZip(), TimeSpan.FromDays(1));
+
+        string tmpZipFilePath = Path.GetTempFileName();
+        await File.WriteAllBytesAsync(tmpZipFilePath, modCompatLayerZip.Value ?? []);
+
+        string extractedZipPath = Path.GetTempFileName();
+        if (File.Exists(extractedZipPath))
         {
-            // Ignore the mod compatibility alert if the version is set to '*' and/or we have supressed the compatibility notice.
-            if (mod.SupportedVersion != "*" && mod.SupportedVersion != _configService.Config.SitVersion && !suppressCompatibilityWarning)
-            {
-                ContentDialog contentDialog = new()
-                {
-                    Title = _localizationService.TranslateSource("ModServiceWarningTitle"),
-                    Content = _localizationService.TranslateSource("ModServiceWarningDescription", mod.SupportedVersion, $"{(string.IsNullOrEmpty(_configService.Config.SitVersion) ? _localizationService.TranslateSource("ModServiceUnknownTitle") : _configService.Config.SitVersion)}"),
-                    HorizontalContentAlignment = HorizontalAlignment.Center,
-                    IsPrimaryButtonEnabled = true,
-                    PrimaryButtonText = _localizationService.TranslateSource("ModServiceButtonYes"),
-                    CloseButtonText = _localizationService.TranslateSource("ModServiceButtonNo")
-                };
-                ContentDialogResult response = await contentDialog.ShowAsync();
-                if (response != ContentDialogResult.Primary)
-                {
-                    return false;
-                }
-            }
-
-            if (mod == null)
-            {
-                return false;
-            }
-
-            ManagerConfig config = _configService.Config;
-            if (!config.InstalledMods.ContainsKey(mod.Name))
-            {
-                string baseModSourcePath = Path.Combine(_localModCache, "Extracted");
-
-                // Install any plugin files
-                await InstallFiles(Path.Combine(baseModSourcePath, "plugins"), Path.Combine(targetPath, "BepInEx", "plugins"), mod.PluginFiles).ConfigureAwait(false);
-                // Install any config files
-                await InstallFiles(Path.Combine(baseModSourcePath, "config"), Path.Combine(targetPath, "BepInEx", "config"), mod.ConfigFiles).ConfigureAwait(false);
-                // Install any patcher files
-                await InstallFiles(Path.Combine(baseModSourcePath, "patchers"), Path.Combine(targetPath, "BepInEx", "patchers"), mod.PatcherFiles).ConfigureAwait(false);
-
-                config.InstalledMods.Add(mod.Name, mod.PortVersion);
-                _configService.UpdateConfig(config);
-            }
-
-            if (!suppressNotification)
-            {
-                _barNotificationService.ShowSuccess(_localizationService.TranslateSource("ModServiceInstallModTitle"), _localizationService.TranslateSource("ModServiceInstallModDescription", mod.Name));
-            }
+            File.Delete(extractedZipPath);
         }
-        catch (Exception ex)
+        await _filesService.ExtractArchive(tmpZipFilePath, extractedZipPath).ConfigureAwait(false);
+
+        DirectoryInfo sourceFiles = new(extractedZipPath);
+        foreach (FileInfo file in sourceFiles.GetFiles("*", new EnumerationOptions() { RecurseSubdirectories = true }))
         {
-            _logger.LogError(ex, "InstallMod");
-            _barNotificationService.ShowError(_localizationService.TranslateSource("ModServiceInstallModTitle"), _localizationService.TranslateSource("ModServiceErrorInstallModDescription", mod.Name));
-            return false;
-        }
+            string destinationPath = string.Empty;
 
-        return true;
-    }
-
-    /// <inheritdoc/>
-    public async Task LoadMasterModList()
-    {
-        ModList.Clear();
-
-        string modsDirectory = Path.Combine(_localModCache, "Extracted");
-        List<ModInfo> outdatedMods = [];
-
-        string modsListFile = Path.Combine(modsDirectory, "MasterList.json");
-        if (!File.Exists(modsListFile))
-        {
-            ModList.Add(new ModInfo()
+            if (file.FullName.Contains("EscapeFromTarkov_Data"))
             {
-                Name = _localizationService.TranslateSource("ModsPageViewModelErrorNoModsFound")
-            });
-            return;
-        }
-
-        string masterListFile = await File.ReadAllTextAsync(modsListFile);
-        List<ModInfo> masterList = JsonSerializer.Deserialize<List<ModInfo>>(masterListFile) ?? [];
-        masterList = [.. masterList.OrderBy(x => x.Name)];
-
-        ModList.AddRange(masterList);
-    }
-
-    public async Task<bool> UninstallMod(string targetPath, ModInfo mod)
-    {
-        try
-        {
-            if (mod == null || string.IsNullOrEmpty(targetPath))
+                DirectoryInfo eftManagedDir = new(Path.Combine(targetPath, "EscapeFromTarkov_Data", "Managed"));
+                destinationPath = Path.Combine(eftManagedDir.FullName, file.Name);
+            }
+            else if (file.FullName.Contains("plugins"))
             {
-                return false;
+                DirectoryInfo pluginsDir = new(GetPluginsDirectoryPath(targetPath));
+                destinationPath = Path.Combine(pluginsDir.FullName, file.Name);
+            }
+            else if (file.FullName.Contains("patchers"))
+            {
+                DirectoryInfo patchersDir = new(GetPatchersDirectoryPath(targetPath));
+                destinationPath = Path.Combine(patchersDir.FullName, file.Name);
+            }
+            else
+            {
+                throw new InvalidOperationException($"Unknown file target: {file.FullName}");
             }
 
-            // Uninstall any plugin files
-            await UninstallFiles(Path.Combine(targetPath, "BepInEx", "plugins"), mod.PluginFiles, mod.Name).ConfigureAwait(false);
-            // Uninstall any config files
-            await UninstallFiles(Path.Combine(targetPath, "BepInEx", "config"), mod.ConfigFiles, mod.Name).ConfigureAwait(false);
-            // Uninstall any patcher files
-            await UninstallFiles(Path.Combine(targetPath, "BepInEx", "patchers"), mod.ConfigFiles, mod.Name).ConfigureAwait(false);
-
-            ManagerConfig config = _configService.Config;
-            config.InstalledMods.Remove(mod.Name);
-            _configService.UpdateConfig(config);
-
-            _barNotificationService.ShowSuccess(_localizationService.TranslateSource("ModServiceFileUninstallModTitle"), _localizationService.TranslateSource("ModServiceFileUninstallModDescription", mod.Name));
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "UninstallMod");
-            _barNotificationService.ShowError(_localizationService.TranslateSource("ModServiceFileUninstallModTitle"), _localizationService.TranslateSource("ModServiceErrorInstallModDescription", mod.Name));
-            return false;
+            file.MoveTo(destinationPath, true);
         }
 
         return true;
