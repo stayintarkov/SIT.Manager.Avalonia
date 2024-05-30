@@ -14,7 +14,6 @@ using SIT.Manager.Views.Play;
 using System;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.ViewModels.Play;
@@ -62,18 +61,7 @@ public partial class ServerSummaryViewModel : ObservableRecipient
         }
     }
 
-    public string ServerDisplayName
-    {
-        get
-        {
-            AkiServer? bookmarkedServer = _configService.Config.BookmarkedServers.FirstOrDefault(x => x.Address == _server.Address);
-            if (bookmarkedServer != null)
-            {
-                return !string.IsNullOrEmpty(bookmarkedServer.Nickname) ? bookmarkedServer.Nickname : Name;
-            }
-            return Name;
-        }
-    }
+    public string ServerDisplayName => !string.IsNullOrEmpty(_server?.Nickname) ? _server.Nickname : Name;
 
     public string Name
     {
@@ -133,22 +121,20 @@ public partial class ServerSummaryViewModel : ObservableRecipient
 
     private async Task Edit()
     {
-        AkiServer? currentServer = _configService.Config.BookmarkedServers.FirstOrDefault(x => x.Address == _server.Address);
-
-        CreateServerDialogView dialog = new(_localizationService, true, currentServer?.Nickname ?? string.Empty, Address.AbsoluteUri);
+        CreateServerDialogView dialog = new(_localizationService, true, _server?.Nickname ?? string.Empty, Address.AbsoluteUri);
         CreateServerDialogResult result = await dialog.ShowAsync();
         if (result.DialogResult == ContentDialogResult.Primary)
         {
-            if (currentServer != null)
+            if (_server != null)
             {
-                _configService.Config.BookmarkedServers.Remove(currentServer);
+                _configService.Config.BookmarkedServers.RemoveAll(x => x.Address == _server.Address);
 
                 AkiServer updatedServer = new(result.ServerUri)
                 {
-                    Characters = currentServer.Characters,
-                    Name = currentServer.Name,
+                    Characters = _server.Characters,
+                    Name = _server.Name,
                     Nickname = result.ServerNickname,
-                    Ping = currentServer.Ping
+                    Ping = _server.Ping
                 };
                 _configService.Config.BookmarkedServers.Add(updatedServer);
 
@@ -235,7 +221,13 @@ public partial class ServerSummaryViewModel : ObservableRecipient
 
         try
         {
-            _server = await _serverService.GetAkiServerAsync(_server.Address);
+            AkiServer updatedServer = await _serverService.GetAkiServerAsync(_server.Address);
+            _server = new(updatedServer.Address)
+            {
+                Characters = updatedServer.Characters,
+                Name = updatedServer.Name,
+                Nickname = _server.Nickname
+            };
             _logger.LogDebug("{Address} found with name {Name}", Address.AbsoluteUri, Name);
 
             // Ensure the properties get updated
