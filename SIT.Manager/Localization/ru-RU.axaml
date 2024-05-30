@@ -80,6 +80,8 @@
 
 	<!-- Settings Page -->
 	<system:String x:Key="SettingsLauncherSettingsTitle">Настройки Лаунчера</system:String>
+    <system:String x:Key="SettingsMinimizeLauncherAfterGameLaunchTitle">Минимизация лаунчера после запуска игры</system:String>
+    <system:String x:Key="SettingsMinimizeLauncherAfterGameLaunchToolTip">Автоматически сворачивает пусковую установку после открытия игры.</system:String>
 	<system:String x:Key="SettingsCloseLauncherAfterGameLaunchTitle">Закрыть лаунчер после запуска игры</system:String>
 	<system:String x:Key="SettingsCloseLauncherAfterGameLaunchToolTip">Автоматически закрывает лаунчер после открытия игры.</system:String>
 	<system:String x:Key="SettingsLookForUpdatesTitle">Проверять Обновления</system:String>
@@ -429,6 +431,7 @@
 	<!-- CharacterSummaryView -->
 	<system:String x:Key="CharacterSummaryViewPlayButtonText">Играть</system:String>
 	<system:String x:Key="CharacterSummaryViewLoginButtonText">Войти</system:String>
+    <system:String x:Key="CharacterSummaryViewLogoutButtonText">Выход</system:String>
 
 	<!-- CreateServerDialogView -->
 	<system:String x:Key="CreateServerDialogViewAddTitle">Добавить сервер</system:String>

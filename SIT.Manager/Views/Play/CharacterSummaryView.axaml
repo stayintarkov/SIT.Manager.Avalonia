@@ -9,7 +9,7 @@
              x:Class="SIT.Manager.Views.Play.CharacterSummaryView"
 			 x:DataType="vm:CharacterSummaryViewModel">
 	<controls:Card Margin="8">
-		<Grid ColumnDefinitions="Auto, *, Auto">
+		<Grid ColumnDefinitions="Auto, *, Auto, Auto">
 			<StackPanel Grid.Column="0">
 				<Image Grid.Column="0"
 					VerticalAlignment="Center"
@@ -61,6 +61,15 @@
 							   Text="{DynamicResource CharacterSummaryViewLoginButtonText}"/>
 				</Panel>
 			</Button>
+
+			<Button Grid.Column="3"
+					Margin="14,0"
+                    Command="{Binding LogoutCommand}"
+                    IsVisible="{Binding !RequireLogin}">
+                <Panel>
+                    <TextBlock Text="{DynamicResource CharacterSummaryViewLogoutButtonText}"/>
+                </Panel>
+            </Button>
 		</Grid>
 	</controls:Card>
 </UserControl>

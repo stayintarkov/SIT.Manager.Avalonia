@@ -10,6 +10,8 @@ using SIT.Manager.Models.Aki;
 using SIT.Manager.Services.Caching;
 using SIT.Manager.Views.Play;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -46,6 +48,8 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
     public bool _canLaunch = true;
 
     public IAsyncRelayCommand PlayCommand { get; }
+
+    public IAsyncRelayCommand LogoutCommand { get; }
 
     public CharacterSummaryViewModel(AkiServer server,
         AkiMiniProfile profile,
@@ -95,6 +99,7 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
         // However, this would also require changes in the CharacterSummaryView class - for not this implementation, while crude, does suffice.
         // It may be worth implementing Avalonia.ReactiveUI.IActivatableViewModel at a later date for all pages as part of a larger refactor.
         _tarkovClientService.RunningStateChanged += TarkovClient_RunningStateChanged;
+        LogoutCommand = new AsyncRelayCommand(Logout);
     }
 
     private async Task SetSideImage()
@@ -130,7 +135,10 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
         }
 
         AkiCharacter? character = _connectedServer.Characters.FirstOrDefault(x => x.Username == Profile.Username);
-        bool rememberLogin = true;
+
+        // Set this to false rather than true - this was causing duplicate saved profiles
+        // If we were already logged on the code to see if EFT was launched AND remember password would pass and save a duplicate each time
+        bool rememberLogin = false;
 
         if (character == null)
         {
@@ -149,11 +157,6 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
             if (success && rememberLogin)
             {
                 _connectedServer.Characters.Add(character);
-                int index = _configService.Config.BookmarkedServers.FindIndex(x => x.Address == _connectedServer.Address);
-                if (index != -1 && !_configService.Config.BookmarkedServers[index].Characters.Any(x => x.Username == character.Username))
-                {
-                    _configService.Config.BookmarkedServers[index].Characters.Add(character);
-                }
                 _configService.UpdateConfig(_configService.Config);
                 RequireLogin = false;
             }
@@ -189,5 +192,15 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
                     break;
             }
         });
+    }
+    
+    private async Task Logout()
+    {
+        if (character != null)
+        {
+            _connectedServer.Characters.Remove(character);
+            _configService.UpdateConfig(_configService.Config);
+            RequireLogin = true;
+        }
     }
 }

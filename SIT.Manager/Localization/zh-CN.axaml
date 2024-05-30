@@ -80,6 +80,8 @@
 	
 	<!-- Settings Page -->
 	<system:String x:Key="SettingsLauncherSettingsTitle">启动器设置</system:String>
+    <system:String x:Key="SettingsMinimizeLauncherAfterGameLaunchTitle">游戏启动后最小化启动器</system:String>
+    <system:String x:Key="SettingsMinimizeLauncherAfterGameLaunchToolTip">打开游戏后自动最小化启动器</system:String>
 	<system:String x:Key="SettingsCloseLauncherAfterGameLaunchTitle">游戏启动后关闭启动器</system:String>
 	<system:String x:Key="SettingsCloseLauncherAfterGameLaunchToolTip">打开游戏后自动关闭启动器</system:String>
 	<system:String x:Key="SettingsLookForUpdatesTitle">检查更新</system:String>
@@ -430,6 +432,7 @@
 	<!-- CharacterSummaryView -->
 	<system:String x:Key="CharacterSummaryViewPlayButtonText">玩</system:String>
 	<system:String x:Key="CharacterSummaryViewLoginButtonText">登录</system:String>
+    <system:String x:Key="CharacterSummaryViewLogoutButtonText">注销</system:String>
 
 	<!-- CreateServerDialogView -->
 	<system:String x:Key="CreateServerDialogViewAddTitle">添加服务器</system:String>

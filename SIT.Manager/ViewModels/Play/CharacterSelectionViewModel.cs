@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SharpCompress;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Interfaces.ManagedProcesses;
 using SIT.Manager.Models.Aki;
@@ -116,6 +117,11 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
         {
             _logger.LogError(ex, "An error occured while fetching characters");
         }
+
+        if (_connectedServer.Characters.Any())
+        {
+            CheckAndRemoveDuplicateSavedProfiles();
+        }
     }
 
     protected override async void OnActivated()
@@ -123,16 +129,38 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
         base.OnActivated();
 
         AkiServer? currentServer = _configService.Config.BookmarkedServers.FirstOrDefault(x => x.Address == _connectedServer.Address);
-        if (currentServer != null)
-        {
-            _connectedServer = currentServer;
-        }
+
+        if (currentServer != null) _connectedServer = currentServer;
 
         await ReloadCharacterList();
 
         if (SavedCharacterList.Count > 0)
         {
             ShowOnlySavedProfiles = true;
+        }
+    }
+
+    private void CheckAndRemoveDuplicateSavedProfiles()
+    {
+        var characterGrouping = _connectedServer.Characters.GroupBy(x => new { x.Username, x.Password });
+
+        bool updateConfig = false;
+
+        characterGrouping.Where(x => x.Count() > 1).ForEach(duplications =>
+        {
+            // Get the first entry with a profile ID - or just the first entry if no saved profile ID.
+            AkiCharacter? duplicateToKeep = duplications.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.ProfileID)) ??
+                                            duplications.First();
+
+            _connectedServer.Characters.RemoveAll(x => x.Username == duplicateToKeep.Username && x.Password == duplicateToKeep.Password);
+            _connectedServer.Characters.Add(duplicateToKeep);
+
+            updateConfig = true;
+        });
+
+        if (updateConfig)
+        {
+            _configService.UpdateConfig(_configService.Config);
         }
     }
 }
