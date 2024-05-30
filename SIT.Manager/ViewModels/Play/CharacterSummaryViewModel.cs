@@ -1,4 +1,5 @@
 ﻿using Avalonia.Media.Imaging;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
@@ -42,6 +43,9 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
 
     [ObservableProperty]
     private bool _requireLogin = true;
+
+    [ObservableProperty]
+    public bool _canLaunch = true;
 
     public IAsyncRelayCommand PlayCommand { get; }
 
@@ -90,6 +94,11 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
         Task.Run(SetSideImage);
 
         PlayCommand = new AsyncRelayCommand(Play);
+
+        // In an ideal world we would use OnActivated and OnDeactivated - which are implemented from IActivatableViewModel in the Avalonia.ReactiveUI package.
+        // However, this would also require changes in the CharacterSummaryView class - for not this implementation, while crude, does suffice.
+        // It may be worth implementing Avalonia.ReactiveUI.IActivatableViewModel at a later date for all pages as part of a larger refactor.
+        _tarkovClientService.RunningStateChanged += TarkovClient_RunningStateChanged;
         LogoutCommand = new AsyncRelayCommand(Logout);
     }
 
@@ -165,6 +174,26 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
         }
     }
 
+    private void TarkovClient_RunningStateChanged(object? sender, RunningState runningState)
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            switch (runningState)
+            {
+                case RunningState.Starting:
+                case RunningState.Running:
+                    CanLaunch = false;
+
+                    break;
+                case RunningState.NotRunning:
+                case RunningState.StoppedUnexpectedly:
+                    CanLaunch = true;
+
+                    break;
+            }
+        });
+    }
+    
     private async Task Logout()
     {
         if (character != null)
