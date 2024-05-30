@@ -8,6 +8,7 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Net.Sockets;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -47,9 +48,33 @@ public partial class NetworkToolsViewModel : ObservableRecipient
         CheckPortsCommand = new AsyncRelayCommand(CheckPorts);
     }
 
+    private static async Task<bool> CheckPort(string host, ushort port, CancellationToken token)
+    {
+        using (TcpClient tcpClient = new())
+        {
+            try
+            {
+                await tcpClient.ConnectAsync(host, port, token);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private async Task ExternalServerPortCheck(CancellationToken token)
     {
-        // TODO
+        PortCheckerResponse response = new()
+        {
+            AkiSuccess = await CheckPort(ExternalServerIP, ushort.Parse(PortResponse.PortsUsed.AkiPort), token).ConfigureAwait(false),
+            NatSuccess = await CheckPort(ExternalServerIP, ushort.Parse(PortResponse.PortsUsed.NatPort), token).ConfigureAwait(false),
+            RelaySuccess = await CheckPort(ExternalServerIP, ushort.Parse(PortResponse.PortsUsed.RelayPort), token).ConfigureAwait(false),
+            PortsUsed = PortResponse.PortsUsed,
+            IpAddress = ExternalServerIP
+        };
+        await ProcessPortResponse(response);
     }
 
     private async Task LocalServerPortCheck(CancellationToken token)
@@ -91,7 +116,7 @@ public partial class NetworkToolsViewModel : ObservableRecipient
                     }
                 default:
                     {
-                        //TODO: Logging here
+                        _logger.LogWarning("Unknown http status response {statusCode}", reqResp.StatusCode);
                         return;
                     }
             }
