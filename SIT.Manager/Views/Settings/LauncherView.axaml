@@ -11,6 +11,9 @@
 	<StackPanel Margin="16,8">
 		<controls:Card Margin="0,8">
 			<StackPanel>
+                <CheckBox Content="{DynamicResource SettingsMinimizeLauncherAfterGameLaunchTitle}"
+                          ToolTip.Tip="{DynamicResource SettingsMinimizeLauncherAfterGameLaunchToolTip}"
+                          IsChecked="{Binding Config.MinimizeAfterLaunch, Mode=TwoWay}"/>
 				<CheckBox Content="{DynamicResource SettingsCloseLauncherAfterGameLaunchTitle}"
 						  ToolTip.Tip="{DynamicResource SettingsCloseLauncherAfterGameLaunchToolTip}"
 						  IsChecked="{Binding _launcherSettings.CloseAfterLaunch, Mode=TwoWay}"/>

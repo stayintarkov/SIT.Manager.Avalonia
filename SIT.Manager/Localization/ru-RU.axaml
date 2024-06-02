@@ -80,6 +80,8 @@
 
 	<!-- Settings Page -->
 	<system:String x:Key="SettingsLauncherSettingsTitle">Настройки Лаунчера</system:String>
+    <system:String x:Key="SettingsMinimizeLauncherAfterGameLaunchTitle">Минимизация лаунчера после запуска игры</system:String>
+    <system:String x:Key="SettingsMinimizeLauncherAfterGameLaunchToolTip">Автоматически сворачивает пусковую установку после открытия игры.</system:String>
 	<system:String x:Key="SettingsCloseLauncherAfterGameLaunchTitle">Закрыть лаунчер после запуска игры</system:String>
 	<system:String x:Key="SettingsCloseLauncherAfterGameLaunchToolTip">Автоматически закрывает лаунчер после открытия игры.</system:String>
 	<system:String x:Key="SettingsLookForUpdatesTitle">Проверять Обновления</system:String>
@@ -428,6 +430,7 @@
 	<!-- CharacterSummaryView -->
 	<system:String x:Key="CharacterSummaryViewPlayButtonText">Играть</system:String>
 	<system:String x:Key="CharacterSummaryViewLoginButtonText">Войти</system:String>
+    <system:String x:Key="CharacterSummaryViewLogoutButtonText">Выход</system:String>
 
 	<!-- CreateServerDialogView -->
 	<system:String x:Key="CreateServerDialogViewAddTitle">Добавить сервер</system:String>
@@ -436,6 +439,8 @@
 	<system:String x:Key="CreateServerDialogViewCloseButtonText">Закрыть</system:String>
 	<system:String x:Key="CreateServerDialogViewAddressLabel">Адрес</system:String>
 	<system:String x:Key="CreateServerDialogViewAddressTextBoxWatermark">Введите адрес сервера...</system:String>
+	<system:String x:Key="CreateServerDialogViewNicknameLabel">Nickname</system:String>
+	<system:String x:Key="CreateServerDialogViewNicknameTextBoxWatermark">Optional nickname for server...</system:String>
 
 	<!-- DirectConnectView -->
 	<system:String x:Key="DirectConnectViewAddressBoxTitle">Адрес</system:String>
@@ -464,6 +469,7 @@
 	<!-- ServerSummaryView -->
 	<system:String x:Key="ServerSummaryViewModelConnectButtonText">Подключиться</system:String>
 	<system:String x:Key="ServerSummaryViewModelPingUnitsText">мс</system:String>
+	<system:String x:Key="ServerSummaryViewServerConnectingText">Connecting...</system:String>
 
 	<!-- PlayPage -->
 	<system:String x:Key="PlayPageBookmarksTabHeader">Закладки</system:String>
@@ -552,4 +558,9 @@
 	<system:String x:Key="NetworkToolsViewPortTestSuccessText">Port open!</system:String>
 	<system:String x:Key="NetworkToolsViewPortTestFailText">Port closed!</system:String>
 	<system:String x:Key="NetworkToolsViewUnknownIpAddressText">Unknown</system:String>
+	<system:String x:Key="NetworkToolsViewServerLocationRadioGroupHeader">Where is the server you wish to check?</system:String>
+	<system:String x:Key="NetworkToolsViewServerLocationLocalServerOption">Local</system:String>
+	<system:String x:Key="NetworkToolsViewServerLocationExternalServerOption">External</system:String>
+	<system:String x:Key="NetworkToolsViewExternalIPAddressSelectionText">External IP to test:</system:String>
+	<system:String x:Key="NetworkToolsViewExternalIPAddressSelectionWatermark">External Server Address</system:String>
 </ResourceDictionary>

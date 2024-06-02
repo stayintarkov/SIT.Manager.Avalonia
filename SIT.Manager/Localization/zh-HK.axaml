@@ -80,6 +80,8 @@
 	
 	<!-- Settings Page -->
 	<system:String x:Key="SettingsLauncherSettingsTitle">啟動器設定</system:String>
+    <system:String x:Key="SettingsMinimizeLauncherAfterGameLaunchTitle">游戏启动后最小化启动器</system:String>
+    <system:String x:Key="SettingsMinimizeLauncherAfterGameLaunchToolTip">打开游戏后自动最小化启动器</system:String>
 	<system:String x:Key="SettingsCloseLauncherAfterGameLaunchTitle">遊戲啟動後關閉啟動器</system:String>
 	<system:String x:Key="SettingsCloseLauncherAfterGameLaunchToolTip">打開遊戲後自動關閉啟動器</system:String>
 	<system:String x:Key="SettingsLookForUpdatesTitle">檢查更新</system:String>
@@ -428,6 +430,7 @@
 	<!-- CharacterSummaryView -->
 	<system:String x:Key="CharacterSummaryViewPlayButtonText">玩</system:String>
 	<system:String x:Key="CharacterSummaryViewLoginButtonText">登錄</system:String>
+    <system:String x:Key="CharacterSummaryViewLogoutButtonText">注销</system:String>
 
 	<!-- CreateServerDialogView -->
 	<system:String x:Key="CreateServerDialogViewAddTitle">添加伺服器</system:String>
@@ -436,6 +439,8 @@
 	<system:String x:Key="CreateServerDialogViewCloseButtonText">關閉</system:String>
 	<system:String x:Key="CreateServerDialogViewAddressLabel">地址</system:String>
 	<system:String x:Key="CreateServerDialogViewAddressTextBoxWatermark">输入服务器地址...</system:String>
+	<system:String x:Key="CreateServerDialogViewNicknameLabel">Nickname</system:String>
+	<system:String x:Key="CreateServerDialogViewNicknameTextBoxWatermark">Optional nickname for server...</system:String>
 
 	<!-- DirectConnectView -->
 	<system:String x:Key="DirectConnectViewAddressBoxTitle">地址</system:String>
@@ -464,6 +469,7 @@
 	<!-- ServerSummaryView -->
 	<system:String x:Key="ServerSummaryViewModelConnectButtonText">連接</system:String>
 	<system:String x:Key="ServerSummaryViewModelPingUnitsText">毫秒</system:String>
+	<system:String x:Key="ServerSummaryViewServerConnectingText">Connecting...</system:String>
 
 	<!-- PlayPage -->
 	<system:String x:Key="PlayPageBookmarksTabHeader">書籤</system:String>
@@ -552,4 +558,9 @@
 	<system:String x:Key="NetworkToolsViewPortTestSuccessText">Port open!</system:String>
 	<system:String x:Key="NetworkToolsViewPortTestFailText">Port closed!</system:String>
 	<system:String x:Key="NetworkToolsViewUnknownIpAddressText">Unknown</system:String>
+	<system:String x:Key="NetworkToolsViewServerLocationRadioGroupHeader">Where is the server you wish to check?</system:String>
+	<system:String x:Key="NetworkToolsViewServerLocationLocalServerOption">Local</system:String>
+	<system:String x:Key="NetworkToolsViewServerLocationExternalServerOption">External</system:String>
+	<system:String x:Key="NetworkToolsViewExternalIPAddressSelectionText">External IP to test:</system:String>
+	<system:String x:Key="NetworkToolsViewExternalIPAddressSelectionWatermark">External Server Address</system:String>
 </ResourceDictionary>

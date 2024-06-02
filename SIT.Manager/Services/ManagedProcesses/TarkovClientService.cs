@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls.ApplicationLifetimes;
+﻿using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using FluentAvalonia.UI.Controls;
 using Microsoft.Extensions.Logging;
 using SIT.Manager.Exceptions;
@@ -127,6 +128,11 @@ public class TarkovClientService(
                 Title = localizationService.TranslateSource("ModsPageViewModelErrorTitle"), Content = ex.Message
             }.ShowAsync();
             return false;
+        }
+
+        if (_launcherConfig.Config.MinimizeAfterLaunch)
+        {
+            MinimizeManager();
         }
 
         if (_launcherConfig.CloseAfterLaunch)

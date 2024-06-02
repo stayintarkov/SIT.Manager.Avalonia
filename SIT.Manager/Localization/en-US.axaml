@@ -80,9 +80,11 @@
 
 	<!-- Settings Page -->
 	<system:String x:Key="SettingsLauncherSettingsTitle">Launcher</system:String>
+    <system:String x:Key="SettingsMinimizeLauncherAfterGameLaunchTitle">Minimize Launcher After Game Launch</system:String>
+    <system:String x:Key="SettingsMinimizeLauncherAfterGameLaunchToolTip">Minimizes the launcher automatically after opening the game.</system:String>
 	<system:String x:Key="SettingsCloseLauncherAfterGameLaunchTitle">Close Launcher After Game Launch</system:String>
 	<system:String x:Key="SettingsCloseLauncherAfterGameLaunchToolTip">Closes the launcher automatically after opening the game.</system:String>
-	<system:String x:Key="SettingsLookForUpdatesTitle">Look For Updates</system:String>
+    <system:String x:Key="SettingsLookForUpdatesTitle">Look For Updates</system:String>
 	<system:String x:Key="SettingsLookForUpdatesTitleToolTip">Automatically look for updates when opening the launcher.</system:String>
 	<system:String x:Key="SettingsHideIpAddressTitle">Hide Ip Address</system:String>
 	<system:String x:Key="SettingsHideIpAddressToolTip">Hides the Ip Address with the star symbols in Ip Address Box.</system:String>
@@ -427,6 +429,7 @@
 	<!-- CharacterSummaryView -->
 	<system:String x:Key="CharacterSummaryViewPlayButtonText">Play</system:String>
 	<system:String x:Key="CharacterSummaryViewLoginButtonText">Login</system:String>
+	<system:String x:Key="CharacterSummaryViewLogoutButtonText">Logout</system:String>
 
 	<!-- CreateServerDialogView -->
 	<system:String x:Key="CreateServerDialogViewAddTitle">Add Server</system:String>
@@ -435,6 +438,8 @@
 	<system:String x:Key="CreateServerDialogViewCloseButtonText">Close</system:String>
 	<system:String x:Key="CreateServerDialogViewAddressLabel">Address</system:String>
 	<system:String x:Key="CreateServerDialogViewAddressTextBoxWatermark">Enter Server Address...</system:String>
+	<system:String x:Key="CreateServerDialogViewNicknameLabel">Nickname</system:String>
+	<system:String x:Key="CreateServerDialogViewNicknameTextBoxWatermark">Optional nickname for server...</system:String>
 
 	<!-- DirectConnectView -->
 	<system:String x:Key="DirectConnectViewAddressBoxTitle">Address</system:String>
@@ -463,6 +468,7 @@
 	<!-- ServerSummaryView -->
 	<system:String x:Key="ServerSummaryViewModelConnectButtonText">Connect</system:String>
 	<system:String x:Key="ServerSummaryViewModelPingUnitsText">ms</system:String>
+	<system:String x:Key="ServerSummaryViewServerConnectingText">Connecting...</system:String>
 
 	<!-- PlayPage -->
 	<system:String x:Key="PlayPageBookmarksTabHeader">Bookmarks</system:String>
@@ -550,5 +556,10 @@
 	<system:String x:Key="NetworkToolsViewNatPortLabelText">Nat Port: </system:String>
 	<system:String x:Key="NetworkToolsViewPortTestSuccessText">Port open!</system:String>
 	<system:String x:Key="NetworkToolsViewPortTestFailText">Port closed!</system:String>
-	<system:String x:Key="NetworkToolsViewUnknownIpAddressText">Unknown</system:String>	
+	<system:String x:Key="NetworkToolsViewUnknownIpAddressText">Unknown</system:String>
+	<system:String x:Key="NetworkToolsViewServerLocationRadioGroupHeader">Where is the server you wish to check?</system:String>
+	<system:String x:Key="NetworkToolsViewServerLocationLocalServerOption">Local</system:String>
+	<system:String x:Key="NetworkToolsViewServerLocationExternalServerOption">External</system:String>
+	<system:String x:Key="NetworkToolsViewExternalIPAddressSelectionText">External IP to test:</system:String>
+	<system:String x:Key="NetworkToolsViewExternalIPAddressSelectionWatermark">External Server Address</system:String>
 </ResourceDictionary>

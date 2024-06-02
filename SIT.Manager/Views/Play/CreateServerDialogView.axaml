@@ -18,5 +18,10 @@
 				 MinWidth="300" 
 				 HorizontalAlignment="Left" 
 				 Watermark="{DynamicResource CreateServerDialogViewAddressTextBoxWatermark}"/>
+		<Label Content="{DynamicResource CreateServerDialogViewNicknameLabel}" FontWeight="SemiBold"/>
+		<TextBox Text="{Binding ServerNickname, Mode=TwoWay}"
+				 MinWidth="300"
+				 HorizontalAlignment="Left"
+				 Watermark="{DynamicResource CreateServerDialogViewNicknameTextBoxWatermark}"/>
 	</StackPanel>
 </ui:ContentDialog>
