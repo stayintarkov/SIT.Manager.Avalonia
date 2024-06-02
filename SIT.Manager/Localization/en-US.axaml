@@ -439,6 +439,8 @@
 	<system:String x:Key="CreateServerDialogViewCloseButtonText">Close</system:String>
 	<system:String x:Key="CreateServerDialogViewAddressLabel">Address</system:String>
 	<system:String x:Key="CreateServerDialogViewAddressTextBoxWatermark">Enter Server Address...</system:String>
+	<system:String x:Key="CreateServerDialogViewNicknameLabel">Nickname</system:String>
+	<system:String x:Key="CreateServerDialogViewNicknameTextBoxWatermark">Optional nickname for server...</system:String>
 
 	<!-- DirectConnectView -->
 	<system:String x:Key="DirectConnectViewAddressBoxTitle">Address</system:String>
@@ -467,6 +469,7 @@
 	<!-- ServerSummaryView -->
 	<system:String x:Key="ServerSummaryViewModelConnectButtonText">Connect</system:String>
 	<system:String x:Key="ServerSummaryViewModelPingUnitsText">ms</system:String>
+	<system:String x:Key="ServerSummaryViewServerConnectingText">Connecting...</system:String>
 
 	<!-- PlayPage -->
 	<system:String x:Key="PlayPageBookmarksTabHeader">Bookmarks</system:String>

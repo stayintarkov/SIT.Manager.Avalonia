@@ -441,6 +441,8 @@
 	<system:String x:Key="CreateServerDialogViewCloseButtonText">Закрити</system:String>
 	<system:String x:Key="CreateServerDialogViewAddressLabel">Адреса</system:String>
 	<system:String x:Key="CreateServerDialogViewAddressTextBoxWatermark">Введіть адресу сервера...</system:String>
+	<system:String x:Key="CreateServerDialogViewNicknameLabel">Nickname</system:String>
+	<system:String x:Key="CreateServerDialogViewNicknameTextBoxWatermark">Optional nickname for server...</system:String>
 
 	<!-- DirectConnectView -->
 	<system:String x:Key="DirectConnectViewAddressBoxTitle">Адреса</system:String>
@@ -469,6 +471,7 @@
 	<!-- ServerSummaryView -->
 	<system:String x:Key="ServerSummaryViewModelConnectButtonText">Підключитися</system:String>
 	<system:String x:Key="ServerSummaryViewModelPingUnitsText">мс</system:String>
+	<system:String x:Key="ServerSummaryViewServerConnectingText">Connecting...</system:String>
 
 	<!-- PlayPage -->
 	<system:String x:Key="PlayPageBookmarksTabHeader">Закладки</system:String>

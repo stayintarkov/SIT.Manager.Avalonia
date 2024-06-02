@@ -39,15 +39,18 @@ public partial class ServerSelectionViewModel : ObservableRecipient, IRecipient<
 
     private async Task CreateServer()
     {
-        CreateServerDialogView dialog = new(_localizationService, false);
-        (ContentDialogResult result, Uri serverUri) = await dialog.ShowAsync();
-        if (result == ContentDialogResult.Primary)
+        CreateServerDialogView dialog = new(_localizationService, false, string.Empty);
+        CreateServerDialogResult result = await dialog.ShowAsync();
+        if (result.DialogResult == ContentDialogResult.Primary)
         {
             bool serverExists = _configService.Config.BookmarkedServers
-                .Any(x => Uri.Compare(x.Address, serverUri, UriComponents.HostAndPort, UriFormat.SafeUnescaped, StringComparison.OrdinalIgnoreCase) == 0);
+                .Any(x => Uri.Compare(x.Address, result.ServerUri, UriComponents.HostAndPort, UriFormat.SafeUnescaped, StringComparison.OrdinalIgnoreCase) == 0);
             if (!serverExists)
             {
-                AkiServer newServer = new(serverUri);
+                AkiServer newServer = new(result.ServerUri)
+                {
+                    Nickname = result.ServerNickname
+                };
                 ServerList.Add(ActivatorUtilities.CreateInstance<ServerSummaryViewModel>(_serviceProvider, newServer));
                 _configService.Config.BookmarkedServers.Add(newServer);
                 _configService.UpdateConfig(_configService.Config);

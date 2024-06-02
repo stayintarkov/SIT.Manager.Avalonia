@@ -9,9 +9,13 @@ public partial class CreateServerDialogViewModel : ObservableValidator
 {
     private readonly ILocalizationService _localizationService;
 
+    [ObservableProperty]
+    private string _serverNickname = string.Empty;
+
     private string _serverAddress = string.Empty;
 
     [CustomValidation(typeof(CreateServerDialogViewModel), nameof(ValidateAddress))]
+    [Required]
     public string ServerAddress
     {
         get => _serverAddress;
@@ -28,11 +32,12 @@ public partial class CreateServerDialogViewModel : ObservableValidator
 
     public string AddOrEditTitle { get; }
 
-    public CreateServerDialogViewModel(string currentServerAddress, bool isEdit, ILocalizationService localizationService)
+    public CreateServerDialogViewModel(string currentServerAddress, string serverNickname, bool isEdit, ILocalizationService localizationService)
     {
         _localizationService = localizationService;
 
         ServerAddress = currentServerAddress;
+        ServerNickname = serverNickname;
 
         if (isEdit)
         {
