@@ -3,6 +3,7 @@ using PeNet;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Hashing;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -10,40 +11,51 @@ using System.Text.Json;
 
 namespace SIT.Manager.Services.Caching;
 
-internal class OnDiskCachingProvider(string cachePath, ILogger<OnDiskCachingProvider> logger) : CachingProviderBase(cachePath)
+internal class OnDiskCachingProvider : CachingProviderBase
 {
-    private const string RESTORE_FILE_NAME = "fileCache.dat";
-    protected override string RestoreFileName => RESTORE_FILE_NAME;
-    private ILogger<OnDiskCachingProvider> _logger = logger;
+    private const string CachePath = "Cache";
+    private const string RestoreFileName = "fileCache.dat";
+    private readonly ILogger<OnDiskCachingProvider> _logger;
+    private readonly XxHash32 _hasher = new();
+    private readonly DirectoryInfo _cacheDirectory;
 
-    protected override void CleanCache()
+    public OnDiskCachingProvider(ILogger<OnDiskCachingProvider> logger)
     {
-        lock (_cacheMap)
-        {
-            HashSet<string> validFileNames = new(_cacheMap.Values
-                .Where(x => x.ExpiryDate > DateTime.UtcNow)
-                .Select(x => Path.GetFileName(x.GetValue<string>())));
-
-            foreach (FileInfo file in _cachePath.GetFiles())
-            {
-                if (string.IsNullOrEmpty(file.Extension) && !validFileNames.Contains(file.Name))
-                    file.Delete();
-            }
-            base.CleanCache();
-        }
+        _logger = logger;
+        _cacheDirectory = new DirectoryInfo(CachePath);
+        Evicted += (_, e) => RemoveCacheFile(e.Key);
+        
+        //TODO: Restore from file
     }
 
-    public override bool Add<T>(string key, T value, TimeSpan? expiryTime = null)
+    private void RemoveCacheFile(string key)
+    {
+        string filename = HashKey(key);
+        string filePath = Path.Combine(_cacheDirectory.FullName, filename);
+        
+        if(File.Exists(filePath)) File.Delete(filePath);
+    }
+
+    private string HashKey(string key)
+    {
+        //I would use Span<byte> but BitConverter doesn't have an overload for it
+        byte[] hashBuffer = new byte[_hasher.HashLengthInBytes]; 
+        _hasher.Append(Encoding.UTF8.GetBytes(key));
+        _hasher.GetHashAndReset(hashBuffer);
+        return BitConverter.ToString(hashBuffer);
+    }
+    
+    public override bool TryAdd<T>(string key, T value, TimeSpan? expiryTime = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
         ArgumentNullException.ThrowIfNull(value, nameof(value));
 
-        if (Exists(key))
-            return false;
+        if (Exists(key)) return false;
 
-        //TODO: Replace MD5 with a non-crypto hash
-        string filename = MD5.HashData(Encoding.UTF8.GetBytes(key)).ToHexString();
-        string filePath = Path.Combine(_cachePath.FullName, filename);
+        string filename = HashKey(key);
+        string filePath = Path.Combine(_cacheDirectory.FullName, filename);
+        
+        _cacheDirectory.Create();
         using (FileStream fs = File.OpenWrite(filePath))
         {
             if (value is Stream inputStream)
@@ -56,73 +68,51 @@ internal class OnDiskCachingProvider(string cachePath, ILogger<OnDiskCachingProv
             else
             {
                 Type? elementType = value.GetType().GetElementType();
-                Span<byte> buffer;
-
                 //ElementType indicates this is an array of bytes
-                if (elementType == typeof(byte))
-                    buffer = value as byte[];
-                else
-                {
-                    string serializedData = JsonSerializer.Serialize(value);
-                    buffer = Encoding.UTF8.GetBytes(serializedData);
-                }
-
-                fs.Write(buffer);
+                if (elementType == typeof(byte)) fs.Write(value as byte[]);
+                else JsonSerializer.Serialize(fs, value);
             }
         }
 
-        DateTime expiryDate = DateTime.UtcNow + (expiryTime ?? TimeSpan.FromMinutes(15));
-        bool success = _cacheMap.TryAdd(key, new CacheEntry(key, filePath, expiryDate));
-        return success ? true : throw new Exception("Key didn't exist but couldn't add key to cache.");
+        bool success = base.TryAdd(key, filePath, expiryTime ?? TimeSpan.FromMinutes(15));
+        if (!success) File.Delete(filePath);
+        return success;
     }
 
     public override CacheValue<T> Get<T>(string key)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
 
-        if (!_cacheMap.TryGetValue(key, out CacheEntry? cacheEntry))
-            return CacheValue<T>.NoValue;
-
-        if (cacheEntry.ExpiryDate < DateTime.UtcNow)
-        {
-            string cacheFilePath = cacheEntry.GetValue<string>();
-            if (File.Exists(cacheFilePath))
-                File.Delete(cacheFilePath);
-            if (Remove(key))
-                OnEvictedTenant(new EvictedEventArgs(key));
-            return CacheValue<T>.NoValue;
-        }
+        if (!TryGetCacheEntry(key, out CacheEntry? cacheEntry)) return CacheValue<T>.NoValue;
 
         try
         {
             string filePath = cacheEntry.GetValue<string>();
             if (!File.Exists(filePath))
             {
-                Remove(cacheEntry.Key);
-                OnEvictedTenant(new EvictedEventArgs(cacheEntry.Key));
+                TryRemove(cacheEntry.Key);
                 return CacheValue<T>.NoValue;
             }
 
-            Type tType = typeof(T);
+            Type genericType = typeof(T);
+            //Note: This stream should *not* be in a using, otherwise it'll dispose on return which is useless
             FileStream fs = File.OpenRead(filePath);
-            if (tType == typeof(Stream))
-                return new CacheValue<T>((T) (object) fs, true);
+            if (genericType == typeof(Stream)) return new CacheValue<T>((T)(object) fs, true);
 
-            byte[] fileBytes;
+            Span<byte> fileBytes;
             try
             {
                 fileBytes = new byte[fs.Length - fs.Position];
-                _ = fs.Read(fileBytes, 0, fileBytes.Length);
+                _ = fs.Read(fileBytes);
             }
             finally
             {
                 fs.Dispose();
             }
             
-            if (tType == typeof(byte[]))
-                return new CacheValue<T>((T) (object) fileBytes, true);
-
-            return new CacheValue<T>(JsonSerializer.Deserialize<T>(fileBytes), true);
+            return genericType == typeof(byte[]) ?
+                new CacheValue<T>((T) (object) fileBytes.ToArray(), true) :
+                new CacheValue<T>(JsonSerializer.Deserialize<T>(fileBytes), true);
         }
         catch (Exception ex)
         {

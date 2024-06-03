@@ -11,8 +11,5 @@ public class CacheValue<T>(T? value, bool hasValue)
     public T? Value { get { return value; } }
     public static CacheValue<T> Null { get; } = new(default, true);
     public static CacheValue<T> NoValue { get; } = new(default, false);
-    public override string ToString()
-    {
-        return Value?.ToString() ?? "null";
-    }
+    public override string ToString() => Value?.ToString() ?? "null";
 }

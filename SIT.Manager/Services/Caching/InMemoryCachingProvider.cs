@@ -3,27 +3,13 @@ using System;
 
 namespace SIT.Manager.Services.Caching;
 
-internal class InMemoryCachingProvider(string cachePath, ILogger<InMemoryCachingProvider> logger) : CachingProviderBase(cachePath)
+internal class InMemoryCachingProvider(ILogger<InMemoryCachingProvider> logger) : CachingProviderBase
 {
-    private const string RESTORE_FILE_NAME = "memoryCache.dat";
-
-    private readonly ILogger<InMemoryCachingProvider> _logger = logger;
-
-    protected override string RestoreFileName => RESTORE_FILE_NAME;
-
     public override CacheValue<T> Get<T>(string key)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
 
-        if (!_cacheMap.TryGetValue(key, out CacheEntry? cacheEntry))
-            return CacheValue<T>.NoValue;
-
-        if (cacheEntry.ExpiryDate < DateTime.UtcNow)
-        {
-            if (Remove(cacheEntry.Key))
-                OnEvictedTenant(new EvictedEventArgs(cacheEntry.Key));
-            return CacheValue<T>.NoValue;
-        }
+        if (!TryGetCacheEntry(key, out CacheEntry? cacheEntry)) return CacheValue<T>.NoValue;
 
         try
         {
@@ -32,37 +18,8 @@ internal class InMemoryCachingProvider(string cachePath, ILogger<InMemoryCaching
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occured while casting value to generic");
+            logger.LogError(ex, "An error occured while casting value to generic");
             return CacheValue<T>.NoValue;
         }
-    }
-
-    public override bool Add<T>(string key, T value, TimeSpan? expiryTime = null)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
-        ArgumentNullException.ThrowIfNull(value, nameof(value));
-
-        DateTime expiryDate = DateTime.UtcNow + (expiryTime ?? TimeSpan.FromMinutes(15));
-        CacheEntry cacheEntry = new(key, value, expiryDate);
-        if (expiryDate < DateTime.UtcNow)
-        {
-            if (Remove(cacheEntry.Key))
-                OnEvictedTenant(new EvictedEventArgs(cacheEntry.Key));
-            return false;
-        }
-
-        if (_cacheMap.TryAdd(cacheEntry.Key, cacheEntry))
-            return true;
-
-        if (!_cacheMap.TryGetValue(cacheEntry.Key, out CacheEntry? existingEntry) || existingEntry.ExpiryDate < DateTime.UtcNow)
-            return false;
-
-        _cacheMap.AddOrUpdate(cacheEntry.Key, cacheEntry, (_, _) => cacheEntry);
-
-        return true;
-    }
-
-    protected override void SaveKeysToFile(string restoreFileName)
-    {
     }
 }

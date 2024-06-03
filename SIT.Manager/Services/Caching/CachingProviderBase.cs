@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -11,93 +12,53 @@ using System.Threading.Tasks;
 namespace SIT.Manager.Services.Caching;
 internal abstract class CachingProviderBase : ICachingProvider
 {
-    protected readonly ConcurrentDictionary<string, CacheEntry> _cacheMap = new();
-    protected readonly DirectoryInfo _cachePath;
+    protected readonly ConcurrentDictionary<string, CacheEntry> CacheMap = new();
     private readonly Timer _landlord;
-    protected abstract string RestoreFileName { get; }
     public event EventHandler<EvictedEventArgs>? Evicted;
 
-    protected CachingProviderBase(string cachePath)
+    protected CachingProviderBase()
     {
-        _cachePath = new DirectoryInfo(cachePath);
-        _cachePath.Create();
-        _landlord = new Timer(EvictTenants, _cacheMap, TimeSpan.FromSeconds(5), TimeSpan.FromMinutes(0.5));
+        _landlord = new Timer(EvictTenants, CacheMap, TimeSpan.FromSeconds(5), TimeSpan.FromMinutes(0.5));
+    }
 
-        string restoreFilePath = Path.Combine(cachePath, RestoreFileName);
-        if (File.Exists(restoreFilePath))
-            _cacheMap = JsonSerializer.Deserialize<ConcurrentDictionary<string, CacheEntry>>(File.ReadAllText(restoreFilePath)) ?? new();
-
-        if (App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime)
+    public virtual void EvictTenants(object? state = null)
+    {
+        lock (CacheMap)
         {
-            lifetime.ShutdownRequested += (sender, e) =>
+            foreach (CacheEntry entry in CacheMap.Values)
             {
-                CleanCache();
-                SaveKeysToFile(RestoreFileName);
-            };
+                if (!entry.Expired) continue;
+                TryRemove(entry.Key);
+            }   
         }
     }
 
-    protected virtual void CleanCache()
-    {
-        EvictTenants(_cacheMap);
-    }
-
-    protected virtual void SaveKeysToFile(string restoreFileName)
-    {
-        _cachePath.Create();
-        string keyDataPath = Path.Combine(_cachePath.FullName, restoreFileName);
-        if (_cacheMap.IsEmpty)
-        {
-            if (File.Exists(keyDataPath))
-                File.Delete(keyDataPath);
-            return;
-        }
-        File.WriteAllText(keyDataPath, JsonSerializer.Serialize(_cacheMap));
-    }
-    protected virtual void EvictTenants(object? state)
-    {
-        if (state == null)
-            return;
-
-        ConcurrentDictionary<string, CacheEntry> cache = (ConcurrentDictionary<string, CacheEntry>) state;
-        foreach (CacheEntry entry in cache.Values)
-        {
-            if (entry.ExpiryDate >= DateTime.UtcNow)
-                continue;
-
-            if (Remove(entry.Key))
-                Evicted?.Invoke(this, new EvictedEventArgs(entry.Key));
-        }
-
-        SaveKeysToFile(RestoreFileName);
-    }
     public virtual void Clear(string prefix = "")
     {
-        IEnumerable<CacheEntry> entriesToRemove = string.IsNullOrWhiteSpace(prefix) ? _cacheMap.Values : _cacheMap.Values.Where(x => x.Key.StartsWith(prefix));
+        IEnumerable<CacheEntry> entriesToRemove = string.IsNullOrWhiteSpace(prefix)
+            ? CacheMap.Values
+            : CacheMap.Values.Where(x => x.Key.StartsWith(prefix));
 
         foreach (CacheEntry entry in entriesToRemove)
         {
-            string filePath = entry.Value as string ?? string.Empty;
-            if (File.Exists(filePath))
-                File.Delete(filePath);
-            _cacheMap.Remove(entry.Key, out _);
+            CacheMap.TryRemove(entry.Key, out _);
         }
     }
     public virtual bool Exists(string key)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
-        return _cacheMap.TryGetValue(key, out CacheEntry? entry) && entry.ExpiryDate > DateTime.UtcNow;
+        return CacheMap.TryGetValue(key, out CacheEntry? entry) && !entry.Expired;
     }
     public virtual IEnumerable<string> GetAllKeys(string prefix)
     {
         ArgumentNullException.ThrowIfNull(prefix);
-        return _cacheMap.Values
-            .Where(x => x.Key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase) && x.ExpiryDate > DateTime.UtcNow)
+        return CacheMap.Values
+            .Where(x => x.Key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase) && !x.Expired)
             .Select(x => x.Key).ToList();
     }
     public virtual int GetCount(string prefix = "")
     {
-        IEnumerable<CacheEntry> cacheItems = cacheItems = _cacheMap.Values.Where(x => x.ExpiryDate > DateTime.UtcNow);
+        IEnumerable<CacheEntry> cacheItems = CacheMap.Values.Where(x => !x.Expired);
         if (!string.IsNullOrWhiteSpace(prefix))
         {
             cacheItems = cacheItems.Where(x => x.Key.StartsWith(prefix));
@@ -105,61 +66,64 @@ internal abstract class CachingProviderBase : ICachingProvider
 
         return cacheItems.Count();
     }
-    public virtual bool Remove(string key)
+    public virtual bool TryRemove(string key)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
-        return _cacheMap.TryRemove(key, out _);
+        bool keyRemoved = CacheMap.TryRemove(key, out _);
+        if(keyRemoved) OnEvictedTenant(new EvictedEventArgs(key));
+        return keyRemoved;
     }
-    public virtual int RemoveByPrefix(string prefix)
+    public virtual int TryRemoveByPrefix(string prefix)
     {
         var keysToRemove =
-            _cacheMap.Keys.Where(x => x.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)).ToList();
-        return keysToRemove.Count(Remove);
+            CacheMap.Keys.Where(x => x.StartsWith(prefix, StringComparison.OrdinalIgnoreCase));
+        return keysToRemove.Count(TryRemove);
     }
-    public virtual CacheValue<T> GetOrCompute<T>(string key, Func<string, T> computor, TimeSpan? expiryTime = null)
+    
+    public virtual async Task<CacheValue<T>> GetOrComputeAsync<T>(string key, Func<string, Task<T>> computer, TimeSpan? expiryTime = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
-
-        bool success = TryGet(key, out CacheValue<T> valOut);
-        if (success)
+        
+        if (TryGet(key, out CacheValue<T> valOut))
             return valOut;
 
-        T computedValue = computor(key);
-        bool addSuccess = Add(key, computedValue, expiryTime);
-
-        if (!addSuccess)
-            throw new Exception("Cached value did not exist but could not be added to the cache");
-
-        return Get<T>(key);
-    }
-
-    //TODO: Make this based off synchro version
-    public virtual async Task<CacheValue<T>> GetOrComputeAsync<T>(string key, Func<string, Task<T>> computor, TimeSpan? expiryTime = null)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
-
-        bool success = TryGet(key, out CacheValue<T> valOut);
-        if (success)
-            return valOut;
-
-        T computedValue = await computor(key);
-        bool addSuccess = Add(key, computedValue, expiryTime);
-
-        if (!addSuccess)
-            throw new Exception("Cached value did not exist but could not be added to the cache");
+        T computedValue = await computer(key);
+        _ = TryAdd(key, computedValue, expiryTime);
 
         return Get<T>(key);
     }
     public virtual bool TryGet<T>(string key, out CacheValue<T> cacheValue)
     {
         cacheValue = Get<T>(key);
-        return cacheValue != CacheValue<T>.NoValue;
+        return cacheValue != CacheValue<T>.NoValue && cacheValue != CacheValue<T>.Null;
     }
 
-    protected virtual void OnEvictedTenant(EvictedEventArgs e)
+    public virtual void OnEvictedTenant(EvictedEventArgs e) => Evicted?.Invoke(this, e);
+    public virtual bool TryAdd<T>(string key, T value, TimeSpan? expiryTime = null)
     {
-        Evicted?.Invoke(this, e);
+        ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
+        ArgumentNullException.ThrowIfNull(value, nameof(value));
+
+        DateTime expiryDate = DateTime.UtcNow + (expiryTime ?? TimeSpan.FromMinutes(15));
+        CacheEntry cacheEntry = new(key, value, expiryDate);
+        if (cacheEntry.Expired) return false;
+
+        //TODO: I can foresee this causing an issue in the future. I need to decide what to do here
+        if (CacheMap.TryGetValue(key, out CacheEntry? existingEntry) && !existingEntry.Expired) return false;
+        CacheMap.AddOrUpdate(cacheEntry.Key, cacheEntry, (_, _) => cacheEntry);
+
+        return true;
     }
-    public abstract bool Add<T>(string key, T value, TimeSpan? expiryTime = null);
     public abstract CacheValue<T> Get<T>(string key);
+
+    protected bool TryGetCacheEntry(string key, [MaybeNullWhen(false)] out CacheEntry cacheEntry)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
+
+        if (!CacheMap.TryGetValue(key, out cacheEntry)) return false;
+        if (!cacheEntry.Expired) return true;
+
+        TryRemove(cacheEntry.Key);
+        return false;
+    }
 }

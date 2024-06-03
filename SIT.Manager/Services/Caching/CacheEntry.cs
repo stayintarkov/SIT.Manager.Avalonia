@@ -7,34 +7,29 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Services.Caching;
-internal class CacheEntry
+
+[method: JsonConstructor]
+internal class CacheEntry(string key, object cacheValue, DateTime expiryDate)
 {
-    private object _cacheValue;
-    public string Key { get; private set; }
-    public DateTime ExpiryDate { get; private set; }
-    public DateTime LastAccess { get; private set; } = default;
-    public DateTime LastModified { get; private set; } = DateTime.Now;
+    public string Key { get; } = key;
+    public DateTime ExpiryDate { get; } = expiryDate;
+    public bool Expired => ExpiryDate <= DateTime.UtcNow;
+    //TODO: Implement these to have a use
+    public DateTime LastAccess { get; private set; }
+    public DateTime LastModified { get; private set; } = DateTime.UtcNow;
     public object Value
     {
         get
         {
             LastAccess = DateTime.UtcNow;
-            return _cacheValue;
+            return cacheValue;
         }
         set
         {
-            _cacheValue = value;
+            cacheValue = value;
             LastAccess = DateTime.UtcNow;
             LastModified = DateTime.UtcNow;
         }
-    }
-
-    [JsonConstructor]
-    public CacheEntry(string key, object value, DateTime expiryDate)
-    {
-        this.Key = key;
-        this._cacheValue = value;
-        this.ExpiryDate = expiryDate;
     }
 
     public T GetValue<T>()
@@ -43,24 +38,11 @@ internal class CacheEntry
 
         Type type = typeof(T);
         Type? underlying = Nullable.GetUnderlyingType(type);
-        if(type.IsPrimitive)
-        {
-            if(underlying == null)
-            {
-                return (T) Convert.ChangeType(val, type);
-            }
-            else
-            {
-                return (T) Convert.ChangeType(val, underlying);
-            }
-        }
+        
+        if(type.IsPrimitive) return (T) Convert.ChangeType(val, underlying ?? type);
+        if (val.GetType() != typeof(JsonElement)) return (T) val;
 
-        if(val.GetType() == typeof(JsonElement))
-        {
-            JsonElement jsonElement = (JsonElement) val;
-            return jsonElement.Deserialize<T>();
-        }
-
-        return (T) val;
+        JsonElement jElement = (JsonElement) val;
+        return jElement.Deserialize<T>()!; //I hate using this but we *know* this will never be null
     }
 }
