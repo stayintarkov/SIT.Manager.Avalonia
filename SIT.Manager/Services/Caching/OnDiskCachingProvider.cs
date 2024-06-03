@@ -1,14 +1,10 @@
 ﻿using Avalonia.Controls.ApplicationLifetimes;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using PeNet;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Hashing;
-using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 

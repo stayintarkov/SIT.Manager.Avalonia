@@ -1,11 +1,8 @@
-﻿using Avalonia.Controls.ApplicationLifetimes;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,7 +18,7 @@ internal abstract class CachingProviderBase : ICachingProvider
         _landlord = new Timer(EvictTenants, CacheMap, TimeSpan.FromSeconds(5), TimeSpan.FromMinutes(0.5));
     }
 
-    public virtual void EvictTenants(object? state = null)
+    public void EvictTenants(object? state = null)
     {
         lock (CacheMap)
         {
@@ -116,7 +113,7 @@ internal abstract class CachingProviderBase : ICachingProvider
     }
     public abstract CacheValue<T> Get<T>(string key);
 
-    protected bool TryGetCacheEntry(string key, [MaybeNullWhen(false)] out CacheEntry cacheEntry)
+    public bool TryGetCacheEntry(string key, [MaybeNullWhen(false)] out CacheEntry cacheEntry)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
 

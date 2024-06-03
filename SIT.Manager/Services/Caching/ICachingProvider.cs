@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Services.Caching;
@@ -7,7 +8,7 @@ namespace SIT.Manager.Services.Caching;
 public interface ICachingProvider
 {
     event EventHandler<EvictedEventArgs>? Evicted;
-    void EvictTenants(object? state);
+    void EvictTenants(object? state = null);
     void Clear(string prefix = "");
     bool Exists(string key);
     IEnumerable<string> GetAllKeys(string prefix);
@@ -19,4 +20,5 @@ public interface ICachingProvider
     void OnEvictedTenant(EvictedEventArgs e);
     bool TryAdd<T>(string key, T value, TimeSpan? expiryTime = null);
     CacheValue<T> Get<T>(string key);
+    bool TryGetCacheEntry(string key, [MaybeNullWhen(false)] out CacheEntry cacheEntry);
 }

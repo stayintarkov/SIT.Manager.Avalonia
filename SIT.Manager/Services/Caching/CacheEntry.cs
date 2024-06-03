@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace SIT.Manager.Services.Caching;
 
 [method: JsonConstructor]
-internal class CacheEntry(string key, object cacheValue, DateTime expiryDate)
+public class CacheEntry(string key, object cacheValue, DateTime expiryDate)
 {
     public string Key { get; } = key;
     public DateTime ExpiryDate { get; } = expiryDate;
