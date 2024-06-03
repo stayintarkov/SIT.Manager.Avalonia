@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace SIT.Manager.Services.Caching;
 internal abstract class CachingProviderBase : ICachingProvider
 {
-    protected readonly ConcurrentDictionary<string, CacheEntry> CacheMap = new();
+    protected ConcurrentDictionary<string, CacheEntry> CacheMap = new();
     private readonly Timer _landlord;
     public event EventHandler<EvictedEventArgs>? Evicted;
 

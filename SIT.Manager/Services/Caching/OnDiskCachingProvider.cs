@@ -1,13 +1,16 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Avalonia.Controls.ApplicationLifetimes;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using PeNet;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Hashing;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace SIT.Manager.Services.Caching;
 
@@ -18,6 +21,7 @@ internal class OnDiskCachingProvider : CachingProviderBase
     private readonly ILogger<OnDiskCachingProvider> _logger;
     private readonly XxHash32 _hasher = new();
     private readonly DirectoryInfo _cacheDirectory;
+    private string RestoreFilePath => Path.Combine(_cacheDirectory.FullName, RestoreFileName);
 
     public OnDiskCachingProvider(ILogger<OnDiskCachingProvider> logger)
     {
@@ -25,7 +29,33 @@ internal class OnDiskCachingProvider : CachingProviderBase
         _cacheDirectory = new DirectoryInfo(CachePath);
         Evicted += (_, e) => RemoveCacheFile(e.Key);
         
-        //TODO: Restore from file
+        if (App.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime)
+            lifetime.ShutdownRequested += (o, e) => SaveKeysToFile();
+        
+        if (!File.Exists(RestoreFilePath)) return;
+
+        try
+        {
+            CacheMap = JsonConvert.DeserializeObject<ConcurrentDictionary<string, CacheEntry>>(RestoreFilePath);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An exception occured while attempting to restore cache from file.");
+        }
+    }
+
+    private void SaveKeysToFile()
+    {
+        try
+        {
+            _cacheDirectory.Create();
+            using FileStream fs = File.OpenWrite(RestoreFilePath);
+            JsonSerializer.Serialize(fs, CacheMap);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An exception occured while attempting to save cache to restore file.");
+        }
     }
 
     private void RemoveCacheFile(string key)
@@ -76,6 +106,7 @@ internal class OnDiskCachingProvider : CachingProviderBase
 
         bool success = base.TryAdd(key, filePath, expiryTime ?? TimeSpan.FromMinutes(15));
         if (!success) File.Delete(filePath);
+        SaveKeysToFile();
         return success;
     }
 
