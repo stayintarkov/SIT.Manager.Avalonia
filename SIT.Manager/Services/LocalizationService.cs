@@ -2,6 +2,7 @@
 using SIT.Manager.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.CommandLine;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -11,7 +12,7 @@ namespace SIT.Manager.Services;
 public partial class LocalizationService : ILocalizationService
 {
     private const string ASSEMBLY_NAME = "SIT.Manager";
-    public const string DEFAULT_LANGUAGE = "en-US";
+    private const string DEFAULT_LANGUAGE = "en-US";
 
     private readonly IManagerConfigService _configService;
     private string _currentSelectedLanguage => _configService.Config.LauncherSettings.CurrentLanguageSelected;
@@ -35,7 +36,7 @@ public partial class LocalizationService : ILocalizationService
     private static ResourceInclude CreateResourceLocalization(string locale)
     {
         string url = $"avares://SIT.Manager.ASM/Localization/{locale}.axaml";
-        Uri self = new("resm:Styles?assembly=SIT.Manager");
+        Uri self = new($"resm:Styles?assembly={ASSEMBLY_NAME}");
         return new ResourceInclude(self)
         {
             Source = new Uri(url)
@@ -44,7 +45,6 @@ public partial class LocalizationService : ILocalizationService
 
     private void VerifyLocaleAvailability()
     {
-        string currentLanguage = _currentSelectedLanguage;
         List<CultureInfo> availableLanguages = GetAvailableLocalizations();
         if (!availableLanguages.Any(x => x.Name == _currentSelectedLanguage))
         {
@@ -57,35 +57,21 @@ public partial class LocalizationService : ILocalizationService
     /// </summary>
     public List<CultureInfo> GetAvailableLocalizations()
     {
-        List<CultureInfo?> result = [];
         Assembly assembly = typeof(LocalizationService).Assembly;
-        string folderName = string.Format("{0}.Localization", ASSEMBLY_NAME);
-        result = assembly.GetManifestResourceNames()
-            .Where(r => r.StartsWith(folderName) && r.EndsWith(".axaml"))
-            .Select(r =>
-            {
-                string languageCode = r.Split('.')[^2];
-                try
-                {
-                    return new CultureInfo(languageCode);
-                }
-                catch
-                {
-                    return null;
-                }
-            })
-            .ToList();
+        const string folderName = $"{ASSEMBLY_NAME}.Localization";
 
-        if (result.Count == 0) result.Add(DefaultLocale);
-        List<CultureInfo> resultNotNull = [];
-        foreach (CultureInfo? r in result)
+        List<CultureInfo> result = new();
+        foreach (string resourceName in assembly.GetManifestResourceNames())
         {
-            if (r != null)
-            {
-                resultNotNull.Add(r);
-            }
+            if (!resourceName.StartsWith(folderName) || !resourceName.EndsWith(".axaml")) continue;
+
+            int startPos = resourceName.IndexOf(folderName, StringComparison.Ordinal);
+            int endPos = resourceName.IndexOf('.');
+            string languageCode = resourceName.Substring(startPos + folderName.Length, endPos);
+            result.Add(new CultureInfo(languageCode));
         }
-        return resultNotNull;
+        
+        return result;
     }
 
     /// <summary>
@@ -95,7 +81,8 @@ public partial class LocalizationService : ILocalizationService
     public void Translate(CultureInfo cultureInfo)
     {
         resourceInclude = null;
-        var translations = App.Current.Resources.MergedDictionaries.OfType<ResourceInclude>().FirstOrDefault(x => x.Source?.OriginalString?.Contains("/Localization/") ?? false);
+        ResourceInclude? translations = App.Current.Resources.MergedDictionaries.OfType<ResourceInclude>()
+            .FirstOrDefault(x => x.Source?.OriginalString?.Contains("/Localization/") ?? false);
         try
         {
             if (translations != null) App.Current.Resources.MergedDictionaries.Remove(translations);
@@ -122,9 +109,10 @@ public partial class LocalizationService : ILocalizationService
     /// where % is the definition of parameter, and 1…n is the hierarchy of parameters passed to the function.
     /// </summary>
     /// <param name="key">string that you are accessing in Localization\*culture-info*.axaml file</param>
-    /// <param name="replaces">parameters in hierarchy, example: %1, %2, %3, "10", "20, "30" | output: 10, 20, 30</param>
+    /// <param name="replaces">parameters in hierarchy, example: {0}, {1}, {2}, "10", "20, "30" | output: 10, 20, 30</param>
     public string TranslateSource(string key, params string[] replaces)
     {
+        ArgumentException.ThrowIfNullOrEmpty(key, nameof(key));
         if (resourceInclude == null)
         {
             try
@@ -137,17 +125,13 @@ public partial class LocalizationService : ILocalizationService
             }
         }
 
-        string result = "not found";
-        if (resourceInclude.TryGetResource(key, null, out object? translation) || (resourceInclude = CreateResourceLocalization("en-US")).TryGetResource(key, null, out translation))
+        string result = "[DEV PROBLEM] No key found";
+        object? translation;
+        if (resourceInclude.TryGetResource(key, null, out translation) ||
+            CreateResourceLocalization(DEFAULT_LANGUAGE).TryGetResource(key, null, out translation))
         {
             if (translation != null)
-            {
-                result = (string) translation;
-                for (int i = 0; i < replaces.Length; i++)
-                {
-                    result = result.Replace($"%{i + 1}", replaces[i]);
-                }
-            }
+                result = string.Format((string) translation, replaces);
         }
         return result;
     }

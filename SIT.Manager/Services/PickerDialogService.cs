@@ -3,6 +3,7 @@ using Avalonia.Platform.Storage;
 using SIT.Manager.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Services;
@@ -13,6 +14,7 @@ public class PickerDialogService(Window target) : IPickerDialogService
 
     public async Task<IStorageFolder?> GetDirectoryFromPickerAsync()
     {
+        IStorageFolder? ret = null;
         try
         {
             IReadOnlyList<IStorageFolder> folders = await _target.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions()
@@ -20,16 +22,14 @@ public class PickerDialogService(Window target) : IPickerDialogService
                 AllowMultiple = false
             });
 
-            if (folders.Count != 0)
-            {
-                return folders[0];
-            }
+            ret = folders.FirstOrDefault();
         }
         catch (ArgumentException)
         {
             // The likely reason is the folder selected doesn't exist so we should just be able to return null as with other things.
         }
-        return null;
+
+        return ret;
     }
 
     public async Task<IStorageFile?> GetFileFromPickerAsync()
@@ -39,11 +39,7 @@ public class PickerDialogService(Window target) : IPickerDialogService
             AllowMultiple = false
         });
 
-        if (files.Count != 0)
-        {
-            return files[0];
-        }
-        return null;
+        return files.Count != 0 ? files[0] : null;
     }
 
     public async Task<IStorageFile?> GetFileSaveFromPickerAsync(string defaultFileExtension = "", string suggestedFileName = "")
@@ -55,6 +51,4 @@ public class PickerDialogService(Window target) : IPickerDialogService
         });
         return file;
     }
-
-
 }
