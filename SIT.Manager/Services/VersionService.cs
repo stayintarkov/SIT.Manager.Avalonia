@@ -6,12 +6,16 @@ using SIT.Manager.Interfaces;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace SIT.Manager.Services;
 
 public partial class VersionService(ILogger<VersionService> logger) : IVersionService
 {
+    private const string EFTFileName = "EscapeFromTarkov.exe";
+    private const string SITAssemblyName = "StayInTarkov.dll";
+    private const string AkiFileName = "Aki.Server.exe";
     private readonly ILogger<VersionService> _logger = logger;
 
     [GeneratedRegex("[0]{1,}\\.[0-9]{1,2}\\.[0-9]{1,2}\\.[0-9]{1,2}\\-[0-9]{1,5}")]
@@ -22,10 +26,7 @@ public partial class VersionService(ILogger<VersionService> logger) : IVersionSe
 
     private static string GetFileProductVersionString(string filePath)
     {
-        if (!File.Exists(filePath))
-        {
-            return string.Empty;
-        }
+        if (!File.Exists(filePath)) return string.Empty;
 
         // Use the first traditional / recommended method first
         string fileVersion = FileVersionInfo.GetVersionInfo(filePath).ProductVersion ?? string.Empty;
@@ -37,86 +38,67 @@ public partial class VersionService(ILogger<VersionService> logger) : IVersionSe
             StringFileInfo? stringFileInfo = peHeader.Resources?.VsVersionInfo?.StringFileInfo;
             if (stringFileInfo != null)
             {
-                StringTable? fileinfoTable = stringFileInfo.StringTable.Any() ? stringFileInfo.StringTable[0] : null;
-                fileVersion = fileinfoTable?.ProductVersion ?? string.Empty;
+                StringTable? fileInfoTable = stringFileInfo.StringTable.Length != 0 ? stringFileInfo.StringTable[0] : null;
+                fileVersion = fileInfoTable?.ProductVersion ?? string.Empty;
             }
         }
 
         return fileVersion;
     }
 
-    public string GetSptAkiVersion(string path)
+    private string GetComponentVersion(string path)
     {
-        // TODO fix this when installed on linux
-        string filePath = Path.Combine(path, "Aki.Server.exe");
-        string fileVersion = GetFileProductVersionString(filePath);
+        string fileName = Path.GetFileName(path);
+        string fileVersion = GetFileProductVersionString(path);
         if (string.IsNullOrEmpty(fileVersion))
         {
-            _logger.LogWarning("Check SPT AKI Version: File did not exist at " + filePath);
+            _logger.LogWarning("Check {fileName} Version: File did not exist at {filePath}", fileName, fileVersion);
         }
         else
         {
-            _logger.LogInformation("SPT AKI Version is now: " + fileVersion);
+            _logger.LogInformation("{fileName} Version is now: {fileVersion}", fileVersion, fileName);
         }
+
         return fileVersion;
+    }
+
+    //TODO: Move hardcoded strings to constants
+    public string GetSptAkiVersion(string path)
+    {
+        // TODO fix this when installed on linux
+        string filePath = Path.Combine(path, AkiFileName);
+        return GetComponentVersion(filePath);
     }
 
     public string GetEFTVersion(string path)
     {
-        string eftFilename = "EscapeFromTarkov.exe";
-
         string filePath = path;
-        if (Path.GetFileName(path) != eftFilename)
-        {
-            filePath = Path.Combine(path, "EscapeFromTarkov.exe");
-        }
+        if (Path.GetFileName(path) != EFTFileName)
+            filePath = Path.Combine(path, EFTFileName);
 
-        string fileVersion = GetFileProductVersionString(filePath);
-        if (string.IsNullOrEmpty(fileVersion))
-        {
-            _logger.LogWarning("CheckEFTVersion: File did not exist at " + filePath);
-        }
-        else
-        {
-            fileVersion = EFTVersionRegex().Match(fileVersion).Value.Replace("-", ".");
-            _logger.LogInformation("EFT Version is now: " + fileVersion);
-        }
-        return fileVersion;
+        return EFTVersionRegex().Match(GetComponentVersion(filePath)).Value.Replace('-', '.');
     }
 
     public string GetSITVersion(string path)
     {
-        string filePath = Path.Combine(path, "BepInEx", "plugins", "StayInTarkov.dll");
-        string fileVersion = GetFileProductVersionString(filePath);
-        if (string.IsNullOrEmpty(fileVersion))
-        {
-            _logger.LogWarning("CheckSITVersion: File did not exist at " + filePath);
-        }
-        else
-        {
-            fileVersion = SITVersionRegex().Match(fileVersion).Value.ToString();
-            _logger.LogInformation("SIT Version is now: " + fileVersion);
-        }
-        return fileVersion;
+        string filePath = Path.Combine(path, "BepInEx", "plugins", SITAssemblyName);
+        return SITVersionRegex().Match(GetComponentVersion(filePath)).Value;
     }
 
     public string GetSitModVersion(string path)
     {
         string filePath = Path.Combine(path, "user", "mods", "SITCoop", "package.json");
         string fileVersion = string.Empty;
-        if (File.Exists(filePath))
-        {
-            string json = File.ReadAllText(filePath);
-            dynamic data = JObject.Parse(json);
-            try
-            {
-                fileVersion = data.version;
-            }
-            catch
-            {
-                fileVersion = string.Empty;
-            }
-        }
+        if (!File.Exists(filePath)) return fileVersion;
+        
+        //TODO: Replace this with JsonNode/Element
+        Utf8JsonReader reader = new(File.ReadAllBytes(filePath));
+        if (!JsonDocument.TryParseValue(ref reader, out JsonDocument? jsonDocument))
+            return fileVersion;
+
+        if (jsonDocument.RootElement.TryGetProperty("version", out JsonElement jsonElement))
+            fileVersion = jsonElement.GetString() ?? string.Empty;
+        
         return fileVersion;
     }
 }

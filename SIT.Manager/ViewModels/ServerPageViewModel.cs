@@ -260,7 +260,7 @@ public partial class ServerPageViewModel : ObservableRecipient
 
     protected override void OnActivated()
     {
-        if (_akiServerService.State != RunningState.NotRunning)
+        if (_akiServerService.State >= RunningState.Starting)
         {
             AkiServer_RunningStateChanged(null, _akiServerService.State);
         }
