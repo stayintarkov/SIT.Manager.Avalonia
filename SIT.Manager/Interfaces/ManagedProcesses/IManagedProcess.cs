@@ -16,10 +16,11 @@ public interface IManagedProcess
     void Start(string? arguments = null);
 }
 
+//This order is important!
 public enum RunningState
 {
-    NotRunning,
-    Starting,
-    Running,
-    StoppedUnexpectedly
+    NotRunning = 0,
+    StoppedUnexpectedly = 1,
+    Starting = 2,
+    Running = 3
 }

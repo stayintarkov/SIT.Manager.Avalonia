@@ -35,14 +35,10 @@
 		</Style>
 	</UserControl.Styles>
 	
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto"/>
-			<RowDefinition Height="*"/>
-		</Grid.RowDefinitions>
+	<Grid RowDefinitions="Auto,*">
 
 		<StackPanel Name="InfoBarStackPanel" 
-					Grid.Row="0">
+		            Grid.Row="0">
 			<Grid ColumnDefinitions="auto, auto, auto, *, auto" 
 				  Margin="0,8"
 				  IsVisible="{Binding UpdateAvailable}">

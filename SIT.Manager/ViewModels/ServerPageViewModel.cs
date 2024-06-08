@@ -9,6 +9,7 @@ using SIT.Manager.Models;
 using SIT.Manager.Models.Config;
 using SIT.Manager.Services;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -26,14 +27,14 @@ namespace SIT.Manager.ViewModels;
 public partial class ServerPageViewModel : ObservableRecipient
 {
     [GeneratedRegex("\\x1B(?:[@-Z\\\\-_]|\\[[0-?]*[ -/]*[@-~])")]
-    internal static partial Regex ConsoleTextRemoveANSIFilterRegex();
+    private static partial Regex ConsoleTextRemoveANSIFilterRegex();
 
     private readonly IAkiServerService _akiServerService;
     private readonly IManagerConfigService _configService;
     private readonly IFileService _fileService;
 
-    private readonly SolidColorBrush cachedColorBrush = new(Color.FromRgb(255, 255, 255));
-    private FontFamily cachedFontFamily = FontFamily.Default;
+    private readonly SolidColorBrush _cachedColorBrush = new(Color.FromRgb(255, 255, 255));
+    private FontFamily _cachedFontFamily = FontFamily.Default;
     private AkiConfig _akiConfig => _configService.Config.AkiSettings;
 
     [ObservableProperty]
@@ -42,7 +43,7 @@ public partial class ServerPageViewModel : ObservableRecipient
     [ObservableProperty]
     private string _startServerButtonTextBlock;
 
-    public ObservableCollection<ConsoleText> ConsoleOutput { get; } = [];
+    public ObservableCollection<ConsoleText> ConsoleOutput { get; }
 
     public IAsyncRelayCommand EditServerConfigCommand { get; }
     public IAsyncRelayCommand ClearServerOutputCommand { get; }
@@ -59,6 +60,8 @@ public partial class ServerPageViewModel : ObservableRecipient
         StartServerButtonTextBlock = _localizationService.TranslateSource("ServerPageViewModelStartServer");
         EditServerConfigCommand = new AsyncRelayCommand(EditServerConfig);
         ClearServerOutputCommand = new AsyncRelayCommand(ClearServerOutput);
+        //This is just to preallocate the space to avoid incremental allocations of the buckets
+        ConsoleOutput = new ObservableCollection<ConsoleText>(new List<ConsoleText>(_akiServerService.ServerLineLimit));
     }
 
     private async Task ClearServerOutput()
@@ -73,6 +76,7 @@ public partial class ServerPageViewModel : ObservableRecipient
         }.ShowAsync();
         if (clearServerOutputResponse == ContentDialogResult.Primary)
         {
+            //TODO: Clear the cached output too
             ConsoleOutput.Clear();
         }
     }
@@ -80,28 +84,31 @@ public partial class ServerPageViewModel : ObservableRecipient
     private void UpdateCachedFont()
     {
         string newFontFamilyName = _configService.Config.AkiSettings.ConsoleFontFamily;
-        if (newFontFamilyName.Equals(cachedFontFamily.Name)) return;
+        if (newFontFamilyName.Equals(_cachedFontFamily.Name)) return;
         
         FontFamily newFont = FontManager.Current.SystemFonts.FirstOrDefault(x => x.Name == newFontFamilyName, FontFamily.Parse("Bender"));
-        cachedFontFamily = newFont;
+        _cachedFontFamily = newFont;
 
-        lock (ConsoleOutput) //Idk if this is needed but better safe than sorry ig
+        //TODO: Test me!
+        Interlocked.Exchange(ref _cachedFontFamily, newFont);
+
+        /*lock (ConsoleOutput)
         {
             foreach (ConsoleText textEntry in ConsoleOutput)
             {
-                textEntry.TextFont = cachedFontFamily;
+                textEntry.TextFont = _cachedFontFamily;
             }
-        }
+        }*/
     }
 
     private void UpdateCachedColour()
     {
         Color newColor = _configService.Config.AkiSettings.ConsoleFontColor;
-        if (newColor == cachedColorBrush.Color) return;
-        Dispatcher.UIThread.Post(() => cachedColorBrush.Color = newColor);
+        if (newColor == _cachedColorBrush.Color) return;
+        Dispatcher.UIThread.Post(() => _cachedColorBrush.Color = newColor);
     }
 
-    private void OnAkiPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    private void OnAkiPropertyChanged(object? _, PropertyChangedEventArgs e)
     {
         switch (e.PropertyName)
         {
@@ -118,31 +125,30 @@ public partial class ServerPageViewModel : ObservableRecipient
 
     private void UpdateConsoleWithCachedEntries()
     {
-        foreach (string entry in _akiServerService.GetCachedServerOutput())
+        lock(ConsoleOutput)
         {
-            AddConsole(entry);
+            foreach (string entry in _akiServerService.GetCachedServerOutput())
+            {
+                AddConsole(entry);
+            }   
         }
     }
 
     private void AddConsole(string text)
     {
-        if (string.IsNullOrEmpty(text))
-        {
-            return;
-        }
+        if (string.IsNullOrEmpty(text)) return;
 
-        if (ConsoleOutput.Count > _akiServerService.ServerLineLimit)
+        if (ConsoleOutput.Count >= _akiServerService.ServerLineLimit)
         {
             ConsoleOutput.RemoveAt(0);
         }
-
-        //[32m, [2J, [0;0f,
-        text = ConsoleTextRemoveANSIFilterRegex().Replace(text, "");
+        
+        text = ConsoleTextRemoveANSIFilterRegex().Replace(text, string.Empty);
 
         ConsoleText consoleTextEntry = new()
         {
-            TextColor = cachedColorBrush,
-            TextFont = cachedFontFamily,
+            TextColor = _cachedColorBrush,
+            TextFont = _cachedFontFamily,
             Message = text
         };
 
@@ -154,50 +160,56 @@ public partial class ServerPageViewModel : ObservableRecipient
         Dispatcher.UIThread.Post(() => AddConsole(e.Data ?? "\n"));
     }
 
-    private void AkiServer_RunningStateChanged(object? sender, RunningState runningState)
+    private void AkiServer_RunningStateChanged(object? _, RunningState runningState)
     {
         Dispatcher.UIThread.Invoke(() =>
         {
+            string buttonTextKey = "ServerPageViewModel";
+            string? consoleText = null;
+            
             switch (runningState)
             {
                 case RunningState.Starting:
                     {
-                        AddConsole(_localizationService.TranslateSource("ServerPageViewModelServerStarted"));
-                        StartServerButtonSymbolIcon = Symbol.Stop;
-                        StartServerButtonTextBlock = _localizationService.TranslateSource("ServerPageViewModelStartingServer");
+                        consoleText = _localizationService.TranslateSource("ServerPageViewModelServerStarted");
+                        buttonTextKey += "StartingServer";
                         break;
                     }
                 case RunningState.Running:
                     {
-                        StartServerButtonSymbolIcon = Symbol.Stop;
-                        StartServerButtonTextBlock = _localizationService.TranslateSource("ServerPageViewModelStopServer");
+                        buttonTextKey += "StopServer";
                         break;
                     }
                 case RunningState.NotRunning:
                     {
-                        AddConsole(_localizationService.TranslateSource("ServerPageViewModelServerStopped"));
-                        StartServerButtonSymbolIcon = Symbol.Play;
-                        StartServerButtonTextBlock = _localizationService.TranslateSource("ServerPageViewModelStartServer");
+                        consoleText = _localizationService.TranslateSource("ServerPageViewModelServerStopped");
+                        buttonTextKey += "StartServer";
                         break;
                     }
                 case RunningState.StoppedUnexpectedly:
                     {
-                        AddConsole(_localizationService.TranslateSource("ServerPageViewModelServerError"));
-                        StartServerButtonSymbolIcon = Symbol.Play;
-                        StartServerButtonTextBlock = _localizationService.TranslateSource("ServerPageViewModelStartServer");
+                        consoleText = _localizationService.TranslateSource("ServerPageViewModelServerError");
+                        buttonTextKey += "StartServer";
+                        break;
+                    }
+                default:
+                    {
+                        buttonTextKey = "ToolsPageViewModelErrorMessageTitle";
                         break;
                     }
             }
+            
+            StartServerButtonTextBlock = _localizationService.TranslateSource(buttonTextKey);
+            StartServerButtonSymbolIcon = runningState >= RunningState.Starting ? Symbol.Stop : Symbol.Play;
+            if(consoleText != null)
+                AddConsole(consoleText);
         });
     }
 
     private async Task EditServerConfig()
     {
         string serverPath = _akiConfig.AkiServerPath;
-        if (string.IsNullOrEmpty(serverPath))
-        {
-            return;
-        }
+        if (string.IsNullOrEmpty(serverPath)) return;
 
         string serverConfigPath = Path.Combine(serverPath, "Aki_Data", "Server", "configs");
         await _fileService.OpenDirectoryAsync(serverConfigPath);
@@ -206,7 +218,7 @@ public partial class ServerPageViewModel : ObservableRecipient
     [RelayCommand]
     private void StartServer()
     {
-        if (_akiServerService.State == RunningState.Starting || _akiServerService.State == RunningState.Running)
+        if (_akiServerService.State>= RunningState.Starting)
         {
             AddConsole(_localizationService.TranslateSource("ServerPageViewModelStoppingServerLog"));
             try
@@ -215,6 +227,7 @@ public partial class ServerPageViewModel : ObservableRecipient
             }
             catch (Exception ex)
             {
+                //TODO: Add logging here!
                 AddConsole(ex.Message);
             }
         }
@@ -239,6 +252,7 @@ public partial class ServerPageViewModel : ObservableRecipient
             }
             catch (Exception ex)
             {
+                //TODO: Add logging here!
                 AddConsole(ex.Message);
             }
         }

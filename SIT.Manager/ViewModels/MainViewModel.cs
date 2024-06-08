@@ -162,7 +162,6 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
 
     private void CheckInstallVersion()
     {
-        ManagerConfig config = _configService.Config;
         if (!string.IsNullOrEmpty(_sitConfig.SitTarkovVersion))
         {
             _sitConfig.SitTarkovVersion = _versionService.GetEFTVersion(_sitConfig.SitEFTInstallPath);

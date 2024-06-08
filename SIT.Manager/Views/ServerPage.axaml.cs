@@ -3,47 +3,37 @@ using Avalonia.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using SIT.Manager.Theme.Controls;
 using SIT.Manager.ViewModels;
+using System;
 
 namespace SIT.Manager.Views;
 
 public partial class ServerPage : ActivatableUserControl
 {
+    private const string ConsoleScrollerName = "ConsoleLogScroller";
+    private readonly ScrollViewer _consoleLogScroller;
     private bool _autoScroll = true;
-    private readonly ScrollViewer? _consoleLogScroller;
 
     public ServerPage()
     {
         DataContext = App.Current.Services.GetService<ServerPageViewModel>();
 
         InitializeComponent();
-        _consoleLogScroller = this.FindControl<ScrollViewer>("ConsoleLogScroller");
+        ScrollViewer? scrollViewer = this.FindControl<ScrollViewer>(ConsoleScrollerName);
+        _consoleLogScroller = scrollViewer ??
+                              throw new Exception(
+                                  $"Could not find a {nameof(ScrollViewer)} control with name {ConsoleScrollerName}");
     }
 
-    private void ConsoleLogScroller_ScrollChanged(object? sender, ScrollChangedEventArgs e)
+    private void ConsoleLogScroller_ScrollChanged(object? _, ScrollChangedEventArgs e)
     {
         // User scroll event : set or unset auto-scroll mode
         if (e.ExtentDelta == Vector.Zero)
         {
-            // Content unchanged : user scroll event
-            if (_consoleLogScroller?.Offset.Y == _consoleLogScroller?.ScrollBarMaximum.Y)
-            {
-                // Scroll bar is in bottom
-                // Set auto-scroll mode
-                _autoScroll = true;
-            }
-            else
-            {
-                // Scroll bar isn't in bottom
-                // Unset auto-scroll mode
-                _autoScroll = false;
-            }
+            _autoScroll = Math.Abs(_consoleLogScroller.Offset.Y - _consoleLogScroller.ScrollBarMaximum.Y) < 0.01f;
         }
-
-        // Content scroll event : auto-scroll eventually
-        if (_autoScroll && e.ExtentDelta != Vector.Zero)
+        else
         {
-            // Content changed and auto-scroll mode set
-            // Autoscroll
+            if (!_autoScroll) return;
             _consoleLogScroller?.ScrollToEnd();
         }
     }

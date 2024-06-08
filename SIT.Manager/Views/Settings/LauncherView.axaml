@@ -13,7 +13,7 @@
 			<StackPanel>
                 <CheckBox Content="{DynamicResource SettingsMinimizeLauncherAfterGameLaunchTitle}"
                           ToolTip.Tip="{DynamicResource SettingsMinimizeLauncherAfterGameLaunchToolTip}"
-                          IsChecked="{Binding Config.MinimizeAfterLaunch, Mode=TwoWay}"/>
+                          IsChecked="{Binding _launcherSettings.MinimizeAfterLaunch, Mode=TwoWay}"/>
 				<CheckBox Content="{DynamicResource SettingsCloseLauncherAfterGameLaunchTitle}"
 						  ToolTip.Tip="{DynamicResource SettingsCloseLauncherAfterGameLaunchToolTip}"
 						  IsChecked="{Binding _launcherSettings.CloseAfterLaunch, Mode=TwoWay}"/>

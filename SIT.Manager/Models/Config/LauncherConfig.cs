@@ -10,6 +10,9 @@ public partial class LauncherConfig : ObservableObject
     [ObservableProperty] private Color? _accentColor = Color.FromRgb(0x7f, 0x7f, 0x7f);
 
     [ObservableProperty] private bool _closeAfterLaunch;
+    
+    [ObservableProperty]
+    private bool _minimizeAfterLaunch = false;
 
     [ObservableProperty] private string _currentLanguageSelected = CultureInfo.CurrentCulture.Name;
 

@@ -3,26 +3,21 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
-			 xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
-			 xmlns:controls="clr-namespace:SIT.Manager.Theme.Controls"
+             xmlns:controls="clr-namespace:SIT.Manager.Theme.Controls"
 			 xmlns:vm="clr-namespace:SIT.Manager.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SIT.Manager.Views.ServerPage"
 			 x:CompileBindings="True"
 			 x:DataType="vm:ServerPageViewModel">
 	<controls:Card Margin="12">
-		<Grid>
-			<Grid.RowDefinitions>
-				<RowDefinition Height="4*"/>
-				<RowDefinition Height="Auto"/>
-			</Grid.RowDefinitions>
+		<Grid RowDefinitions="4*,Auto">
 
 			<ScrollViewer Name="ConsoleLogScroller"
-						  Grid.Row="0"
-						  Margin="4"
-						  HorizontalScrollBarVisibility="Disabled"
-						  Background="{DynamicResource AppAccentDark}"
-						  ScrollChanged="ConsoleLogScroller_ScrollChanged">
+			              Grid.Row="0"
+			              Margin="4"
+			              HorizontalScrollBarVisibility="Disabled"
+			              Background="{DynamicResource AppAccentDark}"
+			              ScrollChanged="ConsoleLogScroller_ScrollChanged">
 				<ItemsControl Name="ConsoleLogItemsControl"
 							  ItemsSource="{Binding ConsoleOutput, Mode=OneWay}">
 					<ItemsControl.ItemsPanel>
