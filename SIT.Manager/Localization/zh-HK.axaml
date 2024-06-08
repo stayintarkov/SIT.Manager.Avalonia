@@ -231,11 +231,11 @@
 	<system:String x:Key="LocationEditorViewModelLoadErrorTitle">載入錯誤</system:String>
 	<system:String x:Key="LocationEditorViewModelLoadErrorDescription">載入檔案時發生錯誤！</system:String>
 	<system:String x:Key="LocationEditorViewModelLoadLocationTitle">載入位置</system:String>
-	<system:String x:Key="LocationEditorViewModelLoadLocationDescription">成功載入位置 %1！</system:String>
+	<system:String x:Key="LocationEditorViewModelLoadLocationDescription">成功載入位置 {0}！</system:String>
 	<system:String x:Key="LocationEditorViewModelSaveErrorTitle">儲存錯誤</system:String>
 	<system:String x:Key="LocationEditorViewModelSaveErrorDescription">儲存檔案時發生錯誤！</system:String>
 	<system:String x:Key="LocationEditorViewModelSaveSuccessTitle">儲存</system:String>
-	<system:String x:Key="LocationEditorViewModelSaveSuccessDescription">已成功儲存檔案至：%1</system:String>
+	<system:String x:Key="LocationEditorViewModelSaveSuccessDescription">已成功儲存檔案至：{0}</system:String>
 
 	<!-- Select Edition Dialog -->
 	<system:String x:Key="SelectEditionDialogTitle">選擇版本</system:String>
@@ -248,8 +248,8 @@
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigTitle">配置錯誤</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigDescription">未配置 EFT 安裝路徑，請前往設置以配置安裝路徑！</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageServerConfigDescription">'伺服器路徑' 未配置。請前往設置以配置伺服器路徑。</system:String>
-	<system:String x:Key="ToolsPageViewModelErrorMessageConfigBepInExDescription">找不到指定的路徑，請確認 BepInEx 是否已安裝？路徑：%1</system:String>
-	<system:String x:Key="ToolsPageViewModelErrorMessageConfigSITDescription">找不到「%1」，請確保 SIT 已安裝並且您已經啟動過遊戲！</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigBepInExDescription">找不到指定的路徑，請確認 BepInEx 是否已安裝？路徑：{0}</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigSITDescription">找不到「{0}」，請確保 SIT 已安裝並且您已經啟動過遊戲！</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigLogDescription">找不到日誌文件！</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigButtonOk">確定</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigButtonCancel">取消</system:String>
@@ -257,17 +257,17 @@
 	<system:String x:Key="ToolsPageViewModelConfigClearAllCache">清除所有快取</system:String>
 	<system:String x:Key="ToolsClearManagerCacheButtonToolTip">Clear all caching from SIT Manager</system:String>
 	<system:String x:Key="ToolsClearAllCacheButtonToolTip">Clear all caching from everywhere - EFT, Manager, Server etc</system:String>
-	<system:String x:Key="ToolsPageViewModelUnhandledExceptionError">發生錯誤：%1</system:String>
+	<system:String x:Key="ToolsPageViewModelUnhandledExceptionError">發生錯誤：{0}</system:String>
 
 	<!-- Settings Page ViewModel -->
 	<system:String x:Key="SettingsPageViewModelErrorTitle">錯誤</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigTitle">配置</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigErrorEFTDescription">所選文件夾無效，請確保它是正確的 EFT 遊戲文件夾！</system:String>
-	<system:String x:Key="SettingsPageViewModelConfigInformationEFTDescription">EFT 安裝路徑已設置為 '%1'</system:String>
-	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">SPT-AKI 伺服器安裝路徑已設置為 '%1'</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigInformationEFTDescription">EFT 安裝路徑已設置為 '{0}'</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">SPT-AKI 伺服器安裝路徑已設置為 '{0}'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigErrorSPTAKI">所選文件夾無效，請確保它是正確的 SPT-AKI 伺服器文件夾！</system:String>
 	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">Enable Test Mode Failure</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">Can't enable test mode as you have %1 incompatible mods still enabled</system:String>	
+	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">Can't enable test mode as you have {0} incompatible mods still enabled</system:String>	
 	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorButtonOk">確定</system:String>
 
 	<!-- Server Page ViewModel -->
@@ -291,44 +291,44 @@
 	<system:String x:Key="TarkovClientServiceCacheClearedErrorTitle">清除緩存時出錯</system:String>
 	<system:String x:Key="TarkovClientServiceCacheClearedDescription">所有緩存已清除！</system:String>
 	<system:String x:Key="TarkovClientServiceCacheClearedErrorDescription">在設置中找不到 EFT 安裝路徑</system:String>
-	<system:String x:Key="TarkovClientServiceCacheClearedErrorEFTDescription">EFT 本地緩存目錄未找到：%1</system:String>
+	<system:String x:Key="TarkovClientServiceCacheClearedErrorEFTDescription">EFT 本地緩存目錄未找到：{0}</system:String>
 	<system:String x:Key="TarkovClientServiceCacheClearedEFTDescription">EFT 本地緩存已清除！</system:String>
 
 	<!-- Mod Service -->
-	<system:String x:Key="ModServiceOutdatedDescription">您有 %1 個過時的模組，您想要自動更新它們嗎？過時的模組：%2</system:String>
+	<system:String x:Key="ModServiceOutdatedDescription">您有 {0} 個過時的模組，您想要自動更新它們嗎？過時的模組：{1}</system:String>
 	<system:String x:Key="ModServiceOutdatedModsFoundTitle">發現過時的模組</system:String>
 	<system:String x:Key="ModServiceButtonNo">否</system:String>
 	<system:String x:Key="ModServiceButtonYes">是</system:String>
 	<system:String x:Key="ModServiceUpdatedModsTitle">已更新的模組</system:String>
-	<system:String x:Key="ModServiceUpdatedModsDescription">已更新 %1 個模組！</system:String>
+	<system:String x:Key="ModServiceUpdatedModsDescription">已更新 {0} 個模組！</system:String>
 	<system:String x:Key="ModServiceInstallModTitle">安裝模組</system:String>
 	<system:String x:Key="ModServiceInstallErrorModDescription">EFT 安裝路徑未設定，請在設置中配置！</system:String>
 	<system:String x:Key="ModServiceWarningTitle">警告</system:String>
-	<system:String x:Key="ModServiceWarningDescription">您正在嘗試安裝的模組與您當前安裝的 SIT 版本不相容！支持的 SIT 版本：%1 已安裝的 SIT 版本：%2 仍要繼續安裝嗎？</system:String>
+	<system:String x:Key="ModServiceWarningDescription">您正在嘗試安裝的模組與您當前安裝的 SIT 版本不相容！支持的 SIT 版本：{0} 已安裝的 SIT 版本：{1} 仍要繼續安裝嗎？</system:String>
 	<system:String x:Key="ModServiceUnknownTitle">未知</system:String>
-	<system:String x:Key="ModServiceInstallModDescription">成功安裝了 %1！</system:String>
-	<system:String x:Key="ModServiceErrorInstallModDescription">%1 安裝失敗，請檢查您的 Launcher.log！</system:String>
+	<system:String x:Key="ModServiceInstallModDescription">成功安裝了 {0}！</system:String>
+	<system:String x:Key="ModServiceErrorInstallModDescription">{0} 安裝失敗，請檢查您的 Launcher.log！</system:String>
 	<system:String x:Key="ModServiceErrorUninstallModTitle">卸載模組時出錯</system:String>
-	<system:String x:Key="ModServiceErrorUninstallModDescription">模組 %1 中缺少文件：'%2' ，是否強制從已安裝模組列表中移除此模組？</system:String>
-	<system:String x:Key="ModServiceErrorExceptionUninstallModDescription">模組 %1 中缺少文件：'%2' ，是否強制從已安裝模組列表中移除此模組？</system:String>
-	<system:String x:Key="ModServiceErrorExceptionFileUninstallModDescription">模組 %1 中缺少文件：'%2'</system:String>
+	<system:String x:Key="ModServiceErrorUninstallModDescription">模組 {0} 中缺少文件：'{1}' ，是否強制從已安裝模組列表中移除此模組？</system:String>
+	<system:String x:Key="ModServiceErrorExceptionUninstallModDescription">模組 {0} 中缺少文件：'{1}' ，是否強制從已安裝模組列表中移除此模組？</system:String>
+	<system:String x:Key="ModServiceErrorExceptionFileUninstallModDescription">模組 {0} 中缺少文件：'{1}'</system:String>
 	<system:String x:Key="ModServiceFileUninstallModTitle">卸載模組</system:String>
-	<system:String x:Key="ModServiceFileUninstallModDescription">已成功卸載 %1 ！</system:String>
+	<system:String x:Key="ModServiceFileUninstallModDescription">已成功卸載 {0} ！</system:String>
 
 	<!-- Install Service -->
 	<system:String x:Key="InstallServiceErrorTitle">錯誤</system:String>
 	<system:String x:Key="InstallServiceErrorInstallServerDescription">請先在設置中配置 EFT 路徑</system:String>
 	<system:String x:Key="InstallServiceErrorInstallSITDescription">未設定 EFT 路徑，請先在設置中進行配置</system:String>
 	<system:String x:Key="InstallServiceConfigTitle">配置</system:String>
-	<system:String x:Key="InstallServiceConfigDescription">伺服器端安裝路徑已設置為 '%1'</system:String>
+	<system:String x:Key="InstallServiceConfigDescription">伺服器端安裝路徑已設置為 '{0}'</system:String>
 	<system:String x:Key="InstallServiceInstallSuccessfulTitle">安裝</system:String>
 	<system:String x:Key="InstallServiceInstallSuccessfulDescription">伺服器端安裝成功</system:String>
 	<system:String x:Key="InstallServiceInstallSITSuccessfulDescription">SIT 安裝成功</system:String>
 	<system:String x:Key="InstallerServiceNoDowngradePatcher">這些版本的《逃離塔科夫》沒有可用的降級補丁。</system:String>
 
 	<!-- File Service -->
-	<system:String x:Key="FileServiceProgressDownloading">下載檔案 '%1'</system:String>
-	<system:String x:Key="FileServiceProgressExtracting">正在提取檔案 %1 (%2)</system:String>
+	<system:String x:Key="FileServiceProgressDownloading">下載檔案 '{0}'</system:String>
+	<system:String x:Key="FileServiceProgressExtracting">正在提取檔案 {0} ({1})</system:String>
 
 	<!-- Update Page -->
 	<system:String x:Key="UpdatePageUpdateInfoTextPt1">SIT 管理器正在進行更新，請稍候...</system:String>
@@ -502,9 +502,9 @@
 	<system:String x:Key="DirectConnectViewModelInstallPathTitle">安裝路徑</system:String>
 	<system:String x:Key="DirectConnectViewModelInstallPathDescription">「安裝路徑」未配置。請前往設定並配置安裝路徑。</system:String>
 	<system:String x:Key="DirectConnectViewModelSITInstallationTitle">SIT 安裝</system:String>
-	<system:String x:Key="DirectConnectViewModelSITInstallationDescription">找不到「%1」。請在连接之前安裝 SIT。</system:String>
+	<system:String x:Key="DirectConnectViewModelSITInstallationDescription">找不到「{0}」。請在连接之前安裝 SIT。</system:String>
 	<system:String x:Key="DirectConnectViewModelEFTInstallationTitle">EFT 安裝</system:String>
-	<system:String x:Key="DirectConnectViewModelEFTInstallationDescription">在安裝路徑中找不到「%1」。</system:String>
+	<system:String x:Key="DirectConnectViewModelEFTInstallationDescription">在安裝路徑中找不到「{0}」。</system:String>
 	<system:String x:Key="DirectConnectViewModelInputValidationTitle">輸入驗證</system:String>
 	<system:String x:Key="DirectConnectViewModelInputValidationDescription">缺少輸入字段。</system:String>
 	<system:String x:Key="DirectConnectViewModelUnhandledAkiInstanceTitle">未處理的 Aki 實例</system:String>
@@ -513,7 +513,7 @@
 	<system:String x:Key="DirectConnectViewModelMissingAKIInstallationDescription">缺少 SPT-AKI 服务器可执行文件。</system:String>
 	<system:String x:Key="DirectConnectViewModelLoginIncorrectPassword">密碼错误</system:String>
 	<system:String x:Key="DirectConnectViewModelLoginErrorTitle">登錄错误</system:String>
-	<system:String x:Key="DirectConnectViewModelLoginErrorDescription">無法與服务器 %1 通信</system:String>
+	<system:String x:Key="DirectConnectViewModelLoginErrorDescription">無法與服务器 {0} 通信</system:String>
 	<system:String x:Key="DirectConnectViewModelWaitingForServerTitle">等待伺服器</system:String>
 	<system:String x:Key="DirectConnectViewModelServerErrorTitle">伺服器错误</system:String>
 	<system:String x:Key="DirectConnectViewModelServerErrorDescription">伺服器从未启动。请查看日志了解更多信息。</system:String>
@@ -536,7 +536,7 @@
 	<system:String x:Key="MainViewModelUpdateErrorMessage">檢查更新時出現錯誤</system:String>
 
 	<!-- HelpDialog -->
-	<system:String x:Key="HelpDialogDescription">您確定要在您的預設瀏覽器中打開 SIT 文件 (%1) 嗎？</system:String>
+	<system:String x:Key="HelpDialogDescription">您確定要在您的預設瀏覽器中打開 SIT 文件 ({0}) 嗎？</system:String>
 
 	<!-- Tools Page -->
 	<system:String x:Key="ToolsPageGenericToolsViewTabHeader">General Tools</system:String>

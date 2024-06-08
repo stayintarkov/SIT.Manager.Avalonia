@@ -230,11 +230,11 @@
 	<system:String x:Key="LocationEditorViewModelLoadErrorTitle">Ошибка загрузки</system:String>
 	<system:String x:Key="LocationEditorViewModelLoadErrorDescription">При сохранении файла произошла ошибка.</system:String>
 	<system:String x:Key="LocationEditorViewModelLoadLocationTitle">Загрузить местоположение</system:String>
-	<system:String x:Key="LocationEditorViewModelLoadLocationDescription">Местоположение %1 успешно загружено.</system:String>
+	<system:String x:Key="LocationEditorViewModelLoadLocationDescription">Местоположение {0} успешно загружено.</system:String>
 	<system:String x:Key="LocationEditorViewModelSaveErrorTitle">Ошибка сохранения</system:String>
 	<system:String x:Key="LocationEditorViewModelSaveErrorDescription">При сохранении файла произошла ошибка.</system:String>
 	<system:String x:Key="LocationEditorViewModelSaveSuccessTitle">Сохранено</system:String>
-	<system:String x:Key="LocationEditorViewModelSaveSuccessDescription">Файл успешно сохранен в: %1</system:String>
+	<system:String x:Key="LocationEditorViewModelSaveSuccessDescription">Файл успешно сохранен в: {0}</system:String>
 
 	<!-- Select Edition Dialog -->
 	<system:String x:Key="SelectEditionDialogTitle">Выберите издание</system:String>
@@ -247,8 +247,8 @@
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigTitle">Ошибка конфигурации</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigDescription">'Путь установки' не настроен. Перейдите в настройки, чтобы настроить путь установки.</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageServerConfigDescription">'Путь к серверу' не настроен. Перейдите в настройки, чтобы настроить путь к серверу.</system:String>
-	<system:String x:Key="ToolsPageViewModelErrorMessageConfigBepInExDescription">Не удалось найти указанный путь. Установлен ли BepInEx? Путь: %1</system:String>
-	<system:String x:Key="ToolsPageViewModelErrorMessageConfigSITDescription">Не удалось найти '%1'. Убедитесь, что SIT установлен и что вы один раз запустили игру.</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigBepInExDescription">Не удалось найти указанный путь. Установлен ли BepInEx? Путь: {0}</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigSITDescription">Не удалось найти '{0}'. Убедитесь, что SIT установлен и что вы один раз запустили игру.</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigLogDescription">Не удалось найти файл журнала.</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigButtonOk">ОК</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigButtonCancel">Отмена</system:String>
@@ -256,17 +256,17 @@
 	<system:String x:Key="ToolsPageViewModelConfigClearAllCache">Очистить весь кэш</system:String>
 	<system:String x:Key="ToolsClearManagerCacheButtonToolTip">Clear all caching from SIT Manager</system:String>
 	<system:String x:Key="ToolsClearAllCacheButtonToolTip">Clear all caching from everywhere - EFT, Manager, Server etc</system:String>
-	<system:String x:Key="ToolsPageViewModelUnhandledExceptionError">Произошла ошибка: %1</system:String>
+	<system:String x:Key="ToolsPageViewModelUnhandledExceptionError">Произошла ошибка: {0}</system:String>
 
 	<!-- Settings Page ViewModel -->
 	<system:String x:Key="SettingsPageViewModelErrorTitle">Ошибка</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigTitle">Конфигурация</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigErrorEFTDescription">Выбранная папка недействительна. Убедитесь, что это правильная папка игры EFT.</system:String>
-	<system:String x:Key="SettingsPageViewModelConfigInformationEFTDescription">Путь установки EFT установлен на '%1'</system:String>
-	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">Путь установки SPT-AKI установлен на '%1'</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigInformationEFTDescription">Путь установки EFT установлен на '{0}'</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">Путь установки SPT-AKI установлен на '{0}'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigErrorSPTAKI">Выбранная папка недействительна. Убедитесь, что это правильная папка сервера SPT-AKI.</system:String>
 	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">Enable Test Mode Failure</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">Can't enable test mode as you have %1 incompatible mods still enabled</system:String>
+	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">Can't enable test mode as you have {0} incompatible mods still enabled</system:String>
 	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorButtonOk">Ок</system:String>
 
 	<!-- Server Page ViewModel -->
@@ -290,44 +290,44 @@
 	<system:String x:Key="TarkovClientServiceCacheClearedErrorTitle">Ошибка очистки кеша</system:String>
 	<system:String x:Key="TarkovClientServiceCacheClearedDescription">Все успешно очищено!</system:String>
 	<system:String x:Key="TarkovClientServiceCacheClearedErrorDescription">Не удалось найти путь установки в настройках</system:String>
-	<system:String x:Key="TarkovClientServiceCacheClearedErrorEFTDescription">Локальный каталог кеша EFT не найден по пути: %1</system:String>
+	<system:String x:Key="TarkovClientServiceCacheClearedErrorEFTDescription">Локальный каталог кеша EFT не найден по пути: {0}</system:String>
 	<system:String x:Key="TarkovClientServiceCacheClearedEFTDescription">Локальный кеш EFT успешно очищен!</system:String>
 
 	<!-- Mod Service -->
-	<system:String x:Key="ModServiceOutdatedDescription">У вас %1 устаревших модов. Хотите автоматически обновить их? Устаревшие моды: %2</system:String>
+	<system:String x:Key="ModServiceOutdatedDescription">У вас {0} устаревших модов. Хотите автоматически обновить их? Устаревшие моды: {1}</system:String>
 	<system:String x:Key="ModServiceOutdatedModsFoundTitle">Обнаружены устаревшие моды</system:String>
 	<system:String x:Key="ModServiceButtonNo">Нет</system:String>
 	<system:String x:Key="ModServiceButtonYes">Да</system:String>
 	<system:String x:Key="ModServiceUpdatedModsTitle">Обновленные моды</system:String>
-	<system:String x:Key="ModServiceUpdatedModsDescription">Обновлено %1 модов.</system:String>
+	<system:String x:Key="ModServiceUpdatedModsDescription">Обновлено {0} модов.</system:String>
 	<system:String x:Key="ModServiceInstallModTitle">Установить мод</system:String>
 	<system:String x:Key="ModServiceInstallErrorModDescription">Путь установки не указан. Настройте его в разделе Настройки.</system:String>
 	<system:String x:Key="ModServiceWarningTitle">Предупреждение</system:String>
-	<system:String x:Key="ModServiceWarningDescription">Мод, который вы пытаетесь установить, не совместим с текущей установленной версией SIT. Поддерживаемая версия SIT: %1 Установленная версия SIT: %2 Продолжить в любом случае?</system:String>
+	<system:String x:Key="ModServiceWarningDescription">Мод, который вы пытаетесь установить, не совместим с текущей установленной версией SIT. Поддерживаемая версия SIT: {0} Установленная версия SIT: {1} Продолжить в любом случае?</system:String>
 	<system:String x:Key="ModServiceUnknownTitle">Неизвестно</system:String>
-	<system:String x:Key="ModServiceInstallModDescription">%1 успешно установлен.</system:String>
-	<system:String x:Key="ModServiceErrorInstallModDescription">%1 не удалось установить. Проверьте файл Launcher.log</system:String>
+	<system:String x:Key="ModServiceInstallModDescription">{0} успешно установлен.</system:String>
+	<system:String x:Key="ModServiceErrorInstallModDescription">{0} не удалось установить. Проверьте файл Launcher.log</system:String>
 	<system:String x:Key="ModServiceErrorUninstallModTitle">Ошибка при удалении мода</system:String>
-	<system:String x:Key="ModServiceErrorUninstallModDescription">В моде %1 отсутствовал файл: '%2'. Принудительно удалить мод из списка установленных модов?</system:String>
-	<system:String x:Key="ModServiceErrorExceptionUninstallModDescription">В моде %1 отсутствовал файл: '%2'. Принудительно удалить мод из списка установленных модов?</system:String>
-	<system:String x:Key="ModServiceErrorExceptionFileUninstallModDescription">В моде %1 отсутствовал файл: '%2'</system:String>
+	<system:String x:Key="ModServiceErrorUninstallModDescription">В моде {0} отсутствовал файл: '{1}'. Принудительно удалить мод из списка установленных модов?</system:String>
+	<system:String x:Key="ModServiceErrorExceptionUninstallModDescription">В моде {0} отсутствовал файл: '{1}'. Принудительно удалить мод из списка установленных модов?</system:String>
+	<system:String x:Key="ModServiceErrorExceptionFileUninstallModDescription">В моде {0} отсутствовал файл: '{1}'</system:String>
 	<system:String x:Key="ModServiceFileUninstallModTitle">Удалить мод</system:String>
-	<system:String x:Key="ModServiceFileUninstallModDescription">%1 успешно удален.</system:String>
+	<system:String x:Key="ModServiceFileUninstallModDescription">{0} успешно удален.</system:String>
 
 	<!-- Install Service -->
 	<system:String x:Key="InstallServiceErrorTitle">Ошибка</system:String>
 	<system:String x:Key="InstallServiceErrorInstallServerDescription">Пожалуйста, настройте путь к EFT в разделе Настройки.</system:String>
 	<system:String x:Key="InstallServiceErrorInstallSITDescription">Путь к EFT не указан. Настройте его в разделе Настройки.</system:String>
 	<system:String x:Key="InstallServiceConfigTitle">Конфигурация</system:String>
-	<system:String x:Key="InstallServiceConfigDescription">Путь установки сервера установлен на '%1'</system:String>
+	<system:String x:Key="InstallServiceConfigDescription">Путь установки сервера установлен на '{0}'</system:String>
 	<system:String x:Key="InstallServiceInstallSuccessfulTitle">Установка</system:String>
 	<system:String x:Key="InstallServiceInstallSuccessfulDescription">Установка сервера прошла успешно.</system:String>
 	<system:String x:Key="InstallServiceInstallSITSuccessfulDescription">Установка SIT прошла успешно.</system:String>
 	<system:String x:Key="InstallerServiceNoDowngradePatcher">Для этой версии EFT нет доступных программ для отката.</system:String>
 
 	<!-- File Service -->
-	<system:String x:Key="FileServiceProgressDownloading">Загрузка файла '%1'</system:String>
-	<system:String x:Key="FileServiceProgressExtracting">Извлечение файла %1 (%2)</system:String>
+	<system:String x:Key="FileServiceProgressDownloading">Загрузка файла '{0}'</system:String>
+	<system:String x:Key="FileServiceProgressExtracting">Извлечение файла {0} ({1})</system:String>
 
 	<!-- Update Page -->
 	<system:String x:Key="UpdatePageUpdateInfoTextPt1">Менеджер SIT обновляется, пожалуйста, подождите...</system:String>
@@ -502,9 +502,9 @@
 	<system:String x:Key="DirectConnectViewModelInstallPathTitle">Путь установки</system:String>
 	<system:String x:Key="DirectConnectViewModelInstallPathDescription">Не настроен "Путь установки". Перейдите в настройки и укажите путь установки.</system:String>
 	<system:String x:Key="DirectConnectViewModelSITInstallationTitle">Установка SIT</system:String>
-	<system:String x:Key="DirectConnectViewModelSITInstallationDescription">Невозможно найти "%1". Установите SIT перед подключением.</system:String>
+	<system:String x:Key="DirectConnectViewModelSITInstallationDescription">Невозможно найти "{0}". Установите SIT перед подключением.</system:String>
 	<system:String x:Key="DirectConnectViewModelEFTInstallationTitle">Установка EFT</system:String>
-	<system:String x:Key="DirectConnectViewModelEFTInstallationDescription">Невозможно найти "%1" в пути установки.</system:String>
+	<system:String x:Key="DirectConnectViewModelEFTInstallationDescription">Невозможно найти "{0}" в пути установки.</system:String>
 	<system:String x:Key="DirectConnectViewModelInputValidationTitle">Валидация ввода</system:String>
 	<system:String x:Key="DirectConnectViewModelInputValidationDescription">Отсутствует обязательное поле.</system:String>
 	<system:String x:Key="DirectConnectViewModelUnhandledAkiInstanceTitle">Необработанный экземпляр Aki</system:String>
@@ -513,7 +513,7 @@
 	<system:String x:Key="DirectConnectViewModelMissingAKIInstallationDescription">Отсутствует исполняемый файл сервера SPT-AKI.</system:String>
 	<system:String x:Key="DirectConnectViewModelLoginIncorrectPassword">Неверный пароль</system:String>
 	<system:String x:Key="DirectConnectViewModelLoginErrorTitle">Ошибка входа</system:String>
-	<system:String x:Key="DirectConnectViewModelLoginErrorDescription">Невозможно связаться с сервером %1</system:String>
+	<system:String x:Key="DirectConnectViewModelLoginErrorDescription">Невозможно связаться с сервером {0}</system:String>
 	<system:String x:Key="DirectConnectViewModelWaitingForServerTitle">Ожидание сервера</system:String>
 	<system:String x:Key="DirectConnectViewModelServerErrorTitle">Ошибка сервера</system:String>
 	<system:String x:Key="DirectConnectViewModelServerErrorDescription">Сервер не запущен. Пожалуйста, проверьте журналы для получения дополнительной информации.</system:String>
@@ -536,7 +536,7 @@
 	<system:String x:Key="MainViewModelUpdateErrorMessage">Ошибка при проверке обновлений</system:String>
 
 	<!-- HelpDialog -->
-	<system:String x:Key="HelpDialogDescription">Вы уверены, что хотите открыть документацию SIT (%1) в вашем браузере по умолчанию?</system:String>
+	<system:String x:Key="HelpDialogDescription">Вы уверены, что хотите открыть документацию SIT ({0}) в вашем браузере по умолчанию?</system:String>
 
 	<!-- Tools Page -->
 	<system:String x:Key="ToolsPageGenericToolsViewTabHeader">General Tools</system:String>

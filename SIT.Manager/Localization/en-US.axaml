@@ -226,11 +226,11 @@
 	<system:String x:Key="LocationEditorViewModelLoadErrorTitle">Load Error</system:String>
 	<system:String x:Key="LocationEditorViewModelLoadErrorDescription">There was an error saving the file.</system:String>
 	<system:String x:Key="LocationEditorViewModelLoadLocationTitle">Load Location</system:String>
-	<system:String x:Key="LocationEditorViewModelLoadLocationDescription">Loaded location %1 successfully.</system:String>
+	<system:String x:Key="LocationEditorViewModelLoadLocationDescription">Loaded location {0} successfully.</system:String>
 	<system:String x:Key="LocationEditorViewModelSaveErrorTitle">Save Error</system:String>
 	<system:String x:Key="LocationEditorViewModelSaveErrorDescription">There was an error saving the file.</system:String>
 	<system:String x:Key="LocationEditorViewModelSaveSuccessTitle">Save</system:String>
-	<system:String x:Key="LocationEditorViewModelSaveSuccessDescription">Successfully saved the file to: %1</system:String>
+	<system:String x:Key="LocationEditorViewModelSaveSuccessDescription">Successfully saved the file to: {0}</system:String>
 
 	<!-- Select Edition Dialog -->
 	<system:String x:Key="SelectEditionDialogTitle">Select Edition</system:String>
@@ -243,8 +243,8 @@
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigTitle">Config Error</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigDescription">'Install Path' is not configured. Go to settings to configure the installation path.</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageServerConfigDescription">'Server Path' is not configured. Go to settings to configure the server path.</system:String>
-	<system:String x:Key="ToolsPageViewModelErrorMessageConfigBepInExDescription">Could not find the given path. Is BepInEx installed? Path: %1</system:String>
-	<system:String x:Key="ToolsPageViewModelErrorMessageConfigSITDescription">Could not find '%1'. Make sure SIT is installed and that you have started the game once.</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigBepInExDescription">Could not find the given path. Is BepInEx installed? Path: {0}</system:String>
+	<system:String x:Key="ToolsPageViewModelErrorMessageConfigSITDescription">Could not find '{0}'. Make sure SIT is installed and that you have started the game once.</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigLogDescription">Log file could not be found.</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigButtonOk">Ok</system:String>
 	<system:String x:Key="ToolsPageViewModelErrorMessageConfigButtonCancel">Cancel</system:String>
@@ -252,17 +252,17 @@
 	<system:String x:Key="ToolsPageViewModelConfigClearAllCache">Clear All Cache</system:String>
 	<system:String x:Key="ToolsClearManagerCacheButtonToolTip">Clear all caching from SIT Manager</system:String>
 	<system:String x:Key="ToolsClearAllCacheButtonToolTip">Clear all caching from everywhere - EFT, Manager, Server etc</system:String>
-	<system:String x:Key="ToolsPageViewModelUnhandledExceptionError">An error occurred: %1</system:String>
+	<system:String x:Key="ToolsPageViewModelUnhandledExceptionError">An error occurred: {0}</system:String>
 
 	<!-- Settings Page ViewModel -->
 	<system:String x:Key="SettingsPageViewModelErrorTitle">Error</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigTitle">Config</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigErrorEFTDescription">The selected folder was invalid. Make sure it's a proper EFT game folder.</system:String>
-	<system:String x:Key="SettingsPageViewModelConfigInformationEFTDescription">EFT installation path set to '%1'</system:String>
-	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">AKI server installation path set to '%1'</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigInformationEFTDescription">EFT installation path set to '{0}'</system:String>
+	<system:String x:Key="SettingsPageViewModelConfigInformationSPTAKIDescription">AKI server installation path set to '{0}'</system:String>
 	<system:String x:Key="SettingsPageViewModelConfigErrorSPTAKI">The selected folder was invalid. Make sure it's a proper AKI server folder.</system:String>
 	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorTitle">Enable Test Mode Failure</system:String>
-	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">Can't enable test mode as you have %1 incompatible mods still enabled</system:String>
+	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorDescription">Can't enable test mode as you have {0} incompatible mods still enabled</system:String>
 	<system:String x:Key="SettingsPageViewModelEnableDevModeErrorButtonOk">Ok</system:String>
 
 	<!-- Server Page ViewModel -->
@@ -286,44 +286,44 @@
 	<system:String x:Key="TarkovClientServiceCacheClearedErrorTitle">Cache Clear Error</system:String>
 	<system:String x:Key="TarkovClientServiceCacheClearedDescription">Everything cleared successfully!</system:String>
 	<system:String x:Key="TarkovClientServiceCacheClearedErrorDescription">InstallPath not found in settings</system:String>
-	<system:String x:Key="TarkovClientServiceCacheClearedErrorEFTDescription">EFT local cache directory not found at: %1</system:String>
+	<system:String x:Key="TarkovClientServiceCacheClearedErrorEFTDescription">EFT local cache directory not found at: {0}</system:String>
 	<system:String x:Key="TarkovClientServiceCacheClearedEFTDescription">EFT local cache cleared successfully!</system:String>
 
 	<!-- Mod Service -->
-	<system:String x:Key="ModServiceOutdatedDescription">You have %1 outdated mods. Would you like to automatically update them? Outdated Mods: %2</system:String>
+	<system:String x:Key="ModServiceOutdatedDescription">You have {0} outdated mods. Would you like to automatically update them? Outdated Mods: {1}</system:String>
 	<system:String x:Key="ModServiceOutdatedModsFoundTitle">Outdated Mods Found</system:String>
 	<system:String x:Key="ModServiceButtonNo">No</system:String>
 	<system:String x:Key="ModServiceButtonYes">Yes</system:String>
 	<system:String x:Key="ModServiceUpdatedModsTitle">Updated Mods</system:String>
-	<system:String x:Key="ModServiceUpdatedModsDescription">Updated %1 mods.</system:String>
+	<system:String x:Key="ModServiceUpdatedModsDescription">Updated {0} mods.</system:String>
 	<system:String x:Key="ModServiceInstallModTitle">Install Mod</system:String>
 	<system:String x:Key="ModServiceInstallErrorModDescription">Install Path is not set. Configure it in Settings.</system:String>
 	<system:String x:Key="ModServiceWarningTitle">Warning</system:String>
-	<system:String x:Key="ModServiceWarningDescription">The mod you are trying to install is not compatible with your currently installed version of SIT. Supported SIT Version: %1 Installed SIT Version: %2 Continue anyway?</system:String>
+	<system:String x:Key="ModServiceWarningDescription">The mod you are trying to install is not compatible with your currently installed version of SIT. Supported SIT Version: {0} Installed SIT Version: {1} Continue anyway?</system:String>
 	<system:String x:Key="ModServiceUnknownTitle">Unknown</system:String>
-	<system:String x:Key="ModServiceInstallModDescription">%1 was successfully installed.</system:String>
-	<system:String x:Key="ModServiceErrorInstallModDescription">%1 failed to install. Check your Launcher.log</system:String>
+	<system:String x:Key="ModServiceInstallModDescription">{0} was successfully installed.</system:String>
+	<system:String x:Key="ModServiceErrorInstallModDescription">{0} failed to install. Check your Launcher.log</system:String>
 	<system:String x:Key="ModServiceErrorUninstallModTitle">Error Uninstalling Mod</system:String>
-	<system:String x:Key="ModServiceErrorUninstallModDescription">A file was missing from the mod %1: '%2' Force remove the mod from the list of installed mods anyway?</system:String>
-	<system:String x:Key="ModServiceErrorExceptionUninstallModDescription">A file was missing from the mod %1: '%2' Force remove the mod from the list of installed mods anyway?</system:String>
-	<system:String x:Key="ModServiceErrorExceptionFileUninstallModDescription">A file was missing from the mod %1: '%2'</system:String>
+	<system:String x:Key="ModServiceErrorUninstallModDescription">A file was missing from the mod {0}: '{1}' Force remove the mod from the list of installed mods anyway?</system:String>
+	<system:String x:Key="ModServiceErrorExceptionUninstallModDescription">A file was missing from the mod {0}: '{1}' Force remove the mod from the list of installed mods anyway?</system:String>
+	<system:String x:Key="ModServiceErrorExceptionFileUninstallModDescription">A file was missing from the mod {0}: '{1}'</system:String>
 	<system:String x:Key="ModServiceFileUninstallModTitle">Uninstall Mod</system:String>
-	<system:String x:Key="ModServiceFileUninstallModDescription">%1 was successfully uninstalled.</system:String>
+	<system:String x:Key="ModServiceFileUninstallModDescription">{0} was successfully uninstalled.</system:String>
 
 	<!-- Install Service -->
 	<system:String x:Key="InstallServiceErrorTitle">Error</system:String>
 	<system:String x:Key="InstallServiceErrorInstallServerDescription">Please configure EFT Path in Settings.</system:String>
 	<system:String x:Key="InstallServiceErrorInstallSITDescription">EFT Path is not set. Configure it in Settings.</system:String>
 	<system:String x:Key="InstallServiceConfigTitle">Config</system:String>
-	<system:String x:Key="InstallServiceConfigDescription">Server installation path set to '%1'</system:String>
+	<system:String x:Key="InstallServiceConfigDescription">Server installation path set to '{0}'</system:String>
 	<system:String x:Key="InstallServiceInstallSuccessfulTitle">Install</system:String>
 	<system:String x:Key="InstallServiceInstallSuccessfulDescription">Installation of Server was successful.</system:String>
 	<system:String x:Key="InstallServiceInstallSITSuccessfulDescription">Installation of SIT was successful.</system:String>
 	<system:String x:Key="InstallerServiceNoDowngradePatcher">No downgrader is available for these versions of Tarkov.</system:String>
 
 	<!-- File Service -->
-	<system:String x:Key="FileServiceProgressDownloading">Downloading '%1'</system:String>
-	<system:String x:Key="FileServiceProgressExtracting">Extracting file %1 (%2)</system:String>
+	<system:String x:Key="FileServiceProgressDownloading">Downloading '{0}'</system:String>
+	<system:String x:Key="FileServiceProgressExtracting">Extracting file {0} ({1})</system:String>
 
 	<!-- Update Page -->
 	<system:String x:Key="UpdatePageUpdateInfoTextPt1">SIT Manager is updating for you please wait...</system:String>
@@ -501,9 +501,9 @@
 	<system:String x:Key="DirectConnectViewModelInstallPathTitle">Install Path</system:String>
 	<system:String x:Key="DirectConnectViewModelInstallPathDescription">'Install Path' is not configured. Go to settings and configure the installtion path.</system:String>
 	<system:String x:Key="DirectConnectViewModelSITInstallationTitle">SIT Installation</system:String>
-	<system:String x:Key="DirectConnectViewModelSITInstallationDescription">Unable to find '%1'. Install SIT before connecting.</system:String>
+	<system:String x:Key="DirectConnectViewModelSITInstallationDescription">Unable to find '{0}'. Install SIT before connecting.</system:String>
 	<system:String x:Key="DirectConnectViewModelEFTInstallationTitle">EFT Installation</system:String>
-	<system:String x:Key="DirectConnectViewModelEFTInstallationDescription">Unable to find '%1' in the installation path.</system:String>
+	<system:String x:Key="DirectConnectViewModelEFTInstallationDescription">Unable to find '{0}' in the installation path.</system:String>
 	<system:String x:Key="DirectConnectViewModelInputValidationTitle">Input Validation</system:String>
 	<system:String x:Key="DirectConnectViewModelInputValidationDescription">Missing input field.</system:String>
 	<system:String x:Key="DirectConnectViewModelUnhandledAkiInstanceTitle">Unhandled Aki Instance</system:String>
@@ -512,7 +512,7 @@
 	<system:String x:Key="DirectConnectViewModelMissingAKIInstallationDescription">AKI server executable is missing.</system:String>
 	<system:String x:Key="DirectConnectViewModelLoginIncorrectPassword">Incorrect password</system:String>
 	<system:String x:Key="DirectConnectViewModelLoginErrorTitle">Login Error</system:String>
-	<system:String x:Key="DirectConnectViewModelLoginErrorDescription">Unable to communicate with the server %1</system:String>
+	<system:String x:Key="DirectConnectViewModelLoginErrorDescription">Unable to communicate with the server {0}</system:String>
 	<system:String x:Key="DirectConnectViewModelWaitingForServerTitle">Waiting for server</system:String>
 	<system:String x:Key="DirectConnectViewModelServerErrorTitle">Server Error</system:String>
 	<system:String x:Key="DirectConnectViewModelServerErrorDescription">The server never started. Please check the logs for more information.</system:String>
@@ -535,7 +535,7 @@
 	<system:String x:Key="MainViewModelUpdateErrorMessage">Failed when checking for updates</system:String>
 
 	<!-- HelpDialog -->
-	<system:String x:Key="HelpDialogDescription">Are you sure you want to open the SIT Documentation (%1) in your default browser?</system:String>
+	<system:String x:Key="HelpDialogDescription">Are you sure you want to open the SIT Documentation ({0}) in your default browser?</system:String>
 
 	<!-- Tools Page -->
 	<system:String x:Key="ToolsPageGenericToolsViewTabHeader">General Tools</system:String>
