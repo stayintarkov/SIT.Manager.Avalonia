@@ -98,7 +98,13 @@ public sealed partial class App : Application
                 //TODO: Move this to httpclient factory with proper configuration
                 .AddSingleton(new HttpClientHandler
                 {
-                    SslProtocols = System.Security.Authentication.SslProtocols.Tls12
+                    SslProtocols = System.Security.Authentication.SslProtocols.Tls12,
+                    //TODO: REMOVE. THIS IS A TEMPORARY FIX
+                    ServerCertificateCustomValidationCallback = (message, certificate2, arg3, arg4) =>
+                    {
+                        if (certificate2?.Verify() ?? false) return true;
+                        return certificate2?.MatchesHostname("sitcoop.publicvm.com") ?? false;
+                    }
                 })
                 .AddSingleton(provider => new HttpClient(provider.GetService<HttpClientHandler>() ?? throw new ArgumentNullException())
                 {
