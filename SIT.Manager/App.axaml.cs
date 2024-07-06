@@ -98,8 +98,7 @@ public sealed partial class App : Application
                 //TODO: Move this to httpclient factory with proper configuration
                 .AddSingleton(new HttpClientHandler
                 {
-                    SslProtocols = System.Security.Authentication.SslProtocols.Tls12,
-                    ServerCertificateCustomValidationCallback = delegate { return true; }
+                    SslProtocols = System.Security.Authentication.SslProtocols.Tls12
                 })
                 .AddSingleton(provider => new HttpClient(provider.GetService<HttpClientHandler>() ?? throw new ArgumentNullException())
                 {
