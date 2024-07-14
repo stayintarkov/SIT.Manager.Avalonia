@@ -101,7 +101,7 @@ public class FileService(IActionNotificationService actionNotificationService,
         await opener.WaitForExitAsync();
     }
 
-    private async Task<Stream?> DownloadMegaFileAsync(Uri source, IProgress<double>? progress = null)
+    public async Task<Stream?> DownloadMegaFileAsync(Uri source, IProgress<double>? progress = null)
     {
         Stream? ret = null;
         logger.LogInformation("Attempting to use Mega API.");
