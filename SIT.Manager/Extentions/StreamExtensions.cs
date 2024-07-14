@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace SIT.Manager.Extentions;
 public static class StreamExtensions
 {
-    public static async Task CopyToAsync(this Stream source, Stream destination, ushort bufferSize, IProgress<long> progressReporter, CancellationToken cancellationToken = default)
+    public static async Task CopyToAsync(this Stream source, Stream destination, ushort bufferSize, IProgress<long>? progressReporter = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(source, nameof(source));
         ArgumentNullException.ThrowIfNull(destination, nameof(destination));
@@ -26,7 +26,7 @@ public static class StreamExtensions
         {
             await destination.WriteAsync(dataBuffer.AsMemory(0, bytesRead), cancellationToken).ConfigureAwait(false);
             totalReadBytes += bytesRead;
-            progressReporter.Report(totalReadBytes);
+            progressReporter?.Report(totalReadBytes);
         }
     }
 

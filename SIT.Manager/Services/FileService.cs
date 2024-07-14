@@ -1,5 +1,6 @@
 ﻿using CG.Web.MegaApiClient;
 using Microsoft.Extensions.Logging;
+using SharpCompress.Archives;
 using SharpCompress.Common;
 using SharpCompress.Readers;
 using SIT.Manager.Extentions;
@@ -23,255 +24,177 @@ public class FileService(IActionNotificationService actionNotificationService,
                          HttpClient httpClient,
                          ILogger<FileService> logger) : IFileService
 {
-    private readonly IActionNotificationService _actionNotificationService = actionNotificationService;
-    private readonly IManagerConfigService _configService = configService;
-    private readonly HttpClient _httpClient = httpClient;
-    private readonly ILogger<FileService> _logger = logger;
-    private readonly ILocalizationService _localizationService = localizationService;
-
-    private static async Task<long> CalculateDirectorySize(DirectoryInfo d)
+    private static async Task<long> CalculateDirectorySize(DirectoryInfo d, CancellationToken ct = default)
     {
         long size = 0;
 
         // Add subdirectory sizes.
         IEnumerable<DirectoryInfo> directories = d.EnumerateDirectories();
-        foreach (DirectoryInfo dir in directories)
+        await Parallel.ForEachAsync(directories, ct, async (info, token) =>
         {
-            size += await CalculateDirectorySize(dir).ConfigureAwait(false);
-        }
-
-        // Add file sizes.
+            if (ct.IsCancellationRequested) return;
+            Interlocked.Add(ref size, await CalculateDirectorySize(info, token));
+        });
+        
+        if (ct.IsCancellationRequested) return -1;
+        
+        // Add file sizes. It is unlikely we'd get any speed bonus from parallelizing this
         size += d.EnumerateFiles().Sum(x => x.Length);
 
         return size;
     }
 
-    private static async Task<double> CopyDirectoryAsync(DirectoryInfo source, DirectoryInfo destination, double currentProgress, double totalSize, IProgress<double>? progress = null)
+    private static async Task<long> CopyDirectoryAsync(DirectoryInfo source, DirectoryInfo destination, IProgress<double>? progress = null)
     {
-        IEnumerable<DirectoryInfo> directories = source.EnumerateDirectories();
-        IEnumerable<FileInfo> files = source.EnumerateFiles();
+        IEnumerable<FileInfo> files = source.EnumerateFiles("*", SearchOption.AllDirectories);
 
-        foreach (DirectoryInfo directory in directories)
+        long currentSizeMoved = 0;
+        long sizeToMove = await CalculateDirectorySize(source);
+        
+        //Process all directories
+        await Parallel.ForEachAsync(files, async (file, token) =>
         {
-            DirectoryInfo newDestination = destination.CreateSubdirectory(directory.Name);
-            currentProgress = await CopyDirectoryAsync(directory, newDestination, currentProgress, totalSize, progress).ConfigureAwait(false);
-        }
-
-        foreach (FileInfo file in files)
-        {
-            using (FileStream sourceStream = file.OpenRead())
+            string relativePath = Path.GetRelativePath(source.FullName, file.DirectoryName ?? source.FullName);
+            DirectoryInfo fileParent = relativePath == "." ?
+                destination : 
+                destination.CreateSubdirectory(Path.Combine(destination.FullName, relativePath));
+            
+            await using FileStream sourceStream = file.OpenRead();
+            await using FileStream destinationStream = File.Create(Path.Combine(fileParent.FullName, file.Name));
+            long prevReport = 0;
+            Progress<long> streamProgress = new(x =>
             {
-                using (FileStream destinationStream = File.Create(Path.Combine(destination.FullName, file.Name)))
-                {
-                    Progress<long> streamProgress = new(x =>
-                    {
-                        double progressPercentage = (currentProgress + x) / totalSize * 100;
-                        progress?.Report(progressPercentage);
-                    });
-                    await sourceStream.CopyToAsync(destinationStream, ushort.MaxValue, streamProgress).ConfigureAwait(false);
-                    currentProgress += file.Length;
-                }
-            }
-        }
+                long newCurrentSize = Interlocked.Add(ref currentSizeMoved, x - prevReport);
+                progress?.Report((double)sizeToMove / newCurrentSize);
+                prevReport = x;
+            });
+            await sourceStream.CopyToAsync(destinationStream, ushort.MaxValue, streamProgress, cancellationToken: token).ConfigureAwait(false);
+        });
 
-        return currentProgress;
+        return currentSizeMoved;
     }
 
     private static async Task OpenAtLocation(string path)
     {
-        using (Process opener = new())
+        using Process opener = new();
+        string fileName;
+        string arguments = string.Empty;
+
+        if (OperatingSystem.IsWindows())
         {
-            if (OperatingSystem.IsWindows())
-            {
-                opener.StartInfo.FileName = "explorer.exe";
-                opener.StartInfo.Arguments = path;
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                opener.StartInfo.FileName = "explorer";
-                opener.StartInfo.Arguments = $"-R {path}";
-            }
-            else
-            {
-                opener.StartInfo.FileName = path;
-                opener.StartInfo.UseShellExecute = true;
-            }
-            opener.Start();
-            await opener.WaitForExitAsync();
+            fileName = "explorer.exe";
+            arguments = path;
         }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            fileName = "explorer";
+            arguments = $"-R {path}";
+        }
+        else
+        {
+            fileName = path;
+            opener.StartInfo.UseShellExecute = true;
+        }
+        opener.StartInfo.FileName = fileName;
+        opener.StartInfo.Arguments = arguments;
+        opener.Start();
+        await opener.WaitForExitAsync();
     }
 
-    private async Task<bool> DownloadMegaFile(string fileName, string filePath, string fileUrl, IProgress<double> progress)
+    private async Task<Stream?> DownloadMegaFileAsync(Uri source, IProgress<double>? progress = null)
     {
-        _logger.LogInformation("Attempting to use Mega API.");
+        Stream? ret = null;
+        logger.LogInformation("Attempting to use Mega API.");
         try
         {
             MegaApiClient megaApiClient = new();
             await megaApiClient.LoginAnonymousAsync().ConfigureAwait(false);
 
-            if (!megaApiClient.IsLoggedIn)
+            if (megaApiClient.IsLoggedIn)
             {
-                _logger.LogWarning("Failed to login user as anonymous to Mega");
-                return false;
+                logger.LogInformation("Starting download from '{fileUrl}'", source.AbsoluteUri);
+            
+                INode fileNode = await megaApiClient.GetNodeFromLinkAsync(source);
+                
+                ret = await megaApiClient.DownloadAsync(fileNode, progress);
             }
-
-            _logger.LogInformation("Starting download of '{fileName}' from '{fileUrl}'", fileName, fileUrl);
-
-            Uri fileLink = new(fileUrl);
-            INode fileNode = await megaApiClient.GetNodeFromLinkAsync(fileLink);
-
-            await megaApiClient.DownloadFileAsync(fileNode, filePath, progress).ConfigureAwait(false);
+            else
+            {
+                logger.LogWarning("Failed to login user as anonymous to Mega");
+            }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to download file '{fileName}' from Mega at url '{fileUrl}'", fileName, fileUrl);
-            return false;
+            logger.LogError(ex, "Failed to download file '{fileUrl}' from Mega", source.AbsoluteUri);
         }
 
-        return true;
-    }
-
-    // TODO unify this and the other DownloadMegaFile function nicely - will have to do some things on the mods page for this I think.
-    private async Task<bool> DownloadMegaFile(string fileName, string fileUrl, bool showProgress)
-    {
-        _logger.LogInformation("Attempting to use Mega API.");
-        try
-        {
-            MegaApiClient megaApiClient = new();
-            await megaApiClient.LoginAnonymousAsync();
-
-            // TODO: Add proper error handling below
-            if (!megaApiClient.IsLoggedIn)
-            {
-                return false;
-            }
-
-            _logger.LogInformation($"Starting download of '{fileName}' from '{fileUrl}'");
-
-            Progress<double> progress = new((prog) =>
-            {
-                _actionNotificationService.UpdateActionNotification(new ActionNotification(_localizationService.TranslateSource("FileServiceProgressDownloading", fileName), prog, showProgress));
-            });
-
-            Uri fileLink = new(fileUrl);
-            INode fileNode = await megaApiClient.GetNodeFromLinkAsync(fileLink);
-            
-            string targetPath = Path.Combine(_configService.Config.SITSettings.SitEFTInstallPath, fileName);
-            await megaApiClient.DownloadFileAsync(fileNode, targetPath, progress);
-
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
+        return ret;
     }
 
     public async Task CopyDirectory(string source, string destination, IProgress<double>? progress = null)
     {
         DirectoryInfo sourceDir = new(source);
-        double totalSize = await CalculateDirectorySize(sourceDir).ConfigureAwait(false);
-
         DirectoryInfo destinationDir = new(destination);
         destinationDir.Create();
-
-        double currentprogress = 0;
-        await CopyDirectoryAsync(sourceDir, destinationDir, currentprogress, totalSize, progress).ConfigureAwait(false);
+        await CopyDirectoryAsync(sourceDir, destinationDir, progress).ConfigureAwait(false);
     }
 
-    public async Task CopyFileAsync(string sourceFile, string destinationFile, CancellationToken cancellationToken = default)
+    public async Task CopyFileAsync(string sourceFile, string destinationFile, int bufferSize = 4096, CancellationToken cancellationToken = default)
     {
-        FileOptions fileOptions = FileOptions.Asynchronous | FileOptions.SequentialScan;
-        int bufferSize = 4096;
-        using (FileStream sourceStream = new(sourceFile, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize, fileOptions))
+        const FileOptions fileOptions = FileOptions.Asynchronous | FileOptions.SequentialScan;
+        await using FileStream sourceStream = new(sourceFile, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize, fileOptions);
+        await using FileStream destinationStream = new(destinationFile, FileMode.Create, FileAccess.Write, FileShare.Read, bufferSize, fileOptions);
+        await sourceStream.CopyToAsync(destinationStream, bufferSize, cancellationToken).ConfigureAwait(false);
+    }
+
+    //TODO: Implement polly here
+    public async Task<bool> DownloadFile(Uri source, string fileDestination, IProgress<double>? progress = null, CancellationToken ct = default)
+    {
+        bool success = false;
+        
+        await using FileStream destFileStream = new(fileDestination, FileMode.Create, FileAccess.Write, FileShare.Read);
+        
+        if (source.Host.Equals("mega.nz", StringComparison.InvariantCultureIgnoreCase))
         {
-            using (FileStream destinationStream = new(destinationFile, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize, fileOptions))
+            Stream? megaStream = await DownloadMegaFileAsync(source);
+            if (megaStream == null)
             {
-                await sourceStream.CopyToAsync(destinationStream, bufferSize, cancellationToken).ConfigureAwait(false);
+                logger.LogWarning("Mega API returned null for {sourceUri}", source.AbsoluteUri);
             }
-        }
-    }
-
-    // TODO unify this and the other DownloadFile function nicely - will have to do some things on the mods page for this I think.
-    public async Task<bool> DownloadFile(string fileName, string filePath, string fileUrl, IProgress<double> progress)
-    {
-        bool result = false;
-
-        filePath = Path.Combine(filePath, fileName);
-        if (File.Exists(filePath))
-        {
-            File.Delete(filePath);
-        }
-
-        if (fileUrl.Contains("mega.nz"))
-        {
-            result = await DownloadMegaFile(fileName, filePath, fileUrl, progress).ConfigureAwait(false);
+            else
+            {
+                long streamLength = megaStream.Length;
+                IProgress<long>? copyProgressReporter = progress == null ? null : new Progress<long>(val =>
+                {
+                    progress.Report((double)streamLength / val);
+                });
+                await megaStream.CopyToAsync(destFileStream, ushort.MaxValue, copyProgressReporter, ct);
+            }
         }
         else
         {
-            _logger.LogInformation("Starting download of '{fileName}' from '{fileUrl}'", fileName, fileUrl);
+            logger.LogInformation("Starting download of '{fileName}' from '{source}'", Path.GetFileName(fileDestination),
+                source.AbsoluteUri);
             try
             {
-                using (FileStream file = new(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
-                {
-                    await _httpClient.DownloadAsync(file, fileUrl, progress).ConfigureAwait(false);
-                }
-                result = true;
+                await httpClient.DownloadAsync(destFileStream, source.AbsoluteUri, progress, cancellationToken: ct).ConfigureAwait(false);
+                success = true;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "DownloadFile");
+                //TODO: Write a better log message
+                logger.LogError(ex, "DownloadFile");
             }
         }
-        return result;
+
+        return success;
     }
 
-    public async Task<bool> DownloadFile(string fileName, string filePath, string fileUrl, bool showProgress = false)
-    {
-        _actionNotificationService.StartActionNotification();
-
-        bool result = false;
-        if (fileUrl.Contains("mega.nz"))
-        {
-            result = await DownloadMegaFile(fileName, fileUrl, showProgress);
-        }
-        else
-        {
-            _logger.LogInformation($"Starting download of '{fileName}' from '{fileUrl}'");
-            filePath = Path.Combine(filePath, fileName);
-            if (File.Exists(filePath))
-            {
-                File.Delete(filePath);
-            }
-
-            Progress<double> progress = new((prog) =>
-            {
-                _actionNotificationService.UpdateActionNotification(new ActionNotification(_localizationService.TranslateSource("FileServiceProgressDownloading", fileName), Math.Floor(prog), showProgress));
-            });
-
-            try
-            {
-                using (FileStream file = new(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
-                {
-                    await _httpClient.DownloadAsync(file, fileUrl, progress);
-                }
-                result = true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "DownloadFile");
-            }
-        }
-
-        _actionNotificationService.StopActionNotification();
-        return result;
-    }
-
-    public async Task ExtractArchive(string filePath, string destination, IProgress<double>? progress = null)
+    public async Task ExtractArchive(string filePath, string destination, IProgress<double>? progress = null, CancellationToken ct = default)
     {
         // Ensures that the last character on the extraction path is the directory separator char.
-        // Without this, a malicious zip file could try to traverse outside of the expected extraction path.
-        if (!destination.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
+        // Without this, a malicious zip file could try to traverse outside the expected extraction path.
+        if (!destination.EndsWith(Path.DirectorySeparatorChar))
         {
             destination += Path.DirectorySeparatorChar;
         }
@@ -281,55 +204,57 @@ public class FileService(IActionNotificationService actionNotificationService,
 
         try
         {
-            using (Stream stream = await Task.Run(() => File.OpenRead(filePath)))
-            {
-                double totalBytes = stream.Length;
-                double bytesCompleted = 0;
-                using (IReader reader = await Task.Run(() => ReaderFactory.Open(stream)))
-                {
-                    reader.EntryExtractionProgress += (s, e) =>
-                    {
-                        if (e.ReaderProgress?.PercentageReadExact == 100)
-                        {
-                            bytesCompleted += e.Item.CompressedSize;
-                            progress?.Report(bytesCompleted / totalBytes * 100);
-                        }
-                    };
+            await using Stream stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.Read,
+                4096, FileOptions.Asynchronous);
+            using IArchive archive = await Task.Run(() => ArchiveFactory.Open(stream), ct);
 
-                    await Task.Run(() => reader.WriteAllToDirectory(destination, new ExtractionOptions()
-                    {
-                        ExtractFullPath = true,
-                        Overwrite = true,
-                    }));
-                }
-                progress?.Report(100);
+            double totalSize = archive.TotalUncompressSize;
+            long bytesCompleted = 0;
+
+            ExtractionOptions options = new() { ExtractFullPath = true, Overwrite = true, };
+            
+            //Solid archives extract fastest sequentially, Otherwise we can run this extraction in parallel
+            if (archive.IsSolid)
+            {
+                using IReader reader = archive.ExtractAllEntries();
+                reader.EntryExtractionProgress += (s, e) =>
+                {
+                    if (e.ReaderProgress?.PercentageReadExact < 100) return;
+                    long newSize = Interlocked.Add(ref bytesCompleted, e.Item.Size);
+                    progress?.Report(newSize / totalSize);
+                };
+                await Task.Run(() => reader.WriteAllToDirectory(destination, options), ct);
             }
+            else
+            {
+                await Parallel.ForEachAsync(archive.Entries, ct, (entry, token) =>
+                {
+                    if (token.IsCancellationRequested) return ValueTask.FromCanceled(token);
+                    if (!entry.IsDirectory) entry.WriteToDirectory(destination, options);
+                    long newSize = Interlocked.Add(ref bytesCompleted, entry.Size);
+                    progress?.Report(newSize / totalSize);
+                    return ValueTask.CompletedTask;
+                });
+            }
+            progress?.Report(1);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error when extracting archive");
+            logger.LogError(ex, "Error while extracting archive");
             throw;
         }
     }
 
     public async Task OpenDirectoryAsync(string path)
     {
-        if (!Directory.Exists(path))
-        {
-            // Directory doesn't exist so return early.
-            return;
-        }
+        if (!Directory.Exists(path)) return;
         path = Path.GetFullPath(path);
         await OpenAtLocation(path);
     }
 
     public async Task OpenFileAsync(string path)
     {
-        if (!File.Exists(path))
-        {
-            // File doesn't exist so return early.
-            return;
-        }
+        if (!File.Exists(path)) return;
         path = Path.GetFullPath(path);
         await OpenAtLocation(path);
     }
@@ -340,22 +265,18 @@ public class FileService(IActionNotificationService actionNotificationService,
         {
             string cmd = $"chmod 755 {filePath}";
             string escapedArgs = cmd.Replace("\"", "\\\"");
-            using (Process process = new()
+            using Process process = new();
+            process.StartInfo = new ProcessStartInfo
             {
-                StartInfo = new ProcessStartInfo
-                {
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    WindowStyle = ProcessWindowStyle.Hidden,
-                    FileName = "/bin/bash",
-                    Arguments = $"-c \"{escapedArgs}\""
-                }
-            })
-            {
-                process.Start();
-                await process.WaitForExitAsync();
-            }
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                WindowStyle = ProcessWindowStyle.Hidden,
+                FileName = "/bin/bash",
+                Arguments = $"-c \"{escapedArgs}\""
+            };
+            process.Start();
+            await process.WaitForExitAsync();
         }
     }
 }
