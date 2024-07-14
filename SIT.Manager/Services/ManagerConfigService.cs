@@ -21,6 +21,7 @@ internal sealed class ManagerConfigService : IManagerConfigService
 
     private readonly ILogger<ManagerConfigService> _logger;
     private readonly FileInfo _managerConfigPath = new(Path.Combine(AppContext.BaseDirectory, ConfigName));
+    private static readonly FileOptions FileStreamOptions = OperatingSystem.IsWindows() ? (FileOptions) 0x20000000 : FileOptions.None;
 
     public ManagerConfigService(ILogger<ManagerConfigService> logger)
     {
@@ -67,9 +68,8 @@ internal sealed class ManagerConfigService : IManagerConfigService
              * by something like a system reboot before the cached write occurs then file will be the correct length
              * but will contain only 0x00. This seems unlikely to occur, but it has already happened once.
              */
-            FileOptions options = OperatingSystem.IsWindows() ? (FileOptions) 0x20000000 : FileOptions.None;
             using FileStream configFileStream = new(_managerConfigPath.FullName, FileMode.Create,
-                FileAccess.Write, FileShare.Read, 4096, options);
+                FileAccess.Write, FileShare.Read, 4096, FileStreamOptions);
             byte[] data = Encoding.UTF8.GetBytes(serializedConfig);
             configFileStream.Write(data, 0, data.Length);
             configFileStream.Flush();
