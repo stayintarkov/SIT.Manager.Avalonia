@@ -85,7 +85,6 @@ public sealed partial class App : Application
                 .AddTransient<IFileService, FileService>()
                 .AddSingleton<IInstallerService, InstallerService>()
                 .AddSingleton<IManagerConfigService, ManagerConfigService>()
-                .AddTransient<IModService, ModService>()
                 .AddTransient<IPickerDialogService>(x =>
                 {
                     if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop || desktop.MainWindow?.StorageProvider is not { } provider)
@@ -122,7 +121,6 @@ public sealed partial class App : Application
             services.AddTransient<InstallPageViewModel>()
                 .AddTransient<LocationEditorViewModel>()
                 .AddTransient<MainViewModel>()
-                .AddTransient<ModsPageViewModel>()
                 .AddTransient<PlayPageViewModel>()
                 .AddTransient<SettingsPageViewModel>()
                 .AddTransient<ServerPageViewModel>()

@@ -65,9 +65,10 @@ public partial class LocalizationService : ILocalizationService
         {
             if (!resourceName.StartsWith(folderName) || !resourceName.EndsWith(".axaml")) continue;
 
-            int startPos = resourceName.IndexOf(folderName, StringComparison.Ordinal);
-            int endPos = resourceName.IndexOf('.');
-            string languageCode = resourceName.Substring(startPos + folderName.Length, endPos);
+            int startPos = resourceName.IndexOf(folderName, StringComparison.Ordinal) + folderName.Length + 1;
+            string debug = resourceName.Substring(startPos);
+            int endPos = resourceName.IndexOf('.', startPos);
+            string languageCode = resourceName.Substring(startPos, endPos - startPos);
             result.Add(new CultureInfo(languageCode));
         }
         

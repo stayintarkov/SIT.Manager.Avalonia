@@ -77,6 +77,12 @@ internal abstract class CachingProviderBase : ICachingProvider
         return keysToRemove.Count(TryRemove);
     }
     
+    public virtual CacheValue<T> GetOrCompute<T>(string key, Func<string, T> computer, TimeSpan? expiryTime = null)
+    {
+        return GetOrComputeAsync(key, NewFunc, expiryTime).GetAwaiter().GetResult();
+        Task<T> NewFunc(string s) => Task.FromResult(computer(key));
+    }
+    
     public virtual async Task<CacheValue<T>> GetOrComputeAsync<T>(string key, Func<string, Task<T>> computer, TimeSpan? expiryTime = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));

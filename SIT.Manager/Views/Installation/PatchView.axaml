@@ -111,7 +111,7 @@
 							HorizontalAlignment="Center"
 							VerticalAlignment="Center">
 					<TextBlock Classes="ErrorMessage"
-							   IsVisible="{Binding HasAquirePatcherError}"
+							   IsVisible="{Binding HasAcquiredPatcherError}"
 							   Text="{DynamicResource PatchViewAquirePatcherErrorMessage}"/>
 					<TextBlock Classes="ErrorMessage"
 							   IsVisible="{Binding HasPatcherError}"

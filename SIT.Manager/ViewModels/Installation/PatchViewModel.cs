@@ -8,6 +8,7 @@ using SIT.Manager.Services;
 using SIT.Manager.Theme.Controls;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -19,15 +20,16 @@ public partial class PatchViewModel : InstallationViewModelBase
     private readonly IInstallerService _installerService;
     private readonly ILogger<PatchViewModel> _logger;
 
-    private static readonly Dictionary<int, string> _patcherResultMessages = new() {
+    private static readonly ReadOnlyDictionary<int, string> PatcherResultMessages = new(new Dictionary<int, string>()
+    {
         { 0, "Patcher was closed." },
         { 10, "Patcher was successful." },
         { 11, "Could not find 'EscapeFromTarkov.exe'." },
         { 12, "'Aki_Patches' is missing." },
         { 13, "Install folder is missing a file." },
         { 14, "Install folder is missing a folder." },
-        { 15, "Patcher failed." }
-    };
+        { 15, "Patcher failed." } 
+    });
 
     private readonly Progress<double> _copyProgress;
     private readonly Progress<double> _downloadProgress;
@@ -51,12 +53,12 @@ public partial class PatchViewModel : InstallationViewModelBase
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasError))]
-    private bool _hasAquirePatcherError = false;
+    private bool _hasAcquiredPatcherError = false;
 
     [ObservableProperty]
     private EmbeddedProcessWindow? _embeddedPatcherWindow;
 
-    public bool HasError => HasPatcherError || HasAquirePatcherError;
+    public bool HasError => HasPatcherError || HasAcquiredPatcherError;
 
     public PatchViewModel(IFileService fileService, IInstallerService installerService, ILogger<PatchViewModel> logger) : base()
     {
@@ -100,7 +102,7 @@ public partial class PatchViewModel : InstallationViewModelBase
             await embeddedProcessWindow.WaitForExit();
         }
 
-        _patcherResultMessages.TryGetValue(embeddedProcessWindow.ExitCode, out string? patcherResult);
+        PatcherResultMessages.TryGetValue(embeddedProcessWindow.ExitCode, out string? patcherResult);
         _logger.LogInformation("RunPatcher: {patcherResult}", patcherResult);
 
         int exitCode = embeddedProcessWindow.ExitCode;
@@ -156,7 +158,7 @@ public partial class PatchViewModel : InstallationViewModelBase
         Messenger.Send(new InstallationRunningMessage(false));
     }
 
-    public async Task DownloadAndRunPatcher()
+    private async Task DownloadAndRunPatcher()
     {
         if (CurrentInstallProcessState.UsingBsgInstallPath)
         {
@@ -165,14 +167,14 @@ public partial class PatchViewModel : InstallationViewModelBase
 
         if (RequiresPatching)
         {
-            bool aquiredPatcher = await _installerService.DownloadAndExtractPatcher(CurrentInstallProcessState.DownloadMirrorUrl, CurrentInstallProcessState.EftInstallPath, _downloadProgress, _extractionProgress);
-            if (aquiredPatcher)
+            bool acquiredPatcher = await _installerService.DownloadAndExtractPatcher(CurrentInstallProcessState.DownloadMirrorUrl, CurrentInstallProcessState.EftInstallPath, _downloadProgress, _extractionProgress);
+            if (acquiredPatcher)
             {
                 await RunPatcher();
             }
             else
             {
-                HasAquirePatcherError = true;
+                HasAcquiredPatcherError = true;
             }
         }
         else

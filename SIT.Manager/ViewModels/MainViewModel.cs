@@ -112,7 +112,6 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
             new NavigationItem(_localizationService.TranslateSource("InstallTitle"), _localizationService.TranslateSource("InstallTitleToolTip"), Symbol.Sync, typeof(InstallPage)),
             new NavigationItem(_localizationService.TranslateSource("ToolsTitle"), _localizationService.TranslateSource("ToolsTitleToolTip"), Symbol.AllApps, typeof(ToolsPage)),
             new NavigationItem(_localizationService.TranslateSource("ServerTitle"), _localizationService.TranslateSource("ServerTitleToolTip"), Symbol.MapDrive, typeof(ServerPage)),
-            new NavigationItem(_localizationService.TranslateSource("ModsTitle"), _localizationService.TranslateSource("ModsTitleToolTip"), Symbol.Library, typeof(ModsPage))
         ]);
         /* TODO make a new notification for updating.
 						<ListBoxItem>
@@ -207,7 +206,6 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
             new NavigationItem(_localizationService.TranslateSource("InstallTitle"), _localizationService.TranslateSource("InstallTitleToolTip"), Symbol.Sync, typeof(InstallPage)),
             new NavigationItem(_localizationService.TranslateSource("ToolsTitle"), _localizationService.TranslateSource("ToolsTitleToolTip"), Symbol.AllApps, typeof(ToolsPage)),
             new NavigationItem(_localizationService.TranslateSource("ServerTitle"), _localizationService.TranslateSource("ServerTitleToolTip"), Symbol.MapDrive, typeof(ServerPage)),
-            new NavigationItem(_localizationService.TranslateSource("ModsTitle"), _localizationService.TranslateSource("ModsTitleToolTip"), Symbol.Library, typeof(ModsPage))
         ]);
     }
 

@@ -15,6 +15,7 @@ public interface ICachingProvider
     int GetCount(string prefix = "");
     bool TryRemove(string key);
     int TryRemoveByPrefix(string prefix);
+    CacheValue<T> GetOrCompute<T>(string key, Func<string, T> computer, TimeSpan? expiryTime = null);
     Task<CacheValue<T>> GetOrComputeAsync<T>(string key, Func<string, Task<T>> computer, TimeSpan? expiryTime = null);
     bool TryGet<T>(string key, out CacheValue<T> cacheValue);
     void OnEvictedTenant(EvictedEventArgs e);

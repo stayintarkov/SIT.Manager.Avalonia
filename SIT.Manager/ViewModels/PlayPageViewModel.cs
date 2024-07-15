@@ -44,9 +44,9 @@ public partial class PlayPageViewModel : ObservableRecipient,
     {
         if (_cachingService.OnDisk.Exists(SELECTED_TAB_INDEX_CACHE_KEY))
         {
-            _cachingService.OnDisk.Remove(SELECTED_TAB_INDEX_CACHE_KEY);
+            _cachingService.OnDisk.TryRemove(SELECTED_TAB_INDEX_CACHE_KEY);
         }
-        _cachingService.OnDisk.Add(SELECTED_TAB_INDEX_CACHE_KEY, value);
+        _cachingService.OnDisk.TryAdd(SELECTED_TAB_INDEX_CACHE_KEY, value);
     }
 
     public void Receive(ServerConnectMessage message)

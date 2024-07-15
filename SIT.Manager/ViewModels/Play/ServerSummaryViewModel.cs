@@ -131,7 +131,7 @@ public partial class ServerSummaryViewModel : ObservableRecipient
         {
             if (_server != null)
             {
-                _configService.Config.BookmarkedServers.RemoveAll(x => x.Address == _server.Address);
+                _configService.Config.SITSettings.BookmarkedServers.RemoveAll(x => x.Address == _server.Address);
 
                 AkiServer updatedServer = new(result.ServerUri)
                 {

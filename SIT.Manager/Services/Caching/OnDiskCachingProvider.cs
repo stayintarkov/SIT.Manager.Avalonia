@@ -18,6 +18,7 @@ internal class OnDiskCachingProvider : CachingProviderBase
     private readonly XxHash32 _hasher = new();
     private readonly DirectoryInfo _cacheDirectory;
     private string RestoreFilePath => Path.Combine(_cacheDirectory.FullName, RestoreFileName);
+    private static readonly FileOptions FileStreamOptions = OperatingSystem.IsWindows() ? (FileOptions) 0x20000000 : FileOptions.None;
 
     public OnDiskCachingProvider(ILogger<OnDiskCachingProvider> logger)
     {
@@ -45,8 +46,10 @@ internal class OnDiskCachingProvider : CachingProviderBase
         try
         {
             _cacheDirectory.Create();
-            using FileStream fs = File.OpenWrite(RestoreFilePath);
-            JsonSerializer.Serialize(fs, CacheMap);
+            using FileStream cacheRecordFileStream = new(RestoreFilePath, FileMode.Create,
+                FileAccess.Write, FileShare.Read, 4096, FileStreamOptions);
+            JsonSerializer.Serialize(cacheRecordFileStream, CacheMap);
+            cacheRecordFileStream.Flush();
         }
         catch (Exception ex)
         {

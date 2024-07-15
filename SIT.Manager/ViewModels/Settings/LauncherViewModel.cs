@@ -68,7 +68,8 @@ public partial class LauncherViewModel(IManagerConfigService configService,
         // If test mode is enabled then we want to check that there's no mods we don't approve of currently installed.
         if (value)
         {
-            List<string> installedMods = _configsService.Config.InstalledMods.Keys.ToList();
+            //TODO: Merge this with new mod page!
+            List<string> installedMods = new();
             int compatibleModCount = installedMods.Count(x => _modService.RecommendedModInstalls.Contains(x));
             int totalIncompatibleMods = installedMods.Count - compatibleModCount;
             if (totalIncompatibleMods > 0)

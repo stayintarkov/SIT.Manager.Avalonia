@@ -130,7 +130,7 @@ public class TarkovClientService(
             return false;
         }
 
-        if (_launcherConfig.Config.MinimizeAfterLaunch)
+        if (_launcherConfig.MinimizeAfterLaunch)
         {
             MinimizeManager();
         }
@@ -310,6 +310,7 @@ public class TarkovClientService(
         }
     }
 
+    //TODO: Unify the lifetimes somehow
     private static void CloseManager()
     {
         IApplicationLifetime? lifetime = App.Current.ApplicationLifetime;
@@ -320,6 +321,16 @@ public class TarkovClientService(
         else
         {
             Environment.Exit(0);
+        }
+    }
+    
+    private static void MinimizeManager()
+    {
+        IApplicationLifetime? lifetime = App.Current.ApplicationLifetime;
+
+        if (lifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: not null } desktopLifetime)
+        {
+            desktopLifetime.MainWindow.WindowState = WindowState.Minimized;
         }
     }
 

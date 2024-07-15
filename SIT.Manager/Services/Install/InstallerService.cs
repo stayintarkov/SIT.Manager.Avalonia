@@ -31,7 +31,11 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                                       ICachingService cachingService) : IInstallerService
 {
     // Base 64 encoded url :)
-    private const string PATCHER_URL = "aHR0cHM6Ly9wYXRjaGVyLnN0YXlpbnRhcmtvdi5jb20vYXBpL3YxL3JlcG9zL1NJVC9Eb3duZ3JhZGUtUGF0Y2hlcy9yZWxlYXNlcw==";
+    private const string PatcherUrl =
+        "aHR0cHM6Ly9wYXRjaGVyLnN0YXlpbnRhcmtvdi5jb20vYXBpL3YxL3JlcG9zL1NJVC9Eb3duZ3JhZGUtUGF0Y2hlcy9yZWxlYXNlcw==";
+
+    private const string BepInExReleaseUrl =
+        "https://github.com/BepInEx/BepInEx/releases/download/v5.4.22/BepInEx_x64_5.4.22.0.zip";
 
     private readonly ICachingService _cachingService = cachingService;
     private SITConfig _sitConfig => configService.Config.SITSettings;
@@ -119,7 +123,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         try
         {
             releasesJsonString = await GetHttpStringWithRetryAsync(
-                        () => httpClient.GetStringAsync(Encoding.UTF8.GetString(Convert.FromBase64String(PATCHER_URL))),
+                        () => httpClient.GetStringAsync(Encoding.UTF8.GetString(Convert.FromBase64String(PatcherUrl))),
                         TimeSpan.FromSeconds(3), 3);
         }
         catch (AuthenticationException)
@@ -456,7 +460,9 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             File.Delete(patcherPath);
         }
 
-        bool downloadSuccess = await fileService.DownloadFile("Patcher.zip", targetPath, url, downloadProgress).ConfigureAwait(false);
+        //TODO: Pass CT token
+        string patcherDestination = Path.Combine(targetPath, "Patcher.zip");
+        bool downloadSuccess = await fileService.DownloadFile(new Uri(url), patcherDestination, downloadProgress).ConfigureAwait(false);
         if (!downloadSuccess)
         {
             logger.LogError("Failed to download the patcher from the selected mirror.");
@@ -588,7 +594,8 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         try
         {
             // Download and extract the file into the target directory
-            await fileService.DownloadFile(releaseAsset.Name, targetInstallDir, releaseZipUrl, downloadProgress);
+            string releaseZipDestination = Path.Combine(targetInstallDir, releaseAsset.Name);
+            await fileService.DownloadFile(new Uri(releaseZipUrl), releaseZipDestination, downloadProgress);
             await fileService.ExtractArchive(downloadLocation, targetInstallDir, extractionProgress);
         }
         catch (Exception ex)
@@ -670,9 +677,9 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             string patchersPath = Path.Combine(targetInstallDir, "BepInEx", "patchers");
             Directory.CreateDirectory(patchersPath);
 
-            string bepinexPath = Path.Combine(targetInstallDir, "SITLauncher");
-            await fileService.DownloadFile("BepInEx5.zip", bepinexPath, "https://github.com/BepInEx/BepInEx/releases/download/v5.4.22/BepInEx_x64_5.4.22.0.zip", internalDownloadProgress);
-            await fileService.ExtractArchive(Path.Combine(bepinexPath, "BepInEx5.zip"), targetInstallDir, internalExtractionProgress);
+            string bepInExPath = Path.Combine(targetInstallDir, "SITLauncher", "BepInEx5.zip");
+            await fileService.DownloadFile(new Uri(BepInExReleaseUrl), bepInExPath, internalDownloadProgress);
+            await fileService.ExtractArchive(bepInExPath, targetInstallDir, internalExtractionProgress);
 
             // We don't use index as they might be different from version to version
             string? releaseZipUrl = selectedVersion.Assets.Find(q => q.Name == "StayInTarkov-Release.zip")?.BrowserDownloadUrl;
@@ -689,8 +696,9 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                     extractionProgress.Report(internalExtractionProgressPercentage);
                 });
 
-                await fileService.DownloadFile("StayInTarkov-Release.zip", coreFilesPath, releaseZipUrl, internalDownloadProgress);
-                await fileService.ExtractArchive(Path.Combine(coreFilesPath, "StayInTarkov-Release.zip"), coreFilesPath, internalExtractionProgress);
+                string StayInTarkovReleaseDestination = Path.Combine(coreFilesPath, "StayInTarkov-Release.zip");
+                await fileService.DownloadFile(new Uri(releaseZipUrl), StayInTarkovReleaseDestination, internalDownloadProgress);
+                await fileService.ExtractArchive(StayInTarkovReleaseDestination, coreFilesPath, internalExtractionProgress);
             }
 
             // Create enumeration options so we can find our files regardless of if they are hiding in folders or not.

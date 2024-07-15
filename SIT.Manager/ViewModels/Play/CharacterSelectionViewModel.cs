@@ -130,7 +130,7 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
     {
         base.OnActivated();
 
-        AkiServer? currentServer = _configService.Config.BookmarkedServers.FirstOrDefault(x => x.Address == _connectedServer.Address);
+        AkiServer? currentServer = _configService.Config.SITSettings.BookmarkedServers.FirstOrDefault(x => x.Address == _connectedServer.Address);
 
         if (currentServer != null) _connectedServer = currentServer;
 
@@ -146,8 +146,6 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
     {
         var characterGrouping = _connectedServer.Characters.GroupBy(x => new { x.Username, x.Password });
 
-        bool updateConfig = false;
-
         characterGrouping.Where(x => x.Count() > 1).ForEach(duplications =>
         {
             // Get the first entry with a profile ID - or just the first entry if no saved profile ID.
@@ -156,13 +154,6 @@ public partial class CharacterSelectionViewModel : ObservableRecipient
 
             _connectedServer.Characters.RemoveAll(x => x.Username == duplicateToKeep.Username && x.Password == duplicateToKeep.Password);
             _connectedServer.Characters.Add(duplicateToKeep);
-
-            updateConfig = true;
         });
-
-        if (updateConfig)
-        {
-            _configService.UpdateConfig(_configService.Config);
-        }
     }
 }

@@ -205,7 +205,6 @@ public partial class CharacterSummaryViewModel : ObservableRecipient
         if (character != null)
         {
             _connectedServer.Characters.Remove(character);
-            _configService.UpdateConfig(_configService.Config);
             RequireLogin = true;
         }
     }

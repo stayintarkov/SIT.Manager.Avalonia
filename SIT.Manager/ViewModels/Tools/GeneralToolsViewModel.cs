@@ -8,6 +8,7 @@ using FluentAvalonia.UI.Controls;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Interfaces.ManagedProcesses;
 using SIT.Manager.Models;
+using SIT.Manager.Models.Config;
 using SIT.Manager.Models.Messages;
 using SIT.Manager.Services;
 using SIT.Manager.Views;
@@ -31,6 +32,8 @@ public partial class GeneralToolsViewModel : ObservableObject
     private readonly ITarkovClientService _tarkovClientService;
     private readonly ILocalizationService _localizationService;
     private readonly IDiagnosticService _diagnosticService;
+    private readonly SITConfig _sitConfig;
+    private readonly AkiConfig _akiConfig;
     private static string EFTLogPath
     {
         get => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "..", "LocalLow", "Battlestate Games", "EscapeFromTarkov", "Player.log");
@@ -67,6 +70,8 @@ public partial class GeneralToolsViewModel : ObservableObject
         _localizationService = localizationService;
         _modService = modService;
         _diagnosticService = diagnosticService;
+        _sitConfig = configService.Config.SITSettings;
+        _akiConfig = configService.Config.AkiSettings;
 
         OpenEFTFolderCommand = new AsyncRelayCommand(OpenEFTFolder);
         OpenBepInExFolderCommand = new AsyncRelayCommand(OpenBepInExFolder);
@@ -78,7 +83,7 @@ public partial class GeneralToolsViewModel : ObservableObject
 
     private async Task OpenEFTFolder()
     {
-        if (string.IsNullOrEmpty(_configService.Config.SitEftInstallPath))
+        if (string.IsNullOrEmpty(_sitConfig.SitEFTInstallPath))
         {
             ContentDialog contentDialog = new()
             {
@@ -90,13 +95,13 @@ public partial class GeneralToolsViewModel : ObservableObject
         }
         else
         {
-            await _fileService.OpenDirectoryAsync(_configService.Config.SitEftInstallPath);
+            await _fileService.OpenDirectoryAsync(_sitConfig.SitEFTInstallPath);
         }
     }
 
     private async Task OpenServerFolder()
     {
-        if (string.IsNullOrEmpty(_configService.Config.AkiServerPath))
+        if (string.IsNullOrEmpty(_akiConfig.AkiServerPath))
         {
             ContentDialog contentDialog = new()
             {
@@ -108,13 +113,13 @@ public partial class GeneralToolsViewModel : ObservableObject
         }
         else
         {
-            await _fileService.OpenDirectoryAsync(_configService.Config.AkiServerPath);
+            await _fileService.OpenDirectoryAsync(_akiConfig.AkiServerPath);
         }
     }
 
     private async Task OpenBepInExFolder()
     {
-        if (string.IsNullOrEmpty(_configService.Config.SitEftInstallPath))
+        if (string.IsNullOrEmpty(_sitConfig.SitEFTInstallPath))
         {
             ContentDialog contentDialog = new()
             {
@@ -126,7 +131,7 @@ public partial class GeneralToolsViewModel : ObservableObject
         }
         else
         {
-            string dirPath = Path.Combine(_configService.Config.SitEftInstallPath, "BepInEx", "plugins");
+            string dirPath = Path.Combine(_sitConfig.SitEFTInstallPath, "BepInEx", "plugins");
             if (Directory.Exists(dirPath))
             {
                 await _fileService.OpenDirectoryAsync(dirPath);
@@ -154,7 +159,7 @@ public partial class GeneralToolsViewModel : ObservableObject
 
     private async Task OpenSITConfig()
     {
-        string path = Path.Combine(_configService.Config.SitEftInstallPath, "BepInEx", "config");
+        string path = Path.Combine(_sitConfig.SitEFTInstallPath, "BepInEx", "config");
         if (!Directory.Exists(path))
         {
             ContentDialog contentDialog = new()

@@ -46,7 +46,7 @@ public partial class ServerSelectionViewModel : ObservableRecipient, IRecipient<
         if (result.DialogResult == ContentDialogResult.Primary)
         {
             bool serverExists = _sitConfig.BookmarkedServers
-                .Any(x => Uri.Compare(x.Address, serverUri, UriComponents.HostAndPort, UriFormat.SafeUnescaped, StringComparison.OrdinalIgnoreCase) == 0);
+                .Any(x => Uri.Compare(x.Address, result.ServerUri, UriComponents.HostAndPort, UriFormat.SafeUnescaped, StringComparison.OrdinalIgnoreCase) == 0);
             if (!serverExists)
             {
                 AkiServer newServer = new(result.ServerUri)
