@@ -22,11 +22,9 @@ namespace SIT.Manager.Services;
 
 public class AkiServerRequestingService(
     HttpClient httpClient,
-    ResiliencePipelineProvider<string> resiliencePipelineProvider,
-    IManagerConfigService configService) : IAkiServerRequestingService
+    ResiliencePipelineProvider<string> resiliencePipelineProvider) : IAkiServerRequestingService
 {
     private static readonly MediaTypeHeaderValue ContentHeaderType = new("application/json");
-    private static readonly Version StandardUriFormatSupportedVersion = new("1.10.8827.30098");
     private static readonly ImmutableArray<byte> ZlibMagicBytes = [0x01, 0x5E, 0x9C, 0xDA];
 
     private async Task<MemoryStream> SendAsync(Uri remoteAddress, string path, HttpMethod? method = null, string? data = null, ResiliencePipeline<HttpResponseMessage>? strategy = null, CancellationToken cancellationToken = default)
@@ -77,21 +75,18 @@ public class AkiServerRequestingService(
     public async Task<AkiServer> GetAkiServerAsync(Uri serverAddress, bool fetchInformation = true, CancellationToken cancellationToken = default)
     {
         AkiServer ret = new(serverAddress);
-        if (fetchInformation)
-        {
-            AkiServerInfo? serverInfo = await GetAkiServerInfoAsync(ret, cancellationToken);
-            if (serverInfo != null)
-            {
-                ret.Name = serverInfo.Name;
-            }
-        }
+        if (!fetchInformation) return ret;
+
+        AkiServerInfo? serverInfo = await GetAkiServerInfoAsync(ret, cancellationToken);
+        if (serverInfo != null) ret.Name = serverInfo.Name;
 
         return ret;
     }
 
+    //TODO: Convert this to int? instead of returning -1
     public async Task<int> GetPingAsync(AkiServer akiServer, CancellationToken cancellationToken = default)
     {
-        var strategy = resiliencePipelineProvider.GetPipeline<HttpResponseMessage>("ping-pipeline");
+        ResiliencePipeline<HttpResponseMessage> strategy = resiliencePipelineProvider.GetPipeline<HttpResponseMessage>("ping-pipeline");
         Stopwatch stopwatch = Stopwatch.StartNew();
         using MemoryStream respStream = await SendAsync(akiServer, "/launcher/ping", strategy: strategy, cancellationToken: cancellationToken);
         stopwatch.Stop();
@@ -109,10 +104,9 @@ public class AkiServerRequestingService(
         return await JsonSerializer.DeserializeAsync<List<AkiMiniProfile>>(respStream, cancellationToken: cancellationToken) ?? [];
     }
 
-    private string CreateLoginData(AkiServer server, AkiCharacter character)
+    private static string CreateLoginData(AkiServer server, AkiCharacter character)
     {
-        Version sitVersion = new(configService.Config.SITSettings.SitVersion);
-        string compatibleUri = server.Address.AbsoluteUri[..^(sitVersion >= StandardUriFormatSupportedVersion ? 0 : 1)];
+        string compatibleUri = server.Address.AbsoluteUri[..^1];
         JsonObject loginData = new()
         {
             ["username"] = character.Username,
@@ -163,9 +157,7 @@ public class AkiServerRequestingService(
     }
 
     public Task<MemoryStream> GetAkiServerImage(AkiServer server, string assetPath, CancellationToken cancellationToken = default)
-    {
-        return SendAsync(server.Address, Path.Combine("/files/", assetPath), cancellationToken: cancellationToken);
-    }
+        => SendAsync(server.Address, Path.Combine("/files/", assetPath), cancellationToken: cancellationToken);
 }
 
 public enum AkiLoginStatus
