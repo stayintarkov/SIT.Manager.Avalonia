@@ -10,14 +10,12 @@ namespace SIT.Manager.Services;
 
 public class PickerDialogService(Window target) : IPickerDialogService
 {
-    private readonly Window _target = target;
-
     public async Task<IStorageFolder?> GetDirectoryFromPickerAsync()
     {
         IStorageFolder? ret = null;
         try
         {
-            IReadOnlyList<IStorageFolder> folders = await _target.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions()
+            IReadOnlyList<IStorageFolder> folders = await target.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions()
             {
                 AllowMultiple = false
             });
@@ -34,7 +32,7 @@ public class PickerDialogService(Window target) : IPickerDialogService
 
     public async Task<IStorageFile?> GetFileFromPickerAsync()
     {
-        IReadOnlyList<IStorageFile> files = await _target.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions()
+        IReadOnlyList<IStorageFile> files = await target.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
             AllowMultiple = false
         });
@@ -44,7 +42,7 @@ public class PickerDialogService(Window target) : IPickerDialogService
 
     public async Task<IStorageFile?> GetFileSaveFromPickerAsync(string defaultFileExtension = "", string suggestedFileName = "")
     {
-        IStorageFile? file = await _target.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions()
+        IStorageFile? file = await target.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
             DefaultExtension = defaultFileExtension,
             SuggestedFileName = suggestedFileName

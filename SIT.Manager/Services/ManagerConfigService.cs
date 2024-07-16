@@ -66,7 +66,7 @@ internal sealed class ManagerConfigService : IManagerConfigService
             /*
              * NTFS does cached writes. If the file system allocates the file to be written to but is interrupted
              * by something like a system reboot before the cached write occurs then file will be the correct length
-             * but will contain only 0x00. This seems unlikely to occur, but it has already happened once.
+             * but will contain only 0x00. This seems unlikely to occur, but it has already happened multiple times.
              */
             using FileStream configFileStream = new(_managerConfigPath.FullName, FileMode.Create,
                 FileAccess.Write, FileShare.Read, 4096, FileStreamOptions);
