@@ -8,6 +8,7 @@ using SIT.Manager.Models.Github;
 using SIT.Manager.Models.Installation;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -42,11 +43,21 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
     private LauncherConfig _launcherConfig => configService.Config.LauncherSettings;
     private AkiConfig _akiConfig => configService.Config.AkiSettings;
 
-    [GeneratedRegex("This server version works with version ([0]{1,}\\.[0-9]{1,2}\\.[0-9]{1,2})\\.[0-9]{1,2}\\.[0-9]{1,5}")]
+    [GeneratedRegex("This server version works with version ((?:[0-9]{1,5}\\.?)*)")]
     private static partial Regex ServerReleaseVersionRegex();
 
-    [GeneratedRegex("This version works with version [0]{1,}\\.[0-9]{1,2}\\.[0-9]{1,2}\\.[0-9]{1,2}\\.[0-9]{1,5}")]
+    [GeneratedRegex("This version works with version ((?:[0-9]{1,5}\\.?)*)")]
     private static partial Regex SITReleaseVersionRegex();
+
+    private static ReadOnlyCollection<string> CleanupPaths = new(new List<string>
+    {
+        "BattlEye",
+        "EscapeFromTarkov_BE.exe",
+        "cache",
+        "ConsistencyInfo",
+        "Uninstall.exe",
+        "Logs"
+    });
 
     private List<SitInstallVersion>? _availableSitUpdateVersions;
 
@@ -60,35 +71,11 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
         logger.LogInformation("Cleaning up EFT directory...");
         try
         {
-            string battlEyeDir = Path.Combine(targetInstallDir, "BattlEye");
-            if (Directory.Exists(battlEyeDir))
+            foreach (string cleanupPath in CleanupPaths)
             {
-                Directory.Delete(battlEyeDir, true);
-            }
-            string battlEyeExe = Path.Combine(targetInstallDir, "EscapeFromTarkov_BE.exe");
-            if (File.Exists(battlEyeExe))
-            {
-                File.Delete(battlEyeExe);
-            }
-            string cacheDir = Path.Combine(targetInstallDir, "cache");
-            if (Directory.Exists(cacheDir))
-            {
-                Directory.Delete(cacheDir, true);
-            }
-            string consistencyPath = Path.Combine(targetInstallDir, "ConsistencyInfo");
-            if (File.Exists(consistencyPath))
-            {
-                File.Delete(consistencyPath);
-            }
-            string uninstallPath = Path.Combine(targetInstallDir, "Uninstall.exe");
-            if (File.Exists(uninstallPath))
-            {
-                File.Delete(uninstallPath);
-            }
-            string logsDirPath = Path.Combine(targetInstallDir, "Logs");
-            if (Directory.Exists(logsDirPath))
-            {
-                Directory.Delete(logsDirPath, true);
+                string pathToCleanup = Path.Combine(targetInstallDir, cleanupPath);
+                if(File.Exists(pathToCleanup)) File.Delete(pathToCleanup);
+                if(Directory.Exists(pathToCleanup)) Directory.Delete(pathToCleanup, true);
             }
         }
         catch (Exception ex)
@@ -102,9 +89,9 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
     /// Gets all available download mirrors for downgrade patchers required to run the given SIT version
     /// </summary>
     /// <param name="sitVersions">The available versions of SIT to check for mirrors of</param>
-    /// <param name="tarkovVersion">The provided tarkov version to check agains</param>
+    /// <param name="tarkovVersion">The provided tarkov version to check against</param>
     /// <returns></returns>
-    private async Task<List<SitInstallVersion>> GetAvaiableMirrorsForVerison(List<SitInstallVersion> sitVersions, string tarkovVersion)
+    private async Task<List<SitInstallVersion>> GetAvailableMirrorsForVersion(List<SitInstallVersion> sitVersions, string tarkovVersion)
     {
         if (string.IsNullOrEmpty(tarkovVersion))
         {
@@ -489,7 +476,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
     public async Task<List<SitInstallVersion>> GetAvailableSitReleases(string tarkovVersion)
     {
         List<SitInstallVersion> availableVersions = await GetSitReleases();
-        availableVersions = await GetAvaiableMirrorsForVerison(availableVersions, tarkovVersion);
+        availableVersions = await GetAvailableMirrorsForVersion(availableVersions, tarkovVersion);
 
         // Evaluate the availability of the SIT versions based on the current tarkov version
         for (int i = 0; i < availableVersions.Count; i++)
@@ -510,11 +497,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
 
     public string GetEFTInstallPath()
     {
-        if (!OperatingSystem.IsWindows())
-        {
-            return string.Empty;
-        }
-        return EFTGameFinder.FindOfficialGamePath();
+        return !OperatingSystem.IsWindows() ? string.Empty : EFTGameFinder.FindOfficialGamePath();
     }
 
     public SitInstallVersion? GetLatestAvailableSitRelease()
