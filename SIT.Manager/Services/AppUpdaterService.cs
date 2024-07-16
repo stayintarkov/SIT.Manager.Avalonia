@@ -12,32 +12,25 @@ using System.IO;
 using System.Net.Http;
 using System.Reflection;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SIT.Manager.Services;
 
 public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterService> logger, HttpClient httpClient, IManagerConfigService configService) : IAppUpdaterService
 {
-    private const string MANAGER_VERSION_URL = @"https://api.github.com/repos/stayintarkov/SIT.Manager.Avalonia/releases/latest";
-
-    private readonly IFileService _fileService = fileService;
-    private readonly ILogger<AppUpdaterService> _logger = logger;
-    private readonly HttpClient _httpClient = httpClient;
-    private readonly IManagerConfigService _configService = configService;
-    private SITConfig _sitConfig => _configService.Config.SITSettings;
+    private const string MANAGER_RELEASE_URL = @"https://api.github.com/repos/stayintarkov/SIT.Manager.Avalonia/releases/";
+    private const string MANAGER_EXECUTABLE_NAME = @"SIT.Manager";
+    private const string MANAGER_WINDOWS_RELEASE_FILE = @"win-x64.zip";
+    private const string MANAGER_LINUX_RELEASE_FILE = @"linux-x64.tar.gz";
+    private SITConfig _sitConfig => configService.Config.SITSettings;
 
     private static string ProcessName
     {
         get
         {
-            if (OperatingSystem.IsWindows())
-            {
-                return "SIT.Manager.exe";
-            }
-            else if (OperatingSystem.IsLinux())
-            {
-                return "SIT.Manager";
-            }
+            if (OperatingSystem.IsWindows()) return $"{MANAGER_EXECUTABLE_NAME}.exe";
+            if (OperatingSystem.IsLinux()) return MANAGER_EXECUTABLE_NAME;
             throw new NotImplementedException("No process name found for this platform");
         }
     }
@@ -46,81 +39,77 @@ public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterServi
     {
         get
         {
-            if (OperatingSystem.IsWindows())
-            {
-                return @"https://github.com/stayintarkov/SIT.Manager.Avalonia/releases/latest/download/win-x64.zip";
-            }
-            else if (OperatingSystem.IsLinux())
-            {
-                return @"https://github.com/stayintarkov/SIT.Manager.Avalonia/releases/latest/download/linux-x64.tar.gz";
-            }
-            throw new NotImplementedException("No Release URL found for this platform");
+            string? releaseFile = null;
+            if (OperatingSystem.IsWindows()) releaseFile = MANAGER_WINDOWS_RELEASE_FILE;
+            if (OperatingSystem.IsLinux()) releaseFile = MANAGER_LINUX_RELEASE_FILE;
+            if(string.IsNullOrEmpty(releaseFile))
+                throw new NotImplementedException("No Release URL found for this platform");
+            return Path.Combine(MANAGER_RELEASE_URL, releaseFile);
         }
     }
 
-    private static async Task MoveManager(DirectoryInfo source, string destination)
-    {
-        await MoveManager(source, new DirectoryInfo(destination));
-    }
-
-    private static async Task MoveManager(DirectoryInfo source, DirectoryInfo destination)
+    private async Task MoveManager(DirectoryInfo source, DirectoryInfo destination, CancellationToken ct = default)
     {
         IEnumerable<DirectoryInfo> directories = source.EnumerateDirectories();
         IEnumerable<FileInfo> files = source.EnumerateFiles();
         destination.Create();
 
-        foreach (DirectoryInfo directory in directories)
+        await Parallel.ForEachAsync(directories, ct, async (directory, token) =>
         {
-            if (directory.Name.Equals("backup", StringComparison.InvariantCultureIgnoreCase))
-            {
-                continue;
-            }
+            if (ct.IsCancellationRequested) return;
+            if (directory.Name.Equals("backup", StringComparison.InvariantCultureIgnoreCase)) return;
             DirectoryInfo newDestination = destination.CreateSubdirectory(directory.Name);
-            await MoveManager(directory, newDestination);
-        }
+            await MoveManager(directory, newDestination, token);
+        });
 
-        foreach (FileInfo file in files)
+        await Parallel.ForEachAsync(files, ct, (file, token) =>
         {
             try
             {
+                if (token.IsCancellationRequested) return ValueTask.FromCanceled(token);
                 file.MoveTo(Path.Combine(destination.FullName, file.Name));
+                return ValueTask.CompletedTask;
             }
-            catch (Exception) { }
-        }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Exception moving file {fileName}", file.FullName);
+                return ValueTask.FromException(ex);
+            }
+        });
     }
 
     private async Task ExtractUpdatedManager(string zipPath, string destination)
     {
         DirectoryInfo releasePath = new(destination);
         releasePath.Create();
-        await _fileService.ExtractArchive(zipPath, releasePath.FullName);
+        await fileService.ExtractArchive(zipPath, releasePath.FullName);
     }
 
     public async Task<bool> CheckForUpdate()
     {
+        //TODO: Handle this being null instead of silentlyh failing
         Version currentVersion = Assembly.GetEntryAssembly()?.GetName().Version ?? new Version("0");
         Version latestVersion = new();
 
-        TimeSpan timeSinceLastCheck = DateTime.Now - _configService.Config.LauncherSettings.LastManagerUpdateCheckTime;
+        TimeSpan timeSinceLastCheck = DateTime.Now - configService.Config.LauncherSettings.LastManagerUpdateCheckTime;
 
-        if (_configService.Config.LauncherSettings.LookForUpdates && timeSinceLastCheck.TotalHours >= 1)
+        if (!configService.Config.LauncherSettings.LookForUpdates || !(timeSinceLastCheck.TotalHours >= 1))
+            return latestVersion > currentVersion;
+
+        try
         {
-            try
-            {
-                string versionJsonString = await _httpClient.GetStringAsync(MANAGER_VERSION_URL);
-                GithubRelease? latestRelease = JsonSerializer.Deserialize<GithubRelease>(versionJsonString);
-                if (latestRelease != null)
-                {
-                    latestVersion = new(latestRelease.Name);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "CheckForUpdate");
-            }
-
-            _sitConfig.LastSitUpdateCheckTime = DateTime.Now;
+            //TODO: use polly pipelines
+            string latestReleaseUrl = Path.Combine(MANAGER_RELEASE_URL, "latest");
+            string versionJsonString = await httpClient.GetStringAsync(latestReleaseUrl);
+            GithubRelease? latestRelease = JsonSerializer.Deserialize<GithubRelease>(versionJsonString);
+            if (latestRelease != null) latestVersion = new Version(latestRelease.Name);
         }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "CheckForUpdate");
+        }
+
+        _sitConfig.LastSitUpdateCheckTime = DateTime.Now;
 
         return latestVersion > currentVersion;
     }
@@ -130,7 +119,7 @@ public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterServi
         string workingDir = AppDomain.CurrentDomain.BaseDirectory;
         if (!File.Exists(Path.Combine(workingDir, ProcessName)))
         {
-            _logger.LogError("Unable to find '{ProcessName}' in root directory. Make sure the app is installed correctly.", ProcessName);
+            logger.LogError("Unable to find '{ProcessName}' in root directory. Make sure the app is installed correctly.", ProcessName);
             return false;
         }
 
@@ -141,20 +130,21 @@ public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterServi
 
         try
         {
-            _logger.LogInformation("Downloading '{ZipName}' to '{ZipPath}'", zipName, zipPath);
-            using (FileStream fs = new(zipPath, FileMode.Create, FileAccess.Write, FileShare.None))
+            logger.LogInformation("Downloading '{ZipName}' to '{ZipPath}'", zipName, zipPath);
+            await using (FileStream fs = new(zipPath, FileMode.Create, FileAccess.Write, FileShare.None))
             {
-                await _httpClient.DownloadAsync(fs, ReleaseUrl, progress);
+                //TODO: Use polly here
+                await httpClient.DownloadAsync(fs, ReleaseUrl, progress);
             }
             progress.Report(1);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error during download");
+            logger.LogError(ex, "Error during download");
             return false;
         }
 
-        _logger.LogInformation("Download complete; Extracting new version..");
+        logger.LogInformation("Download complete; Extracting new version..");
         string releasePath = Path.Combine(tempPath, "Release");
         await ExtractUpdatedManager(zipPath, releasePath);
 
@@ -162,35 +152,32 @@ public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterServi
         // this has the added bonus of making sure that Process.dll tm is loaded 
         // before we move it elsewhere allowing us to restart the app
         string executablePath = Path.Combine(releasePath, ProcessName);
-        await _fileService.SetFileAsExecutable(executablePath);
+        await fileService.SetFileAsExecutable(executablePath);
         if (OperatingSystem.IsWindows())
         {
+            //TODO: Explain this hack better as it's extremely obscure but VERY NECESSARY
             // HACK this literally is just so that the Process class and related dlls
             // get loaded on Windows :)
             _ = Process.GetCurrentProcess();
         }
 
-        _logger.LogInformation("Extraction complete; Creating backup of SIT.Manager..");
+        logger.LogInformation("Extraction complete; Creating backup of SIT.Manager..");
         string backupPath = Path.Combine(workingDir, "Backup");
         if (Directory.Exists(backupPath))
-        {
             Directory.Delete(backupPath, true);
-        }
 
         DirectoryInfo workingFolderInfo = new(workingDir);
-        await MoveManager(workingFolderInfo, backupPath);
+        await MoveManager(workingFolderInfo, new DirectoryInfo(backupPath));
         FileInfo configFile = new(Path.Combine(backupPath, "ManagerConfig.json"));
         if (configFile.Exists)
-        {
             configFile.CopyTo(Path.Combine(workingFolderInfo.FullName, configFile.Name));
-        }
 
-        _logger.LogInformation("Backup complete; Moving extracted release to SIT Manager working dir");
-        await MoveManager(new(releasePath), workingDir);
+        logger.LogInformation("Backup complete; Moving extracted release to SIT Manager working dir");
+        await MoveManager(new DirectoryInfo(releasePath), new DirectoryInfo(workingDir));
         Directory.Delete(tempPath, true);
 
         string backupPathFileName = Path.GetFileName(backupPath);
-        _logger.LogInformation("Update done. Backup can be found in the {BackupPathFileName} folder. User settings have been saved.", backupPathFileName);
+        logger.LogInformation("Update done. Backup can be found in the {BackupPathFileName} folder. User settings have been saved.", backupPathFileName);
         return true;
     }
 
@@ -205,13 +192,9 @@ public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterServi
 
         // Shutdown the current application
         IApplicationLifetime? lifetime = Application.Current?.ApplicationLifetime;
-        if (lifetime != null && lifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
-        {
+        if (lifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
             desktopLifetime.Shutdown();
-        }
         else
-        {
             Environment.Exit(0);
-        }
     }
 }
