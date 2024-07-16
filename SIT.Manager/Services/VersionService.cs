@@ -16,7 +16,6 @@ public partial class VersionService(ILogger<VersionService> logger) : IVersionSe
     private const string EFTFileName = "EscapeFromTarkov.exe";
     private const string SITAssemblyName = "StayInTarkov.dll";
     private const string AkiFileName = "Aki.Server.exe";
-    private readonly ILogger<VersionService> _logger = logger;
 
     [GeneratedRegex("[0]{1,}\\.[0-9]{1,2}\\.[0-9]{1,2}\\.[0-9]{1,2}\\-[0-9]{1,5}")]
     private static partial Regex EFTVersionRegex();
@@ -29,19 +28,17 @@ public partial class VersionService(ILogger<VersionService> logger) : IVersionSe
         if (!File.Exists(filePath)) return string.Empty;
 
         // Use the first traditional / recommended method first
-        string fileVersion = FileVersionInfo.GetVersionInfo(filePath).ProductVersion ?? string.Empty;
+        string? fileVersion = FileVersionInfo.GetVersionInfo(filePath).ProductVersion;
 
         // If the above doesn't return anything attempt to read the executable itself
-        if (string.IsNullOrEmpty(fileVersion))
-        {
-            PeFile peHeader = new(filePath);
-            StringFileInfo? stringFileInfo = peHeader.Resources?.VsVersionInfo?.StringFileInfo;
-            if (stringFileInfo != null)
-            {
-                StringTable? fileInfoTable = stringFileInfo.StringTable.Length != 0 ? stringFileInfo.StringTable[0] : null;
-                fileVersion = fileInfoTable?.ProductVersion ?? string.Empty;
-            }
-        }
+        if (!string.IsNullOrEmpty(fileVersion)) return fileVersion;
+
+        PeFile peHeader = new(filePath);
+        StringFileInfo? stringFileInfo = peHeader.Resources?.VsVersionInfo?.StringFileInfo;
+        if (stringFileInfo == null)  return fileVersion ?? string.Empty;
+
+        StringTable? fileInfoTable = stringFileInfo.StringTable.Length != 0 ? stringFileInfo.StringTable[0] : null;
+        fileVersion = fileInfoTable?.ProductVersion ?? string.Empty;
 
         return fileVersion;
     }
@@ -52,11 +49,11 @@ public partial class VersionService(ILogger<VersionService> logger) : IVersionSe
         string fileVersion = GetFileProductVersionString(path);
         if (string.IsNullOrEmpty(fileVersion))
         {
-            _logger.LogWarning("Check {fileName} Version: File did not exist at {filePath}", fileName, fileVersion);
+            logger.LogWarning("Check {fileName} Version: File did not exist at {filePath}", fileName, fileVersion);
         }
         else
         {
-            _logger.LogInformation("{fileName} Version is now: {fileVersion}", fileVersion, fileName);
+            logger.LogInformation("{fileName} Version is now: {fileVersion}", fileVersion, fileName);
         }
 
         return fileVersion;
