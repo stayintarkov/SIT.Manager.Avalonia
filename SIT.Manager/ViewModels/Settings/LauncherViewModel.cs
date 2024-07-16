@@ -59,7 +59,7 @@ public partial class LauncherViewModel(IManagerConfigService configService,
     {
         if (value != null)
         {
-            _localizationService.Translate(value);
+            _localizationService.SetLocalization(value);
         }
     }
 

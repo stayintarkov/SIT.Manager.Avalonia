@@ -100,7 +100,7 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
         _serviceProvider = serviceProvider;
         _versionService = versionService;
 
-        _localizationService.Translate(new CultureInfo(_launcherConfig.CurrentLanguageSelected));
+        _localizationService.SetLocalization(new CultureInfo(_launcherConfig.CurrentLanguageSelected));
         _localizationService.LocalizationChanged += LocalizationService_LocalizationChanged;
 
         FooterNavigationItems = new ReadOnlyCollection<NavigationItem>([

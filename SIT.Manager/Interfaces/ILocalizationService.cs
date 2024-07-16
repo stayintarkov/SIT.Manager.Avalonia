@@ -18,7 +18,8 @@ public interface ILocalizationService
     /// Changes the localization based on your culture info. This specific function changes it inside of Settings. And mainly changes all dynamic Resources in pages.
     /// </summary>
     /// <param name="cultureInfo">the current culture</param>
-    void Translate(CultureInfo cultureInfo);
+    void SetLocalization(CultureInfo cultureInfo);
+
     /// <summary>
     /// Changes the localization in .cs files that contains strings that you cannot change inside the page.
     /// Functions contain neat parameters that help modify source strings, like in C#, but inside a Resource file.
@@ -27,5 +28,5 @@ public interface ILocalizationService
     /// </summary>
     /// <param name="key">string that you are accessing in Localization\*culture-info*.axaml file</param>
     /// <param name="replaces">parameters in hierarchy, example: %1, %2, %3, "10", "20, "30" | output: 10, 20, 30</param>
-    string TranslateSource(string key, params string[] replaces);
+    string TranslateSource(string key, params object?[] replaces);
 }

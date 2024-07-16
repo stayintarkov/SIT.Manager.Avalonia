@@ -17,7 +17,7 @@ public partial class LocalizationService : ILocalizationService
     private readonly IManagerConfigService _configService;
     private string _currentSelectedLanguage => _configService.Config.LauncherSettings.CurrentLanguageSelected;
 
-    private ResourceInclude? resourceInclude;
+    private ResourceInclude? _resourceInclude;
 
     public CultureInfo DefaultLocale => new(DEFAULT_LANGUAGE);
 
@@ -46,7 +46,7 @@ public partial class LocalizationService : ILocalizationService
     private void VerifyLocaleAvailability()
     {
         List<CultureInfo> availableLanguages = GetAvailableLocalizations();
-        if (!availableLanguages.Any(x => x.Name == _currentSelectedLanguage))
+        if (availableLanguages.All(x => x.Name != _currentSelectedLanguage))
         {
             _configService.Config.LauncherSettings.CurrentLanguageSelected = DEFAULT_LANGUAGE;
         }
@@ -60,13 +60,12 @@ public partial class LocalizationService : ILocalizationService
         Assembly assembly = typeof(LocalizationService).Assembly;
         const string folderName = $"{ASSEMBLY_NAME}.Localization";
 
-        List<CultureInfo> result = new();
+        List<CultureInfo> result = [];
         foreach (string resourceName in assembly.GetManifestResourceNames())
         {
             if (!resourceName.StartsWith(folderName) || !resourceName.EndsWith(".axaml")) continue;
 
             int startPos = resourceName.IndexOf(folderName, StringComparison.Ordinal) + folderName.Length + 1;
-            string debug = resourceName.Substring(startPos);
             int endPos = resourceName.IndexOf('.', startPos);
             string languageCode = resourceName.Substring(startPos, endPos - startPos);
             result.Add(new CultureInfo(languageCode));
@@ -79,9 +78,9 @@ public partial class LocalizationService : ILocalizationService
     /// Changes the localization based on your culture info. This specific function changes it inside of Settings. And mainly changes all dynamic Resources in pages.
     /// </summary>
     /// <param name="cultureInfo">the current culture</param>
-    public void Translate(CultureInfo cultureInfo)
+    public void SetLocalization(CultureInfo cultureInfo)
     {
-        resourceInclude = null;
+        _resourceInclude = null;
         ResourceInclude? translations = App.Current.Resources.MergedDictionaries.OfType<ResourceInclude>()
             .FirstOrDefault(x => x.Source?.OriginalString?.Contains("/Localization/") ?? false);
         try
@@ -111,29 +110,28 @@ public partial class LocalizationService : ILocalizationService
     /// </summary>
     /// <param name="key">string that you are accessing in Localization\*culture-info*.axaml file</param>
     /// <param name="replaces">parameters in hierarchy, example: {0}, {1}, {2}, "10", "20, "30" | output: 10, 20, 30</param>
-    public string TranslateSource(string key, params string[] replaces)
+    public string TranslateSource(string key, params object?[] replaces)
     {
         ArgumentException.ThrowIfNullOrEmpty(key, nameof(key));
-        if (resourceInclude == null)
+        if (_resourceInclude == null)
         {
             try
             {
-                resourceInclude = CreateResourceLocalization(_currentSelectedLanguage);
+                _resourceInclude = CreateResourceLocalization(_currentSelectedLanguage);
             }
             catch // If there was an issue loading current Culture language, we will default by English.
             {
-                resourceInclude = CreateResourceLocalization("en-US");
+                _resourceInclude = CreateResourceLocalization("en-US");
             }
         }
 
         string result = "[DEV PROBLEM] No key found";
-        object? translation;
-        if (resourceInclude.TryGetResource(key, null, out translation) ||
-            CreateResourceLocalization(DEFAULT_LANGUAGE).TryGetResource(key, null, out translation))
-        {
-            if (translation != null)
-                result = string.Format((string) translation, replaces);
-        }
+        if (!_resourceInclude.TryGetResource(key, null, out object? translation) &&
+            !CreateResourceLocalization(DEFAULT_LANGUAGE).TryGetResource(key, null, out translation))
+            return result;
+
+        if (translation != null)
+            result = string.Format((string) translation, replaces);
         return result;
     }
 }
