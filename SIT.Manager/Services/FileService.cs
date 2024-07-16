@@ -13,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -55,17 +56,17 @@ public class FileService(IActionNotificationService actionNotificationService,
         await Parallel.ForEachAsync(files, async (file, token) =>
         {
             string relativePath = Path.GetRelativePath(source.FullName, file.DirectoryName ?? source.FullName);
-            DirectoryInfo fileParent = relativePath == "." ?
-                destination : 
-                destination.CreateSubdirectory(Path.Combine(destination.FullName, relativePath));
-            
+            DirectoryInfo fileParent = relativePath.Trim().Equals(".", StringComparison.InvariantCultureIgnoreCase) ?
+            destination :
+            destination.CreateSubdirectory(relativePath);
+
             await using FileStream sourceStream = file.OpenRead();
             await using FileStream destinationStream = File.Create(Path.Combine(fileParent.FullName, file.Name));
             long prevReport = 0;
             Progress<long> streamProgress = new(x =>
             {
                 long newCurrentSize = Interlocked.Add(ref currentSizeMoved, x - prevReport);
-                progress?.Report((double)sizeToMove / newCurrentSize);
+                progress?.Report(((double)newCurrentSize / sizeToMove) * 100);
                 prevReport = x;
             });
             await sourceStream.CopyToAsync(destinationStream, ushort.MaxValue, streamProgress, cancellationToken: token).ConfigureAwait(false);
