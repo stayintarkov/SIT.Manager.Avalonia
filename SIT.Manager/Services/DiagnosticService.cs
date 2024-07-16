@@ -26,7 +26,8 @@ public partial class DiagnosticService : IDiagnosticService
     {
         _configService = configService;
         _httpClient = client;
-
+    
+        //Lazy load so we aren't grabbing this address unless we actually need it, then we can store the result
         _externalIP = new Lazy<Task<string>>(async () =>
         {
             HttpResponseMessage resp = await _httpClient.GetAsync("https://ipv4.icanhazip.com/");
@@ -35,66 +36,57 @@ public partial class DiagnosticService : IDiagnosticService
     }
 
     [GeneratedRegex(@"(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})([^.0-9])")]
-    private static partial Regex ipv4Regex();
+    private static partial Regex IPv4Regex();
 
     public async Task<string> CleanseLogFile(string fileData, bool bleachIt)
     {
-        var data = fileData.Replace(await _externalIP.Value, "xx.xx.xx.xx");
+        string cleanedFileData = fileData.Replace(await _externalIP.Value, "xx.xx.xx.xx");
 
         if (bleachIt)
         {
             // cf. RFC1918 Address Allocation for Private Internets
-            data = ipv4Regex().Replace(data, (match) =>
+            cleanedFileData = IPv4Regex().Replace(cleanedFileData, match =>
             {
-                var g1 = int.Parse(match.Groups[1].Value);
-                var g2 = int.Parse(match.Groups[2].Value);
-                var g3 = int.Parse(match.Groups[3].Value);
-                var g4 = int.Parse(match.Groups[4].Value);
-                var is172Private = g1 == 172 && g2 >= 16 && g2 <= 31;
-                var isInvalidIP = g1 == 0 || g4 == 0;
-                var isLocalhost = g1 == 127 && g2 == 0 && g3 == 0 && g4 == 1;
+                int g1 = int.Parse(match.Groups[1].Value);
+                int g2 = int.Parse(match.Groups[2].Value);
+                int g3 = int.Parse(match.Groups[3].Value);
+                int g4 = int.Parse(match.Groups[4].Value);
+                bool is172Private = g1 == 172 && g2 is >= 16 and <= 31;
+                bool isInvalidIP = g1 == 0 || g4 == 0;
+                bool isLocalhost = g1 == 127 && g2 == 0 && g3 == 0 && g4 == 1;
                 if (g1 == 192 && g2 == 168 || g1 == 10 || is172Private || isLocalhost || isInvalidIP)
                 {
                     return match.Value;
                 }
 
-                var g5 = match.Groups[5];
+                Group g5 = match.Groups[5];
                 return "xx.xx.xx.xx" + g5.Value;
             });
         }
 
-        return data;
+        return cleanedFileData;
     }
 
     public async Task<string> GetLogFile(string logFilePath, bool bleachIt = false)
     {
         string logFileName = Path.GetFileName(logFilePath);
-        if (File.Exists(logFilePath))
+        if (!File.Exists(logFilePath)) return $"{logFileName} didn't exist at path {logFilePath}";
+
+        try
         {
-            try
-            {
-                string fileData;
-                using (FileStream fs = File.Open(logFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                {
-                    using (StreamReader sr = new(fs))
-                    {
-                        fileData = await CleanseLogFile(await sr.ReadToEndAsync(), bleachIt);
-                    }
-                }
-                return fileData;
-            }
-            catch (IOException ex)
-            {
-                return $"Problem reading {logFileName}\n{ex}";
-            }
+            await using FileStream fs = File.Open(logFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using StreamReader sr = new(fs);
+            return await CleanseLogFile(await sr.ReadToEndAsync(), bleachIt);
         }
-        else
+        catch (IOException ex)
         {
-            return $"{logFileName} didn't exist at path {logFilePath}";
+            //TODO: Add logging here too!
+            return $"Problem reading {logFileName}\n{ex}";
         }
     }
 
     // TODO: Clean this up a little. It has a bunch of duplication
+    //TODO: Future me. This needs to be cleaned up using data templates on the UI end to make this elegent
     public async Task<Stream> GenerateDiagnosticReport(DiagnosticsOptions options)
     {
         List<Tuple<string, string>> diagnosticLogs = new(4);
@@ -199,17 +191,15 @@ public partial class DiagnosticService : IDiagnosticService
         sb.AppendLine("#-- Network Information: --#\n");
         foreach (NetworkInterface networkInterface in NetworkInterface.GetAllNetworkInterfaces())
         {
-            if (networkInterface.OperationalStatus == OperationalStatus.Up)
+            if (networkInterface.OperationalStatus != OperationalStatus.Up) continue;
+
+            foreach (UnicastIPAddressInformation ip in networkInterface.GetIPProperties().UnicastAddresses)
             {
-                foreach (UnicastIPAddressInformation ip in networkInterface.GetIPProperties().UnicastAddresses)
-                {
-                    if (ip.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                    {
-                        sb.AppendLine($"Network Interface: {networkInterface.Name}");
-                        sb.AppendLine($"Interface Type: {networkInterface.NetworkInterfaceType.ToString()}");
-                        sb.AppendLine($"Address: {ip.Address}\n");
-                    }
-                }
+                if (ip.Address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork) continue;
+
+                sb.AppendLine($"Network Interface: {networkInterface.Name}");
+                sb.AppendLine($"Interface Type: {networkInterface.NetworkInterfaceType.ToString()}");
+                sb.AppendLine($"Address: {ip.Address}\n");
             }
         }
         sb.AppendLine();
