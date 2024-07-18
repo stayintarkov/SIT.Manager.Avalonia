@@ -29,19 +29,14 @@ public class FileService(IActionNotificationService actionNotificationService,
     {
         long size = 0;
 
-        // Add subdirectory sizes.
-        IEnumerable<DirectoryInfo> directories = d.EnumerateDirectories();
-        await Parallel.ForEachAsync(directories, ct, async (info, token) =>
+        await Parallel.ForEachAsync(d.EnumerateFiles("*", SearchOption.AllDirectories), ct, (info, token) =>
         {
-            if (ct.IsCancellationRequested) return;
-            Interlocked.Add(ref size, await CalculateDirectorySize(info, token));
+            if (ct.IsCancellationRequested) return ValueTask.FromCanceled(token);
+            Interlocked.Add(ref size, info.Length);
+            return ValueTask.CompletedTask;
         });
         
         if (ct.IsCancellationRequested) return -1;
-        
-        // Add file sizes. It is unlikely we'd get any speed bonus from parallelizing this
-        size += d.EnumerateFiles().Sum(x => x.Length);
-
         return size;
     }
 
@@ -65,9 +60,8 @@ public class FileService(IActionNotificationService actionNotificationService,
             long prevReport = 0;
             Progress<long> streamProgress = new(x =>
             {
-                long newCurrentSize = Interlocked.Add(ref currentSizeMoved, x - prevReport);
-                progress?.Report(((double)newCurrentSize / sizeToMove) * 100);
-                prevReport = x;
+                long newCurrentSize = Interlocked.Add(ref currentSizeMoved, x - Interlocked.Exchange(ref prevReport, x));
+                progress?.Report((double)newCurrentSize / sizeToMove * 100);
             });
             await sourceStream.CopyToAsync(destinationStream, ushort.MaxValue, streamProgress, cancellationToken: token).ConfigureAwait(false);
         });
