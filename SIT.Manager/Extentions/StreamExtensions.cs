@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -19,15 +20,24 @@ public static class StreamExtensions
         if (!destination.CanWrite)
             throw new InvalidOperationException($"'{nameof(destination)}' is not writable.");
 
-        byte[] dataBuffer = new byte[bufferSize];
-        long totalReadBytes = 0;
-        int bytesRead;
-        while ((bytesRead = await source.ReadAsync(dataBuffer, cancellationToken).ConfigureAwait(false)) > 0)
+        byte[] dataBuffer = ArrayPool<byte>.Shared.Rent(bufferSize);
+        try
         {
-            await destination.WriteAsync(dataBuffer.AsMemory(0, bytesRead), cancellationToken).ConfigureAwait(false);
-            totalReadBytes += bytesRead;
-            progressReporter?.Report(totalReadBytes);
+            long totalReadBytes = 0;
+            int bytesRead;
+            while ((bytesRead = await source.ReadAsync(dataBuffer, cancellationToken).ConfigureAwait(false)) > 0)
+            {
+                await destination.WriteAsync(dataBuffer.AsMemory(0, bytesRead), cancellationToken)
+                    .ConfigureAwait(false);
+                totalReadBytes += bytesRead;
+                progressReporter?.Report(totalReadBytes);
+            }
         }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(dataBuffer);
+        }
+        
     }
 
     public static async Task<MemoryStream> InflateAsync(this Stream zlibDataSource, CancellationToken cancellationToken = default)
