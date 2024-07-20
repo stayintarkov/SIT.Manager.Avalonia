@@ -19,12 +19,11 @@
 		<AvaloniaResource Include="Assets\**" />
 		<Compile Include="..\SIT.Manager.Desktop\AssemblyInfo.cs" Link="AssemblyInfo.cs" />
 		<EmbeddedResource Include="Localization\*.axaml" />
-		<EmbeddedResource Include="Resources\Aki.Common.dll" />
-		<EmbeddedResource Include="Resources\Aki.Reflection.dll" />
 	</ItemGroup>
 
     <ItemGroup>
 	    <PackageReference Include="Avalonia" Version="11.0.10" />
+	    <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.0.10" />
 	    <PackageReference Include="Avalonia.Labs.Controls" Version="11.0.10.1" />
 	    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.10" />
         <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.10" />
@@ -49,20 +48,5 @@
         <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
         <PackageReference Include="System.IO.Hashing" Version="8.0.0" />
         <PackageReference Include="System.Threading.Channels" Version="8.0.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Compile Update="Properties\Resources.Designer.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>Resources.resx</DependentUpon>
-        </Compile>
-    </ItemGroup>
-
-    <ItemGroup>
-        <EmbeddedResource Update="Properties\Resources.resx">
-            <Generator>ResXFileCodeGenerator</Generator>
-            <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-        </EmbeddedResource>
     </ItemGroup>
 </Project>

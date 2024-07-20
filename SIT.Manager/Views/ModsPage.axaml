@@ -1,0 +1,136 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:controls="clr-namespace:SIT.Manager.Theme.Controls"
+             xmlns:vm="clr-namespace:SIT.Manager.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SIT.Manager.Views.ModsPage"
+			 x:DataType="vm:ModsPageViewModel">
+	<Grid RowDefinitions="Auto, *"
+		  Margin="0,0,8,8">
+		<controls:Card Grid.Row="0"
+					   IsVisible="{Binding !IsModCompatibilityLayerInstalled}"
+					   Margin="8">
+			<Grid ColumnDefinitions="auto, *, auto"
+				  Margin="0,8">
+				<Panel Margin="16,0"
+					   VerticalAlignment="Center"
+					   Grid.Column="0">
+					<Ellipse Fill="{DynamicResource AppError}"  
+							 Width="18" 
+							 Height="18"/>
+					<ui:SymbolIcon Symbol="ImportantFilled" 
+								   VerticalAlignment="Center"/>
+				</Panel>
+
+				<TextBlock Text="{DynamicResource ModsPageViewModCompatInstallMissingMessage}"
+						   Grid.Column="1"
+						   VerticalAlignment="Center"
+						   TextWrapping="Wrap"/>
+
+				<Button VerticalAlignment="Center"
+						FontSize="14"
+						Margin="8,0"
+						Grid.Column="2"
+						Command="{Binding InstallModCompatibilityLayerCommand}">
+					<StackPanel Orientation="Horizontal">
+						<ui:SymbolIcon Symbol="Add" 
+									   Margin="0,0,4,0"
+									   IsVisible="{Binding !InstallModCompatibilityLayerCommand.IsRunning}"/>
+						<TextBlock Text="Install"
+								   IsVisible="{Binding !InstallModCompatibilityLayerCommand.IsRunning}"/>
+
+						<controls:LoadingSpinner Width="12"
+												 Height="12"
+												 VerticalAlignment="Center"
+												 IsVisible="{Binding InstallModCompatibilityLayerCommand.IsRunning}"
+												 Foreground="{DynamicResource AppSecondary}"
+												 StrokeWidth="2"/>
+					</StackPanel>
+				</Button>
+			</Grid>
+		</controls:Card>
+
+		<controls:Card Grid.Row="1"
+					   Margin="8">
+			<Grid Grid.Row="1"
+				  RowDefinitions="Auto,*">
+
+				<controls:LoadingSpinner Grid.RowSpan="2"
+										 Width="32"
+										 Height="32"										 
+										 VerticalAlignment="Center"
+										 HorizontalAlignment="Center"
+										 IsVisible="{Binding IsLoading}"
+										 Foreground="{DynamicResource AppSecondary}"
+										 StrokeWidth="4"/>
+
+				<Grid Grid.Row="0"
+					  ColumnDefinitions="*,Auto"
+					  IsVisible="{Binding !IsLoading}">
+					<TextBox Grid.Column="0"
+							 Watermark="{DynamicResource ModsPageViewModSearchTextBoxWatermark}"
+							 Text="{Binding SearchText, Mode=TwoWay}"/>
+					<Button Grid.Column="1"
+							Command="{Binding SearchModsCommand}"
+							CommandParameter="{Binding SearchText}">
+						<ui:SymbolIcon Symbol="Zoom"
+									   FontSize="20"
+									   VerticalAlignment="Center"/>
+					</Button>
+				</Grid>
+
+				<DataGrid Name="ModListDataGrid"
+						  Grid.Row="1"
+						  Margin="0,4,0,0" 
+						  ItemsSource="{Binding ModList}"	
+						  IsVisible="{Binding !IsLoading}"
+						  GridLinesVisibility="All"
+						  HeadersVisibility="All"
+						  VerticalAlignment="Stretch"
+						  HorizontalScrollBarVisibility="Disabled"
+						  VerticalScrollBarVisibility="Visible"
+						  Foreground="{DynamicResource AppSecondary}"
+						  AutoGenerateColumns="False" >
+					<DataGrid.Styles>						
+						<Style Selector="TextBlock">
+							<Setter Property="TextWrapping" Value="WrapWithOverflow" />
+							<Setter Property="Foreground" Value="{DynamicResource AppSecondary}" />
+						</Style>
+					</DataGrid.Styles>
+					
+					<DataGrid.Columns>
+						<DataGridTextColumn Binding="{Binding Name}"
+											Header="{DynamicResource ModsPageViewModsDatagridNameColumnHeader}"
+											Width="Auto"										 
+											IsReadOnly="True"/>
+						
+						<DataGridTextColumn Binding="{Binding ModVersion}"
+											Header="{DynamicResource ModsPageViewModDatagridVersionColumnHeader}"
+											Width="*"
+											IsReadOnly="True"/>
+						
+						<DataGridTemplateColumn Width="Auto">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<ToggleSwitch HorizontalAlignment="Center"
+												  HorizontalContentAlignment="Center"
+												  IsChecked="{Binding IsEnabled}"
+												  IsEnabled="{Binding !IsRequired}"
+												  Command="{Binding #ModListDataGrid.((vm:ModsPageViewModel)DataContext).ToggleModEnabledCommand}"
+												  ToolTip.Tip="{DynamicResource ModsPageViewModDatagridToggleSwitchModEnabledToolTip}"
+												  CommandParameter="{Binding .}"
+												  OnContent="{DynamicResource ModsPageViewModDatagridToggleSwitchOnContent}"
+												  OffContent="{DynamicResource ModsPageViewModDatagridToggleSwitchOffContent}"
+												  Margin="0,0,16,0"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+					</DataGrid.Columns>
+				</DataGrid>
+			</Grid>
+		</controls:Card>
+	</Grid>
+</UserControl>

@@ -5,8 +5,6 @@ using SharpCompress.Common;
 using SharpCompress.IO;
 using SharpCompress.Readers;
 using SIT.Manager.Extentions;
-using SIT.Manager.Interfaces;
-using SIT.Manager.Models;
 using System;
 using System.Buffers;
 using System.Collections.Generic;
@@ -22,10 +20,7 @@ using System.Threading.Tasks;
 
 namespace SIT.Manager.Services;
 
-public class FileService(IActionNotificationService actionNotificationService,
-                         IManagerConfigService configService,
-                         ILocalizationService localizationService,
-                         HttpClient httpClient,
+public class FileService(HttpClient httpClient,
                          ILogger<FileService> logger) : IFileService
 {
     private static async Task<long> CalculateDirectorySize(DirectoryInfo d, CancellationToken ct = default)

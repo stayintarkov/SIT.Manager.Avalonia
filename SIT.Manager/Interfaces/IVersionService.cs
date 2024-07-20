@@ -3,6 +3,12 @@
 public interface IVersionService
 {
     /// <summary>
+    /// Gets the product version string for a given file path
+    /// </summary>
+    /// <param name="filePath">Path to the dll/exe to get the version from</param>
+    /// <returns>Version string that is found; otherwise string.Empty</returns>
+    string GetFileProductVersionString(string filePath);
+    /// <summary>
     /// Checks and returns the installed SPT-AKI version string
     /// </summary>
     /// <param name="path">The base SPT-AKI server path to check.</param>

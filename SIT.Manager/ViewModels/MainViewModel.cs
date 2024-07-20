@@ -26,7 +26,6 @@ namespace SIT.Manager.ViewModels;
 
 public partial class MainViewModel : ObservableRecipient, IRecipient<InstallationRunningMessage>, IRecipient<PageNavigationMessage>
 {
-    private readonly IActionNotificationService _actionNotificationService;
     private readonly IAppUpdaterService _appUpdaterService;
     private readonly IBarNotificationService _barNotificationService;
     private readonly IInstallerService _installerService;
@@ -80,8 +79,7 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
 
     public IAsyncRelayCommand UpdateAppCommand { get; }
 
-    public MainViewModel(IActionNotificationService actionNotificationService,
-        IAppUpdaterService appUpdaterService,
+    public MainViewModel(IAppUpdaterService appUpdaterService,
         IBarNotificationService barNotificationService,
         IInstallerService installerService,
         IManagerConfigService configService,
@@ -90,7 +88,6 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
         IServiceProvider serviceProvider,
         IVersionService versionService)
     {
-        _actionNotificationService = actionNotificationService;
         _appUpdaterService = appUpdaterService;
         _barNotificationService = barNotificationService;
         _installerService = installerService;
@@ -137,16 +134,10 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
             faTheme.CustomAccentColor = _launcherConfig.AccentColor;
         }
 
-        _actionNotificationService.ActionNotificationReceived += ActionNotificationService_ActionNotificationReceived;
         _barNotificationService.BarNotificationReceived += BarNotificationService_BarNotificationReceived;
 
         CloseButtonCommand = new RelayCommand(() => { UpdateAvailable = false; });
         UpdateAppCommand = new AsyncRelayCommand(UpdateApp);
-    }
-
-    private void ActionNotificationService_ActionNotificationReceived(object? sender, ActionNotification e)
-    {
-        ActionPanelNotification = e;
     }
 
     private async void BarNotificationService_BarNotificationReceived(object? sender, BarNotification e)
@@ -181,7 +172,9 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
         }
     }
 
+#pragma warning disable IDE0051 // Remove unused private members - is used in release builds
     private async Task CheckForUpdate()
+#pragma warning restore IDE0051 // Remove unused private members
     {
         try
         {

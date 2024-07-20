@@ -6,29 +6,34 @@ namespace SIT.Manager.Interfaces;
 
 public interface IModService
 {
-    /// <summary>
-    /// Array of recommended mod install names.
-    /// </summary>
-    string[] RecommendedModInstalls { get; }
-    /// <summary>
-    /// The currently loaded list of mods which we have available to install/uninstall
-    /// </summary>
-    List<ModInfo> ModList { get; }
+    const string DISABLED_MODS_DIR = "DisabledMods";
 
     /// <summary>
-    /// Automatically updates installed mods that are outdated.
+    /// Checks if all the dlls required to support mods are installed
     /// </summary>
-    /// <param name="outdatedMods"><see cref="List{T}"/> of <see cref="ModInfo"/> that are outdated.</param>
-    Task AutoUpdate(List<ModInfo> outdatedMods);
+    /// <param name="targetPath">Base location of where the EFT install check for compatibility</param>
+    /// <returns>True if all the DLLs are installed; otherwise false</returns>
+    bool CheckModCompatibilityLayerInstalled(string targetPath);
     /// <summary>
-    /// Clears the locally downloaded cache of mods which will force a refresh of available mods.
+    /// Disable a mod which is currently active for the users EFT
     /// </summary>
-    void ClearCache();
+    /// <param name="mod">Metadata about the mod to disable</param>
+    /// <param name="eftDir">The users base EFT directory</param>
+    /// <returns>The updated ModInfo object</returns>
+    ModInfo DisableMod(ModInfo mod, string eftDir);
     /// <summary>
-    /// Download the collection of ported and compatible (probably) SIT mods.
+    /// Enable a currently disabled mod for the users EFT
     /// </summary>
-    /// <returns></returns>
-    Task DownloadModsCollection();
+    /// <param name="mod">Metadata about the mod to enable</param>
+    /// <param name="eftDir">The users base EFT directory</param>
+    /// <returns>The updated ModInfo object</returns>
+    ModInfo EnableMod(ModInfo mod, string eftDir);
+    /// <summary>
+    /// Looks in the configured EFT folder and evaluates what mods are currently installed.
+    /// </summary>
+    /// <param name="targetPath">Base location of where the EFT install check for installed mods</param>
+    /// <returns>List of mods currently installed</returns>
+    List<ModInfo> GetInstalledMods(string targetPath);
     /// <summary>
     /// Downloads (unless it's cached already) and installs the latest configuration manager from GitHub
     /// </summary>
@@ -36,24 +41,9 @@ public interface IModService
     /// <returns>True if it was successfully installed; otherwise False</returns>
     Task<bool> InstallConfigurationManager(string targetPath);
     /// <summary>
-    /// Install a mod into the given target location
+    /// Downloads (unless it's cached already) and installs the latest Mod compatibility layer
     /// </summary>
-    /// <param name="targetPath">Base location of where the EFT install is to put the mod</param>
-    /// <param name="mod">The meta data for the mod we want to install</param>
-    /// <param name="suppressNotification">Supress notifications of the mods installation status</param>
-    /// <param name="suppressCompatibilityWarning">Supress the warning about a mods compatibility</param>
+    /// <param name="targetPath">Base location of where the EFT install is to put the mod compat layer</param>
     /// <returns>True if it was successfully installed; otherwise False</returns>
-    Task<bool> InstallMod(string targetPath, ModInfo mod, bool suppressNotification = false, bool suppressCompatibilityWarning = false);
-    /// <summary>
-    /// Load the master list of mods into memory so we know what mods are available
-    /// </summary>
-    /// <returns></returns>
-    Task LoadMasterModList();
-    /// <summary>
-    /// Uninstall a mod from the given target location
-    /// </summary>
-    /// <param name="mod">The meta data for the mod we want to uninstall</param>
-    /// <param name="targetPath">The target location to search where the mod is installed</param>
-    /// <returns></returns>
-    Task<bool> UninstallMod(string targetPath, ModInfo mod);
+    Task<bool> InstallModCompatLayer(string targetPath);
 }

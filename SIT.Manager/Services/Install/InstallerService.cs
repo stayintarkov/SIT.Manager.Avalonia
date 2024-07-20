@@ -13,7 +13,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Reflection;
 using System.Security.Authentication;
 using System.Text;
 using System.Text.Json;
@@ -705,7 +704,7 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
                 throw new IndexOutOfRangeException("There are more than one StayInTarkov.dll files found!");
 
             // Find SIT.WildSpawnType.PrePatcher.dll
-            var prePatcherFiles = Directory.GetFiles(coreFilesPath, "*PrePatch*", enumerationOptions);
+            string[] prePatcherFiles = Directory.GetFiles(coreFilesPath, "*PrePatch*", enumerationOptions);
 
             string eftDataManagedPath = Path.Combine(targetInstallDir, "EscapeFromTarkov_Data", "Managed");
             if (File.Exists(Path.Combine(eftDataManagedPath, "Assembly-CSharp.dll")))
@@ -714,37 +713,18 @@ public partial class InstallerService(IBarNotificationService barNotificationSer
             }
 
             if (Directory.Exists(eftDataManagedPath))
+            {
                 File.Copy(assemblyCSharpFiles[0], Path.Combine(eftDataManagedPath, "Assembly-CSharp.dll"), true);
-
+            }
             if (Directory.Exists(pluginsPath))
+            {
                 File.Copy(sitFiles[0], Path.Combine(pluginsPath, "StayInTarkov.dll"), true);
+            }
 
             foreach (var ppFI in prePatcherFiles.Select(x => new FileInfo(x)))
             {
                 var ppFilePath = ppFI.Name;
                 File.Copy(ppFI.FullName, Path.Combine(patchersPath, ppFilePath), true);
-            }
-
-            using (Stream? resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("SIT.Manager.Resources.Aki.Common.dll"))
-            {
-                using (FileStream file = new(Path.Combine(eftDataManagedPath, "Aki.Common.dll"), FileMode.Create, FileAccess.Write))
-                {
-                    if (resource != null)
-                    {
-                        await resource.CopyToAsync(file);
-                    }
-                }
-            }
-
-            using (Stream? resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("SIT.Manager.Resources.Aki.Reflection.dll"))
-            {
-                using (FileStream file = new(Path.Combine(eftDataManagedPath, "Aki.Reflection.dll"), FileMode.Create, FileAccess.Write))
-                {
-                    if (resource != null)
-                    {
-                        await resource.CopyToAsync(file);
-                    }
-                }
             }
 
             downloadProgress.Report(100);

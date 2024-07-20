@@ -19,32 +19,6 @@
 	<system:String x:Key="ServerTitleToolTip">Server management.</system:String>
 	<system:String x:Key="ModsTitleToolTip">Mod management.</system:String>
 
-	<!-- Mods Page -->
-	<system:String x:Key="ModsWarningTitle">WARNING</system:String>
-	<system:String x:Key="ModsWarningDescription">The use of mods can affect the stability of your game and might cause it to crash or malfunction. While mods can enhance your gaming experience and add new features, they may not be officially supported by SIT or tested for compatibility. Install mods at your own risk and always make backup copies of your game files before making any changes. We are not liable for any damage or loss of progress caused by the installation of mods. Proceed with caution.</system:String>
-	<system:String x:Key="ModsWarningButtonTitle">I Understand</system:String>
-	<system:String x:Key="ModsPageTitle">Mods</system:String>
-	<system:String x:Key="ModsDownloadCollectionButtonTitle">Download Collection</system:String>
-	<system:String x:Key="ModsDownloadCollectionButtonToolTip">Download the latest ported mod collection.</system:String>
-	<system:String x:Key="ModInfoTitle">Mod Info</system:String>
-	<system:String x:Key="ModInfoNameTitle">Name:</system:String>
-	<system:String x:Key="ModInfoAuthorTitle">Author:</system:String>
-	<system:String x:Key="ModInfoSupportedVersionTitle">Supported SIT Version:</system:String>
-	<system:String x:Key="ModInfoModVersionTitle">Mod Version:</system:String>
-	<system:String x:Key="ModInfoModPageTitle">Mod Page:</system:String>
-	<system:String x:Key="ModInfoExtraFilesToolTip">If the ported mod requires additional files. Click the link to download them.</system:String>
-	<system:String x:Key="ModInfoRequiresExtraFilesTitle">Requires Extra Files</system:String>
-	<system:String x:Key="ModInfoDescription">Description:</system:String>
-	<system:String x:Key="ModInfoInstallToolTip">Install the mod.</system:String>
-	<system:String x:Key="ModInfoInstallTitle">Install</system:String>
-	<system:String x:Key="ModInfoUninstallToolTip">Uninstall the mod.</system:String>
-	<system:String x:Key="ModInfoUninstallTitle">Uninstall</system:String>
-
-	<!-- Mods Page ViewModel -->
-	<system:String x:Key="ModsPageViewModelErrorTitle">Error</system:String>
-	<system:String x:Key="ModsPageViewModelErrorInstallPathDescription">Install Path is not set. Configure it in Settings.</system:String>
-	<system:String x:Key="ModsPageViewModelErrorNoModsFound">No mods found</system:String>
-
 	<!-- Tools Page -->
 	<system:String x:Key="ToolsOpenEFTFolderButtonToolTip">Open the EFT installation folder.</system:String>
 	<system:String x:Key="ToolsOpenEFTFolderButtonTitle">Open EFT Folder</system:String>
@@ -288,27 +262,6 @@
 	<system:String x:Key="TarkovClientServiceCacheClearedErrorDescription">InstallPath not found in settings</system:String>
 	<system:String x:Key="TarkovClientServiceCacheClearedErrorEFTDescription">EFT local cache directory not found at: {0}</system:String>
 	<system:String x:Key="TarkovClientServiceCacheClearedEFTDescription">EFT local cache cleared successfully!</system:String>
-
-	<!-- Mod Service -->
-	<system:String x:Key="ModServiceOutdatedDescription">You have {0} outdated mods. Would you like to automatically update them? Outdated Mods: {1}</system:String>
-	<system:String x:Key="ModServiceOutdatedModsFoundTitle">Outdated Mods Found</system:String>
-	<system:String x:Key="ModServiceButtonNo">No</system:String>
-	<system:String x:Key="ModServiceButtonYes">Yes</system:String>
-	<system:String x:Key="ModServiceUpdatedModsTitle">Updated Mods</system:String>
-	<system:String x:Key="ModServiceUpdatedModsDescription">Updated {0} mods.</system:String>
-	<system:String x:Key="ModServiceInstallModTitle">Install Mod</system:String>
-	<system:String x:Key="ModServiceInstallErrorModDescription">Install Path is not set. Configure it in Settings.</system:String>
-	<system:String x:Key="ModServiceWarningTitle">Warning</system:String>
-	<system:String x:Key="ModServiceWarningDescription">The mod you are trying to install is not compatible with your currently installed version of SIT. Supported SIT Version: {0} Installed SIT Version: {1} Continue anyway?</system:String>
-	<system:String x:Key="ModServiceUnknownTitle">Unknown</system:String>
-	<system:String x:Key="ModServiceInstallModDescription">{0} was successfully installed.</system:String>
-	<system:String x:Key="ModServiceErrorInstallModDescription">{0} failed to install. Check your Launcher.log</system:String>
-	<system:String x:Key="ModServiceErrorUninstallModTitle">Error Uninstalling Mod</system:String>
-	<system:String x:Key="ModServiceErrorUninstallModDescription">A file was missing from the mod {0}: '{1}' Force remove the mod from the list of installed mods anyway?</system:String>
-	<system:String x:Key="ModServiceErrorExceptionUninstallModDescription">A file was missing from the mod {0}: '{1}' Force remove the mod from the list of installed mods anyway?</system:String>
-	<system:String x:Key="ModServiceErrorExceptionFileUninstallModDescription">A file was missing from the mod {0}: '{1}'</system:String>
-	<system:String x:Key="ModServiceFileUninstallModTitle">Uninstall Mod</system:String>
-	<system:String x:Key="ModServiceFileUninstallModDescription">{0} was successfully uninstalled.</system:String>
 
 	<!-- Install Service -->
 	<system:String x:Key="InstallServiceErrorTitle">Error</system:String>
@@ -562,4 +515,21 @@
 	<system:String x:Key="NetworkToolsViewServerLocationExternalServerOption">External</system:String>
 	<system:String x:Key="NetworkToolsViewExternalIPAddressSelectionText">External IP to test:</system:String>
 	<system:String x:Key="NetworkToolsViewExternalIPAddressSelectionWatermark">External Server Address</system:String>
+</ResourceDictionary>
+
+	<!-- ModsPageViewModel -->
+	<system:String x:Key="ModsPageViewModelModCompatInstallSuccessTitle">Success</system:String>
+	<system:String x:Key="ModsPageViewModelModCompatInstallSuccessMessage">Installed mod compatibility layer sucessfully!</system:String>
+	<system:String x:Key="ModsPageViewModelModCompatInstallErrorTitle">Install Error</system:String>
+	<system:String x:Key="ModsPageViewModelModCompatInstallErrorMessage">Failed to install mod compatibility layer; please consult the logs for more details</system:String>
+	<system:String x:Key="ModsPageViewModelModCompatInstallErrorButtonOk">OK</system:String>
+
+	<!-- ModsPageView -->
+	<system:String x:Key="ModsPageViewModCompatInstallMissingMessage">You don't have the mod compatibility layer installed. Please install this before trying to play with mods enabled to avoid issues.</system:String>
+	<system:String x:Key="ModsPageViewModSearchTextBoxWatermark">Search</system:String>
+	<system:String x:Key="ModsPageViewModsDatagridNameColumnHeader">Name</system:String>
+	<system:String x:Key="ModsPageViewModDatagridVersionColumnHeader">Version</system:String>
+	<system:String x:Key="ModsPageViewModDatagridToggleSwitchModEnabledToolTip">Enable or disable this mod</system:String>
+	<system:String x:Key="ModsPageViewModDatagridToggleSwitchOnContent">Enabled</system:String>
+	<system:String x:Key="ModsPageViewModDatagridToggleSwitchOffContent">Disabled</system:String>
 </ResourceDictionary>

@@ -23,7 +23,7 @@ public partial class VersionService(ILogger<VersionService> logger) : IVersionSe
     [GeneratedRegex("[1]{1,}\\.[0-9]{1,2}\\.[0-9]{1,5}\\.[0-9]{1,5}")]
     private static partial Regex SITVersionRegex();
 
-    private static string GetFileProductVersionString(string filePath)
+    public string GetFileProductVersionString(string filePath)
     {
         if (!File.Exists(filePath)) return string.Empty;
 
@@ -54,6 +54,13 @@ public partial class VersionService(ILogger<VersionService> logger) : IVersionSe
         else
         {
             logger.LogInformation("{fileName} Version is now: {fileVersion}", fileVersion, fileName);
+            PeFile peHeader = new(filePath);
+            StringFileInfo? stringFileInfo = peHeader.Resources?.VsVersionInfo?.StringFileInfo;
+            if (stringFileInfo != null)
+            {
+                StringTable? fileinfoTable = stringFileInfo.StringTable.Length != 0 ? stringFileInfo.StringTable[0] : null;
+                fileVersion = fileinfoTable?.ProductVersion ?? string.Empty;
+            }
         }
 
         return fileVersion;

@@ -1,7 +1,6 @@
 ﻿using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 using FluentAvalonia.Styling;
-using FluentAvalonia.UI.Controls;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Models.Config;
 using System.Collections.Generic;
@@ -63,7 +62,7 @@ public partial class LauncherViewModel(IManagerConfigService configService,
         }
     }
 
-    async partial void OnIsTestModeEnabledChanged(bool value)
+    partial void OnIsTestModeEnabledChanged(bool value)
     {
         // If test mode is enabled then we want to check that there's no mods we don't approve of currently installed.
         if (value)

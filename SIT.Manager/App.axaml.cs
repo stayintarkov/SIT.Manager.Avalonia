@@ -9,7 +9,6 @@ using Polly.Retry;
 using Polly.Timeout;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Interfaces.ManagedProcesses;
-using SIT.Manager.Models.Config;
 using SIT.Manager.Services;
 using SIT.Manager.Services.Caching;
 using SIT.Manager.Services.Install;
@@ -78,8 +77,7 @@ public sealed partial class App : Application
 
             #region Services
 
-            services.AddSingleton<IActionNotificationService, ActionNotificationService>()
-                .AddSingleton<IAkiServerService, AkiServerService>()
+            services.AddSingleton<IAkiServerService, AkiServerService>()
                 .AddSingleton<ICachingService, CachingService>()
                 .AddSingleton<ITarkovClientService, TarkovClientService>()
                 .AddSingleton<IBarNotificationService, BarNotificationService>()
