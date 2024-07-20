@@ -2,14 +2,17 @@
 using Microsoft.Extensions.Logging;
 using SharpCompress.Archives;
 using SharpCompress.Common;
+using SharpCompress.IO;
 using SharpCompress.Readers;
 using SIT.Manager.Extentions;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Models;
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Hashing;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
@@ -47,16 +50,49 @@ public class FileService(IActionNotificationService actionNotificationService,
         long currentSizeMoved = 0;
         long sizeToMove = await CalculateDirectorySize(source);
         
-        //Process all directories
+        //Process all files
         await Parallel.ForEachAsync(files, async (file, token) =>
         {
             string relativePath = Path.GetRelativePath(source.FullName, file.DirectoryName ?? source.FullName);
             DirectoryInfo fileParent = relativePath.Trim().Equals(".", StringComparison.InvariantCultureIgnoreCase) ?
             destination :
             destination.CreateSubdirectory(relativePath);
-
+            
+            string absoluteDestinationPath = Path.Combine(fileParent.FullName, file.Name);
             await using FileStream sourceStream = file.OpenRead();
-            await using FileStream destinationStream = File.Create(Path.Combine(fileParent.FullName, file.Name));
+            await using FileStream destinationStream = new(absoluteDestinationPath, FileMode.OpenOrCreate);
+            if (destinationStream.Length > 0)
+            {
+                NonCryptographicHashAlgorithm hasher = new XxHash64();
+                byte[] buffer = ArrayPool<byte>.Shared.Rent(hasher.HashLengthInBytes);
+                try
+                {
+                    await hasher.AppendAsync(sourceStream, token);
+                    hasher.GetHashAndReset(buffer);
+                    Int64 sourceHash = BitConverter.ToInt64(buffer);
+
+                    await hasher.AppendAsync(destinationStream, token);
+                    hasher.GetHashAndReset(buffer);
+                    Int64 destinationHash = BitConverter.ToInt64(buffer);
+
+                    if (sourceHash == destinationHash)
+                    {
+                        long newCurrentSize = Interlocked.Add(ref currentSizeMoved, sourceStream.Length);
+                        progress?.Report((double)newCurrentSize / sizeToMove * 100);
+                        return;
+                    }
+                    
+                    sourceStream.Seek(0, SeekOrigin.Begin);
+                    //The destination file doesn't match the source so nuke whatever we have to start copying
+                    destinationStream.SetLength(0);
+                    await destinationStream.FlushAsync(token);
+                }
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(buffer);
+                }
+            }
+            
             long prevReport = 0;
             Progress<long> streamProgress = new(x =>
             {
@@ -65,7 +101,8 @@ public class FileService(IActionNotificationService actionNotificationService,
             });
             await sourceStream.CopyToAsync(destinationStream, ushort.MaxValue, streamProgress, cancellationToken: token).ConfigureAwait(false);
         });
-
+        
+        progress?.Report((double)currentSizeMoved / sizeToMove * 100);
         return currentSizeMoved;
     }
 
@@ -185,6 +222,7 @@ public class FileService(IActionNotificationService actionNotificationService,
         return success;
     }
 
+    //TODO: Implement cancellation token checks
     public async Task ExtractArchive(string filePath, string destination, IProgress<double>? progress = null, CancellationToken ct = default)
     {
         // Ensures that the last character on the extraction path is the directory separator char.
@@ -199,38 +237,26 @@ public class FileService(IActionNotificationService actionNotificationService,
 
         try
         {
-            await using Stream stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.Read,
+            await using Stream stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read,
                 4096, FileOptions.Asynchronous);
             using IArchive archive = await Task.Run(() => ArchiveFactory.Open(stream), ct);
 
             double totalSize = archive.TotalUncompressSize;
             long bytesCompleted = 0;
 
+            //Seems SharpCompress wasn't designed to be multithread capable. Doing so throws all kinds of exceptions
+            //As such this is the best we can really do
             ExtractionOptions options = new() { ExtractFullPath = true, Overwrite = true, };
+            using IReader reader = archive.ExtractAllEntries();
+            reader.EntryExtractionProgress += (s, e) =>
+            {
+                //TODO: Improve this reporting
+                if (e.ReaderProgress?.PercentageReadExact < 100) return;
+                long newSize = Interlocked.Add(ref bytesCompleted, e.Item.Size);
+                progress?.Report(newSize / totalSize);
+            };
+            await Task.Run(() => reader.WriteAllToDirectory(destination, options), ct);
             
-            //Solid archives extract fastest sequentially, Otherwise we can run this extraction in parallel
-            if (archive.IsSolid)
-            {
-                using IReader reader = archive.ExtractAllEntries();
-                reader.EntryExtractionProgress += (s, e) =>
-                {
-                    if (e.ReaderProgress?.PercentageReadExact < 100) return;
-                    long newSize = Interlocked.Add(ref bytesCompleted, e.Item.Size);
-                    progress?.Report(newSize / totalSize);
-                };
-                await Task.Run(() => reader.WriteAllToDirectory(destination, options), ct);
-            }
-            else
-            {
-                await Parallel.ForEachAsync(archive.Entries, ct, (entry, token) =>
-                {
-                    if (token.IsCancellationRequested) return ValueTask.FromCanceled(token);
-                    if (!entry.IsDirectory) entry.WriteToDirectory(destination, options);
-                    long newSize = Interlocked.Add(ref bytesCompleted, entry.Size);
-                    progress?.Report(newSize / totalSize);
-                    return ValueTask.CompletedTask;
-                });
-            }
             progress?.Report(1);
         }
         catch (Exception ex)

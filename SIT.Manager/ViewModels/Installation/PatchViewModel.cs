@@ -160,6 +160,7 @@ public partial class PatchViewModel : InstallationViewModelBase
 
     private async Task DownloadAndRunPatcher()
     {
+        //TODO: Check for existing EFT
         if (CurrentInstallProcessState.UsingBsgInstallPath)
         {
             await _fileService.CopyDirectory(CurrentInstallProcessState.BsgInstallPath, CurrentInstallProcessState.EftInstallPath, _copyProgress);
