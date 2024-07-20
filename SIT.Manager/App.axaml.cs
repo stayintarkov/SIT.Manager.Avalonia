@@ -21,6 +21,7 @@ using SIT.Manager.ViewModels.Settings;
 using SIT.Manager.ViewModels.Tools;
 using SIT.Manager.Views;
 using System;
+using System.Collections.Immutable;
 using System.CommandLine;
 using System.Diagnostics;
 using System.Net.Http;
@@ -49,7 +50,7 @@ public sealed partial class App : Application
 
         if (args.Length > 0)
         {
-            Task.Run(() => ParseArguments(args));
+            ParseArguments(args);
         }
     }
 
@@ -224,7 +225,7 @@ public sealed partial class App : Application
         }
     }
 
-    private static readonly string[] trEncodings = ["deflate", "gzip"];
+    private static readonly ImmutableArray<string> trEncodings = [..new[]{"deflate", "gzip"}];
 
     public override void Initialize()
     {
@@ -233,16 +234,17 @@ public sealed partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        switch (ApplicationLifetime)
         {
-            desktop.MainWindow = new MainWindow
-            {
-                DataContext = Current.Services.GetService<MainViewModel>()
-            };
-        }
-        else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
-        {
-            singleViewPlatform.MainView = new MainView();
+            case IClassicDesktopStyleApplicationLifetime desktop:
+                desktop.MainWindow = new MainWindow
+                {
+                    DataContext = Current.Services.GetService<MainViewModel>()
+                };
+                break;
+            case ISingleViewApplicationLifetime singleViewPlatform:
+                singleViewPlatform.MainView = new MainView();
+                break;
         }
 
         base.OnFrameworkInitializationCompleted();
@@ -250,35 +252,21 @@ public sealed partial class App : Application
 
     private Task<int> ParseArguments(string[] args)
     {
-        var addressOption = new Option<string>
-            ("--address", "AKI server to connect to. If omitted this will start a local server.");
+        Option<string> addressOption = new(["--address", "-a"], () => "http://127.0.0.1",
+            "Address of AKI server to connect to");
 
-        var usernameOption = new Option<string>
-            ("--username", "Username of the account to connect with");
+        Option<string> usernameOption =
+            new(["--username", "-u"], "Username of the account to connect with") { IsRequired = true };
 
-        var passwordOption = new Option<string>
-            ("--password", "Password of the account to connect with");
+        Option<string> passwordOption =
+            new(["--password", "-p"], () => string.Empty, "Password of the account to connect with");
 
-        addressOption.AddAlias("-a");
-        usernameOption.AddAlias("-u");
-        passwordOption.AddAlias("-p");
-
-        var rootCommand = new RootCommand
-        {
-            addressOption,
-            usernameOption,
-            passwordOption,
-        };
+        RootCommand rootCommand = [addressOption, usernameOption, passwordOption];
 
         rootCommand.SetHandler(async (addressValue, usernameValue, passwordValue) =>
         {
-
-            if (usernameValue != null && passwordValue != null)
-            {
-                DirectConnectViewModel dcvm = Services.GetRequiredService<DirectConnectViewModel>();
-                await dcvm.ConnectToServer(addressValue, usernameValue, passwordValue);
-            }
-
+            DirectConnectViewModel dcvm = Services.GetRequiredService<DirectConnectViewModel>();
+            await dcvm.ConnectToServer(addressValue, usernameValue, passwordValue);
         }, addressOption, usernameOption, passwordOption);
 
         return rootCommand.InvokeAsync(args);

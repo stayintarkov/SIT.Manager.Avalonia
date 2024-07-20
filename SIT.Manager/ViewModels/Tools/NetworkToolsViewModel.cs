@@ -50,17 +50,16 @@ public partial class NetworkToolsViewModel : ObservableRecipient
 
     private static async Task<bool> CheckPort(string host, ushort port, CancellationToken token)
     {
-        using (TcpClient tcpClient = new())
+        using TcpClient tcpClient = new();
+        try
         {
-            try
-            {
-                await tcpClient.ConnectAsync(host, port, token);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            await tcpClient.ConnectAsync(host, port, token);
         }
+        catch (Exception)
+        {
+            return false;
+        }
+
         return true;
     }
 
@@ -142,7 +141,7 @@ public partial class NetworkToolsViewModel : ObservableRecipient
         PortResponse = response;
         HasRunPortCheck = true;
 
-        // We had a successfull check so just put an artificial wait here to
+        // We had a successful check so just put an artificial wait here to
         // force a slight delay on users spamming the button to check their ports
         await Task.Delay(Random.Shared.Next(2500));
     }
