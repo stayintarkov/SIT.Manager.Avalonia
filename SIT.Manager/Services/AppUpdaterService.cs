@@ -87,7 +87,7 @@ public class AppUpdaterService(IFileService fileService, ILogger<AppUpdaterServi
 
     public async Task<bool> CheckForUpdate()
     {
-        //TODO: Handle this being null instead of silentlyh failing
+        //TODO: Handle this being null instead of silently failing
         Version currentVersion = Assembly.GetEntryAssembly()?.GetName().Version ?? new Version("0");
         Version latestVersion = new();
 

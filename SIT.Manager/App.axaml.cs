@@ -86,10 +86,12 @@ public sealed partial class App : Application
                 .AddSingleton<IManagerConfigService, ManagerConfigService>()
                 .AddTransient<IPickerDialogService>(x =>
                 {
-                    if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop || desktop.MainWindow?.StorageProvider is not { } provider)
+                    if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime
+                            desktop || desktop.MainWindow?.StorageProvider is not { } provider)
                     {
                         return new PickerDialogService(new MainWindow());
                     }
+
                     return new PickerDialogService(desktop.MainWindow);
                 })
                 .AddSingleton<IVersionService, VersionService>()
@@ -99,24 +101,29 @@ public sealed partial class App : Application
                     SslProtocols = System.Security.Authentication.SslProtocols.Tls12,
                     ServerCertificateCustomValidationCallback = delegate { return true; }
                 })
-                .AddSingleton(provider => new HttpClient(provider.GetService<HttpClientHandler>() ?? throw new ArgumentNullException())
-                {
-                    DefaultRequestHeaders =
+                .AddSingleton(provider =>
+                    new HttpClient(provider.GetService<HttpClientHandler>() ?? throw new ArgumentNullException())
                     {
-                        { "X-GitHub-Api-Version", "2022-11-28" },
-                        { "User-Agent", $"SITManager/{Assembly.GetEntryAssembly()?.GetName().Version?.ToString() ?? "1.0.0.1a"}" }
-                    }
-                })
+                        DefaultRequestHeaders =
+                        {
+                            { "X-GitHub-Api-Version", "2022-11-28" },
+                            {
+                                "User-Agent",
+                                $"SITManager/{Assembly.GetEntryAssembly()?.GetName().Version?.ToString() ?? "1.0.0.1a"}"
+                            }
+                        }
+                    })
                 .AddSingleton<ILocalizationService, LocalizationService>()
                 .AddSingleton<IAkiServerRequestingService, AkiServerRequestingService>()
                 .AddSingleton<IAppUpdaterService, AppUpdaterService>()
-                .AddSingleton<IDiagnosticService, DiagnosticService>();
+                .AddSingleton<IDiagnosticService, DiagnosticService>()
+                .AddSingleton<IModService, ModService>();
 
             #endregion Services
 
             #region ViewModels
 
-            // Page Viewmodels
+            // Page View models
             services.AddTransient<InstallPageViewModel>()
                 .AddTransient<LocationEditorViewModel>()
                 .AddTransient<MainViewModel>()
@@ -145,9 +152,12 @@ public sealed partial class App : Application
                 .AddTransient<LinuxViewModel>()
                 .AddTransient<SptAkiViewModel>();
 
-            // Tools view Models
+            // Tools View Models
             services.AddTransient<GeneralToolsViewModel>()
                 .AddTransient<NetworkToolsViewModel>();
+            
+            // Mods View Models
+            services.AddTransient<ModsPageViewModel>();
 
             #endregion ViewModels
 

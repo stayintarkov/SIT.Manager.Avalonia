@@ -5,6 +5,7 @@ using FluentAvalonia.UI.Controls;
 using SIT.Manager.Extentions;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Models;
+using SIT.Manager.Models.Config;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -18,6 +19,7 @@ public partial class ModsPageViewModel : ObservableRecipient
     private readonly IManagerConfigService _configService;
     private readonly ILocalizationService _localizationService;
     private readonly IModService _modService;
+    private SITConfig _sitConfig => _configService.Config.SITSettings;
 
     private ModInfo[] _unfilteredModList = [];
 
@@ -58,24 +60,24 @@ public partial class ModsPageViewModel : ObservableRecipient
         ModInfo updatedModInfo;
         if (mod.IsEnabled)
         {
-            updatedModInfo = _modService.EnableMod(mod, _configService.Config.SitEftInstallPath);
+            updatedModInfo = _modService.EnableMod(mod, _sitConfig.SitEFTInstallPath);
         }
         else
         {
-            updatedModInfo = _modService.DisableMod(mod, _configService.Config.SitEftInstallPath);
+            updatedModInfo = _modService.DisableMod(mod, _sitConfig.SitEFTInstallPath);
         }
         ModList[modIndex] = updatedModInfo;
     }
 
     private async Task InstallModCompatibilityLayer()
     {
-        await _modService.InstallModCompatLayer(_configService.Config.SitEftInstallPath);
+        await _modService.InstallModCompatLayer(_sitConfig.SitEFTInstallPath);
 
         ModList.Clear();
-        ModList.AddRange(_modService.GetInstalledMods(_configService.Config.SitEftInstallPath));
+        ModList.AddRange(_modService.GetInstalledMods(_sitConfig.SitEFTInstallPath));
 
         // Now that we have supposedly installed the mod compat layer check if it is right.
-        IsModCompatibilityLayerInstalled = _modService.CheckModCompatibilityLayerInstalled(_configService.Config.SitEftInstallPath);
+        IsModCompatibilityLayerInstalled = _modService.CheckModCompatibilityLayerInstalled(_sitConfig.SitEFTInstallPath);
         if (IsModCompatibilityLayerInstalled)
         {
             _barNotificationService.ShowSuccess(_localizationService.TranslateSource("ModsPageViewModelModCompatInstallSuccessTitle"), _localizationService.TranslateSource("ModsPageViewModelModCompatInstallSuccessMessage"));
@@ -121,7 +123,7 @@ public partial class ModsPageViewModel : ObservableRecipient
 
         Task loadModsTask = Task.Run(async () =>
         {
-            List<ModInfo> installedModsList = _modService.GetInstalledMods(_configService.Config.SitEftInstallPath);
+            List<ModInfo> installedModsList = _modService.GetInstalledMods(_sitConfig.SitEFTInstallPath);
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 ModList.Clear();
@@ -130,7 +132,7 @@ public partial class ModsPageViewModel : ObservableRecipient
         });
         Task checkModCompatibilityLayerTask = Task.Run(async () =>
         {
-            bool modCompatibilityLayerInstalled = _modService.CheckModCompatibilityLayerInstalled(_configService.Config.SitEftInstallPath);
+            bool modCompatibilityLayerInstalled = _modService.CheckModCompatibilityLayerInstalled(_sitConfig.SitEFTInstallPath);
             await Dispatcher.UIThread.InvokeAsync(() => IsModCompatibilityLayerInstalled = modCompatibilityLayerInstalled);
         });
 

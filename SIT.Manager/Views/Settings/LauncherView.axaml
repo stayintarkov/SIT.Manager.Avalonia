@@ -13,16 +13,16 @@
 			<StackPanel>
                 <CheckBox Content="{DynamicResource SettingsMinimizeLauncherAfterGameLaunchTitle}"
                           ToolTip.Tip="{DynamicResource SettingsMinimizeLauncherAfterGameLaunchToolTip}"
-                          IsChecked="{Binding _launcherSettings.MinimizeAfterLaunch, Mode=TwoWay}"/>
+                          IsChecked="{Binding LauncherSettings.MinimizeAfterLaunch, Mode=TwoWay}"/>
 				<CheckBox Content="{DynamicResource SettingsCloseLauncherAfterGameLaunchTitle}"
 						  ToolTip.Tip="{DynamicResource SettingsCloseLauncherAfterGameLaunchToolTip}"
-						  IsChecked="{Binding _launcherSettings.CloseAfterLaunch, Mode=TwoWay}"/>
+						  IsChecked="{Binding LauncherSettings.CloseAfterLaunch, Mode=TwoWay}"/>
 				<CheckBox Content="{DynamicResource SettingsLookForUpdatesTitle}"
 						  ToolTip.Tip="{DynamicResource SettingsLookForUpdatesTitleToolTip}"
-						  IsChecked="{Binding _launcherSettings.LookForUpdates, Mode=TwoWay}"/>
+						  IsChecked="{Binding LauncherSettings.LookForUpdates, Mode=TwoWay}"/>
 				<CheckBox Content="{DynamicResource SettingsHideIpAddressTitle}"
 						  ToolTip.Tip="{DynamicResource SettingsHideIpAddressToolTip}"
-						  IsChecked="{Binding _launcherSettings.HideIpAddress, Mode=TwoWay}"/>
+						  IsChecked="{Binding LauncherSettings.HideIpAddress, Mode=TwoWay}"/>
 				<CheckBox Content="{DynamicResource SettingsEnableTestMode}"
 						  ToolTip.Tip="{DynamicResource SettingsEnableTestModeToolTip}"
 						  IsChecked="{Binding IsTestModeEnabled, Mode=TwoWay}"/>
@@ -48,7 +48,7 @@
 										  UseColorPalette="False"
 										  UseColorWheel="False"
 										  UseSpectrum="True"
-										  Color="{Binding _launcherSettings.AccentColor, Mode=TwoWay}"/>
+										  Color="{Binding LauncherSettings.AccentColor, Mode=TwoWay}"/>
 				</Grid>
 			</StackPanel>
 		</controls:Card>

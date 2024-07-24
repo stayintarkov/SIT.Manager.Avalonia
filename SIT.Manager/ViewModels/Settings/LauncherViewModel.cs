@@ -12,14 +12,11 @@ namespace SIT.Manager.ViewModels.Settings;
 
 public partial class LauncherViewModel(IManagerConfigService configService,
                          ILocalizationService localizationService,
-                         IModService modService,
                          IPickerDialogService pickerDialogService) : SettingsViewModelBase(configService, pickerDialogService)
 {
-    private readonly ILocalizationService _localizationService = localizationService;
-    private readonly IModService _modService = modService;
-    private LauncherConfig _launcherSettings => _configsService.Config.LauncherSettings;
+    private LauncherConfig LauncherSettings => _configsService.Config.LauncherSettings;
 
-    private readonly FluentAvaloniaTheme? faTheme = Application.Current?.Styles.OfType<FluentAvaloniaTheme>().FirstOrDefault();
+    private readonly FluentAvaloniaTheme? _faTheme = Application.Current?.Styles.OfType<FluentAvaloniaTheme>().FirstOrDefault();
 
     [ObservableProperty]
     private bool _isTestModeEnabled = false;
@@ -29,59 +26,40 @@ public partial class LauncherViewModel(IManagerConfigService configService,
 
     [ObservableProperty]
     private CultureInfo _currentLocalization = localizationService.DefaultLocale;
-    
-    private void LauncherSettingPropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName != nameof(_launcherSettings.AccentColor)) return;
 
-        if (faTheme != null && faTheme.CustomAccentColor != _launcherSettings.AccentColor)
-            faTheme.CustomAccentColor = _launcherSettings.AccentColor;
+    private void Config_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(LauncherSettings.AccentColor))
+        {
+            if (_faTheme != null && _faTheme.CustomAccentColor != LauncherSettings.AccentColor)
+            {
+                _faTheme.CustomAccentColor = LauncherSettings.AccentColor;
+            }
+        }
     }
 
     protected override void OnActivated()
     {
         base.OnActivated();
 
-        CurrentLocalization = AvailableLocalizations.FirstOrDefault(x => x.Name == _launcherSettings.CurrentLanguageSelected, _localizationService.DefaultLocale);
-        IsTestModeEnabled = _launcherSettings.EnableTestMode;
-
-        _launcherSettings.PropertyChanged += LauncherSettingPropertyChanged;
+        CurrentLocalization = AvailableLocalizations.FirstOrDefault(x => x.Name == LauncherSettings.CurrentLanguageSelected, localizationService.DefaultLocale);
+        IsTestModeEnabled = LauncherSettings.EnableTestMode;
     }
 
     protected override void OnDeactivated()
     {
         base.OnDeactivated();
-        _launcherSettings.PropertyChanged -= LauncherSettingPropertyChanged;
+        LauncherSettings.PropertyChanged -= Config_PropertyChanged;
     }
 
     partial void OnCurrentLocalizationChanged(CultureInfo value)
     {
-        if (value != null)
-        {
-            _localizationService.SetLocalization(value);
-        }
+        LauncherSettings.CurrentLanguageSelected = value.Name;
+        localizationService.SetLocalization(value);
     }
 
     partial void OnIsTestModeEnabledChanged(bool value)
     {
-        // If test mode is enabled then we want to check that there's no mods we don't approve of currently installed.
-        if (value)
-        {
-            //TODO: Merge this with new mod page!
-            List<string> installedMods = new();
-            int compatibleModCount = installedMods.Count(x => _modService.RecommendedModInstalls.Contains(x));
-            int totalIncompatibleMods = installedMods.Count - compatibleModCount;
-            if (totalIncompatibleMods > 0)
-            {
-                await new ContentDialog()
-                {
-                    Title = _localizationService.TranslateSource("SettingsPageViewModelEnableDevModeErrorTitle"),
-                    Content = _localizationService.TranslateSource("SettingsPageViewModelEnableDevModeErrorDescription", totalIncompatibleMods.ToString()),
-                    CloseButtonText = _localizationService.TranslateSource("SettingsPageViewModelEnableDevModeErrorButtonOk")
-                }.ShowAsync();
-            }
-        }
-        
-        _launcherSettings.EnableTestMode = value;
+        LauncherSettings.EnableTestMode = value;
     }
 }

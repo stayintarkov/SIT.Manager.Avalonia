@@ -109,6 +109,7 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
             new NavigationItem(_localizationService.TranslateSource("InstallTitle"), _localizationService.TranslateSource("InstallTitleToolTip"), Symbol.Sync, typeof(InstallPage)),
             new NavigationItem(_localizationService.TranslateSource("ToolsTitle"), _localizationService.TranslateSource("ToolsTitleToolTip"), Symbol.AllApps, typeof(ToolsPage)),
             new NavigationItem(_localizationService.TranslateSource("ServerTitle"), _localizationService.TranslateSource("ServerTitleToolTip"), Symbol.MapDrive, typeof(ServerPage)),
+            new NavigationItem(_localizationService.TranslateSource("ModsTitle"), _localizationService.TranslateSource("ModsTitleToolTip"), Symbol.Library, typeof(ModsPage))
         ]);
         /* TODO make a new notification for updating.
 						<ListBoxItem>
@@ -125,7 +126,7 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
 						</ListBoxItem>
          */
 
-        SelectedMainNavigationItem = MainNavigationItems.First();
+        SelectedMainNavigationItem = MainNavigationItems.Where(x => x.NavigationTarget == typeof(ModsPage)).First()!;
         NavigateToPage(SelectedMainNavigationItem.NavigationTarget);
 
         FluentAvaloniaTheme? faTheme = Application.Current?.Styles.OfType<FluentAvaloniaTheme>().FirstOrDefault();
@@ -188,6 +189,7 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
         }
     }
 
+    //TODO: Move this generation to its own method to avoid duplication
     private void LocalizationService_LocalizationChanged(object? sender, EventArgs e)
     {
         FooterNavigationItems = new ReadOnlyCollection<NavigationItem>([
@@ -199,6 +201,7 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
             new NavigationItem(_localizationService.TranslateSource("InstallTitle"), _localizationService.TranslateSource("InstallTitleToolTip"), Symbol.Sync, typeof(InstallPage)),
             new NavigationItem(_localizationService.TranslateSource("ToolsTitle"), _localizationService.TranslateSource("ToolsTitleToolTip"), Symbol.AllApps, typeof(ToolsPage)),
             new NavigationItem(_localizationService.TranslateSource("ServerTitle"), _localizationService.TranslateSource("ServerTitleToolTip"), Symbol.MapDrive, typeof(ServerPage)),
+            new NavigationItem(_localizationService.TranslateSource("ModsTitle"), _localizationService.TranslateSource("ModsTitleToolTip"), Symbol.Library, typeof(ModsPage))
         ]);
     }
 
@@ -269,7 +272,6 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
         base.OnActivated();
 
         CheckInstallVersion();
-
 #if DEBUG
         // Don't run update checks in debug builds just assume they exist
         UpdateAvailable = true;

@@ -23,10 +23,8 @@ public class ModService(ICachingService cachingService,
     private const string CONFIGURATION_MANAGER_DLL_CACHE_KEY = "configuration-manager-dll";
     private const string MOD_COMPAT_LAYER_ZIP_CACHE_KEY = "mod-compat-layer.zip";
 
-    private readonly ICachingService _cachingService = cachingService;
-    private readonly IFileService _filesService = filesService;
-    private readonly IVersionService _versionService = versionService;
-    private readonly HttpClient _httpClient = httpClient;
+    private readonly Lazy<string> _lazyManagerTempPath = new(() => Path.Combine(Path.GetTempPath(), "SIT Manager"));
+    private string ManagerTempPath => _lazyManagerTempPath.Value;
 
     private static readonly List<string> _modCompatDlls = [
         "aki-core",
@@ -54,60 +52,59 @@ public class ModService(ICachingService cachingService,
     /// <exception cref="IOException"></exception>
     private async Task<byte[]> DownloadConfigurationManager()
     {
-        string latestReleaseJson = await _httpClient.GetStringAsync(BEPINEX_CONFIGURATION_MANAGER_RELEASE_URL).ConfigureAwait(false);
+        string latestReleaseJson = await httpClient.GetStringAsync(BEPINEX_CONFIGURATION_MANAGER_RELEASE_URL).ConfigureAwait(false);
         GithubRelease? latestRelease = JsonSerializer.Deserialize<GithubRelease>(latestReleaseJson);
 
-        if (latestRelease != null)
+        if (latestRelease == null)
+            throw new FileNotFoundException("Failed to get the latest release for Configuration Manager");
+
+        string assetDownloadUrl = string.Empty;
+        foreach (GithubAsset asset in latestRelease.Assets)
         {
-            string assetDownloadUrl = string.Empty;
-            foreach (GithubAsset asset in latestRelease.Assets)
+            if (!asset.Name.StartsWith("BepInEx.ConfigurationManager.BepInEx5_v")) continue;
+            assetDownloadUrl = asset.BrowserDownloadUrl;
+            break;
+        }
+
+        if (string.IsNullOrEmpty(assetDownloadUrl))
+            throw new UriFormatException("No download url available for Configuration manager");
+        
+        //TODO: Polly pipelines
+        string destinationPath = Path.Combine(ManagerTempPath, Path.GetRandomFileName());
+        bool downloadSuccess = await filesService.DownloadFile(new Uri(assetDownloadUrl), destinationPath).ConfigureAwait(false);
+        if (downloadSuccess)
+        {
+            string extractedZipPath = Path.GetTempFileName();
+            if (File.Exists(extractedZipPath))
             {
-                if (asset.Name.Contains("BepInEx5"))
-                {
-                    assetDownloadUrl = asset.BrowserDownloadUrl;
-                }
+                File.Delete(extractedZipPath);
             }
+            await filesService.ExtractArchive(ManagerTempPath, extractedZipPath).ConfigureAwait(false);
 
-            if (string.IsNullOrEmpty(assetDownloadUrl))
+            string[] files = Directory.GetFiles(extractedZipPath, "ConfigurationManager.dll", new EnumerationOptions() { RecurseSubdirectories = true });
+            if (files.Length == 1)
             {
-                throw new UriFormatException("No download url available for Configuration manager");
-            }
-
-            string tmpZipFilePath = Path.GetTempFileName();
-            bool downloadSuccess = await _filesService.DownloadFile(Path.GetFileName(tmpZipFilePath), Path.GetDirectoryName(tmpZipFilePath) ?? string.Empty, assetDownloadUrl, new Progress<double>()).ConfigureAwait(false);
-            if (downloadSuccess)
-            {
-                string extractedZipPath = Path.GetTempFileName();
-                if (File.Exists(extractedZipPath))
-                {
-                    File.Delete(extractedZipPath);
-                }
-                await _filesService.ExtractArchive(tmpZipFilePath, extractedZipPath).ConfigureAwait(false);
-
-                string[] files = Directory.GetFiles(extractedZipPath, "ConfigurationManager.dll", new EnumerationOptions() { RecurseSubdirectories = true });
-                if (files.Length == 1)
-                {
-                    return await File.ReadAllBytesAsync(files[0]).ConfigureAwait(false);
-                }
-                else
-                {
-                    throw new FileNotFoundException("Found too many or too few Configuration manager dlls in extraction target");
-                }
+                return await File.ReadAllBytesAsync(files[0]).ConfigureAwait(false);
             }
             else
             {
-                throw new IOException("Failed to download the latest configuration manager from GitHub");
+                throw new FileNotFoundException("Found too many or too few Configuration manager dlls in extraction target");
             }
         }
-        throw new FileNotFoundException("Failed to get the latest release for Configuration Manager");
+        else
+        {
+            throw new IOException("Failed to download the latest configuration manager from GitHub");
+        }
     }
 
+    //TODO: Implement cancellation token
     private async Task<byte[]> DownloadModCompatLayerZip()
     {
         string downloadUrl = Encoding.UTF8.GetString(Convert.FromBase64String(MOD_COMPAT_LAYER_URL));
 
-        string tmpDownloadPath = Path.GetTempFileName();
-        bool downloadSuccess = await _filesService.DownloadFile(Path.GetFileName(tmpDownloadPath), Path.GetDirectoryName(tmpDownloadPath) ?? string.Empty, downloadUrl, new Progress<double>()).ConfigureAwait(false);
+        //TODO: Use polly
+        string tmpDownloadPath = Path.Combine(ManagerTempPath, Path.GetTempFileName());
+        bool downloadSuccess = await filesService.DownloadFile(new Uri(downloadUrl), tmpDownloadPath).ConfigureAwait(false);
         if (!downloadSuccess)
         {
             throw new IOException("Failed to download the latest configuration manager from GitHub");
@@ -140,7 +137,7 @@ public class ModService(ICachingService cachingService,
             ModInfo mod = new()
             {
                 Name = filename,
-                ModVersion = _versionService.GetFileProductVersionString(fileInfo.FullName),
+                ModVersion = versionService.GetFileProductVersionString(fileInfo.FullName),
                 Path = fileInfo.FullName
             };
 
@@ -223,7 +220,7 @@ public class ModService(ICachingService cachingService,
         mods.Add(new ModInfo()
         {
             IsRequired = true,
-            ModVersion = _versionService.GetEFTVersion(targetPath),
+            ModVersion = versionService.GetEFTVersion(targetPath),
             Name = "Escape From Tarkov"
         });
 
@@ -242,7 +239,7 @@ public class ModService(ICachingService cachingService,
             throw new ArgumentException("Parameter can't be null or empty", nameof(targetPath));
         }
 
-        CacheValue<byte[]> configurationManagerDll = await _cachingService.OnDisk.GetOrComputeAsync(CONFIGURATION_MANAGER_DLL_CACHE_KEY, (key) => DownloadConfigurationManager(), TimeSpan.FromDays(1));
+        CacheValue<byte[]> configurationManagerDll = await cachingService.OnDisk.GetOrComputeAsync(CONFIGURATION_MANAGER_DLL_CACHE_KEY, (key) => DownloadConfigurationManager(), TimeSpan.FromDays(1));
 
         byte[] configurationManagerBytes = configurationManagerDll.Value ?? [];
         if (configurationManagerBytes.Length == 0)
@@ -262,7 +259,7 @@ public class ModService(ICachingService cachingService,
             throw new ArgumentException("Parameter can't be null or empty", nameof(targetPath));
         }
 
-        CacheValue<byte[]> modCompatLayerZip = await _cachingService.OnDisk.GetOrComputeAsync(MOD_COMPAT_LAYER_ZIP_CACHE_KEY, (key) => DownloadModCompatLayerZip(), TimeSpan.FromDays(1));
+        CacheValue<byte[]> modCompatLayerZip = await cachingService.OnDisk.GetOrComputeAsync(MOD_COMPAT_LAYER_ZIP_CACHE_KEY, (key) => DownloadModCompatLayerZip(), TimeSpan.FromDays(1));
 
         string tmpZipFilePath = Path.GetTempFileName();
         await File.WriteAllBytesAsync(tmpZipFilePath, modCompatLayerZip.Value ?? []);
@@ -272,7 +269,7 @@ public class ModService(ICachingService cachingService,
         {
             File.Delete(extractedZipPath);
         }
-        await _filesService.ExtractArchive(tmpZipFilePath, extractedZipPath).ConfigureAwait(false);
+        await filesService.ExtractArchive(tmpZipFilePath, extractedZipPath).ConfigureAwait(false);
 
         DirectoryInfo sourceFiles = new(extractedZipPath);
         foreach (FileInfo file in sourceFiles.GetFiles("*", new EnumerationOptions() { RecurseSubdirectories = true }))
