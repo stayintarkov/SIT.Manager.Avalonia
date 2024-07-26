@@ -18,7 +18,7 @@ internal class OnDiskCachingProvider : CachingProviderBase
     private readonly XxHash32 _hasher = new();
     private readonly DirectoryInfo _cacheDirectory;
     private string RestoreFilePath => Path.Combine(_cacheDirectory.FullName, RestoreFileName);
-    private static readonly FileOptions FileStreamOptions = OperatingSystem.IsWindows() ? (FileOptions) 0x20000000 : FileOptions.None;
+    private static readonly FileOptions FileStreamOptions = OperatingSystem.IsWindows() ? FileOptions.WriteThrough : FileOptions.None;
 
     public OnDiskCachingProvider(ILogger<OnDiskCachingProvider> logger)
     {
@@ -46,8 +46,9 @@ internal class OnDiskCachingProvider : CachingProviderBase
         try
         {
             _cacheDirectory.Create();
-            using FileStream cacheRecordFileStream = new(RestoreFilePath, FileMode.Create,
+            using FileStream cacheRecordFileStream = new(RestoreFilePath, FileMode.OpenOrCreate,
                 FileAccess.Write, FileShare.Read, 4096, FileStreamOptions);
+            cacheRecordFileStream.SetLength(0);
             JsonSerializer.Serialize(cacheRecordFileStream, CacheMap);
             cacheRecordFileStream.Flush();
         }
@@ -71,7 +72,7 @@ internal class OnDiskCachingProvider : CachingProviderBase
         byte[] hashBuffer = new byte[_hasher.HashLengthInBytes]; 
         _hasher.Append(Encoding.UTF8.GetBytes(key));
         _hasher.GetHashAndReset(hashBuffer);
-        return BitConverter.ToString(hashBuffer);
+        return BitConverter.ToString(hashBuffer).Replace("-", "");
     }
     
     public override bool TryAdd<T>(string key, T value, TimeSpan? expiryTime = null)

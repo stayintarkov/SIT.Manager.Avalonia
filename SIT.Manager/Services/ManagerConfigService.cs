@@ -7,6 +7,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Text.Json;
+using System.Timers;
 
 namespace SIT.Manager.Services;
 
@@ -21,7 +22,8 @@ internal sealed class ManagerConfigService : IManagerConfigService
 
     private readonly ILogger<ManagerConfigService> _logger;
     private readonly FileInfo _managerConfigPath = new(Path.Combine(AppContext.BaseDirectory, ConfigName));
-    private static readonly FileOptions FileStreamOptions = OperatingSystem.IsWindows() ? (FileOptions) 0x20000000 : FileOptions.None;
+    private readonly Timer _configSaveTimer = new(TimeSpan.FromSeconds(60));
+    private static readonly FileOptions FileStreamOptions = OperatingSystem.IsWindows() ? FileOptions.WriteThrough : FileOptions.None;
 
     public ManagerConfigService(ILogger<ManagerConfigService> logger)
     {
@@ -32,6 +34,8 @@ internal sealed class ManagerConfigService : IManagerConfigService
         {
             lifetime.ShutdownRequested += (_, _) => SaveConfig();
         }
+
+        _configSaveTimer.Elapsed += (_, _) => SaveConfig();
     }
 
     public ManagerConfig Config { get; }
@@ -43,7 +47,7 @@ internal sealed class ManagerConfigService : IManagerConfigService
         {
             if (_managerConfigPath.Exists)
             {
-                ret = JsonSerializer.Deserialize<ManagerConfig>(_managerConfigPath.OpenRead()) ?? ret;
+                ret = JsonSerializer.Deserialize<ManagerConfig>(_managerConfigPath.OpenRead(), _jsonSerializationOptions) ?? ret;
             }
             else
             {
