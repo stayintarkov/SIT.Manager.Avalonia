@@ -14,7 +14,7 @@ public partial class EftViewModel : SettingsViewModelBase
     private readonly IInstallerService _installerService;
     private readonly ILocalizationService _localizationService;
     private readonly IVersionService _versionService;
-    private SITConfig _sitConfig => _configsService.Config.SITSettings;
+    public SITConfig _sitConfig => _configsService.Config.SITSettings;
 
     [ObservableProperty]
     private string _bsgEftInstallPath;

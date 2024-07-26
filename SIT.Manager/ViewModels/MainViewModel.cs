@@ -100,17 +100,7 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
         _localizationService.SetLocalization(new CultureInfo(_launcherConfig.CurrentLanguageSelected));
         _localizationService.LocalizationChanged += LocalizationService_LocalizationChanged;
 
-        FooterNavigationItems = new ReadOnlyCollection<NavigationItem>([
-            new NavigationItem(_localizationService.TranslateSource("HelpTitle"), string.Empty, Symbol.Help, typeof(SettingsPage), Tag: "Help"),
-            new NavigationItem(_localizationService.TranslateSource("SettingsTitle"), string.Empty, Symbol.Settings, typeof(SettingsPage))
-        ]);
-        MainNavigationItems = new ReadOnlyCollection<NavigationItem>([
-            new NavigationItem(_localizationService.TranslateSource("PlayTitle"), _localizationService.TranslateSource("PlayTitle"), Symbol.Play, typeof(PlayPage)),
-            new NavigationItem(_localizationService.TranslateSource("InstallTitle"), _localizationService.TranslateSource("InstallTitleToolTip"), Symbol.Sync, typeof(InstallPage)),
-            new NavigationItem(_localizationService.TranslateSource("ToolsTitle"), _localizationService.TranslateSource("ToolsTitleToolTip"), Symbol.AllApps, typeof(ToolsPage)),
-            new NavigationItem(_localizationService.TranslateSource("ServerTitle"), _localizationService.TranslateSource("ServerTitleToolTip"), Symbol.MapDrive, typeof(ServerPage)),
-            new NavigationItem(_localizationService.TranslateSource("ModsTitle"), _localizationService.TranslateSource("ModsTitleToolTip"), Symbol.Library, typeof(ModsPage))
-        ]);
+        PopulateNavigationItems();
         /* TODO make a new notification for updating.
 						<ListBoxItem>
 							<ui:NavigationViewItem IconSource="Sync"
@@ -126,7 +116,7 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
 						</ListBoxItem>
          */
 
-        SelectedMainNavigationItem = MainNavigationItems.Where(x => x.NavigationTarget == typeof(ModsPage)).First()!;
+        SelectedMainNavigationItem = MainNavigationItems.First();
         NavigateToPage(SelectedMainNavigationItem.NavigationTarget);
 
         FluentAvaloniaTheme? faTheme = Application.Current?.Styles.OfType<FluentAvaloniaTheme>().FirstOrDefault();
@@ -191,6 +181,9 @@ public partial class MainViewModel : ObservableRecipient, IRecipient<Installatio
 
     //TODO: Move this generation to its own method to avoid duplication
     private void LocalizationService_LocalizationChanged(object? sender, EventArgs e)
+        => PopulateNavigationItems();
+
+    private void PopulateNavigationItems()
     {
         FooterNavigationItems = new ReadOnlyCollection<NavigationItem>([
             new NavigationItem(_localizationService.TranslateSource("HelpTitle"), string.Empty, Symbol.Help, typeof(SettingsPage), Tag: "Help"),

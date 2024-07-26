@@ -33,7 +33,7 @@ internal class OnDiskCachingProvider : CachingProviderBase
 
         try
         {
-            CacheMap = JsonConvert.DeserializeObject<ConcurrentDictionary<string, CacheEntry>>(RestoreFilePath);
+            CacheMap = JsonConvert.DeserializeObject<ConcurrentDictionary<string, CacheEntry>>(File.ReadAllText(RestoreFilePath));
         }
         catch (Exception ex)
         {
@@ -49,7 +49,7 @@ internal class OnDiskCachingProvider : CachingProviderBase
             using FileStream cacheRecordFileStream = new(RestoreFilePath, FileMode.OpenOrCreate,
                 FileAccess.Write, FileShare.Read, 4096, FileStreamOptions);
             cacheRecordFileStream.SetLength(0);
-            JsonSerializer.Serialize(cacheRecordFileStream, CacheMap);
+            JsonSerializer.Serialize(cacheRecordFileStream, CacheMap, options: new System.Text.Json.JsonSerializerOptions() { WriteIndented = true });
             cacheRecordFileStream.Flush();
         }
         catch (Exception ex)

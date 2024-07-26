@@ -5,5 +5,5 @@ namespace SIT.Manager.Interfaces;
 
 public interface IManagerConfigService
 {
-    ManagerConfig Config { get; }
+    public ManagerConfig Config { get; }
 }

@@ -14,7 +14,7 @@ public partial class SptAkiViewModel : SettingsViewModelBase
     private readonly IBarNotificationService _barNotificationService;
     private readonly ILocalizationService _localizationService;
     private readonly IVersionService _versionService;
-    private AkiConfig _akiConfig => Config.AkiSettings;
+    public AkiConfig _akiConfig => Config.AkiSettings;
 
     [ObservableProperty]
     private FontFamily _selectedConsoleFontFamily = FontFamily.Default;

@@ -1,10 +1,12 @@
 ﻿using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
 using FluentAvalonia.Styling;
+using FluentAvalonia.UI.Controls;
 using SIT.Manager.Interfaces;
 using SIT.Manager.Models.Config;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 
@@ -14,7 +16,7 @@ public partial class LauncherViewModel(IManagerConfigService configService,
                          ILocalizationService localizationService,
                          IPickerDialogService pickerDialogService) : SettingsViewModelBase(configService, pickerDialogService)
 {
-    private LauncherConfig LauncherSettings => _configsService.Config.LauncherSettings;
+    public LauncherConfig LauncherSettings => _configsService.Config.LauncherSettings;
 
     private readonly FluentAvaloniaTheme? _faTheme = Application.Current?.Styles.OfType<FluentAvaloniaTheme>().FirstOrDefault();
 
@@ -29,19 +31,16 @@ public partial class LauncherViewModel(IManagerConfigService configService,
 
     private void Config_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(LauncherSettings.AccentColor))
-        {
-            if (_faTheme != null && _faTheme.CustomAccentColor != LauncherSettings.AccentColor)
-            {
-                _faTheme.CustomAccentColor = LauncherSettings.AccentColor;
-            }
-        }
+        if (_faTheme == null) return;
+        if (e.PropertyName != nameof(LauncherSettings.AccentColor)) return;
+        _faTheme.CustomAccentColor = LauncherSettings.AccentColor;
     }
 
     protected override void OnActivated()
     {
         base.OnActivated();
 
+        LauncherSettings.PropertyChanged += Config_PropertyChanged;
         CurrentLocalization = AvailableLocalizations.FirstOrDefault(x => x.Name == LauncherSettings.CurrentLanguageSelected, localizationService.DefaultLocale);
         IsTestModeEnabled = LauncherSettings.EnableTestMode;
     }
